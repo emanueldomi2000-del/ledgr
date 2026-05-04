@@ -159,7 +159,7 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
   <p class="hero-p">Follow the best tipsters on the planet. Real records, real odds, fully verified. The only platform where performance is 100% transparent.</p>
   <div class="btns">
     <a href="#" class="btn-a" onclick="openAuth()">Browse Tipsters →</a>
-    <a href="#" class="btn-b" onclick="alert('📋 Apply as Tipster!')">Become a Tipster</a>
+    <a href="#" class="btn-b" onclick="window.location.href='/dashboard'">Become a Tipster →</a>
   </div>
   <div class="proof">
     <div><div class="pn">2.4K+</div><div class="pl">Active Tipsters</div></div>
@@ -334,10 +334,10 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
   <div class="foot-logo">LEDGR</div>
   <div class="foot-p">© 2026 LEDGR — getledgr.bet</div>
   <div class="foot-links">
-    <a href="#">Privacy</a>
-    <a href="#">Terms</a>
-    <a href="#">Contact</a>
-    <a href="#">Twitter/X</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="mailto:hello@getledgr.bet">Contact</a>
+    <a href="https://x.com/getledgr" target="_blank">Twitter/X</a>
   </div>
 </footer>
 
@@ -430,6 +430,34 @@ async function loadRealLeaderboard(){
   }catch(e){console.log('Could not load real data');}
 }
 loadRealLeaderboard();
+
+// LOAD REAL TICKER
+async function loadRealTicker(){
+  try{
+    const r=await fetch(API+"/picks");
+    const picks=await r.json();
+    if(!picks.length)return;
+    const tipsters={};
+    picks.forEach(p=>{
+      if(!p.user)return;
+      const u=p.user.username;
+      if(!tipsters[u])tipsters[u]={username:u,picks:0,wins:0,stake:0,pnl:0};
+      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
+      if(p.result==="win")tipsters[u].wins++;
+    });
+    const arr=Object.values(tipsters);
+    if(!arr.length)return;
+    const items=arr.map(t=>{
+      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
+      const wr=t.picks>0?((t.wins/t.picks)*100).toFixed(0):0;
+      return `<span class="ti"><b>★</b> @${t.username} — ROI ${parseFloat(roi)>=0?"+":""}${roi}%</span>`;
+    });
+    const doubled=[...items,...items].join("");
+    const tc=document.getElementById("tickerContent");
+    if(tc)tc.innerHTML=doubled;
+  }catch(e){}
+}
+loadRealTicker();
 
 function openAuth(){document.getElementById('authModal').style.display='flex'}
 function closeAuth(){document.getElementById('authModal').style.display='none'}
