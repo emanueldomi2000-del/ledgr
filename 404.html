@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Page Not Found</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#05050a;--s1:#0b0b14;--bd:#18182e;--ac:#e8ff00;--tx:#f2f2fa;--mu:#5a5a7a;--mu2:#8888aa}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:5px;color:var(--ac);text-decoration:none;position:fixed;top:24px;left:32px}
+.big{font-family:'Bebas Neue',sans-serif;font-size:clamp(120px,25vw,220px);letter-spacing:-4px;line-height:.85;color:var(--ac);text-shadow:0 0 80px rgba(232,255,0,0.15);animation:flicker 3s infinite}
+@keyframes flicker{0%,95%,100%{opacity:1}96%,99%{opacity:.4}}
+.msg{font-family:'Bebas Neue',sans-serif;font-size:clamp(24px,4vw,40px);letter-spacing:3px;color:var(--tx);margin-bottom:12px}
+.sub{font-size:15px;color:var(--mu2);margin-bottom:40px;font-family:'DM Mono',monospace}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-home{background:var(--ac);color:#05050a;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s}
+.btn-home:hover{background:#f5ff33;transform:translateY(-2px)}
+.btn-lb{background:transparent;color:var(--tx);padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;text-decoration:none;border:1px solid var(--bd);transition:all .2s}
+.btn-lb:hover{border-color:rgba(232,255,0,0.3);color:var(--ac)}
+.tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
+</style>
+</head>
+<body>
+<a href="/" class="logo">LEDGR</a>
+<div class="tag">Error 404</div>
+<div class="big">404</div>
+<div class="msg">PAGE NOT FOUND</div>
+<div class="sub">This pick doesn't exist. Maybe it was deleted or never posted.</div>
+<div class="btns">
+  <a href="/" class="btn-home">Back to Home</a>
+  <a href="/leaderboard" class="btn-lb">View Leaderboard</a>
+</div>
+</body>
+</html>
