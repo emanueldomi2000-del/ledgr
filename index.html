@@ -158,7 +158,7 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
   </h1>
   <p class="hero-p">Follow the best tipsters on the planet. Real records, real odds, fully verified. The only platform where performance is 100% transparent.</p>
   <div class="btns">
-    <a href="#" class="btn-a" onclick="alert('🚀 Launching soon!')">Browse Tipsters →</a>
+    <a href="#" class="btn-a" onclick="openAuth()">Browse Tipsters →</a>
     <a href="#" class="btn-b" onclick="alert('📋 Apply as Tipster!')">Become a Tipster</a>
   </div>
   <div class="proof">
@@ -354,3 +354,69 @@ document.querySelectorAll('.follow').forEach(btn=>{
 </script>
 </body>
 </html>
+
+<!-- AUTH MODAL -->
+<div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(5,5,10,0.95);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(10px)">
+  <div style="background:#0b0b14;border:1px solid #18182e;border-radius:20px;padding:40px;width:100%;max-width:420px;margin:0 24px;position:relative">
+    <button onclick="closeAuth()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#6b6b8a;font-size:20px;cursor:pointer">x</button>
+    <div style="display:flex;gap:8px;background:#111120;border-radius:10px;padding:4px;margin-bottom:28px">
+      <button id="tabLogin" onclick="switchTab('login')" style="flex:1;padding:10px;border-radius:7px;border:none;background:#e8ff00;color:#05050a;font-family:Syne,sans-serif;font-size:14px;font-weight:700;cursor:pointer">Log In</button>
+      <button id="tabRegister" onclick="switchTab('register')" style="flex:1;padding:10px;border-radius:7px;border:none;background:transparent;color:#6b6b8a;font-family:Syne,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Sign Up</button>
+    </div>
+    <div id="loginForm">
+      <div style="margin-bottom:14px"><input type="email" id="loginEmail" placeholder="Email" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
+      <div style="margin-bottom:20px"><input type="password" id="loginPassword" placeholder="Password" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
+      <button onclick="handleLogin()" style="width:100%;background:#e8ff00;color:#05050a;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:700;cursor:pointer">Log In</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div style="margin-bottom:14px"><input type="email" id="regEmail" placeholder="Email" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
+      <div style="margin-bottom:14px"><input type="text" id="regUsername" placeholder="Username" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
+      <div style="margin-bottom:20px"><input type="password" id="regPassword" placeholder="Password" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
+      <button onclick="handleRegister()" style="width:100%;background:#e8ff00;color:#05050a;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:700;cursor:pointer">Create Account</button>
+    </div>
+    <div id="authMsg" style="margin-top:14px;text-align:center;font-size:13px;color:#6b6b8a"></div>
+  </div>
+</div>
+
+<script>
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+
+function openAuth(){document.getElementById('authModal').style.display='flex'}
+function closeAuth(){document.getElementById('authModal').style.display='none'}
+
+function switchTab(t){
+  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
+  document.getElementById('registerForm').style.display=t==='register'?'block':'none';
+  document.getElementById('tabLogin').style.background=t==='login'?'#e8ff00':'transparent';
+  document.getElementById('tabLogin').style.color=t==='login'?'#05050a':'#6b6b8a';
+  document.getElementById('tabRegister').style.background=t==='register'?'#e8ff00':'transparent';
+  document.getElementById('tabRegister').style.color=t==='register'?'#05050a':'#6b6b8a';
+}
+
+async function handleRegister(){
+  const email=document.getElementById('regEmail').value;
+  const username=document.getElementById('regUsername').value;
+  const password=document.getElementById('regPassword').value;
+  const msg=document.getElementById('authMsg');
+  msg.textContent='Creating account...';
+  try{
+    const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username,password})});
+    const d=await r.json();
+    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome to LEDGR!';setTimeout(closeAuth,1500);}
+    else{msg.style.color='#ff3355';msg.textContent=d.error||'Error';}
+  }catch(e){msg.style.color='#ff3355';msg.textContent='Connection error';}
+}
+
+async function handleLogin(){
+  const email=document.getElementById('loginEmail').value;
+  const password=document.getElementById('loginPassword').value;
+  const msg=document.getElementById('authMsg');
+  msg.textContent='Logging in...';
+  try{
+    const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+    const d=await r.json();
+    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome back!';setTimeout(closeAuth,1500);}
+    else{msg.style.color='#ff3355';msg.textContent=d.error||'Error';}
+  }catch(e){msg.style.color='#ff3355';msg.textContent='Connection error';}
+}
+</script>
