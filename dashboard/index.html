@@ -190,6 +190,8 @@ async function loadPicks(){
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+async function updatePick(id,result,pnl){try{const r=await fetch(API+"/picks/"+id,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({result,pnl:parseFloat(pnl)})});const d=await r.json();if(d.id){showToast(result==="win"?"WIN CONFIRMED!":"LOSS MARKED");loadPicks();}else showToast("Error");}catch(e){showToast("Connection error");}}
+async function deletePick(id){if(!confirm("Delete this pick?"))return;try{const r=await fetch(API+"/picks/"+id,{method:"DELETE"});const d=await r.json();if(d.success){showToast("PICK DELETED");loadPicks();}else showToast("Error");}catch(e){showToast("Connection error");}}
 </script>
 </body>
 </html>
