@@ -76,7 +76,7 @@ select option{background:#111120}
 <div id="app" style="display:none">
   <nav>
     <a href="/" class="logo">LEDGR</a>
-    <div class="nav-r">
+    <div class="nav-r"><a href="/leaderboard" style="color:var(--mu2);font-size:13px;text-decoration:none;padding:8px 14px;border-radius:8px;transition:color .2s" onmouseover="this.style.color='var(--tx)'" onmouseout="this.style.color='var(--mu2)'">Leaderboard</a><a href="/tipster?u=" id="myProfileLink" style="color:var(--mu2);font-size:13px;text-decoration:none;padding:8px 14px;border-radius:8px;transition:color .2s" onmouseover="this.style.color='var(--tx)'" onmouseout="this.style.color='var(--mu2)'">My Profile</a>
       <div class="user-badge" id="userBadge">Loading...</div>
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
@@ -140,7 +140,7 @@ window.onload=()=>{
   if(!token||!ud){document.getElementById('notLogged').style.display='flex';return}
   user=JSON.parse(ud);
   document.getElementById('app').style.display='block';
-  document.getElementById('userBadge').textContent='@'+user.username;
+  document.getElementById("userBadge").textContent="@"+user.username;const pl=document.getElementById("myProfileLink");if(pl)pl.href="/tipster?u="+user.username;
   loadPicks();
 };
 
