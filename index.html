@@ -140,9 +140,9 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
   <div class="logo">LEDGR</div>
   <div class="nav-r">
     <a href="#features" class="nav-link">Features</a>
-    <a href="#leaderboard" class="nav-link">Leaderboard</a>
-    <a href="#pricing" class="nav-link">Pricing</a>
-    <button class="btn-nav" onclick="openAuth()">Join Waitlist</button>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+    <button class="btn-nav" onclick="alert('🚀 Launching soon — join the waitlist!')">Join Waitlist</button>
   </div>
 </nav>
 
@@ -249,7 +249,7 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
       <div class="ls"><div class="lsv neu">178</div><div class="lsl">PICKS</div></div>
       <button class="follow">Follow</button>
     </div>
-    <div class="lb-cta"><a href="#" onclick="alert('🚀 Full leaderboard coming soon!')">View Full Leaderboard → 2,400+ tipsters</a></div>
+    <div class="lb-cta"><a href="#" onclick="window.location.href='/leaderboard'">View Full Leaderboard → 2,400+ tipsters</a></div>
   </div>
 </section>
 
@@ -402,7 +402,7 @@ async function handleRegister(){
   try{
     const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username,password})});
     const d=await r.json();
-    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome to LEDGR!';setTimeout(closeAuth,1500);}
+    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome to LEDGR!';setTimeout(()=>window.location.href='/dashboard',1000);}
     else{msg.style.color='#ff3355';msg.textContent=d.error||'Error';}
   }catch(e){msg.style.color='#ff3355';msg.textContent='Connection error';}
 }
@@ -415,7 +415,7 @@ async function handleLogin(){
   try{
     const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
     const d=await r.json();
-    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome back!';setTimeout(closeAuth,1500);}
+    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome back!';setTimeout(()=>window.location.href='/dashboard',1000);}
     else{msg.style.color='#ff3355';msg.textContent=d.error||'Error';}
   }catch(e){msg.style.color='#ff3355';msg.textContent='Connection error';}
 }
