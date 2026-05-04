@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Every Pick. Verified.</title>
+<meta name="description" content="The home of verified tipsters. Follow proven cappers, track real performance, subscribe to winning picks.">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#05050a;--s1:#0b0b14;--s2:#111120;--bd:#18182e;--ac:#e8ff00;--acg:rgba(232,255,0,0.12);--tx:#f2f2fa;--mu:#5a5a7a;--mu2:#8888aa;--gr:#00e5a0;--rd:#ff3355}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(24,24,46,0.7)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:6px;color:var(--ac)}
+.nav-r{display:flex;gap:12px;align-items:center}
+.nav-link{color:var(--mu2);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;padding:0 12px}
+.nav-link:hover{color:var(--tx)}
+.btn-nav{background:var(--ac);color:#05050a;border:none;padding:10px 22px;border-radius:5px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.btn-nav:hover{background:#f5ff33;box-shadow:0 0 20px rgba(232,255,0,0.2)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 60px;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(232,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent)}
+.hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(232,255,0,0.04),transparent 65%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
+
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.15);color:var(--ac);padding:7px 18px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:40px;animation:up .6s ease both}
+.dot{width:6px;height:6px;background:var(--gr);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,13vw,156px);letter-spacing:-1px;line-height:.88;margin-bottom:32px;animation:up .6s .06s ease both}
+.l1{display:block;color:var(--tx)}
+.l2{display:block;color:var(--ac);text-shadow:0 0 80px rgba(232,255,0,0.2)}
+.l3{display:block;-webkit-text-stroke:1px rgba(242,242,250,0.15);color:transparent}
+
+.hero-p{font-size:17px;color:var(--mu2);line-height:1.8;max-width:440px;margin:0 auto 44px;animation:up .6s .12s ease both}
+
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:up .6s .18s ease both;margin-bottom:72px}
+.btn-a{background:var(--ac);color:#05050a;padding:15px 36px;border-radius:6px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s}
+.btn-a:hover{background:#f5ff33;transform:translateY(-2px);box-shadow:0 16px 40px rgba(232,255,0,0.18)}
+.btn-b{color:var(--tx);padding:15px 36px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none;transition:all .25s;border:1px solid var(--bd)}
+.btn-b:hover{border-color:rgba(232,255,0,0.2);color:var(--ac)}
+
+.proof{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;animation:up .6s .24s ease both}
+.pn{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--ac);line-height:1}
+.pl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+
+/* TICKER */
+.ticker-wrap{background:var(--ac);overflow:hidden;padding:11px 0}
+.ticker{display:flex;white-space:nowrap;animation:tick 22s linear infinite}
+.ti{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#05050a;letter-spacing:1px;padding:0 32px;opacity:.75}
+.ti b{opacity:1}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* FEATURES */
+.features{padding:96px 24px;max-width:1080px;margin:0 auto}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:14px}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.5vw,64px);letter-spacing:2px;line-height:1.05;margin-bottom:56px}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd)}
+.fc{background:var(--bg);padding:40px 30px;transition:background .2s;position:relative;overflow:hidden}
+.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:0;transition:opacity .3s}
+.fc:hover{background:var(--s1)}
+.fc:hover::before{opacity:.4}
+.fi{font-size:26px;margin-bottom:18px}
+.fh{font-size:16px;font-weight:700;margin-bottom:9px;color:var(--tx)}
+.fp{font-size:13px;color:var(--mu2);line-height:1.75}
+
+/* LEADERBOARD PREVIEW */
+.lb-section{padding:96px 24px;max-width:1080px;margin:0 auto}
+.lb-preview{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.lb-head{display:grid;grid-template-columns:48px 1fr 80px 80px 80px 100px;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bd);font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase}
+.lb-row{display:grid;grid-template-columns:48px 1fr 80px 80px 80px 100px;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(24,24,46,0.5);align-items:center;transition:background .15s;cursor:pointer}
+.lb-row:last-child{border:none}
+.lb-row:hover{background:var(--s2)}
+.rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--mu);text-align:center}
+.rank.g{color:#fbbf24}.rank.s{color:#9ca3af}.rank.b{color:#b45309}
+.tipster-info{display:flex;align-items:center;gap:12px}
+.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0}
+.tn{font-weight:700;font-size:14px}
+.ts{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
+.ls{text-align:center}
+.lsv{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+.lsv.pos{color:var(--gr)}.lsv.neu{color:var(--tx)}
+.lsl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-top:2px}
+.follow{padding:7px 16px;border:1px solid rgba(232,255,0,0.25);color:var(--ac);background:rgba(232,255,0,0.05);border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.follow:hover{background:var(--ac);color:#05050a;border-color:var(--ac)}
+.lb-cta{text-align:center;padding:28px;border-top:1px solid var(--bd)}
+.lb-cta a{color:var(--ac);font-size:13px;font-weight:600;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px}
+
+/* PRICING */
+.pricing{padding:96px 24px;max-width:900px;margin:0 auto;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px;text-align:left}
+.pc{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:32px;position:relative;transition:all .3s}
+.pc:hover{border-color:rgba(232,255,0,0.2);transform:translateY(-4px)}
+.pc.featured{border-color:rgba(232,255,0,0.35);background:linear-gradient(135deg,rgba(232,255,0,0.04),var(--s1))}
+.pc-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--ac);color:#05050a;padding:3px 14px;border-radius:20px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap}
+.pc-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--mu2);margin-bottom:10px}
+.pc-price{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:1px;color:var(--tx);line-height:1;margin-bottom:4px}
+.pc-price span{font-size:16px;color:var(--mu);font-family:'Syne',sans-serif;font-weight:400}
+.pc-per{font-size:12px;color:var(--mu);margin-bottom:24px;font-family:'DM Mono',monospace}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.pc-feats li{font-size:13px;color:var(--mu2);display:flex;gap:8px;align-items:flex-start}
+.pc-feats li::before{content:'→';color:var(--ac);flex-shrink:0;font-size:12px;margin-top:1px}
+.pc-btn{width:100%;padding:12px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.3px}
+.pc-btn-main{background:var(--ac);border:none;color:#05050a}
+.pc-btn-main:hover{background:#f5ff33}
+.pc-btn-out{background:transparent;border:1px solid var(--bd);color:var(--mu2)}
+.pc-btn-out:hover{border-color:rgba(232,255,0,0.25);color:var(--ac)}
+
+/* CTA BOTTOM */
+.cta-bottom{margin:0 24px 96px;max-width:1080px;margin-left:auto;margin-right:auto}
+.cta-box{background:var(--ac);border-radius:16px;padding:80px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(5,5,10,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(5,5,10,0.08) 1px,transparent 1px);background-size:32px 32px}
+.cta-box h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,7vw,80px);letter-spacing:2px;color:#05050a;line-height:1;margin-bottom:16px;position:relative;z-index:1}
+.cta-box p{font-size:16px;color:rgba(5,5,10,0.65);margin-bottom:36px;position:relative;z-index:1}
+.cta-box .btn-dark{background:#05050a;color:var(--ac);padding:16px 40px;border-radius:7px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s;display:inline-block;position:relative;z-index:1}
+.cta-box .btn-dark:hover{background:#0d0d1c;transform:translateY(-2px)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:gap}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--ac);opacity:.6}
+.foot-p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace}
+.foot-links{display:flex;gap:24px}
+.foot-links a{font-size:12px;color:var(--mu);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--tx)}
+
+/* DIVIDER */
+.div{border:none;border-top:1px solid var(--bd);margin:0}
+
+@media(max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}.price-grid{grid-template-columns:1fr}.lb-head,.lb-row{grid-template-columns:40px 1fr 70px 70px}.lb-head>*:nth-child(5),.lb-row>*:nth-child(5){display:none}.how{grid-template-columns:1fr}nav .nav-link{display:none}}
+@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.proof{gap:32px}.lb-head,.lb-row{grid-template-columns:36px 1fr 60px}.lb-head>*:nth-child(4),.lb-row>*:nth-child(4),.lb-head>*:nth-child(5),.lb-row>*:nth-child(5){display:none}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">LEDGR</div>
+  <div class="nav-r">
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#leaderboard" class="nav-link">Leaderboard</a>
+    <a href="#pricing" class="nav-link">Pricing</a>
+    <button class="btn-nav" onclick="alert('🚀 Launching soon — join the waitlist!')">Join Waitlist</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="badge"><div class="dot"></div> Now in Beta — Join the Waitlist</div>
+  <h1>
+    <span class="l1">EVERY</span>
+    <span class="l2">PICK.</span>
+    <span class="l3">VERIFIED.</span>
+  </h1>
+  <p class="hero-p">Follow the best tipsters on the planet. Real records, real odds, zero bullshit. The only platform where performance can't be faked.</p>
+  <div class="btns">
+    <a href="#" class="btn-a" onclick="alert('🚀 Launching soon!')">Browse Tipsters →</a>
+    <a href="#" class="btn-b" onclick="alert('📋 Apply as Tipster!')">Become a Tipster</a>
+  </div>
+  <div class="proof">
+    <div><div class="pn">2.4K+</div><div class="pl">Active Tipsters</div></div>
+    <div><div class="pn">180K+</div><div class="pl">Picks Tracked</div></div>
+    <div><div class="pn">52K+</div><div class="pl">Subscribers</div></div>
+    <div><div class="pn">100%</div><div class="pl">Verified Records</div></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ti"><b>★</b> KING DOMI — ROI +31.4%</span>
+    <span class="ti"><b>★</b> PROPKING — WIN RATE 71%</span>
+    <span class="ti"><b>★</b> ACESERVE — 340 PICKS VERIFIED</span>
+    <span class="ti"><b>★</b> PARLAYKING — +€4,200 P&L</span>
+    <span class="ti"><b>★</b> SOCCEREDGE — 520 PICKS VERIFIED</span>
+    <span class="ti"><b>★</b> ICEHAWK — ROI +22.3%</span>
+    <span class="ti"><b>★</b> KING DOMI — ROI +31.4%</span>
+    <span class="ti"><b>★</b> PROPKING — WIN RATE 71%</span>
+    <span class="ti"><b>★</b> ACESERVE — 340 PICKS VERIFIED</span>
+    <span class="ti"><b>★</b> PARLAYKING — +€4,200 P&L</span>
+    <span class="ti"><b>★</b> SOCCEREDGE — 520 PICKS VERIFIED</span>
+    <span class="ti"><b>★</b> ICEHAWK — ROI +22.3%</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <span class="sec-tag">Why LEDGR</span>
+  <h2 class="sec-h">BUILT FOR<br>SERIOUS BETTORS</h2>
+  <div class="feat-grid">
+    <div class="fc"><div class="fi">📊</div><div class="fh">Verified Records</div><div class="fp">Every pick is logged automatically at posting time. Tipsters can't edit, delete or manipulate results. What you see is what happened.</div></div>
+    <div class="fc"><div class="fi">🏆</div><div class="fh">Live Leaderboard</div><div class="fp">Real-time ranking by ROI, Win Rate and profit. Filter by sport, bet type, time range. Find the best capper for your style in seconds.</div></div>
+    <div class="fc"><div class="fi">💳</div><div class="fh">Subscription Marketplace</div><div class="fp">Subscribe to any tipster's channel — monthly, weekly or lifetime. Tipsters set their price and get paid automatically every month.</div></div>
+    <div class="fc"><div class="fi">🔔</div><div class="fh">Instant Alerts</div><div class="fp">Get notified the second your tipster posts a new pick. Telegram, email or push — your choice, your speed.</div></div>
+    <div class="fc"><div class="fi">📈</div><div class="fh">Deep Analytics</div><div class="fp">Bankroll curves, ROI by odds range, sport breakdown, streak analysis. Know exactly who you're following and why.</div></div>
+    <div class="fc"><div class="fi">💰</div><div class="fh">Earn as a Tipster</div><div class="fp">Set your own price. Build free and premium tiers. LEDGR takes 15% — you keep the rest. Payouts are automated, no chasing.</div></div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- LEADERBOARD PREVIEW -->
+<section class="lb-section" id="leaderboard">
+  <span class="sec-tag">Live Rankings</span>
+  <h2 class="sec-h">TOP TIPSTERS<br>RIGHT NOW</h2>
+  <div class="lb-preview">
+    <div class="lb-head"><span></span><span>Tipster</span><span style="text-align:center">ROI</span><span style="text-align:center">W/R</span><span style="text-align:center">Picks</span><span></span></div>
+    <div class="lb-row">
+      <div class="rank g">🥇</div>
+      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">KD</div><div><div class="tn">King Domi</div><div class="ts">Soccer · Tennis</div></div></div>
+      <div class="ls"><div class="lsv pos">+31.4%</div><div class="lsl">ROI</div></div>
+      <div class="ls"><div class="lsv neu">64%</div><div class="lsl">WIN RATE</div></div>
+      <div class="ls"><div class="lsv neu">248</div><div class="lsl">PICKS</div></div>
+      <button class="follow">Follow</button>
+    </div>
+    <div class="lb-row">
+      <div class="rank s">🥈</div>
+      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#059669,#10b981)">PK</div><div><div class="tn">PropKing</div><div class="ts">NBA Props</div></div></div>
+      <div class="ls"><div class="lsv pos">+24.8%</div><div class="lsl">ROI</div></div>
+      <div class="ls"><div class="lsv neu">71%</div><div class="lsl">WIN RATE</div></div>
+      <div class="ls"><div class="lsv neu">412</div><div class="lsl">PICKS</div></div>
+      <button class="follow">Follow</button>
+    </div>
+    <div class="lb-row">
+      <div class="rank b">🥉</div>
+      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#b45309,#f59e0b)">PS</div><div><div class="tn">ParlaySzn</div><div class="ts">Multi-sport</div></div></div>
+      <div class="ls"><div class="lsv pos">+42.1%</div><div class="lsl">ROI</div></div>
+      <div class="ls"><div class="lsv neu">38%</div><div class="lsl">WIN RATE</div></div>
+      <div class="ls"><div class="lsv neu">89</div><div class="lsl">PICKS</div></div>
+      <button class="follow">Follow</button>
+    </div>
+    <div class="lb-row">
+      <div class="rank">4</div>
+      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#0369a1,#38bdf8)">SE</div><div><div class="tn">SoccerEdge</div><div class="ts">Soccer</div></div></div>
+      <div class="ls"><div class="lsv pos">+14.6%</div><div class="lsl">ROI</div></div>
+      <div class="ls"><div class="lsv neu">55%</div><div class="lsl">WIN RATE</div></div>
+      <div class="ls"><div class="lsv neu">520</div><div class="lsl">PICKS</div></div>
+      <button class="follow">Follow</button>
+    </div>
+    <div class="lb-row">
+      <div class="rank">5</div>
+      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#0f766e,#14b8a6)">IH</div><div><div class="tn">IceHawk</div><div class="ts">Hockey · MMA</div></div></div>
+      <div class="ls"><div class="lsv pos">+22.3%</div><div class="lsl">ROI</div></div>
+      <div class="ls"><div class="lsv neu">61%</div><div class="lsl">WIN RATE</div></div>
+      <div class="ls"><div class="lsv neu">178</div><div class="lsl">PICKS</div></div>
+      <button class="follow">Follow</button>
+    </div>
+    <div class="lb-cta"><a href="#" onclick="alert('🚀 Full leaderboard coming soon!')">View Full Leaderboard → 2,400+ tipsters</a></div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <span class="sec-tag">Plans</span>
+  <h2 class="sec-h">SIMPLE PRICING.<br>NO BULLSHIT.</h2>
+  <div class="price-grid">
+    <div class="pc">
+      <div class="pc-name">FREE</div>
+      <div class="pc-price">€0<span>/mo</span></div>
+      <div class="pc-per">Forever free</div>
+      <ul class="pc-feats">
+        <li>Follow up to 3 tipsters</li>
+        <li>View public picks</li>
+        <li>Basic leaderboard access</li>
+        <li>Email alerts</li>
+      </ul>
+      <button class="pc-btn pc-btn-out" onclick="alert('🎉 Free plan at launch!')">Get Started Free</button>
+    </div>
+    <div class="pc featured">
+      <div class="pc-tag">⭐ MOST POPULAR</div>
+      <div class="pc-name">PRO</div>
+      <div class="pc-price">€12<span>/mo</span></div>
+      <div class="pc-per">Billed monthly</div>
+      <ul class="pc-feats">
+        <li>Follow unlimited tipsters</li>
+        <li>Full analytics & charts</li>
+        <li>Priority notifications</li>
+        <li>ROI calculator tools</li>
+        <li>Export data (CSV / PDF)</li>
+        <li>Early access to new features</li>
+      </ul>
+      <button class="pc-btn pc-btn-main" onclick="alert('🚀 Pro plan at launch!')">Start Pro Trial</button>
+    </div>
+    <div class="pc">
+      <div class="pc-name">TIPSTER</div>
+      <div class="pc-price">€0<span>+15%</span></div>
+      <div class="pc-per">Commission on subscriptions</div>
+      <ul class="pc-feats">
+        <li>Post unlimited picks</li>
+        <li>Create subscription plans</li>
+        <li>Verified badge on profile</li>
+        <li>Full analytics dashboard</li>
+        <li>Automated monthly payouts</li>
+      </ul>
+      <button class="pc-btn pc-btn-out" onclick="alert('📋 Apply as Tipster!')">Apply as Tipster</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOX -->
+<div class="cta-bottom">
+  <div class="cta-box">
+    <h2>READY TO LEVEL UP?</h2>
+    <p>Join thousands of bettors already on the waitlist. Free to join, forever.</p>
+    <a href="#" class="btn-dark" onclick="alert('🚀 You\'re on the waitlist!')">Join the Waitlist →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-logo">LEDGR</div>
+  <div class="foot-p">© 2026 LEDGR — getledgr.bet</div>
+  <div class="foot-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+    <a href="#">Twitter/X</a>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.follow').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const following=this.textContent==='Following';
+    this.textContent=following?'Follow':'Following';
+    this.style.background=following?'':'var(--ac)';
+    this.style.color=following?'':'#05050a';
+    this.style.borderColor=following?'rgba(232,255,0,0.25)':'var(--ac)';
+  });
+});
+</script>
+</body>
+</html>
