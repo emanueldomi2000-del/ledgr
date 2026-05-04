@@ -142,7 +142,7 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
     <a href="#features" class="nav-link">Features</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>
     <a href="/dashboard" class="nav-link">Dashboard</a>
-    <button class="btn-nav" onclick="openAuth()">Log In / Sign Up</button>
+    <button class="btn-nav" id="navBtn" onclick="openAuth()">Log In / Sign Up</button>
   </div>
 </nav>
 
@@ -380,6 +380,56 @@ document.querySelectorAll('.follow').forEach(btn=>{
 
 <script>
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
+// SMART NAV — check if logged in
+(function(){
+  const u=localStorage.getItem('ledgr_user');
+  const btn=document.getElementById('navBtn');
+  if(u&&btn){
+    const user=JSON.parse(u);
+    btn.textContent='Dashboard →';
+    btn.onclick=()=>window.location.href='/dashboard';
+  }
+})();
+
+// LOAD REAL LEADERBOARD DATA
+async function loadRealLeaderboard(){
+  try{
+    const r=await fetch(API+'/picks');
+    const picks=await r.json();
+    if(!picks.length)return;
+    const tipsters={};
+    picks.forEach(p=>{
+      if(!p.user)return;
+      const u=p.user.username;
+      if(!tipsters[u])tipsters[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0};
+      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
+      if(p.result==='win')tipsters[u].wins++;if(p.result==='loss')tipsters[u].losses++;
+    });
+    const arr=Object.values(tipsters).sort((a,b)=>{
+      const ra=a.stake>0?(a.pnl/a.stake)*100:0;const rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;
+    }).slice(0,5);
+    if(!arr.length)return;
+    const medals=['🥇','🥈','🥉'];
+    const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)'];
+    const rows=document.querySelectorAll('.lb-row');
+    arr.forEach((t,i)=>{
+      if(!rows[i])return;
+      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
+      const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
+      const initials=t.username.substring(0,2).toUpperCase();
+      rows[i].querySelector('.tn').textContent='@'+t.username;
+      rows[i].querySelector('.ts').textContent=t.picks+' picks';
+      rows[i].querySelector('.av').style.background=colors[i];
+      rows[i].querySelector('.av').textContent=initials;
+      const lsvs=rows[i].querySelectorAll('.lsv');
+      if(lsvs[0])lsvs[0].textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
+      if(lsvs[1])lsvs[1].textContent=wr+'%';
+      if(lsvs[2])lsvs[2].textContent=t.picks;
+      rows[i].onclick=()=>window.location.href='/tipster?u='+t.username;
+    });
+  }catch(e){console.log('Could not load real data');}
+}
+loadRealLeaderboard();
 
 function openAuth(){document.getElementById('authModal').style.display='flex'}
 function closeAuth(){document.getElementById('authModal').style.display='none'}
