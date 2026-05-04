@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Tipster Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#05050a;--s1:#0b0b14;--s2:#111120;--bd:#18182e;--ac:#e8ff00;--tx:#f2f2fa;--mu:#5a5a7a;--mu2:#8888aa;--gr:#00e5a0;--rd:#ff3355}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:5px;color:var(--ac);text-decoration:none}
+.nav-links{display:flex;gap:8px}
+.nav-link{color:var(--mu2);font-size:13px;text-decoration:none;padding:8px 14px;border-radius:8px;transition:all .2s}
+.nav-link:hover{color:var(--tx);background:var(--s2)}
+.nav-btn{background:var(--ac);color:#05050a;border:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif}
+.main{max-width:1100px;margin:0 auto;padding:40px 24px;position:relative;z-index:1}
+
+/* PROFILE HERO */
+.profile-hero{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:36px;margin-bottom:24px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.profile-hero::before{content:'';position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,rgba(232,255,0,0.03),transparent);pointer-events:none}
+.avatar-big{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:34px;flex-shrink:0;border:3px solid var(--ac);background:linear-gradient(135deg,#7c3aed,#a855f7)}
+.profile-info{flex:1}
+.profile-username{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:3px;line-height:1;margin-bottom:6px}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,255,0,0.08);border:1px solid rgba(232,255,0,0.2);color:var(--ac);padding:4px 14px;border-radius:20px;font-size:11px;font-family:'DM Mono',monospace;letter-spacing:1px;margin-bottom:10px}
+.verified-dot{width:6px;height:6px;background:var(--gr);border-radius:50%}
+.profile-bio{color:var(--mu2);font-size:14px;line-height:1.7;max-width:500px}
+.profile-actions{display:flex;gap:10px;margin-left:auto;flex-wrap:wrap;align-items:center}
+.follow-btn-big{padding:12px 28px;border:1px solid var(--ac);color:var(--ac);background:rgba(232,255,0,0.08);border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.follow-btn-big:hover,.follow-btn-big.following{background:var(--ac);color:#05050a}
+.share-btn{padding:12px 20px;border:1px solid var(--bd);color:var(--mu2);background:transparent;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.share-btn:hover{border-color:var(--mu2);color:var(--tx)}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px;text-align:center}
+.stat::before{content:'';display:block;width:40px;height:2px;background:var(--ac);margin:0 auto 12px;opacity:.5}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.stat-val.pos{color:var(--gr)}.stat-val.neg{color:var(--rd)}.stat-val.neu{color:var(--tx)}
+.stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+
+/* GRID */
+.content-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
+.panel{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ac);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.panel-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+/* PICKS */
+.pick-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:10px;transition:border-color .2s}
+.pick-card:hover{border-color:rgba(232,255,0,0.15)}
+.pick-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.pick-event{font-weight:700;font-size:14px;margin-bottom:2px}
+.pick-market{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
+.pick-odds{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--ac);line-height:1}
+.pick-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
+.badge-win{background:rgba(0,229,160,.12);color:var(--gr)}
+.badge-loss{background:rgba(255,51,85,.12);color:var(--rd)}
+.badge-pending{background:rgba(245,158,11,.12);color:#f59e0b}
+.badge-sport{background:rgba(232,255,0,.08);color:var(--ac)}
+.pick-time{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-left:auto}
+.pick-pnl{font-family:'DM Mono',monospace;font-size:12px;font-weight:600}
+.pick-pnl.pos{color:var(--gr)}.pick-pnl.neg{color:var(--rd)}.pick-pnl.zero{color:var(--mu)}
+
+/* SIDEBAR */
+.perf-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd);font-size:13px}
+.perf-row:last-child{border:none}
+.perf-key{color:var(--mu);font-family:'DM Mono',monospace;font-size:11px}
+.perf-val{font-weight:600}
+.perf-val.pos{color:var(--gr)}.perf-val.neg{color:var(--rd)}
+
+/* SPORT BREAKDOWN */
+.sport-bar{margin-bottom:12px}
+.sport-bar-label{display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px}
+.sport-bar-label span:first-child{color:var(--mu2)}
+.sport-bar-label span:last-child{color:var(--ac);font-family:'DM Mono',monospace;font-size:11px}
+.bar{height:4px;background:var(--bd);border-radius:2px;overflow:hidden}
+.bar-fill{height:100%;background:var(--ac);border-radius:2px;transition:width .5s ease}
+
+.empty{text-align:center;padding:40px;color:var(--mu)}
+.empty .icon{font-size:36px;margin-bottom:10px}
+.not-found{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center}
+.not-found h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--rd);margin-bottom:12px}
+.not-found p{color:var(--mu2);margin-bottom:24px}
+.back-btn{color:var(--ac);text-decoration:none;font-family:'DM Mono',monospace;font-size:13px}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ac);color:#05050a;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){.content-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(3,1fr)}.profile-hero{flex-direction:column;text-align:center}.profile-actions{margin-left:0;width:100%;justify-content:center}}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<nav>
+  <a href="/" class="logo">LEDGR</a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+  </div>
+  <button class="nav-btn" onclick="window.location.href='/dashboard'">My Dashboard</button>
+</nav>
+
+<div class="main" id="mainContent">
+  <div style="text-align:center;padding:60px;color:var(--mu)">
+    <div style="font-size:32px;margin-bottom:12px">⟳</div>
+    Loading profile...
+  </div>
+</div>
+
+<script>
+const API='https://ledgr-backend-production-c132.up.railway.app';
+
+// Get username from URL: /tipster/username
+const pathParts=window.location.pathname.split('/');
+const username=pathParts[pathParts.length-1]||pathParts[pathParts.length-2];
+
+async function loadProfile(){
+  try{
+    const r=await fetch(API+'/picks');
+    const allPicks=await r.json();
+    
+    const myPicks=allPicks.filter(p=>p.user&&p.user.username===username);
+    
+    if(!myPicks.length&&!username){
+      showNotFound();return;
+    }
+
+    const wins=myPicks.filter(p=>p.result==='win').length;
+    const losses=myPicks.filter(p=>p.result==='loss').length;
+    const pushes=myPicks.filter(p=>p.result==='push').length;
+    const pending=myPicks.filter(p=>p.result==='pending').length;
+    const totalStake=myPicks.reduce((s,p)=>s+p.stake,0);
+    const totalPnL=myPicks.reduce((s,p)=>s+p.pnl,0);
+    const roi=totalStake>0?((totalPnL/totalStake)*100).toFixed(1):0;
+    const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):0;
+    const avgOdds=myPicks.length>0?(myPicks.reduce((s,p)=>s+p.odds,0)/myPicks.length).toFixed(2):0;
+    const bestWin=Math.max(0,...myPicks.filter(p=>p.result==='win').map(p=>p.pnl));
+    
+    // Sport breakdown
+    const sports={};
+    myPicks.forEach(p=>{if(!sports[p.sport])sports[p.sport]=0;sports[p.sport]++});
+    const sportEntries=Object.entries(sports).sort((a,b)=>b[1]-a[1]);
+    
+    const initials=username?username.substring(0,2).toUpperCase():'??';
+    const roiPos=parseFloat(roi)>=0;
+    const pnlPos=totalPnL>=0;
+    
+    document.title=`LEDGR — @${username}`;
+    
+    document.getElementById('mainContent').innerHTML=`
+      <div class="profile-hero" style="position:relative">
+        <div class="avatar-big">${initials}</div>
+        <div class="profile-info">
+          <div class="profile-badge"><div class="verified-dot"></div> VERIFIED TIPSTER</div>
+          <div class="profile-username">@${username}</div>
+          <div class="profile-bio">${myPicks.length} verified picks on LEDGR. All results tracked automatically.</div>
+        </div>
+        <div class="profile-actions">
+          <button class="share-btn" onclick="shareProfile()">Share Profile</button>
+          <button class="follow-btn-big" onclick="this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following':'Follow'">Follow</button>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat"><div class="stat-val neu">${myPicks.length}</div><div class="stat-lbl">Total Picks</div></div>
+        <div class="stat"><div class="stat-val ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div><div class="stat-lbl">ROI</div></div>
+        <div class="stat"><div class="stat-val neu">${wr}%</div><div class="stat-lbl">Win Rate</div></div>
+        <div class="stat"><div class="stat-val ${pnlPos?'pos':'neg'}">${pnlPos?'+€':'-€'}${Math.abs(totalPnL).toFixed(2)}</div><div class="stat-lbl">Total P&L</div></div>
+        <div class="stat"><div class="stat-val neu">${avgOdds}</div><div class="stat-lbl">Avg Odds</div></div>
+      </div>
+
+      <div class="content-grid">
+        <div class="panel">
+          <div class="panel-title">ALL PICKS</div>
+          ${myPicks.length===0?'<div class="empty"><div class="icon">📊</div><p>No picks posted yet.</p></div>':
+          myPicks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(p=>{
+            const rb=p.result==='win'?'<span class="badge badge-win">WIN</span>':p.result==='loss'?'<span class="badge badge-loss">LOSS</span>':'<span class="badge badge-pending">PENDING</span>';
+            const pnlStr=p.pnl>0?`<span class="pick-pnl pos">+€${p.pnl.toFixed(2)}</span>`:p.pnl<0?`<span class="pick-pnl neg">-€${Math.abs(p.pnl).toFixed(2)}</span>`:`<span class="pick-pnl zero">€0.00</span>`;
+            return`<div class="pick-card">
+              <div class="pick-top">
+                <div><div class="pick-event">${p.event}</div><div class="pick-market">${p.market}</div></div>
+                <div class="pick-odds">${p.odds}</div>
+              </div>
+              <div class="pick-meta">
+                <span class="badge badge-sport">${p.sport}</span>
+                <span style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace">${p.stake}u</span>
+                ${rb}
+                ${pnlStr}
+                <span class="pick-time">${new Date(p.createdAt).toLocaleDateString()}</span>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:16px">
+            <div class="panel-title">PERFORMANCE</div>
+            <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${wins}W - ${losses}L - ${pending}P</span></div>
+            <div class="perf-row"><span class="perf-key">ROI</span><span class="perf-val ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</span></div>
+            <div class="perf-row"><span class="perf-key">Win Rate</span><span class="perf-val">${wr}%</span></div>
+            <div class="perf-row"><span class="perf-key">Total P&L</span><span class="perf-val ${pnlPos?'pos':'neg'}">${pnlPos?'+€':'-€'}${Math.abs(totalPnL).toFixed(2)}</span></div>
+            <div class="perf-row"><span class="perf-key">Avg Odds</span><span class="perf-val">${avgOdds}</span></div>
+            <div class="perf-row"><span class="perf-key">Best Win</span><span class="perf-val pos">+€${bestWin.toFixed(2)}</span></div>
+            <div class="perf-row"><span class="perf-key">Total Picks</span><span class="perf-val">${myPicks.length}</span></div>
+          </div>
+          ${sportEntries.length>0?`
+          <div class="panel">
+            <div class="panel-title">BY SPORT</div>
+            ${sportEntries.map(([sport,count])=>`
+              <div class="sport-bar">
+                <div class="sport-bar-label"><span>${sport}</span><span>${count} picks</span></div>
+                <div class="bar"><div class="bar-fill" style="width:${(count/myPicks.length*100).toFixed(0)}%"></div></div>
+              </div>
+            `).join('')}
+          </div>`:''}
+        </div>
+      </div>
+    `;
+  }catch(e){
+    document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>ERROR</h2><p>Could not load profile. Try again later.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';
+  }
+}
+
+function showNotFound(){
+  document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>404</h2><p>Tipster not found.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';
+}
+
+function shareProfile(){
+  navigator.clipboard.writeText(window.location.href).then(()=>showToast('LINK COPIED!'));
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+loadProfile();
+</script>
+</body>
+</html>
