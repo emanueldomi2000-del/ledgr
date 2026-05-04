@@ -174,7 +174,7 @@ function renderLeaderboard(){
     const color=colors[i%colors.length];
     const roiPos=parseFloat(roi)>=0;
     const pnlPos=t.pnl>=0;
-    return`<div class="lb-row ${cls}">
+    return`<div class="lb-row ${cls}" onclick="window.location.href='/tipster?u='+t.username"
       <div class="rank ${rnkCls}">${i<3?medals[i]:i+1}</div>
       <div class="tipster">
         <div class="av" style="background:${color}">${initials}</div>
