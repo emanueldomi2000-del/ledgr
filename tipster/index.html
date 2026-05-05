@@ -119,6 +119,15 @@ const API='https://ledgr-backend-production-c132.up.railway.app';
 const params=new URLSearchParams(window.location.search);
 const username=params.get('u')||'';
 
+async function subscribeTo(){
+  try{
+    const r=await fetch('https://ledgr-backend-production-c132.up.railway.app/create-checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipsterUsername:username,priceAmount:10,userId:'guest'})});
+    const d=await r.json();
+    if(d.url)window.location.href=d.url;
+    else showToast('Error starting checkout');
+  }catch(e){showToast('Connection error');}
+}
+
 async function loadProfile(){
   try{
     const r=await fetch(API+'/picks');
@@ -163,6 +172,7 @@ async function loadProfile(){
         <div class="profile-actions">
           <button class="share-btn" onclick="shareProfile()">Share Profile</button>
           <button class="follow-btn-big" onclick="this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following':'Follow'">Follow</button>
+          <button style="padding:12px 28px;background:var(--ac);color:#05050a;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif" onclick="subscribeTo()">Subscribe €10/mo</button>
         </div>
       </div>
 
