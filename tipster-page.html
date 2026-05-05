@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Become a Tipster</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#05050a;--s1:#0b0b14;--s2:#111120;--bd:#18182e;--ac:#e8ff00;--tx:#f2f2fa;--mu:#5a5a7a;--mu2:#8888aa;--gr:#00e5a0;--rd:#ff3355}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:5px;color:var(--ac);text-decoration:none}
+.nav-links{display:flex;gap:8px}
+.nav-link{color:var(--mu2);font-size:13px;text-decoration:none;padding:8px 14px;border-radius:8px;transition:all .2s}
+.nav-link:hover{color:var(--tx);background:var(--s2)}
+.nav-btn{background:var(--ac);color:#05050a;border:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif}
+
+/* HERO */
+.hero{padding:100px 24px 80px;text-align:center;max-width:800px;margin:0 auto;position:relative;z-index:1}
+.tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:20px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,110px);letter-spacing:1px;line-height:.9;margin-bottom:24px}
+.hero h1 span{color:var(--ac);text-shadow:0 0 60px rgba(232,255,0,0.2)}
+.hero p{font-size:18px;color:var(--mu2);line-height:1.7;margin-bottom:40px;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-btn{background:var(--ac);color:#05050a;padding:18px 44px;border-radius:8px;font-size:16px;font-weight:700;text-decoration:none;display:inline-block;transition:all .25s;margin-bottom:12px}
+.hero-btn:hover{background:#f5ff33;transform:translateY(-2px);box-shadow:0 16px 40px rgba(232,255,0,0.2)}
+.hero-sub{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace}
+
+/* EARNINGS */
+.earnings{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:48px;max-width:900px;margin:0 auto 80px;position:relative;z-index:1;text-align:center}
+.earnings h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;margin-bottom:8px}
+.earnings p{color:var(--mu2);margin-bottom:40px;font-size:15px}
+.earn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.earn-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:28px;text-align:center}
+.earn-num{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:2px;color:var(--ac);line-height:1;margin-bottom:6px}
+.earn-label{font-size:12px;color:var(--mu2);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px}
+.earn-sub{font-size:11px;color:var(--mu);margin-top:4px}
+
+/* HOW IT WORKS */
+.how{max-width:900px;margin:0 auto 80px;padding:0 24px;position:relative;z-index:1}
+.how h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;text-align:center;margin-bottom:48px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.step{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:24px;text-align:center;position:relative}
+.step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);opacity:.3;border-radius:12px 12px 0 0}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:rgba(232,255,0,0.15);line-height:1;margin-bottom:12px}
+.step-icon{font-size:28px;margin-bottom:12px}
+.step h3{font-size:15px;font-weight:700;margin-bottom:8px}
+.step p{font-size:12px;color:var(--mu2);line-height:1.6}
+
+/* FEATURES */
+.features{max-width:900px;margin:0 auto 80px;padding:0 24px;position:relative;z-index:1}
+.features h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;text-align:center;margin-bottom:48px}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.feat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:28px;display:flex;gap:16px;align-items:flex-start;transition:all .2s}
+.feat:hover{border-color:rgba(232,255,0,0.2)}
+.feat-icon{font-size:28px;flex-shrink:0}
+.feat h3{font-size:16px;font-weight:700;margin-bottom:6px}
+.feat p{font-size:13px;color:var(--mu2);line-height:1.7}
+
+/* PRICING */
+.pricing{max-width:500px;margin:0 auto 80px;padding:0 24px;text-align:center;position:relative;z-index:1}
+.pricing h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;margin-bottom:8px}
+.pricing p{color:var(--mu2);margin-bottom:32px}
+.price-box{background:var(--s1);border:1px solid rgba(232,255,0,0.25);border-radius:16px;padding:40px}
+.price-big{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:2px;color:var(--ac);line-height:1}
+.price-desc{color:var(--mu2);font-size:14px;margin-bottom:24px;line-height:1.7}
+.price-feats{list-style:none;text-align:left;margin-bottom:32px}
+.price-feats li{padding:10px 0;border-bottom:1px solid var(--bd);font-size:14px;display:flex;gap:10px;align-items:center}
+.price-feats li:last-child{border:none}
+.price-feats li::before{content:'✓';color:var(--gr);font-weight:700;flex-shrink:0}
+
+/* CTA */
+.cta{background:var(--ac);border-radius:16px;padding:60px 40px;text-align:center;max-width:900px;margin:0 auto 80px;position:relative;z-index:1;overflow:hidden}
+.cta::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(5,5,10,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(5,5,10,0.06) 1px,transparent 1px);background-size:28px 28px}
+.cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,64px);letter-spacing:2px;color:#05050a;line-height:1;margin-bottom:12px;position:relative;z-index:1}
+.cta p{color:rgba(5,5,10,0.6);font-size:15px;margin-bottom:28px;position:relative;z-index:1}
+.cta-btn{background:#05050a;color:var(--ac);padding:16px 40px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block;transition:all .25s;position:relative;z-index:1}
+.cta-btn:hover{background:#111120;transform:translateY(-2px)}
+
+footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;z-index:1}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--ac);opacity:.6}
+.foot-p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace}
+.foot-links{display:flex;gap:20px}
+.foot-links a{font-size:12px;color:var(--mu);text-decoration:none}
+.foot-links a:hover{color:var(--tx)}
+
+@media(max-width:700px){.steps{grid-template-columns:repeat(2,1fr)}.feat-grid{grid-template-columns:1fr}.earn-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">LEDGR</a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+  </div>
+  <button class="nav-btn" onclick="window.location.href='/dashboard'">Start Free →</button>
+</nav>
+
+<div class="hero">
+  <span class="tag">For Tipsters</span>
+  <h1>TURN YOUR<br><span>PICKS</span><br>INTO INCOME</h1>
+  <p>Join LEDGR — the verified tipster platform where your real record speaks for itself. Build an audience, get subscribers, earn money.</p>
+  <a href="/dashboard" class="hero-btn">Start for Free →</a><br>
+  <span class="hero-sub">No upfront cost · LEDGR takes 15% only when you earn</span>
+</div>
+
+<div class="earnings" style="margin:0 24px 80px;max-width:none">
+  <div style="max-width:860px;margin:0 auto">
+    <h2>HOW MUCH CAN YOU EARN?</h2>
+    <p>Tipsters on LEDGR set their own price. Here's what's possible:</p>
+    <div class="earn-grid">
+      <div class="earn-card">
+        <div class="earn-num">€255</div>
+        <div class="earn-label">per month</div>
+        <div class="earn-sub">30 subscribers × €10/mo</div>
+      </div>
+      <div class="earn-card">
+        <div class="earn-num">€850</div>
+        <div class="earn-label">per month</div>
+        <div class="earn-sub">100 subscribers × €10/mo</div>
+      </div>
+      <div class="earn-card">
+        <div class="earn-num">€4,250</div>
+        <div class="earn-label">per month</div>
+        <div class="earn-sub">500 subscribers × €10/mo</div>
+      </div>
+    </div>
+    <p style="margin-top:20px;font-size:12px;color:var(--mu);font-family:'DM Mono',monospace">After LEDGR's 15% fee. You keep 85% of every subscription.</p>
+  </div>
+</div>
+
+<div class="how">
+  <h2>HOW IT WORKS</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-icon">✍️</div>
+      <h3>Sign Up Free</h3>
+      <p>Create your account in 30 seconds. No credit card needed.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-icon">📊</div>
+      <h3>Post Your Picks</h3>
+      <p>Share your picks before kick-off. Results are tracked automatically.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-icon">🏆</div>
+      <h3>Build Your Record</h3>
+      <p>Your verified ROI and win rate attract real followers and subscribers.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-icon">💰</div>
+      <h3>Get Paid</h3>
+      <p>Set your subscription price. Earn every month automatically.</p>
+    </div>
+  </div>
+</div>
+
+<div class="features">
+  <h2>WHY LEDGR?</h2>
+  <div class="feat-grid">
+    <div class="feat"><div class="feat-icon">🔒</div><div><h3>Verified Records</h3><p>Every pick is locked in at posting time. No editing, no deleting winning picks only. Your real record builds real trust.</p></div></div>
+    <div class="feat"><div class="feat-icon">📈</div><div><h3>Full Analytics</h3><p>ROI, win rate, sport breakdown, streak analysis. Everything your followers need to trust you.</p></div></div>
+    <div class="feat"><div class="feat-icon">🌍</div><div><h3>Global Audience</h3><p>LEDGR connects you with bettors worldwide looking for verified tipsters to follow.</p></div></div>
+    <div class="feat"><div class="feat-icon">💳</div><div><h3>Automated Payouts</h3><p>Set your price, subscribers pay monthly. You get paid automatically — no invoicing, no chasing.</p></div></div>
+    <div class="feat"><div class="feat-icon">🆓</div><div><h3>Free to Start</h3><p>Create your profile for free. We only take 15% when you start earning from subscriptions.</p></div></div>
+    <div class="feat"><div class="feat-icon">🏅</div><div><h3>Leaderboard Visibility</h3><p>Perform well and climb the public leaderboard. Top tipsters get massive organic traffic.</p></div></div>
+  </div>
+</div>
+
+<div class="pricing" style="max-width:500px;margin:0 auto 80px;padding:0 24px">
+  <h2>SIMPLE PRICING</h2>
+  <p style="color:var(--mu2);margin-bottom:32px">No monthly fees. We win when you win.</p>
+  <div class="price-box">
+    <div class="price-big">0%</div>
+    <p style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--mu2);margin-bottom:12px">UNTIL YOU EARN</p>
+    <p class="price-desc">Create your profile, post picks and build your audience completely free. We take 15% only when subscribers pay you.</p>
+    <ul class="price-feats">
+      <li>Unlimited picks</li>
+      <li>Verified record & analytics</li>
+      <li>Public leaderboard profile</li>
+      <li>Subscription management</li>
+      <li>Automated monthly payouts</li>
+      <li>15% commission on earnings only</li>
+    </ul>
+    <a href="/dashboard" style="display:block;background:var(--ac);color:#05050a;padding:16px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;text-align:center;transition:all .2s">Get Started Free →</a>
+  </div>
+</div>
+
+<div class="cta" style="margin:0 24px 80px">
+  <h2>READY TO GET PAID<br>FOR YOUR PICKS?</h2>
+  <p>Join LEDGR today. It's free to start.</p>
+  <a href="/dashboard" class="cta-btn">Create Your Profile →</a>
+</div>
+
+<footer>
+  <div class="foot-logo">LEDGR</div>
+  <div class="foot-p">© 2026 LEDGR — getledgr.bet</div>
+  <div class="foot-links">
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="mailto:hello@getledgr.bet">Contact</a>
+  </div>
+</footer>
+</body>
+</html>
