@@ -241,7 +241,13 @@ async function loadProfile(){
 }
 
 function showNotFound(){document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>404</h2><p>Tipster not found.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';}
-function shareProfile(){navigator.clipboard.writeText(window.location.href).then(()=>showToast('LINK COPIED!'));}
+function shareProfile(){
+  if(navigator.share){
+    navigator.share({title:'@'+username+' on LEDGR',text:'Check out @'+username+' verified picks on LEDGR!',url:window.location.href});
+  }else{
+    navigator.clipboard.writeText(window.location.href).then(()=>showToast('LINK COPIED!'));
+  }
+}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 loadProfile();
