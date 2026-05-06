@@ -169,12 +169,13 @@ function renderLeaderboard(){
     const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
     const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
     const cls=i===0?'top1':i===1?'top2':i===2?'top3':'';
+    const badges=[];const roiN=parseFloat(roi);if(roiN>=20&&t.picks>=50)badges.push('💎');if(roiN>=15&&t.picks>=10&&t.picks<50)badges.push('🚀');if(t.picks>=100)badges.push('👑');if(roiN>0&&t.wins/(t.wins+t.losses||1)>=0.6)badges.push('🎯');const badgeStr=badges.join(' ');
     const rnkCls=i===0?'r1':i===1?'r2':i===2?'r3':'';
     const initials=t.username.substring(0,2).toUpperCase();
     const color=colors[i%colors.length];
     const roiPos=parseFloat(roi)>=0;
     const pnlPos=t.pnl>=0;
-    return`<div class="lb-row ${cls}" onclick="window.location.href='/tipster?u='+t.username"
+    return`<div class="lb-row ${cls}">
       <div class="rank ${rnkCls}">${i<3?medals[i]:i+1}</div>
       <div class="tipster">
         <div class="av" style="background:${color}">${initials}</div>
