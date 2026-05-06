@@ -94,6 +94,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,0.9);backdrop-filter
   <div class="nav-links">
     <a href="/" class="nav-link">Home</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/compare" class="nav-link">Compare</a>
+    <a href="/simulator" class="nav-link">Simulator</a>
     <a href="/dashboard" class="nav-link">Dashboard</a>
   </div>
   <button class="nav-btn" onclick="window.location.href='/dashboard'">My Dashboard</button>
@@ -241,13 +243,7 @@ async function loadProfile(){
 }
 
 function showNotFound(){document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>404</h2><p>Tipster not found.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';}
-function shareProfile(){
-  if(navigator.share){
-    navigator.share({title:'@'+username+' on LEDGR',text:'Check out @'+username+' verified picks on LEDGR!',url:window.location.href});
-  }else{
-    navigator.clipboard.writeText(window.location.href).then(()=>showToast('LINK COPIED!'));
-  }
-}
+function shareProfile(){navigator.clipboard.writeText(window.location.href).then(()=>showToast('LINK COPIED!'));}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
 loadProfile();
