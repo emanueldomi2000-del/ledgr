@@ -150,7 +150,7 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-glow"></div>
-  <div class="badge"><div class="dot"></div> Now Live — Join the Community</div>
+  <div class="badge"><div class="dot"></div> Now in Beta — Join the Waitlist</div>
   <h1>
     <span class="l1">EVERY</span>
     <span class="l2">PICK.</span>
@@ -159,7 +159,7 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
   <p class="hero-p">Follow the best tipsters on the planet. Real records, real odds, fully verified. The only platform where performance is 100% transparent.</p>
   <div class="btns">
     <a href="#" class="btn-a" onclick="openAuth()">Browse Tipsters →</a>
-    <a href="/become-a-tipster" class="btn-b">Become a Tipster →</a>
+    <a href="#" class="btn-b" onclick="window.location.href='/dashboard'">Become a Tipster →</a>
   </div>
   <div class="proof">
     <div><div class="pn">2.4K+</div><div class="pl">Active Tipsters</div></div>
@@ -250,6 +250,17 @@ footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items
       <button class="follow">Follow</button>
     </div>
     <div class="lb-cta"><a href="#" onclick="window.location.href='/leaderboard'">View Full Leaderboard → 2,400+ tipsters</a></div>
+  </div>
+</section>
+
+<hr class="div">
+
+<!-- RISING STARS -->
+<section style="padding:96px 24px;max-width:1080px;margin:0 auto" id="rising">
+  <span class="sec-tag">New Talent</span>
+  <h2 class="sec-h">RISING STARS</h2>
+  <div id="risingStarsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div style="text-align:center;padding:40px;color:var(--mu);grid-column:1/-1">Loading...</div>
   </div>
 </section>
 
@@ -458,6 +469,50 @@ async function loadRealTicker(){
   }catch(e){}
 }
 loadRealTicker();
+
+// RISING STARS
+async function loadRisingStars(){
+  try{
+    const r=await fetch(API+"/picks");
+    const picks=await r.json();
+    if(!picks.length)return;
+    const tipsters={};
+    picks.forEach(p=>{
+      if(!p.user)return;
+      const u=p.user.username;
+      if(!tipsters[u])tipsters[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0};
+      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
+      if(p.result==="win")tipsters[u].wins++;if(p.result==="loss")tipsters[u].losses++;
+    });
+    const colors=["linear-gradient(135deg,#7c3aed,#a855f7)","linear-gradient(135deg,#059669,#10b981)","linear-gradient(135deg,#b45309,#f59e0b)","linear-gradient(135deg,#0369a1,#38bdf8)","linear-gradient(135deg,#0f766e,#14b8a6)","linear-gradient(135deg,#dc2626,#ef4444)"];
+    const rising=Object.values(tipsters)
+      .filter(t=>t.picks>=3&&t.picks<50)
+      .sort((a,b)=>{
+        const ra=a.stake>0?(a.pnl/a.stake)*100:0;
+        const rb=b.stake>0?(b.pnl/b.stake)*100:0;
+        return rb-ra;
+      }).slice(0,6);
+    if(!rising.length){document.getElementById("risingStarsGrid").innerHTML="<div style="text-align:center;padding:40px;color:var(--mu);grid-column:1/-1">No rising stars yet — be the first!</div>";return;}
+    document.getElementById("risingStarsGrid").innerHTML=rising.map((t,i)=>{
+      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
+      const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
+      const init=t.username.substring(0,2).toUpperCase();
+      const rPos=parseFloat(roi)>=0;
+      return`<div onclick="window.location.href="/tipster?u="+"${t.username}"" style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor="rgba(232,255,0,0.25)"" onmouseout="this.style.borderColor="var(--bd)"">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+          <div style="width:48px;height:48px;border-radius:50%;background:${colors[i%colors.length]};display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:18px;flex-shrink:0">${init}</div>
+          <div><div style="font-weight:700;font-size:15px">@${t.username}</div><div style="font-size:11px;color:var(--mu);font-family:DM Mono,monospace">${t.picks} picks · 🚀 Rising Star</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+          <div><div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:${rPos?"var(--gr)":"var(--rd)"}">${rPos?"+":""}${roi}%</div><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">ROI</div></div>
+          <div><div style="font-family:Bebas Neue,sans-serif;font-size:22px">${wr}%</div><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">WIN RATE</div></div>
+          <div><div style="font-family:Bebas Neue,sans-serif;font-size:22px">${t.picks}</div><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">PICKS</div></div>
+        </div>
+      </div>`;
+    }).join("");
+  }catch(e){console.log("Rising stars error",e);}
+}
+loadRisingStars();
 
 function openAuth(){document.getElementById('authModal').style.display='flex'}
 function closeAuth(){document.getElementById('authModal').style.display='none'}
