@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Bankroll Simulator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#05050a;--s1:#0b0b14;--s2:#111120;--bd:#18182e;--ac:#e8ff00;--tx:#f2f2fa;--mu:#5a5a7a;--mu2:#8888aa;--gr:#00e5a0;--rd:#ff3355}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(232,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+nav{position:sticky;top:0;z-index:50;background:rgba(5,5,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:5px;color:var(--ac);text-decoration:none}
+.nav-links{display:flex;gap:8px}
+.nav-link{color:var(--mu2);font-size:13px;text-decoration:none;padding:8px 14px;border-radius:8px;transition:all .2s}
+.nav-link:hover{color:var(--tx);background:var(--s2)}
+.nav-btn{background:var(--ac);color:#05050a;border:none;padding:9px 20px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif}
+.main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:1}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
+.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
+
+/* SIMULATOR INPUT */
+.sim-box{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:36px;margin-bottom:32px}
+.sim-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--ac);margin-bottom:24px}
+.sim-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.form-group{margin-bottom:0}
+.form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:15px;padding:12px 16px;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--ac)}
+.sim-btn{background:var(--ac);color:#05050a;border:none;border-radius:8px;padding:12px 28px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all .2s;height:fit-content}
+.sim-btn:hover{background:#f5ff33;transform:translateY(-1px)}
+
+/* RESULTS */
+.results-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--tx);margin-bottom:20px}
+.result-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:12px;cursor:pointer;transition:all .2s;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.result-card:hover{border-color:rgba(232,255,0,0.25);background:var(--s2)}
+.result-card.positive{border-left:3px solid var(--gr)}
+.result-card.negative{border-left:3px solid var(--rd)}
+.rc-left{}
+.rc-tipster{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.rc-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:17px;flex-shrink:0}
+.rc-name{font-weight:700;font-size:16px}
+.rc-picks{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
+.rc-stats{display:flex;gap:20px;flex-wrap:wrap}
+.rc-stat{}
+.rc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
+.rc-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.rc-right{text-align:right}
+.rc-result-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.rc-result-num{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:1px;line-height:1}
+.rc-result-num.pos{color:var(--gr)}.rc-result-num.neg{color:var(--rd)}
+.rc-pct{font-family:'DM Mono',monospace;font-size:13px;margin-top:4px}
+.rc-pct.pos{color:var(--gr)}.rc-pct.neg{color:var(--rd)}
+.view-btn{margin-top:8px;font-size:11px;color:var(--ac);font-family:'DM Mono',monospace;cursor:pointer;text-decoration:none;display:inline-block}
+
+.empty-state{text-align:center;padding:60px;color:var(--mu)}
+.empty-state .icon{font-size:48px;margin-bottom:16px}
+.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:8px;color:var(--tx)}
+.empty-state p{font-size:14px;line-height:1.7}
+
+.loading{text-align:center;padding:40px;color:var(--mu);font-family:'DM Mono',monospace}
+
+@media(max-width:700px){.sim-row{grid-template-columns:1fr}.result-card{grid-template-columns:1fr}.rc-right{text-align:left}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo">LEDGR</a>
+  <div class="nav-links">
+    <a href="/" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/dashboard" class="nav-link">Dashboard</a>
+  </div>
+  <button class="nav-btn" onclick="window.location.href='/dashboard'">My Dashboard</button>
+</nav>
+
+<div class="main">
+  <div class="page-title">BANKROLL SIMULATOR</div>
+  <div class="page-sub">IF YOU HAD FOLLOWED A TIPSTER — HOW MUCH WOULD YOU HAVE MADE?</div>
+
+  <div class="sim-box">
+    <div class="sim-title">SET YOUR BANKROLL</div>
+    <div class="sim-row">
+      <div class="form-group">
+        <label class="form-label">Starting Bankroll (€)</label>
+        <input type="number" class="form-input" id="bankroll" placeholder="1000" value="1000" min="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Stake per Pick (%)</label>
+        <input type="number" class="form-input" id="stakePercent" placeholder="5" value="5" min="1" max="100">
+      </div>
+      <button class="sim-btn" onclick="runSimulator()">SIMULATE →</button>
+    </div>
+  </div>
+
+  <div id="resultsContainer">
+    <div class="empty-state">
+      <div class="icon">💰</div>
+      <h3>SET YOUR BANKROLL</h3>
+      <p>Enter your starting bankroll above and click Simulate to see how much you would have made following each tipster on LEDGR.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='https://ledgr-backend-production-c132.up.railway.app';
+let allPicks=[];
+const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
+
+async function loadPicks(){
+  try{
+    const r=await fetch(API+'/picks');
+    allPicks=await r.json();
+  }catch(e){console.error(e);}
+}
+
+function runSimulator(){
+  const bankroll=parseFloat(document.getElementById('bankroll').value)||1000;
+  const stakePercent=parseFloat(document.getElementById('stakePercent').value)||5;
+  const c=document.getElementById('resultsContainer');
+
+  if(!allPicks.length){
+    c.innerHTML='<div class="loading">Loading data...</div>';
+    loadPicks().then(()=>runSimulator());
+    return;
+  }
+
+  // Group picks by tipster
+  const tipsters={};
+  allPicks.forEach(p=>{
+    if(!p.user)return;
+    const u=p.user.username;
+    if(!tipsters[u])tipsters[u]={username:u,picks:[]};
+    tipsters[u].picks.push(p);
+  });
+
+  const results=Object.values(tipsters).map((t,idx)=>{
+    let currentBankroll=bankroll;
+    let totalProfit=0;
+    const settledPicks=t.picks.filter(p=>p.result==='win'||p.result==='loss');
+
+    settledPicks.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+
+    settledPicks.forEach(p=>{
+      const stakeAmount=(currentBankroll*(stakePercent/100));
+      if(p.result==='win'){
+        const profit=stakeAmount*(p.odds-1);
+        currentBankroll+=profit;
+        totalProfit+=profit;
+      }else{
+        currentBankroll-=stakeAmount;
+        totalProfit-=stakeAmount;
+      }
+    });
+
+    const wins=settledPicks.filter(p=>p.result==='win').length;
+    const losses=settledPicks.filter(p=>p.result==='loss').length;
+    const wr=settledPicks.length>0?((wins/settledPicks.length)*100).toFixed(0):0;
+    const roi=settledPicks.length>0?((totalProfit/bankroll)*100).toFixed(1):0;
+    const finalBankroll=bankroll+totalProfit;
+    const color=colors[idx%colors.length];
+    const initials=t.username.substring(0,2).toUpperCase();
+
+    return{username:t.username,totalProfit,finalBankroll,bankroll,wins,losses,wr,roi,settledPicks:settledPicks.length,color,initials};
+  }).sort((a,b)=>b.totalProfit-a.totalProfit);
+
+  if(!results.length){
+    c.innerHTML='<div class="empty-state"><div class="icon">📊</div><h3>NO DATA YET</h3><p>No tipsters with picks found. Be the first to post picks!</p></div>';
+    return;
+  }
+
+  c.innerHTML=`<div class="results-title">RESULTS — Starting with €${bankroll.toLocaleString()}</div>`+
+  results.map((r,i)=>{
+    const pos=r.totalProfit>=0;
+    return`<div class="result-card ${pos?'positive':'negative'}" onclick="window.location.href='/tipster?u=${r.username}'">
+      <div class="rc-left">
+        <div class="rc-tipster">
+          <div class="rc-av" style="background:${r.color}">${r.initials}</div>
+          <div>
+            <div class="rc-name">@${r.username}</div>
+            <div class="rc-picks">${r.settledPicks} settled picks · ${r.wins}W ${r.losses}L</div>
+          </div>
+        </div>
+        <div class="rc-stats">
+          <div class="rc-stat"><div class="rc-stat-val" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi}%</div><div class="rc-stat-lbl">ROI</div></div>
+          <div class="rc-stat"><div class="rc-stat-val">${r.wr}%</div><div class="rc-stat-lbl">Win Rate</div></div>
+          <div class="rc-stat"><div class="rc-stat-val">€${r.finalBankroll.toFixed(0)}</div><div class="rc-stat-lbl">Final Bankroll</div></div>
+        </div>
+      </div>
+      <div class="rc-right">
+        <div class="rc-result-label">You would have ${pos?'made':'lost'}</div>
+        <div class="rc-result-num ${pos?'pos':'neg'}">${pos?'+':'-'}€${Math.abs(r.totalProfit).toFixed(0)}</div>
+        <div class="rc-pct ${pos?'pos':'neg'}">${pos?'+':''}${r.roi}% on your bankroll</div>
+        <a class="view-btn" onclick="event.stopPropagation();window.location.href='/tipster?u=${r.username}'">View Profile →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+loadPicks();
+</script>
+</body>
+</html>
