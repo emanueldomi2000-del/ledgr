@@ -480,10 +480,10 @@ function selectMarket(m,sectionId,el){
   el.classList.add('selected');
 }
 
-async function loadPlayers(fixtureId){
-  if(!fixtureId)return;
+async function loadPlayers(fixtureId, homeTeam, awayTeam){
+  if(!homeTeam)return;
   try{
-    const r=await fetch(API+'/players?fixtureId='+fixtureId);
+    const r=await fetch(API+'/players?homeTeam='+encodeURIComponent(homeTeam)+'&awayTeam='+encodeURIComponent(awayTeam));
     if(!r.ok)return;
     const data=await r.json();
     homePlayers=data.home||[];
@@ -541,7 +541,7 @@ async function selectFixture(f){
   document.getElementById('pickMarket').value='';
   teamContext={};
   playerSelections={};
-  await loadPlayers(f.id);
+  await loadPlayers(f.id, f.home, f.away);
   renderMarkets(currentSport);
   filterFixtures();
 }
