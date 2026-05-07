@@ -37,12 +37,12 @@ select option{background:#111120}
 
 /* SPORT TABS */
 .sport-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.sport-tab{padding:7px 14px;border:1px solid var(--bd);border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--mu2);background:transparent}
+.sport-tab{padding:7px 14px;border:1px solid var(--bd);border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--mu2)}
 .sport-tab.active{background:rgba(232,255,0,0.1);border-color:var(--ac);color:var(--ac)}
 
 /* DATE TABS */
 .date-tabs{display:flex;gap:6px;margin-bottom:12px}
-.date-tab{flex:1;padding:8px;border:1px solid var(--bd);border-radius:8px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--mu2);background:transparent;text-align:center;font-family:'DM Mono',monospace}
+.date-tab{flex:1;padding:8px;border:1px solid var(--bd);border-radius:8px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--mu2);text-align:center;font-family:'DM Mono',monospace}
 .date-tab.active{background:rgba(232,255,0,0.1);border-color:var(--ac);color:var(--ac)}
 
 /* LEAGUE FILTER */
@@ -52,7 +52,6 @@ select option{background:#111120}
 
 /* FIXTURE */
 .fixture-search{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px 8px 0 0;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:10px 14px;outline:none;border-bottom:none}
-.fixture-search:focus{border-color:var(--ac)}
 .fixture-list{background:var(--s2);border:1px solid var(--bd);border-radius:0 0 8px 8px;max-height:220px;overflow-y:auto;margin-bottom:12px}
 .fixture-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(24,24,46,0.5);transition:background .2s;font-size:13px}
 .fixture-item:hover{background:rgba(232,255,0,0.05)}
@@ -62,28 +61,33 @@ select option{background:#111120}
 .fi-meta{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
 .fixture-loading{padding:16px;text-align:center;color:var(--mu);font-size:12px;font-family:'DM Mono',monospace}
 
-/* SELECTED FIXTURE BOX */
+/* SELECTED FIXTURE */
 .selected-fixture-box{background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.2);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:none}
 .sfb-teams{font-weight:700;font-size:14px;color:var(--ac)}
 .sfb-meta{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;margin-top:2px}
 
 /* MARKET SECTIONS */
-.market-section{margin-bottom:14px;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
-.market-section-header{padding:10px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s}
-.market-section-header:hover{background:rgba(232,255,0,0.05)}
+.market-section{margin-bottom:8px;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.market-section-header{padding:10px 14px;background:var(--s2);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.market-section-header:hover{background:rgba(232,255,0,0.04)}
 .market-section-title{font-size:11px;color:var(--ac);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;font-weight:700}
 .market-section-body{padding:12px;display:none}
 .market-section-body.open{display:block}
 .market-toggle{color:var(--mu);font-size:11px}
-.chips-wrap{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
-.chip{padding:5px 12px;border:1px solid var(--bd);border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2)}
+.chips-wrap{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{padding:5px 11px;border:1px solid var(--bd);border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2)}
 .chip:hover,.chip.selected{background:rgba(232,255,0,0.1);border-color:var(--ac);color:var(--ac)}
 .sub-label{font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;font-family:'DM Mono',monospace;margin:8px 0 4px}
 
 /* TEAM SELECTOR */
 .team-selector{display:flex;gap:6px;margin-bottom:8px}
-.team-btn{flex:1;padding:6px;border:1px solid var(--bd);border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2);background:transparent;text-align:center}
+.team-btn{flex:1;padding:6px;border:1px solid var(--bd);border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2);text-align:center}
 .team-btn.active{border-color:var(--ac);color:var(--ac);background:rgba(232,255,0,0.08)}
+
+/* STAKE OPTIONS */
+.stake-type-tabs{display:flex;gap:4px;margin-bottom:8px}
+.stake-type-tab{flex:1;padding:6px;border:1px solid var(--bd);border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2);text-align:center;font-family:'DM Mono',monospace}
+.stake-type-tab.active{border-color:var(--ac);color:var(--ac);background:rgba(232,255,0,0.08)}
 
 .submit-btn{width:100%;padding:14px;background:var(--ac);color:#05050a;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;cursor:pointer;transition:all .2s;margin-top:4px}
 .submit-btn:hover{background:#f5ff33;transform:translateY(-1px)}
@@ -101,7 +105,7 @@ select option{background:#111120}
 .badge-pending{background:rgba(245,158,11,.12);color:#f59e0b}
 .badge-sport{background:rgba(232,255,0,.1);color:var(--ac)}
 .pick-time{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-left:auto}
-.locked-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:6px}
+.locked-badge{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:6px}
 .empty{text-align:center;padding:40px;color:var(--mu)}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--ac);color:#05050a;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
 .toast.show{transform:translateY(0);opacity:1}
@@ -188,13 +192,24 @@ select option{background:#111120}
           <input type="text" id="pickMarket" placeholder="Selected market appears here..." style="margin-top:8px" readonly>
         </div>
 
-        <div class="form-row">
-          <div class="form-group"><label>Odds</label><input type="number" id="pickOdds" placeholder="2.10" step="0.01" min="1.01"></div>
-          <div class="form-group"><label>Stake (units)</label><input type="number" id="pickStake" placeholder="1" step="0.5" min="0.5"></div>
+        <div class="form-group">
+          <label>Odds</label>
+          <input type="number" id="pickOdds" placeholder="e.g. 2.10" step="0.01" min="1.01">
+        </div>
+
+        <div class="form-group">
+          <label>Stake Type</label>
+          <div class="stake-type-tabs">
+            <div class="stake-type-tab active" onclick="selectStakeType('units',this)">Units</div>
+            <div class="stake-type-tab" onclick="selectStakeType('dollar',this)">Dollar $</div>
+            <div class="stake-type-tab" onclick="selectStakeType('percent',this)">% Bankroll</div>
+          </div>
+          <input type="number" id="pickStake" placeholder="e.g. 1" step="0.5" min="0.01">
+          <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:4px" id="stakeHint">Enter stake in units (e.g. 1 unit = 1% of bankroll)</div>
         </div>
 
         <div style="background:rgba(232,255,0,0.05);border:1px solid rgba(232,255,0,0.15);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace">
-          🔒 Result will be verified automatically when the match ends
+          🔒 Result verified automatically when match ends
         </div>
 
         <button class="submit-btn" onclick="postPick()">+ POST PICK</button>
@@ -216,113 +231,87 @@ let currentDateOffset=0;
 let currentLeague='all';
 let allFixtures=[];
 let selectedFixture=null;
+let currentStakeType='units';
+let homePlayers=[];
+let awayPlayers=[];
+let homeGK=[];
+let awayGK=[];
+let selectedPlayer='';
+let selectedPlayerMarket='';
+let selectedTeamContext='both';
 
-// SOCCER MARKETS — comprehensive
+// Generate number ranges
+function range(start,end,step=1,suffix=''){
+  const arr=[];
+  for(let i=start;i<=end;i+=step)arr.push('Over '+i.toFixed(1)+suffix);
+  return arr;
+}
+function rangeUnder(start,end,step=1,suffix=''){
+  const arr=[];
+  for(let i=start;i<=end;i+=step)arr.push('Under '+i.toFixed(1)+suffix);
+  return arr;
+}
+function rangeOverUnder(start,end,step=1){
+  return [...range(start,end,step),...rangeUnder(start,end,step)];
+}
+
 const SOCCER_MARKETS=[
-  {
-    title:'⚽ Result',
-    markets:['Home Win (1)','Draw (X)','Away Win (2)']
-  },
-  {
-    title:'🎯 Double Chance',
-    markets:['Double Chance 1X','Double Chance X2','Double Chance 12']
-  },
-  {
-    title:'🥅 Both Teams to Score',
-    markets:['BTTS Yes','BTTS No']
-  },
-  {
-    title:'📊 Total Goals',
-    teamOptions:true,
-    markets:['Over 0.5','Over 1.5','Over 2.5','Over 3.5','Over 4.5','Under 0.5','Under 1.5','Under 2.5','Under 3.5']
-  },
-  {
-    title:'📈 Goals Range',
-    teamOptions:true,
-    markets:['0-1 Goals','1-2 Goals','2-3 Goals','3-4 Goals','4-5 Goals','5-6 Goals','1-6 Goals','2-6 Goals','3-6 Goals']
-  },
-  {
-    title:'🔗 Result + BTTS',
-    markets:['Home Win & BTTS Yes','Away Win & BTTS Yes','Home Win & BTTS No','Away Win & BTTS No','Draw & BTTS Yes']
-  },
-  {
-    title:'⏱️ Half Time / Full Time',
-    markets:['HT Home / FT Home','HT Draw / FT Home','HT Away / FT Away','HT Home / FT Draw','HT Draw / FT Draw','HT Draw / FT Away']
-  },
-  {
-    title:'🎯 Correct Score',
-    markets:['1-0','2-0','2-1','3-0','3-1','3-2','0-1','0-2','1-2','0-3','1-3','2-3','0-0','1-1','2-2','3-3']
-  },
-  {
-    title:'🏁 Winning Margin',
-    teamOptions:true,
-    markets:['by 1 Goal','by 2 Goals','by 3 Goals','by 4+ Goals']
-  },
-  {
-    title:'🚩 Corners',
-    teamOptions:true,
-    markets:['Over 7.5','Over 8.5','Over 9.5','Over 10.5','Over 11.5','Under 7.5','Under 8.5','Under 9.5','Under 10.5']
-  },
-  {
-    title:'🏆 Team to Get Most',
-    markets:['Most Corners Home','Most Corners Away','Most Shots Home','Most Shots Away','Most Shots on Target Home','Most Shots on Target Away']
-  },
-  {
-    title:'📋 Cards',
-    teamOptions:true,
-    markets:['Over 2.5 Cards','Over 3.5 Cards','Over 4.5 Cards','Over 5.5 Cards','Under 2.5 Cards','Under 3.5 Cards']
-  },
-  {
-    title:'🎯 Shots on Target',
-    teamOptions:true,
-    markets:['Over 2.5','Over 3.5','Over 4.5','Over 5.5','Under 2.5','Under 3.5','Under 4.5']
-  },
-  {
-    title:'🏃 Player to Score',
-    playerMarkets:['Anytime Scorer','First Scorer','Last Scorer','2+ Goals','Hat-trick']
-  },
-  {
-    title:'🎯 Player to Assist',
-    playerMarkets:['To Assist','1+ Assist','2+ Assists']
-  },
-  {
-    title:'⚡ Player Score or Assist',
-    playerMarkets:['To Score or Assist']
-  },
-  {
-    title:'🦶 Player Shots',
-    playerMarkets:['1+ Shots','2+ Shots','3+ Shots','1+ Shots on Target','2+ Shots on Target']
-  },
-  {
-    title:'🟨 Player Cards',
-    playerMarkets:['To Receive a Card','To Receive Yellow Card','To Receive Red Card']
-  },
-  {
-    title:'⚔️ Player Fouls',
-    playerMarkets:['1+ Fouls Committed','2+ Fouls Committed','To Be Fouled 1+','To Be Fouled 2+']
-  },
-  {
-    title:'💪 Player Tackles',
-    playerMarkets:['1+ Tackles','2+ Tackles','3+ Tackles']
-  },
-  {
-    title:'🧤 Goalkeeper Saves',
-    playerMarkets:['1+ Saves','2+ Saves','3+ Saves','4+ Saves','5+ Saves']
-  },
-  {
-    title:'⭕ Tie No Bet',
-    markets:['Tie No Bet Home','Tie No Bet Away']
-  }
+  {id:'result',title:'⚽ Result',markets:['Home Win (1)','Draw (X)','Away Win (2)'],noTeam:true},
+  {id:'dc',title:'🎯 Double Chance',markets:['Double Chance 1X','Double Chance X2','Double Chance 12'],noTeam:true},
+  {id:'btts',title:'🥅 Both Teams to Score',markets:['BTTS Yes','BTTS No'],noTeam:true},
+  {id:'goals',title:'📊 Total Goals',teamOptions:true,
+    markets:[...range(0.5,5.5),...rangeUnder(0.5,5.5)]},
+  {id:'goalsrange',title:'📈 Goals Range',teamOptions:true,
+    sections:[
+      {label:'1 to 6',markets:['1-6','2-6','3-6','4-6','5-6','6-6']},
+      {label:'2 to 6',markets:['2-6','3-6','4-6','5-6','6-6']},
+      {label:'3 to 6',markets:['3-6','4-6','5-6','6-6']}
+    ]},
+  {id:'resultbtts',title:'🔗 Result + BTTS',markets:['Home Win & BTTS Yes','Away Win & BTTS Yes','Home Win & BTTS No','Away Win & BTTS No','Draw & BTTS Yes'],noTeam:true},
+  {id:'htft',title:'⏱️ Half Time / Full Time',markets:['HT Home / FT Home','HT Draw / FT Home','HT Away / FT Away','HT Home / FT Draw','HT Draw / FT Draw','HT Draw / FT Away','HT Home / FT Away','HT Away / FT Home','HT Away / FT Draw'],noTeam:true},
+  {id:'score',title:'🎯 Correct Score',markets:['1-0','2-0','2-1','3-0','3-1','3-2','0-1','0-2','1-2','0-3','1-3','2-3','0-0','1-1','2-2','3-3','4-0','4-1','4-2','0-4','1-4','2-4'],noTeam:true},
+  {id:'margin',title:'🏁 Winning Margin',homeOrAway:true,
+    markets:['by 1 Goal','by 2 Goals','by 3 Goals','by 4+ Goals']},
+  {id:'corners',title:'🚩 Corners',teamOptions:true,
+    markets:[...range(0.5,14.5),...rangeUnder(0.5,14.5)]},
+  {id:'mostcorners',title:'🏆 Team to Get Most',markets:['Most Corners Home','Most Corners Away','Most Shots Home','Most Shots Away','Most Shots on Target Home','Most Shots on Target Away'],noTeam:true},
+  {id:'cards',title:'🟨 Cards',teamOptions:true,
+    markets:[...range(0.5,6.5),...rangeUnder(0.5,6.5)]},
+  {id:'shots',title:'🎯 Shots on Target',teamOptions:true,
+    markets:[...range(0.5,8.5),...rangeUnder(0.5,8.5)]},
+  {id:'tnobet',title:'⭕ Tie No Bet',markets:['Tie No Bet Home','Tie No Bet Away'],noTeam:true},
+  {id:'pscore',title:'🏃 Player to Score',playerType:'outfield',
+    playerMarkets:['Anytime Scorer','First Scorer','Last Scorer','2+ Goals','Hat-trick']},
+  {id:'passist',title:'🎯 Player to Assist',playerType:'outfield',
+    playerMarkets:['To Assist','1+ Assist','2+ Assists']},
+  {id:'pscoreassist',title:'⚡ Player Score or Assist',playerType:'outfield',
+    playerMarkets:['To Score or Assist']},
+  {id:'pshots',title:'🦶 Player Shots',playerType:'outfield',
+    playerMarkets:['1+ Shots','2+ Shots','3+ Shots','4+ Shots','5+ Shots','1+ Shots on Target','2+ Shots on Target','3+ Shots on Target']},
+  {id:'pcard',title:'🟨 Player Card',playerType:'outfield',
+    playerMarkets:['To Receive a Card','Yellow Card','Red Card']},
+  {id:'pfouls',title:'⚔️ Player Fouls',playerType:'outfield',
+    playerMarkets:['1+ Fouls Committed','2+ Fouls Committed','To Be Fouled 1+','To Be Fouled 2+','3+ Fouls Committed']},
+  {id:'ptackles',title:'💪 Player Tackles',playerType:'outfield',
+    playerMarkets:['1+ Tackles','2+ Tackles','3+ Tackles','4+ Tackles']},
+  {id:'gksaves',title:'🧤 Goalkeeper Saves',playerType:'goalkeeper',
+    playerMarkets:['1+ Saves','2+ Saves','3+ Saves','4+ Saves','5+ Saves','6+ Saves']}
 ];
 
 const NBA_MARKETS=[
-  {title:'🏀 Game',markets:['Home Win','Away Win','Over/Under Points','First Half O/U']},
-  {title:'📊 Spread',markets:['Home -3.5','+3.5','Home -5.5','+5.5','Home -7.5','+7.5']},
-  {title:'🎯 Player Points',playerMarkets:['Over 10.5 Pts','Over 12.5 Pts','Over 15.5 Pts','Over 17.5 Pts','Over 20.5 Pts','Over 22.5 Pts','Over 25.5 Pts','Over 27.5 Pts','Over 30.5 Pts','Over 35.5 Pts']},
-  {title:'🏃 Player Rebounds',playerMarkets:['Over 3.5 Reb','Over 4.5 Reb','Over 5.5 Reb','Over 6.5 Reb','Over 7.5 Reb','Over 8.5 Reb','Over 10.5 Reb']},
-  {title:'🎯 Player Assists',playerMarkets:['Over 2.5 Ast','Over 3.5 Ast','Over 4.5 Ast','Over 5.5 Ast','Over 6.5 Ast','Over 7.5 Ast','Over 9.5 Ast']},
-  {title:'🏆 Player 3PM',playerMarkets:['Over 0.5 3PM','Over 1.5 3PM','Over 2.5 3PM','Over 3.5 3PM','Over 4.5 3PM']},
-  {title:'💫 Combos',playerMarkets:['Double Double','Triple Double','Pts+Reb+Ast Over 25.5','Pts+Reb+Ast Over 30.5','Pts+Reb+Ast Over 35.5']}
+  {id:'nbagame',title:'🏀 Game',markets:['Home Win','Away Win'],noTeam:true},
+  {id:'nbaspread',title:'📊 Spread',markets:['-3.5','+3.5','-5.5','+5.5','-7.5','+7.5','-9.5','+9.5','-11.5','+11.5'],noTeam:true},
+  {id:'nbatotal',title:'📈 Total Points',markets:[...range(200.5,240.5,2),...rangeUnder(200.5,240.5,2)],noTeam:true},
+  {id:'nbapts',title:'🎯 Player Points',playerType:'nba',
+    playerMarkets:['Over 8.5 Pts','Over 10.5 Pts','Over 12.5 Pts','Over 15.5 Pts','Over 17.5 Pts','Over 20.5 Pts','Over 22.5 Pts','Over 25.5 Pts','Over 27.5 Pts','Over 30.5 Pts','Over 35.5 Pts','Under 8.5 Pts','Under 10.5 Pts','Under 15.5 Pts','Under 20.5 Pts','Under 25.5 Pts']},
+  {id:'nbareb',title:'🏃 Player Rebounds',playerType:'nba',
+    playerMarkets:['Over 3.5 Reb','Over 4.5 Reb','Over 5.5 Reb','Over 6.5 Reb','Over 7.5 Reb','Over 8.5 Reb','Over 10.5 Reb','Under 3.5 Reb','Under 4.5 Reb','Under 5.5 Reb','Under 6.5 Reb']},
+  {id:'nbaast',title:'🎯 Player Assists',playerType:'nba',
+    playerMarkets:['Over 2.5 Ast','Over 3.5 Ast','Over 4.5 Ast','Over 5.5 Ast','Over 6.5 Ast','Over 7.5 Ast','Over 9.5 Ast','Under 2.5 Ast','Under 3.5 Ast','Under 4.5 Ast']},
+  {id:'nba3pm',title:'🏆 Player 3PM',playerType:'nba',
+    playerMarkets:['Over 0.5 3PM','Over 1.5 3PM','Over 2.5 3PM','Over 3.5 3PM','Over 4.5 3PM','Under 0.5 3PM','Under 1.5 3PM','Under 2.5 3PM']},
+  {id:'nbacombos',title:'💫 Player Combos',playerType:'nba',
+    playerMarkets:['Double Double','Triple Double','Pts+Reb+Ast Over 25.5','Pts+Reb+Ast Over 30.5','Pts+Reb+Ast Over 35.5','Pts+Reb+Ast Over 40.5']}
 ];
 
 window.onload=()=>{
@@ -365,105 +354,145 @@ function selectLeague(league,el){
   filterFixtures();
 }
 
+function selectStakeType(type,el){
+  currentStakeType=type;
+  document.querySelectorAll('.stake-type-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const hints={units:'Enter stake in units (e.g. 1 unit)',dollar:'Enter stake in dollars (e.g. 100)',percent:'Enter % of bankroll (e.g. 2 = 2%)'};
+  document.getElementById('stakeHint').textContent=hints[type];
+  document.getElementById('pickStake').placeholder=type==='units'?'e.g. 1':type==='dollar'?'e.g. 100':'e.g. 2';
+}
+
 function renderMarkets(sport){
   const sections=sport==='Basketball'?NBA_MARKETS:SOCCER_MARKETS;
   const container=document.getElementById('marketSections');
-  
   container.innerHTML=sections.map((s,i)=>{
     let body='';
-    
-    if(s.teamOptions&&selectedFixture){
-      const home=selectedFixture.home;
-      const away=selectedFixture.away;
-      body+=`<div class="sub-label">Team</div>
+
+    if(s.teamOptions&&!s.homeOrAway){
+      const home=selectedFixture?selectedFixture.home.split(' ').slice(-1)[0]:'Home';
+      const away=selectedFixture?selectedFixture.away.split(' ').slice(-1)[0]:'Away';
+      body+=`<div class="sub-label">Apply to</div>
       <div class="team-selector">
-        <div class="team-btn active" id="team_${i}_both" onclick="selectTeam(${i},'Both','${home} & ${away}')">Both</div>
-        <div class="team-btn" id="team_${i}_home" onclick="selectTeam(${i},'Home','${home}')">🏠 ${home.split(' ').slice(-1)[0]}</div>
-        <div class="team-btn" id="team_${i}_away" onclick="selectTeam(${i},'Away','${away}')">✈️ ${away.split(' ').slice(-1)[0]}</div>
+        <div class="team-btn active" id="tb_${s.id}_both" onclick="setTeamCtx('${s.id}','both')">Both Teams</div>
+        <div class="team-btn" id="tb_${s.id}_home" onclick="setTeamCtx('${s.id}','home')">🏠 ${home}</div>
+        <div class="team-btn" id="tb_${s.id}_away" onclick="setTeamCtx('${s.id}','away')">✈️ ${away}</div>
       </div>`;
     }
 
-    if(s.markets){
-      body+=`<div class="chips-wrap">${s.markets.map(m=>`<div class="chip" onclick="selectMarket('${m}',this)">${m}</div>`).join('')}</div>`;
+    if(s.homeOrAway){
+      const home=selectedFixture?selectedFixture.home.split(' ').slice(-1)[0]:'Home';
+      const away=selectedFixture?selectedFixture.away.split(' ').slice(-1)[0]:'Away';
+      body+=`<div class="sub-label">Team</div>
+      <div class="team-selector">
+        <div class="team-btn active" id="tb_${s.id}_home" onclick="setTeamCtx('${s.id}','home')">🏠 ${home}</div>
+        <div class="team-btn" id="tb_${s.id}_away" onclick="setTeamCtx('${s.id}','away')">✈️ ${away}</div>
+      </div>`;
     }
 
-    if(s.playerMarkets){
+    if(s.sections){
+      s.sections.forEach(sec=>{
+        body+=`<div class="sub-label">${sec.label}</div><div class="chips-wrap">${sec.markets.map(m=>`<div class="chip" onclick="selectMarket('${m}','${s.id}',this)">${m}</div>`).join('')}</div>`;
+      });
+    } else if(s.markets&&!s.playerType){
+      body+=`<div class="chips-wrap">${s.markets.map(m=>`<div class="chip" onclick="selectMarket('${m}','${s.id}',this)">${m}</div>`).join('')}</div>`;
+    }
+
+    if(s.playerType){
       if(selectedFixture){
-        const homePlayers=getPlayers(selectedFixture.home);
-        const awayPlayers=getPlayers(selectedFixture.away);
-        body+=`<div class="sub-label">Player</div>
-        <select onchange="updatePlayerMarket(this,'${s.playerMarkets[0]}')">
-          <option value="">Select player...</option>
-          <optgroup label="${selectedFixture.home}">${homePlayers.map(p=>`<option>${p}</option>`).join('')}</optgroup>
-          <optgroup label="${selectedFixture.away}">${awayPlayers.map(p=>`<option>${p}</option>`).join('')}</optgroup>
+        let players=[];
+        if(s.playerType==='goalkeeper'){
+          players=[...(homeGK.length?homeGK:[selectedFixture.home+' GK']),...(awayGK.length?awayGK:[selectedFixture.away+' GK'])];
+        } else if(s.playerType==='nba'){
+          players=[...homePlayers,...awayPlayers];
+        } else {
+          players=[...homePlayers,...awayPlayers];
+        }
+        body+=`<div class="sub-label">Select Player</div>
+        <select id="psel_${s.id}" onchange="onPlayerSelect('${s.id}')">
+          <option value="">Choose player...</option>
+          ${selectedFixture?`<optgroup label="${selectedFixture.home}">${(s.playerType==='goalkeeper'?homeGK:homePlayers).map(p=>`<option>${p}</option>`).join('')||'<option>Loading...</option>'}</optgroup><optgroup label="${selectedFixture.away}">${(s.playerType==='goalkeeper'?awayGK:awayPlayers).map(p=>`<option>${p}</option>`).join('')||'<option>Loading...</option>'}</optgroup>`:''}
         </select>
         <div class="sub-label" style="margin-top:8px">Market</div>
-        <div class="chips-wrap">${s.playerMarkets.map(m=>`<div class="chip" onclick="selectPlayerMarket('${m}',this)">${m}</div>`).join('')}</div>`;
+        <div class="chips-wrap">${s.playerMarkets.map(m=>`<div class="chip" onclick="selectPlayerMarket('${s.id}','${m}',this)">${m}</div>`).join('')}</div>`;
       } else {
-        body+=`<div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;padding:8px 0">Select a match first to see player options</div>`;
+        body+=`<div style="font-size:11px;color:var(--mu);padding:8px 0;font-family:'DM Mono',monospace">⚠️ Select a match first to see players</div>`;
       }
     }
 
     return`<div class="market-section">
-      <div class="market-section-header" onclick="toggleSection('ms_${i}')">
+      <div class="market-section-header" onclick="toggleSection('ms_${s.id}')">
         <span class="market-section-title">${s.title}</span>
-        <span class="market-toggle" id="mt_${i}">▼</span>
+        <span class="market-toggle" id="mt_${s.id}">▼</span>
       </div>
-      <div class="market-section-body" id="ms_${i}">${body}</div>
+      <div class="market-section-body" id="ms_${s.id}">${body}</div>
     </div>`;
   }).join('');
 }
 
-// Fake player list — will be replaced with real API data
-function getPlayers(team){
-  return['Player 1','Player 2','Player 3','Player 4','Player 5','Player 6','Player 7','Player 8','Player 9','Player 10','Player 11'];
-}
-
-let selectedPlayer='';
-let selectedPlayerMarket='';
-
-function updatePlayerMarket(select,defaultMarket){
-  selectedPlayer=select.value;
-  if(selectedPlayer&&selectedPlayerMarket){
-    document.getElementById('pickMarket').value=selectedPlayer+' — '+selectedPlayerMarket;
-  }
-}
-
-function selectPlayerMarket(m,el){
-  selectedPlayerMarket=m;
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  if(selectedPlayer){
-    document.getElementById('pickMarket').value=selectedPlayer+' — '+m;
-  } else {
-    document.getElementById('pickMarket').value=m;
-  }
+let teamContext={};
+function setTeamCtx(sectionId,team){
+  teamContext[sectionId]=team;
+  document.querySelectorAll(`[id^="tb_${sectionId}_"]`).forEach(b=>b.classList.remove('active'));
+  document.getElementById(`tb_${sectionId}_${team}`).classList.add('active');
 }
 
 function toggleSection(id){
   const body=document.getElementById(id);
-  const idx=id.replace('ms_','');
-  const toggle=document.getElementById('mt_'+idx);
+  const key=id.replace('ms_','');
+  const toggle=document.getElementById('mt_'+key);
   const isOpen=body.classList.contains('open');
   body.classList.toggle('open',!isOpen);
   toggle.textContent=isOpen?'▼':'▲';
 }
 
-let selectedTeam='Both';
-function selectTeam(sectionIdx,team,label){
-  selectedTeam=team;
-  document.querySelectorAll(`[id^="team_${sectionIdx}_"]`).forEach(b=>b.classList.remove('active'));
-  document.getElementById(`team_${sectionIdx}_${team.toLowerCase()}`).classList.add('active');
+let playerSelections={};
+function onPlayerSelect(sectionId){
+  const sel=document.getElementById('psel_'+sectionId);
+  playerSelections[sectionId]=sel.value;
+  updatePickMarketFromPlayer(sectionId);
 }
 
-function selectMarket(m,el){
-  let marketStr=m;
-  if(selectedTeam!=='Both'&&el.closest('.market-section-body').querySelector('.team-selector')){
-    marketStr=selectedTeam+' — '+m;
-  }
-  document.getElementById('pickMarket').value=marketStr;
+function selectPlayerMarket(sectionId,market,el){
+  const player=playerSelections[sectionId]||'';
+  const fullMarket=player?player+' — '+market:market;
+  document.getElementById('pickMarket').value=fullMarket;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
+}
+
+function updatePickMarketFromPlayer(sectionId){
+  const player=playerSelections[sectionId]||'';
+  const currentVal=document.getElementById('pickMarket').value;
+  if(currentVal.includes('—')){
+    const parts=currentVal.split('—');
+    document.getElementById('pickMarket').value=player+' — '+parts[1].trim();
+  }
+}
+
+function selectMarket(m,sectionId,el){
+  const team=teamContext[sectionId]||'both';
+  let fullMarket=m;
+  if(team==='home'&&selectedFixture)fullMarket=selectedFixture.home+' — '+m;
+  else if(team==='away'&&selectedFixture)fullMarket=selectedFixture.away+' — '+m;
+  document.getElementById('pickMarket').value=fullMarket;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+async function loadPlayers(fixtureId){
+  if(!fixtureId)return;
+  try{
+    const r=await fetch(API+'/players?fixtureId='+fixtureId);
+    if(!r.ok)return;
+    const data=await r.json();
+    homePlayers=data.home||[];
+    awayPlayers=data.away||[];
+    homeGK=data.homeGK||[];
+    awayGK=data.awayGK||[];
+  }catch(e){
+    homePlayers=[];awayPlayers=[];homeGK=[];awayGK=[];
+  }
 }
 
 async function loadFixtures(){
@@ -471,7 +500,6 @@ async function loadFixtures(){
   list.innerHTML='<div class="fixture-loading">Loading matches...</div>';
   document.getElementById('leagueFilter').innerHTML='<div class="league-chip active" onclick="selectLeague(\'all\',this)">All</div>';
   currentLeague='all';
-
   try{
     const r=await fetch(API+'/fixtures?sport='+currentSport+'&dateOffset='+currentDateOffset);
     allFixtures=await r.json();
@@ -501,18 +529,19 @@ function filterFixtures(){
     <div class="fixture-item ${selectedFixture&&selectedFixture.id===f.id?'selected':''}" onclick='selectFixture(${JSON.stringify(f)})'>
       <div class="fi-teams">${f.home} vs ${f.away}</div>
       <div class="fi-meta">${f.league} · ${f.date} ${f.time}</div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function selectFixture(f){
+async function selectFixture(f){
   selectedFixture=f;
   document.getElementById('sfbTeams').textContent=f.home+' vs '+f.away;
   document.getElementById('sfbMeta').textContent=f.league+' · '+f.date+' '+f.time;
   document.getElementById('selectedFixtureBox').style.display='block';
   document.getElementById('fixtureSearch').value=f.home+' vs '+f.away;
   document.getElementById('pickMarket').value='';
-  selectedTeam='Both';
+  teamContext={};
+  playerSelections={};
+  await loadPlayers(f.id);
   renderMarkets(currentSport);
   filterFixtures();
 }
@@ -525,8 +554,9 @@ async function postPick(){
   if(!odds||!stake){showToast('Fill odds and stake!');return}
   if(!selectedFixture){showToast('Select a match first!');return}
   const event=selectedFixture.home+' vs '+selectedFixture.away;
+  const stakeLabel=currentStakeType==='dollar'?'$'+stake:currentStakeType==='percent'?stake+'%':stake+'u';
   try{
-    const r=await fetch(API+'/picks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,sport:currentSport,event,fixtureId:selectedFixture.id,homeTeam:selectedFixture.home,awayTeam:selectedFixture.away,market,odds,stake,result:'pending',pnl:0})});
+    const r=await fetch(API+'/picks',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:user.id,sport:currentSport,event,fixtureId:selectedFixture.id,homeTeam:selectedFixture.home,awayTeam:selectedFixture.away,market,odds,stake,result:'pending',pnl:0,stakeType:currentStakeType})});
     const d=await r.json();
     if(d.id){
       showToast('PICK POSTED! ✅');
@@ -537,6 +567,7 @@ async function postPick(){
       document.getElementById('pickOdds').value='';
       document.getElementById('pickStake').value='';
       document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+      teamContext={};playerSelections={};
       renderMarkets(currentSport);
       filterFixtures();
       loadPicks();
@@ -566,16 +597,8 @@ async function loadPicks(){
     c.innerHTML=my.slice(0,20).map(p=>{
       const rb=p.result==='win'?'<span class="badge badge-win">WIN</span>':p.result==='loss'?'<span class="badge badge-loss">LOSS</span>':'<span class="badge badge-pending">PENDING</span>';
       return`<div class="pick-card">
-        <div class="pick-top">
-          <div><div class="pick-event">${p.event}</div><div class="pick-market">${p.market}</div></div>
-          <div class="pick-odds">${p.odds}</div>
-        </div>
-        <div class="pick-meta">
-          <span class="badge badge-sport">${p.sport}</span>
-          <span style="font-size:11px;color:var(--mu)">${p.stake}u</span>
-          ${rb}
-          <span class="pick-time">${new Date(p.createdAt).toLocaleDateString()}</span>
-        </div>
+        <div class="pick-top"><div><div class="pick-event">${p.event}</div><div class="pick-market">${p.market}</div></div><div class="pick-odds">${p.odds}</div></div>
+        <div class="pick-meta"><span class="badge badge-sport">${p.sport}</span><span style="font-size:11px;color:var(--mu)">${p.stake}u</span>${rb}<span class="pick-time">${new Date(p.createdAt).toLocaleDateString()}</span></div>
         <div class="locked-badge">🔒 Verified automatically</div>
       </div>`;
     }).join('');
