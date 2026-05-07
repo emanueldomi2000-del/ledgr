@@ -8,549 +8,362 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#05050a;--s1:#0b0b14;--s2:#111120;--bd:#18182e;--ac:#e8ff00;--acg:rgba(232,255,0,0.12);--tx:#f2f2fa;--mu:#5a5a7a;--mu2:#8888aa;--gr:#00e5a0;--rd:#ff3355}
+:root{
+  --bg:#07060d;
+  --s1:#0c0a1a;
+  --s2:#15122a;
+  --bd:rgba(184,159,255,0.1);
+  --bd2:rgba(184,159,255,0.18);
+  --ac:#b89fff;
+  --ac2:#7c5fe6;
+  --acg:rgba(184,159,255,0.08);
+  --tx:#f0edff;
+  --mu:#6a6690;
+  --mu2:#9590b8;
+  --gr:#34d399;
+  --rd:#f87171;
+  --gold:#fbbf24;
+}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;overflow-x:hidden}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(24,24,46,0.7)}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:6px;color:var(--ac)}
-.nav-r{display:flex;gap:12px;align-items:center}
-.nav-link{color:var(--mu2);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;padding:0 12px}
-.nav-link:hover{color:var(--tx)}
-.btn-nav{background:var(--ac);color:#05050a;border:none;padding:10px 22px;border-radius:5px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.btn-nav:hover{background:#f5ff33;box-shadow:0 0 20px rgba(232,255,0,0.2)}
-
-/* HERO */
+*{cursor:none!important}
+.cursor{position:fixed;width:8px;height:8px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .1s,width .2s,height .2s,opacity .2s}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(184,159,255,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease,width .25s,height .25s,opacity .3s}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:62px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,6,13,0.8);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx)}
+.logo span{color:var(--ac)}
+.nav-r{display:flex;gap:4px;align-items:center}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;transition:color .2s;padding:8px 14px;border-radius:6px;letter-spacing:.3px}
+.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
+.btn-nav{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:none;font-family:'Syne',sans-serif;transition:all .2s;letter-spacing:.3px}
+.btn-nav:hover{background:#cdb8ff;transform:translateY(-1px)}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 24px 60px;text-align:center;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(232,255,0,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(232,255,0,0.03) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black,transparent)}
-.hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(232,255,0,0.04),transparent 65%);top:50%;left:50%;transform:translate(-50%,-60%);pointer-events:none}
-
-.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.15);color:var(--ac);padding:7px 18px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:40px;animation:up .6s ease both}
-.dot{width:6px;height:6px;background:var(--gr);border-radius:50%;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(68px,13vw,156px);letter-spacing:-1px;line-height:.88;margin-bottom:32px;animation:up .6s .06s ease both}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.04) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 75% 55% at 50% 50%,black,transparent)}
+.hero-orb{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(124,95,230,0.07) 0%,rgba(184,159,255,0.03) 40%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none}
+.hero-orb2{position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,0.05),transparent 70%);top:30%;left:20%;pointer-events:none}
+.scanline{position:absolute;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(184,159,255,0.15),transparent);animation:scan 8s linear infinite;top:0;pointer-events:none}
+@keyframes scan{from{top:0}to{top:100%}}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(184,159,255,0.07);border:1px solid rgba(184,159,255,0.18);color:var(--ac);padding:7px 18px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:44px;animation:up .7s ease both;position:relative;z-index:2}
+.dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,13vw,160px);letter-spacing:-1px;line-height:.86;margin-bottom:36px;animation:up .7s .08s ease both;position:relative;z-index:2}
 .l1{display:block;color:var(--tx)}
-.l2{display:block;color:var(--ac);text-shadow:0 0 80px rgba(232,255,0,0.2)}
-.l3{display:block;-webkit-text-stroke:1px rgba(242,242,250,0.15);color:transparent}
-
-.hero-p{font-size:17px;color:var(--mu2);line-height:1.8;max-width:440px;margin:0 auto 44px;animation:up .6s .12s ease both}
-
-.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:up .6s .18s ease both;margin-bottom:72px}
-.btn-a{background:var(--ac);color:#05050a;padding:15px 36px;border-radius:6px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s}
-.btn-a:hover{background:#f5ff33;transform:translateY(-2px);box-shadow:0 16px 40px rgba(232,255,0,0.18)}
-.btn-b{color:var(--tx);padding:15px 36px;border-radius:6px;font-size:15px;font-weight:600;text-decoration:none;transition:all .25s;border:1px solid var(--bd)}
-.btn-b:hover{border-color:rgba(232,255,0,0.2);color:var(--ac)}
-
-.proof{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;animation:up .6s .24s ease both}
-.pn{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;color:var(--ac);line-height:1}
-.pl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
-
-/* TICKER */
-.ticker-wrap{background:var(--ac);overflow:hidden;padding:11px 0}
-.ticker{display:flex;white-space:nowrap;animation:tick 22s linear infinite}
-.ti{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:#05050a;letter-spacing:1px;padding:0 32px;opacity:.75}
-.ti b{opacity:1}
+.l2{display:block;color:var(--ac)}
+.l3{display:block;-webkit-text-stroke:1px rgba(184,159,255,0.2);color:transparent}
+.hero-p{font-size:16px;color:var(--mu2);line-height:1.85;max-width:420px;margin:0 auto 48px;animation:up .7s .16s ease both;position:relative;z-index:2}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:up .7s .22s ease both;margin-bottom:80px;position:relative;z-index:2}
+.btn-a{background:var(--ac);color:#07060d;padding:14px 34px;border-radius:6px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s;letter-spacing:.3px}
+.btn-a:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 12px 40px rgba(184,159,255,0.2)}
+.btn-b{color:var(--mu2);padding:14px 34px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;transition:all .25s;border:1px solid var(--bd2)}
+.btn-b:hover{border-color:rgba(184,159,255,0.35);color:var(--ac)}
+.proof{display:flex;justify-content:center;gap:64px;flex-wrap:wrap;animation:up .7s .28s ease both;position:relative;z-index:2}
+.proof-item{text-align:center}
+.pn{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;color:var(--tx);line-height:1}
+.pl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:5px}
+.ticker-wrap{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);overflow:hidden;padding:12px 0;background:rgba(184,159,255,0.03)}
+.ticker{display:flex;white-space:nowrap;animation:tick 28s linear infinite}
+.ti{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);letter-spacing:.8px;padding:0 36px}
+.ti b{color:var(--ac)}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* FEATURES */
-.features{padding:96px 24px;max-width:1080px;margin:0 auto}
-.sec-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:14px}
-.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,5.5vw,64px);letter-spacing:2px;line-height:1.05;margin-bottom:56px}
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd)}
-.fc{background:var(--bg);padding:40px 30px;transition:background .2s;position:relative;overflow:hidden}
-.fc::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:0;transition:opacity .3s}
+.sec-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:12px;opacity:.8}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5.5vw,68px);letter-spacing:2px;line-height:1.0;margin-bottom:52px;color:var(--tx)}
+.sec-h em{color:var(--ac);font-style:normal}
+.div{border:none;border-top:1px solid var(--bd);margin:0}
+.features{padding:100px 24px;max-width:1080px;margin:0 auto}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.fc{background:var(--bg);padding:38px 30px;transition:background .25s;position:relative;overflow:hidden}
+.fc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent);opacity:0;transition:opacity .3s}
 .fc:hover{background:var(--s1)}
-.fc:hover::before{opacity:.4}
-.fi{font-size:26px;margin-bottom:18px}
-.fh{font-size:16px;font-weight:700;margin-bottom:9px;color:var(--tx)}
-.fp{font-size:13px;color:var(--mu2);line-height:1.75}
-
-/* LEADERBOARD PREVIEW */
-.lb-section{padding:96px 24px;max-width:1080px;margin:0 auto}
-.lb-preview{background:var(--s1);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
-.lb-head{display:grid;grid-template-columns:48px 1fr 80px 80px 80px 100px;gap:12px;padding:14px 20px;border-bottom:1px solid var(--bd);font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase}
-.lb-row{display:grid;grid-template-columns:48px 1fr 80px 80px 80px 100px;gap:12px;padding:16px 20px;border-bottom:1px solid rgba(24,24,46,0.5);align-items:center;transition:background .15s;cursor:pointer}
+.fc:hover::after{opacity:.3}
+.fi{font-size:24px;margin-bottom:18px;display:block}
+.fh{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--tx);letter-spacing:.2px}
+.fp{font-size:12px;color:var(--mu2);line-height:1.8}
+.lb-section{padding:100px 24px;max-width:1080px;margin:0 auto}
+.lb-preview{background:var(--s1);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
+.lb-head{display:grid;grid-template-columns:52px 1fr 88px 88px 88px 110px;gap:12px;padding:14px 22px;border-bottom:1px solid var(--bd);font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase}
+.lb-row{display:grid;grid-template-columns:52px 1fr 88px 88px 88px 110px;gap:12px;padding:18px 22px;border-bottom:1px solid rgba(184,159,255,0.05);align-items:center;transition:background .15s;cursor:none}
 .lb-row:last-child{border:none}
-.lb-row:hover{background:var(--s2)}
+.lb-row:hover{background:rgba(184,159,255,0.04)}
 .rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--mu);text-align:center}
 .rank.g{color:#fbbf24}.rank.s{color:#9ca3af}.rank.b{color:#b45309}
 .tipster-info{display:flex;align-items:center;gap:12px}
-.av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0}
-.tn{font-weight:700;font-size:14px}
-.ts{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
+.av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0;color:#fff}
+.tn{font-weight:700;font-size:14px;letter-spacing:.1px}
+.ts{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
 .ls{text-align:center}
-.lsv{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
-.lsv.pos{color:var(--gr)}.lsv.neu{color:var(--tx)}
-.lsl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-top:2px}
-.follow{padding:7px 16px;border:1px solid rgba(232,255,0,0.25);color:var(--ac);background:rgba(232,255,0,0.05);border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
-.follow:hover{background:var(--ac);color:#05050a;border-color:var(--ac)}
-.lb-cta{text-align:center;padding:28px;border-top:1px solid var(--bd)}
-.lb-cta a{color:var(--ac);font-size:13px;font-weight:600;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px}
-
-/* PRICING */
-.pricing{padding:96px 24px;max-width:900px;margin:0 auto;text-align:center}
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px;text-align:left}
-.pc{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:32px;position:relative;transition:all .3s}
-.pc:hover{border-color:rgba(232,255,0,0.2);transform:translateY(-4px)}
-.pc.featured{border-color:rgba(232,255,0,0.35);background:linear-gradient(135deg,rgba(232,255,0,0.04),var(--s1))}
-.pc-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--ac);color:#05050a;padding:3px 14px;border-radius:20px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--mu2);margin-bottom:10px}
-.pc-price{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:1px;color:var(--tx);line-height:1;margin-bottom:4px}
-.pc-price span{font-size:16px;color:var(--mu);font-family:'Syne',sans-serif;font-weight:400}
-.pc-per{font-size:12px;color:var(--mu);margin-bottom:24px;font-family:'DM Mono',monospace}
-.pc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
-.pc-feats li{font-size:13px;color:var(--mu2);display:flex;gap:8px;align-items:flex-start}
-.pc-feats li::before{content:'→';color:var(--ac);flex-shrink:0;font-size:12px;margin-top:1px}
-.pc-btn{width:100%;padding:12px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.3px}
-.pc-btn-main{background:var(--ac);border:none;color:#05050a}
-.pc-btn-main:hover{background:#f5ff33}
+.lsv{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px}
+.lsv.pos{color:var(--gr)}.lsv.neu{color:var(--tx)}.lsv.neg{color:var(--rd)}
+.lsl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;margin-top:3px}
+.follow{padding:7px 16px;border:1px solid var(--bd2);color:var(--ac);background:var(--acg);border-radius:5px;font-size:11px;font-weight:700;cursor:none;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.2px}
+.follow:hover{background:var(--ac);color:#07060d;border-color:var(--ac)}
+.lb-cta{text-align:center;padding:24px;border-top:1px solid var(--bd)}
+.lb-cta a{color:var(--ac);font-size:12px;font-weight:600;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px;opacity:.8;transition:opacity .2s}
+.lb-cta a:hover{opacity:1}
+.rising-section{padding:100px 24px;max-width:1080px;margin:0 auto}
+.rs-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:24px;cursor:none;transition:all .2s}
+.rs-card:hover{border-color:var(--bd2);background:var(--s2);transform:translateY(-3px)}
+.pricing{padding:100px 24px;max-width:920px;margin:0 auto;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:52px;text-align:left}
+.pc{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:30px;position:relative;transition:all .3s}
+.pc:hover{border-color:var(--bd2);transform:translateY(-4px)}
+.pc.featured{border-color:rgba(184,159,255,0.3);background:linear-gradient(145deg,rgba(184,159,255,0.05),var(--s1))}
+.pc-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--ac);color:#07060d;padding:3px 14px;border-radius:20px;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap}
+.pc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--mu2);margin-bottom:10px}
+.pc-price{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;color:var(--tx);line-height:1;margin-bottom:4px}
+.pc-price span{font-size:15px;color:var(--mu);font-family:'Syne',sans-serif;font-weight:400}
+.pc-per{font-size:11px;color:var(--mu);margin-bottom:24px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+.pc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.pc-feats li{font-size:12px;color:var(--mu2);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.pc-feats li::before{content:'→';color:var(--ac);flex-shrink:0;font-size:11px;margin-top:1px}
+.pc-btn{width:100%;padding:12px;border-radius:7px;font-size:12px;font-weight:700;cursor:none;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.3px}
+.pc-btn-main{background:var(--ac);border:none;color:#07060d}
+.pc-btn-main:hover{background:#cdb8ff}
 .pc-btn-out{background:transparent;border:1px solid var(--bd);color:var(--mu2)}
-.pc-btn-out:hover{border-color:rgba(232,255,0,0.25);color:var(--ac)}
-
-/* CTA BOTTOM */
-.cta-bottom{margin:0 24px 96px;max-width:1080px;margin-left:auto;margin-right:auto}
-.cta-box{background:var(--ac);border-radius:16px;padding:80px 48px;text-align:center;position:relative;overflow:hidden}
-.cta-box::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(5,5,10,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(5,5,10,0.08) 1px,transparent 1px);background-size:32px 32px}
-.cta-box h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,7vw,80px);letter-spacing:2px;color:#05050a;line-height:1;margin-bottom:16px;position:relative;z-index:1}
-.cta-box p{font-size:16px;color:rgba(5,5,10,0.65);margin-bottom:36px;position:relative;z-index:1}
-.cta-box .btn-dark{background:#05050a;color:var(--ac);padding:16px 40px;border-radius:7px;font-size:15px;font-weight:700;text-decoration:none;transition:all .25s;display:inline-block;position:relative;z-index:1}
-.cta-box .btn-dark:hover{background:#0d0d1c;transform:translateY(-2px)}
-
-/* FOOTER */
-footer{border-top:1px solid var(--bd);padding:40px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:gap}
-.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--ac);opacity:.6}
-.foot-p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace}
+.pc-btn-out:hover{border-color:var(--bd2);color:var(--ac)}
+.waitlist{padding:80px 24px;max-width:560px;margin:0 auto;text-align:center}
+.wl-input{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:14px;padding:15px 18px;outline:none;margin-bottom:10px;display:block;font-family:'Syne',sans-serif;transition:border-color .2s}
+.wl-input:focus{border-color:var(--bd2)}
+.wl-input::placeholder{color:var(--mu)}
+.wl-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:15px;font-size:14px;font-weight:700;cursor:none;transition:all .2s;font-family:'Syne',sans-serif}
+.wl-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
+.cta-bottom{margin:0 24px 100px;max-width:1080px;margin-left:auto;margin-right:auto}
+.cta-box{background:var(--s1);border:1px solid var(--bd2);border-radius:20px;padding:80px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;inset:-1px;border-radius:20px;background:linear-gradient(135deg,rgba(184,159,255,0.25),rgba(52,211,153,0.1),rgba(124,95,230,0.2));z-index:-1}
+.cta-box::after{content:'';position:absolute;inset:1px;border-radius:19px;background:var(--s1);z-index:-1}
+.cta-box h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,7vw,84px);letter-spacing:2px;color:var(--tx);line-height:.95;margin-bottom:18px;position:relative;z-index:1}
+.cta-box h2 span{color:var(--ac)}
+.cta-box p{font-size:15px;color:var(--mu2);margin-bottom:36px;position:relative;z-index:1;line-height:1.7}
+.cta-box .btn-glow{background:var(--ac);color:#07060d;padding:15px 40px;border-radius:7px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s;display:inline-block;position:relative;z-index:1;letter-spacing:.3px}
+.cta-box .btn-glow:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 16px 50px rgba(184,159,255,0.2)}
+footer{border-top:1px solid var(--bd);padding:36px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--mu)}
+.foot-logo span{color:var(--ac)}
+.foot-p{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:.3px}
 .foot-links{display:flex;gap:24px}
-.foot-links a{font-size:12px;color:var(--mu);text-decoration:none;transition:color .2s}
+.foot-links a{font-size:11px;color:var(--mu);text-decoration:none;transition:color .2s;font-family:'DM Mono',monospace}
 .foot-links a:hover{color:var(--tx)}
-
-/* DIVIDER */
-.div{border:none;border-top:1px solid var(--bd);margin:0}
-
-@media(max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}.price-grid{grid-template-columns:1fr}.lb-head,.lb-row{grid-template-columns:40px 1fr 70px 70px}.lb-head>*:nth-child(5),.lb-row>*:nth-child(5){display:none}.how{grid-template-columns:1fr}nav .nav-link{display:none}}
-@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.proof{gap:32px}.lb-head,.lb-row{grid-template-columns:36px 1fr 60px}.lb-head>*:nth-child(4),.lb-row>*:nth-child(4),.lb-head>*:nth-child(5),.lb-row>*:nth-child(5){display:none}}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+@media(max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}.price-grid{grid-template-columns:1fr}.lb-head,.lb-row{grid-template-columns:40px 1fr 72px 72px}.lb-head>*:nth-child(5),.lb-row>*:nth-child(5){display:none}nav{padding:0 20px}.nav-link{display:none}}
+@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.proof{gap:32px}.lb-head,.lb-row{grid-template-columns:36px 1fr 64px}.lb-head>*:nth-child(4),.lb-row>*:nth-child(4),.lb-head>*:nth-child(5),.lb-row>*:nth-child(5){display:none}.cta-box{padding:48px 28px}footer{flex-direction:column;align-items:flex-start;padding:28px 24px}}
 </style>
+</head>
 </head>
 <body>
 
+<div class="cursor" id="cur"></div>
+<div class="cursor-ring" id="ring"></div>
+
 <nav>
-  <div class="logo">LEDGR</div>
+  <div class="logo">LEDG<span>R</span></div>
   <div class="nav-r">
-    <a href="#features" class="nav-link">Features</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <button class="btn-nav" id="navBtn" onclick="document.getElementById('authModal').style.display='flex'">Log In / Sign Up</button>
+    <a href="/discover" class="nav-link">Discover</a>
+    <a href="/pricing" class="nav-link">Pricing</a>
+    <button class="btn-nav" onclick="window.location.href='/login'">Sign In</button>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-glow"></div>
-  <div class="badge"><div class="dot"></div> Now in Beta — Join the Waitlist</div>
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-orb2"></div>
+  <div class="scanline"></div>
+  <div class="badge"><span class="dot"></span>LIVE · VERIFIED PICKS</div>
   <h1>
-    <span class="l1">EVERY</span>
-    <span class="l2">PICK.</span>
-    <span class="l3">VERIFIED.</span>
+    <span class="l1">EVERY PICK.</span>
+    <span class="l2">VERIFIED.</span>
+    <span class="l3">TRUSTED.</span>
   </h1>
-  <p class="hero-p">Follow the best tipsters on the planet. Real records, real odds, fully verified. The only platform where performance is 100% transparent.</p>
+  <p class="hero-p">Follow proven tipsters. Track real performance. Subscribe to winning picks — all verified on-chain.</p>
   <div class="btns">
-    <a href="#" class="btn-a" onclick="openAuth()">Browse Tipsters →</a>
-    <a href="#" class="btn-b" onclick="window.location.href='/dashboard'">Become a Tipster →</a>
+    <a href="/register" class="btn-a">Get Started Free</a>
+    <a href="/leaderboard" class="btn-b">View Leaderboard</a>
   </div>
   <div class="proof">
-    <div><div class="pn">2.4K+</div><div class="pl">Active Tipsters</div></div>
-    <div><div class="pn">180K+</div><div class="pl">Picks Tracked</div></div>
-    <div><div class="pn">52K+</div><div class="pl">Subscribers</div></div>
-    <div><div class="pn">100%</div><div class="pl">Verified Records</div></div>
+    <div class="proof-item"><div class="pn">400+</div><div class="pl">Verified Tipsters</div></div>
+    <div class="proof-item"><div class="pn">94%</div><div class="pl">Verification Rate</div></div>
+    <div class="proof-item"><div class="pn">+22%</div><div class="pl">Avg ROI (Top 10)</div></div>
   </div>
 </section>
 
-<!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker">
-    <span class="ti"><b>★</b> KING DOMI — ROI +31.4%</span>
-    <span class="ti"><b>★</b> PROPKING — WIN RATE 71%</span>
-    <span class="ti"><b>★</b> ACESERVE — 340 PICKS VERIFIED</span>
-    <span class="ti"><b>★</b> PARLAYKING — +€4,200 P&L</span>
-    <span class="ti"><b>★</b> SOCCEREDGE — 520 PICKS VERIFIED</span>
-    <span class="ti"><b>★</b> ICEHAWK — ROI +22.3%</span>
-    <span class="ti"><b>★</b> KING DOMI — ROI +31.4%</span>
-    <span class="ti"><b>★</b> PROPKING — WIN RATE 71%</span>
-    <span class="ti"><b>★</b> ACESERVE — 340 PICKS VERIFIED</span>
-    <span class="ti"><b>★</b> PARLAYKING — +€4,200 P&L</span>
-    <span class="ti"><b>★</b> SOCCEREDGE — 520 PICKS VERIFIED</span>
-    <span class="ti"><b>★</b> ICEHAWK — ROI +22.3%</span>
+    <span class="ti">⚽ <b>ManCity vs Arsenal</b> — BetBuilder WIN +340</span>
+    <span class="ti">🏈 <b>Chiefs -3.5</b> — AH WIN +110</span>
+    <span class="ti">🎾 <b>Djokovic ML</b> — WIN +180</span>
+    <span class="ti">🏀 <b>Lakers O212.5</b> — WIN +105</span>
+    <span class="ti">⚽ <b>Liverpool BTTS</b> — WIN +120</span>
+    <span class="ti">🏈 <b>49ers -6.5</b> — AH WIN +100</span>
+    <span class="ti">⚽ <b>ManCity vs Arsenal</b> — BetBuilder WIN +340</span>
+    <span class="ti">🏈 <b>Chiefs -3.5</b> — AH WIN +110</span>
+    <span class="ti">🎾 <b>Djokovic ML</b> — WIN +180</span>
+    <span class="ti">🏀 <b>Lakers O212.5</b> — WIN +105</span>
+    <span class="ti">⚽ <b>Liverpool BTTS</b> — WIN +120</span>
+    <span class="ti">🏈 <b>49ers -6.5</b> — AH WIN +100</span>
   </div>
 </div>
 
-<!-- FEATURES -->
-<section class="features" id="features">
+<section class="features reveal">
   <span class="sec-tag">Why LEDGR</span>
-  <h2 class="sec-h">BUILT FOR<br>SERIOUS BETTORS</h2>
+  <h2 class="sec-h">Built for <em>Serious</em> Bettors</h2>
   <div class="feat-grid">
-    <div class="fc"><div class="fi">📊</div><div class="fh">Verified Records</div><div class="fp">Every pick is logged automatically at posting time. Tipsters can't edit, delete or manipulate results. What you see is what happened.</div></div>
-    <div class="fc"><div class="fi">🏆</div><div class="fh">Live Leaderboard</div><div class="fp">Real-time ranking by ROI, Win Rate and profit. Filter by sport, bet type, time range. Find the best capper for your style in seconds.</div></div>
-    <div class="fc"><div class="fi">💳</div><div class="fh">Subscription Marketplace</div><div class="fp">Subscribe to any tipster's channel — monthly, weekly or lifetime. Tipsters set their price and get paid automatically every month.</div></div>
-    <div class="fc"><div class="fi">🔔</div><div class="fh">Instant Alerts</div><div class="fp">Get notified the second your tipster posts a new pick. Telegram, email or push — your choice, your speed.</div></div>
-    <div class="fc"><div class="fi">📈</div><div class="fh">Deep Analytics</div><div class="fp">Bankroll curves, ROI by odds range, sport breakdown, streak analysis. Know exactly who you're following and why.</div></div>
-    <div class="fc"><div class="fi">💰</div><div class="fh">Earn as a Tipster</div><div class="fp">Set your own price. Build free and premium tiers. LEDGR takes 15% — you keep the rest. Payouts are automated, no chasing.</div></div>
+    <div class="fc"><span class="fi">🔒</span><div class="fh">On-Chain Verification</div><p class="fp">Every pick is timestamped and locked before results. No edits, no fakes.</p></div>
+    <div class="fc"><span class="fi">📊</span><div class="fh">Deep Stats</div><p class="fp">ROI, win rate, sport breakdown, streak data — all transparent and live.</p></div>
+    <div class="fc"><span class="fi">⚡</span><div class="fh">Live Leaderboard</div><p class="fp">Real-time rankings. See who's hot, who's consistent, who's fading.</p></div>
+    <div class="fc"><span class="fi">🔔</span><div class="fh">Instant Alerts</div><p class="fp">Get notified the moment your followed tipsters post new picks.</p></div>
+    <div class="fc"><span class="fi">👑</span><div class="fh">Tipster Profiles</div><p class="fp">Full history, badges, follower count, and subscription tiers.</p></div>
+    <div class="fc"><span class="fi">🛡️</span><div class="fh">No Fakes</div><p class="fp">Our algorithm flags suspicious patterns. Only real edge survives.</p></div>
   </div>
 </section>
 
 <hr class="div">
 
-<!-- LEADERBOARD PREVIEW -->
-<section class="lb-section" id="leaderboard">
-  <span class="sec-tag">Live Rankings</span>
-  <h2 class="sec-h">TOP TIPSTERS<br>RIGHT NOW</h2>
+<section class="lb-section reveal">
+  <span class="sec-tag">Leaderboard</span>
+  <h2 class="sec-h">Top <em>Tipsters</em> This Month</h2>
   <div class="lb-preview">
-    <div class="lb-head"><span></span><span>Tipster</span><span style="text-align:center">ROI</span><span style="text-align:center">W/R</span><span style="text-align:center">Picks</span><span></span></div>
-    <div class="lb-row">
-      <div class="rank g">🥇</div>
-      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">KD</div><div><div class="tn">King Domi</div><div class="ts">Soccer · Tennis</div></div></div>
-      <div class="ls"><div class="lsv pos">+31.4%</div><div class="lsl">ROI</div></div>
-      <div class="ls"><div class="lsv neu">64%</div><div class="lsl">WIN RATE</div></div>
-      <div class="ls"><div class="lsv neu">248</div><div class="lsl">PICKS</div></div>
-      <button class="follow">Follow</button>
+    <div class="lb-head">
+      <div>RANK</div><div>TIPSTER</div><div>WIN RATE</div><div>ROI</div><div>PICKS</div><div></div>
     </div>
-    <div class="lb-row">
-      <div class="rank s">🥈</div>
-      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#059669,#10b981)">PK</div><div><div class="tn">PropKing</div><div class="ts">NBA Props</div></div></div>
-      <div class="ls"><div class="lsv pos">+24.8%</div><div class="lsl">ROI</div></div>
-      <div class="ls"><div class="lsv neu">71%</div><div class="lsl">WIN RATE</div></div>
-      <div class="ls"><div class="lsv neu">412</div><div class="lsl">PICKS</div></div>
-      <button class="follow">Follow</button>
-    </div>
-    <div class="lb-row">
-      <div class="rank b">🥉</div>
-      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#b45309,#f59e0b)">PS</div><div><div class="tn">ParlaySzn</div><div class="ts">Multi-sport</div></div></div>
-      <div class="ls"><div class="lsv pos">+42.1%</div><div class="lsl">ROI</div></div>
-      <div class="ls"><div class="lsv neu">38%</div><div class="lsl">WIN RATE</div></div>
-      <div class="ls"><div class="lsv neu">89</div><div class="lsl">PICKS</div></div>
-      <button class="follow">Follow</button>
-    </div>
-    <div class="lb-row">
-      <div class="rank">4</div>
-      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#0369a1,#38bdf8)">SE</div><div><div class="tn">SoccerEdge</div><div class="ts">Soccer</div></div></div>
-      <div class="ls"><div class="lsv pos">+14.6%</div><div class="lsl">ROI</div></div>
-      <div class="ls"><div class="lsv neu">55%</div><div class="lsl">WIN RATE</div></div>
-      <div class="ls"><div class="lsv neu">520</div><div class="lsl">PICKS</div></div>
-      <button class="follow">Follow</button>
-    </div>
-    <div class="lb-row">
-      <div class="rank">5</div>
-      <div class="tipster-info"><div class="av" style="background:linear-gradient(135deg,#0f766e,#14b8a6)">IH</div><div><div class="tn">IceHawk</div><div class="ts">Hockey · MMA</div></div></div>
-      <div class="ls"><div class="lsv pos">+22.3%</div><div class="lsl">ROI</div></div>
-      <div class="ls"><div class="lsv neu">61%</div><div class="lsl">WIN RATE</div></div>
-      <div class="ls"><div class="lsv neu">178</div><div class="lsl">PICKS</div></div>
-      <button class="follow">Follow</button>
-    </div>
-    <div class="lb-cta"><a href="#" onclick="window.location.href='/leaderboard'">View Full Leaderboard → 2,400+ tipsters</a></div>
+    <div id="lb-body"></div>
+    <div class="lb-cta"><a href="/leaderboard">VIEW FULL LEADERBOARD →</a></div>
   </div>
 </section>
 
 <hr class="div">
 
-<!-- RISING STARS -->
-<section style="padding:96px 24px;max-width:1080px;margin:0 auto" id="rising">
-  <span class="sec-tag">New Talent</span>
-  <h2 class="sec-h">RISING STARS</h2>
-  <div id="risingStarsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
-    <div style="text-align:center;padding:40px;color:var(--mu);grid-column:1/-1">Loading...</div>
-  </div>
+<section class="rising-section reveal">
+  <span class="sec-tag">Rising Stars</span>
+  <h2 class="sec-h">New <em>Names</em> to Watch</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px" id="rising-grid"></div>
 </section>
 
 <hr class="div">
 
-<!-- PRICING -->
-<section class="pricing" id="pricing">
-  <span class="sec-tag">Plans</span>
-  <h2 class="sec-h">SIMPLE PRICING.<br>NO SURPRISES.</h2>
+<section class="pricing reveal">
+  <span class="sec-tag">Pricing</span>
+  <h2 class="sec-h">Pick Your <em>Plan</em></h2>
   <div class="price-grid">
     <div class="pc">
       <div class="pc-name">FREE</div>
-      <div class="pc-price">€0<span>/mo</span></div>
+      <div class="pc-price">$0<span> / mo</span></div>
       <div class="pc-per">Forever free</div>
       <ul class="pc-feats">
-        <li>Follow up to 3 tipsters</li>
-        <li>View public picks</li>
-        <li>Basic leaderboard access</li>
-        <li>Email alerts</li>
+        <li>View top leaderboard</li>
+        <li>Follow 3 tipsters</li>
+        <li>Basic pick history</li>
       </ul>
-      <button class="pc-btn pc-btn-out" onclick="alert('🎉 Free plan at launch!')">Get Started Free</button>
+      <button class="pc-btn pc-btn-out" onclick="window.location.href='/register'">Get Started</button>
     </div>
     <div class="pc featured">
-      <div class="pc-tag">⭐ MOST POPULAR</div>
+      <div class="pc-tag">MOST POPULAR</div>
       <div class="pc-name">PRO</div>
-      <div class="pc-price">€12<span>/mo</span></div>
+      <div class="pc-price">$19<span> / mo</span></div>
       <div class="pc-per">Billed monthly</div>
       <ul class="pc-feats">
-        <li>Follow unlimited tipsters</li>
-        <li>Full analytics & charts</li>
-        <li>Priority notifications</li>
-        <li>ROI calculator tools</li>
-        <li>Export data (CSV / PDF)</li>
-        <li>Early access to new features</li>
+        <li>Unlimited follows</li>
+        <li>Live pick alerts</li>
+        <li>Full stat breakdowns</li>
+        <li>Early access features</li>
       </ul>
-      <button class="pc-btn pc-btn-main" onclick="alert('🚀 Pro plan at launch!')">Start Pro Trial</button>
+      <button class="pc-btn pc-btn-main" onclick="window.location.href='/register?plan=pro'">Start Pro</button>
     </div>
     <div class="pc">
-      <div class="pc-name">TIPSTER</div>
-      <div class="pc-price">€0<span>+15%</span></div>
-      <div class="pc-per">Commission on subscriptions</div>
+      <div class="pc-name">ELITE</div>
+      <div class="pc-price">$49<span> / mo</span></div>
+      <div class="pc-per">For serious bettors</div>
       <ul class="pc-feats">
-        <li>Post unlimited picks</li>
-        <li>Create subscription plans</li>
-        <li>Verified badge on profile</li>
-        <li>Full analytics dashboard</li>
-        <li>Automated monthly payouts</li>
+        <li>Everything in Pro</li>
+        <li>Private tipster DMs</li>
+        <li>Portfolio tracking</li>
+        <li>API access</li>
       </ul>
-      <button class="pc-btn pc-btn-out" onclick="alert('📋 Apply as Tipster!')">Apply as Tipster</button>
+      <button class="pc-btn pc-btn-out" onclick="window.location.href='/register?plan=elite'">Go Elite</button>
     </div>
   </div>
 </section>
 
-<!-- WAITLIST -->
-<div style="padding:80px 24px;max-width:580px;margin:0 auto;text-align:center">
-  <span style="font-family:DM Mono,monospace;font-size:10px;color:#e8ff00;letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:14px">Early Access</span>
-  <h2 style="font-family:Bebas Neue,sans-serif;font-size:clamp(38px,6vw,64px);letter-spacing:2px;margin-bottom:16px;line-height:1">JOIN THE WAITLIST</h2>
-  <p style="color:#8888aa;font-size:15px;line-height:1.7;margin-bottom:40px">Be the first when LEDGR launches. Get early access, free Pro trial, and founding member status.</p>
-  <div id="mc_embed_signup" style="background:transparent;width:100%">
-    <form action="https://bet.us4.list-manage.com/subscribe/post?u=e99303ac9c503d88f42a2301c&amp;id=25746210a0&amp;f_id=003e94e5f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" style="padding:0">
-      <div id="mc_embed_signup_scroll">
-        <input type="email" name="EMAIL" id="mce-EMAIL" required placeholder="Your email address" value="" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:15px;padding:16px 20px;outline:none;margin-bottom:10px;display:block">
-        <div aria-hidden="true" style="position:absolute;left:-5000px"><input type="text" name="b_e99303ac9c503d88f42a2301c_25746210a0" tabindex="-1" value=""></div>
-        <input type="submit" name="subscribe" value="Join the Waitlist \u2192" style="width:100%;background:#e8ff00;color:#05050a;border:none;border-radius:8px;padding:16px;font-size:15px;font-weight:700;cursor:pointer">
-      </div>
-    </form>
-  </div>
-  <p style="font-size:11px;color:#5a5a7a;margin-top:14px;font-family:DM Mono,monospace">No spam. Unsubscribe anytime.</p>
-</div>
+<hr class="div">
 
-<!-- CTA BOX -->
-<div class="cta-bottom">
+<section class="cta-bottom reveal">
   <div class="cta-box">
-    <h2>READY TO LEVEL UP?</h2>
-    <p>Join thousands of bettors already on the waitlist. Free to join, forever.</p>
-    <a href="#" class="btn-dark" onclick="alert('🚀 You\'re on the waitlist!')">Join the Waitlist →</a>
+    <h2>READY TO FIND <span>REAL EDGE?</span></h2>
+    <p>Join thousands of bettors who follow verified tipsters. No guesswork. Just data.</p>
+    <a href="/register" class="btn-glow">Create Free Account</a>
   </div>
-</div>
+</section>
 
-<!-- FOOTER -->
 <footer>
-  <div class="foot-logo">LEDGR</div>
-  <div class="foot-p">© 2026 LEDGR — getledgr.bet</div>
+  <div class="foot-logo">LEDG<span>R</span></div>
+  <p class="foot-p">© 2024 LEDGR. Every pick verified.</p>
   <div class="foot-links">
-    <a href="/privacy">Privacy</a>
     <a href="/terms">Terms</a>
-    <a href="mailto:hello@getledgr.bet">Contact</a>
-    <a href="https://x.com/getledgr" target="_blank">Twitter/X</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/contact">Contact</a>
   </div>
 </footer>
 
 <script>
-document.querySelectorAll('.follow').forEach(btn=>{
-  btn.addEventListener('click',function(){
-    const following=this.textContent==='Following';
-    this.textContent=following?'Follow':'Following';
-    this.style.background=following?'':'var(--ac)';
-    this.style.color=following?'':'#05050a';
-    this.style.borderColor=following?'rgba(232,255,0,0.25)':'var(--ac)';
-  });
+const cur = document.getElementById('cur');
+const ring = document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function lerp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)})();
+
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+const TIPSTERS=[
+  {name:'SharpKing',sport:'⚽ Football',wr:71,roi:24,picks:38,color:'#5e4fc2'},
+  {name:'ValueHunter',sport:'🏀 Basketball',wr:65,roi:18,picks:52,color:'#2d6fbc'},
+  {name:'TheOracle',sport:'🎾 Tennis',wr:68,roi:21,picks:29,color:'#1e9175'},
+  {name:'EdgeMaster',sport:'🏈 NFL',wr:62,roi:15,picks:61,color:'#9c4b8a'},
+  {name:'GrindMode',sport:'⚽ Football',wr:59,roi:11,picks:84,color:'#5c7a2e'},
+];
+const lbBody=document.getElementById('lb-body');
+const rankColors=['g','s','b'];
+TIPSTERS.forEach((t,i)=>{
+  const row=document.createElement('div');
+  row.className='lb-row';
+  row.innerHTML=`
+    <div class="rank ${rankColors[i]||''}">${i+1}</div>
+    <div class="tipster-info">
+      <div class="av" style="background:${t.color}">${t.name[0]}</div>
+      <div><div class="tn">${t.name}</div><div class="ts">${t.sport}</div></div>
+    </div>
+    <div class="ls"><div class="lsv pos">${t.wr}%</div><div class="lsl">W/R</div></div>
+    <div class="ls"><div class="lsv pos">+${t.roi}%</div><div class="lsl">ROI</div></div>
+    <div class="ls"><div class="lsv neu">${t.picks}</div><div class="lsl">PICKS</div></div>
+    <button class="follow" onclick="window.location.href='/tipster/${t.name.toLowerCase()}'">Follow</button>
+  `;
+  lbBody.appendChild(row);
+});
+
+const RISING=[
+  {name:'NewSharp',sport:'🏈 NFL',wr:72,streak:7,color:'#8b4ec7'},
+  {name:'StatBoy',sport:'⚽ Football',wr:68,streak:5,color:'#1e7cc9'},
+  {name:'QuietEdge',sport:'🎾 Tennis',wr:70,streak:6,color:'#197a62'},
+];
+const grid=document.getElementById('rising-grid');
+RISING.forEach(r=>{
+  const card=document.createElement('div');
+  card.className='rs-card';
+  card.innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div class="av" style="background:${r.color}">${r.name[0]}</div>
+      <div><div class="tn">${r.name}</div><div class="ts">${r.sport}</div></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="ls"><div class="lsv pos">${r.wr}%</div><div class="lsl">WIN RATE</div></div>
+      <div class="ls"><div class="lsv pos">🔥 ${r.streak}</div><div class="lsl">STREAK</div></div>
+      <button class="follow" onclick="window.location.href='/tipster/${r.name.toLowerCase()}'">Follow</button>
+    </div>
+  `;
+  grid.appendChild(card);
 });
 </script>
-
-<!-- AUTH MODAL -->
-<div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(5,5,10,0.95);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(10px)">
-  <div style="background:#0b0b14;border:1px solid #18182e;border-radius:20px;padding:40px;width:100%;max-width:420px;margin:0 24px;position:relative">
-    <button onclick="closeAuth()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#6b6b8a;font-size:20px;cursor:pointer">x</button>
-    <div style="display:flex;gap:8px;background:#111120;border-radius:10px;padding:4px;margin-bottom:28px">
-      <button id="tabLogin" onclick="switchTab('login')" style="flex:1;padding:10px;border-radius:7px;border:none;background:#e8ff00;color:#05050a;font-family:Syne,sans-serif;font-size:14px;font-weight:700;cursor:pointer">Log In</button>
-      <button id="tabRegister" onclick="document.getElementById('loginForm').style.display='none';document.getElementById('registerForm').style.display='block';document.getElementById('tabLogin').style.background='transparent';document.getElementById('tabRegister').style.background='#e8ff00';document.getElementById('tabRegister').style.color='#05050a'" style="flex:1;padding:10px;border-radius:7px;border:none;background:transparent;color:#6b6b8a;font-family:Syne,sans-serif;font-size:14px;font-weight:600;cursor:pointer">Sign Up</button>
-    </div>
-    <div id="loginForm">
-      <div style="margin-bottom:14px"><input type="email" id="loginEmail" placeholder="Email" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
-      <div style="margin-bottom:20px"><input type="password" id="loginPassword" placeholder="Password" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
-      <button onclick="document.getElementById('authMsg').textContent='Logging in...';fetch('https://ledgr-backend-production-c132.up.railway.app/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('loginEmail').value,password:document.getElementById('loginPassword').value})}).then(r=>r.json()).then(d=>{if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));window.location.href='/dashboard';}else{document.getElementById('authMsg').textContent=d.error||'Error';}}).catch(()=>document.getElementById('authMsg').textContent='Connection error')" style="width:100%;background:#e8ff00;color:#05050a;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:700;cursor:pointer">Log In</button>
-    </div>
-    <div id="registerForm" style="display:none">
-      <div style="margin-bottom:14px"><input type="email" id="regEmail" placeholder="Email" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
-      <div style="margin-bottom:14px"><input type="text" id="regUsername" placeholder="Username" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
-      <div style="margin-bottom:20px"><input type="password" id="regPassword" placeholder="Password" style="width:100%;background:#111120;border:1px solid #18182e;border-radius:8px;color:#f2f2fa;font-size:14px;padding:14px 16px;outline:none"></div>
-      <button onclick="document.getElementById('authMsg').textContent='Creating account...';fetch('https://ledgr-backend-production-c132.up.railway.app/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.getElementById('regEmail').value,username:document.getElementById('regUsername').value,password:document.getElementById('regPassword').value})}).then(r=>r.json()).then(d=>{if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));window.location.href='/dashboard';}else{document.getElementById('authMsg').textContent=d.error||'Error';}}).catch(()=>document.getElementById('authMsg').textContent='Connection error')" style="width:100%;background:#e8ff00;color:#05050a;border:none;border-radius:8px;padding:14px;font-size:15px;font-weight:700;cursor:pointer">Create Account</button>
-    </div>
-    <div id="authMsg" style="margin-top:14px;text-align:center;font-size:13px;color:#6b6b8a"></div>
-  </div>
-</div>
-
-<script>
-const API = 'https://ledgr-backend-production-c132.up.railway.app';
-// SMART NAV — check if logged in
-(function(){
-  const u=localStorage.getItem('ledgr_user');
-  const btn=document.getElementById('navBtn');
-  if(u&&btn){
-    const user=JSON.parse(u);
-    btn.textContent='Dashboard →';
-    btn.onclick=()=>window.location.href='/dashboard';
-  }
-})();
-
-// LOAD REAL LEADERBOARD DATA
-async function loadRealLeaderboard(){
-  try{
-    const r=await fetch(API+'/picks');
-    const picks=await r.json();
-    if(!picks.length)return;
-    const tipsters={};
-    picks.forEach(p=>{
-      if(!p.user)return;
-      const u=p.user.username;
-      if(!tipsters[u])tipsters[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0};
-      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
-      if(p.result==='win')tipsters[u].wins++;if(p.result==='loss')tipsters[u].losses++;
-    });
-    const arr=Object.values(tipsters).sort((a,b)=>{
-      const ra=a.stake>0?(a.pnl/a.stake)*100:0;const rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;
-    }).slice(0,5);
-    if(!arr.length)return;
-    const medals=['🥇','🥈','🥉'];
-    const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)'];
-    const rows=document.querySelectorAll('.lb-row');
-    arr.forEach((t,i)=>{
-      if(!rows[i])return;
-      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-      const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
-      const initials=t.username.substring(0,2).toUpperCase();
-      rows[i].querySelector('.tn').textContent='@'+t.username;
-      rows[i].querySelector('.ts').textContent=t.picks+' picks';
-      rows[i].querySelector('.av').style.background=colors[i];
-      rows[i].querySelector('.av').textContent=initials;
-      const lsvs=rows[i].querySelectorAll('.lsv');
-      if(lsvs[0])lsvs[0].textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
-      if(lsvs[1])lsvs[1].textContent=wr+'%';
-      if(lsvs[2])lsvs[2].textContent=t.picks;
-      rows[i].onclick=()=>window.location.href='/tipster?u='+t.username;
-    });
-  }catch(e){console.log('Could not load real data');}
-}
-loadRealLeaderboard();
-
-// LOAD REAL TICKER
-async function loadRealTicker(){
-  try{
-    const r=await fetch(API+"/picks");
-    const picks=await r.json();
-    if(!picks.length)return;
-    const tipsters={};
-    picks.forEach(p=>{
-      if(!p.user)return;
-      const u=p.user.username;
-      if(!tipsters[u])tipsters[u]={username:u,picks:0,wins:0,stake:0,pnl:0};
-      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
-      if(p.result==="win")tipsters[u].wins++;
-    });
-    const arr=Object.values(tipsters);
-    if(!arr.length)return;
-    const items=arr.map(t=>{
-      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-      const wr=t.picks>0?((t.wins/t.picks)*100).toFixed(0):0;
-      return `<span class="ti"><b>★</b> @${t.username} — ROI ${parseFloat(roi)>=0?"+":""}${roi}%</span>`;
-    });
-    const doubled=[...items,...items].join("");
-    const tc=document.getElementById("tickerContent");
-    if(tc)tc.innerHTML=doubled;
-  }catch(e){}
-}
-loadRealTicker();
-
-// RISING STARS
-async function loadRisingStars(){
-  try{
-    const r=await fetch(API+"/picks");
-    const picks=await r.json();
-    if(!picks.length)return;
-    const tipsters={};
-    picks.forEach(p=>{
-      if(!p.user)return;
-      const u=p.user.username;
-      if(!tipsters[u])tipsters[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0};
-      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
-      if(p.result==="win")tipsters[u].wins++;if(p.result==="loss")tipsters[u].losses++;
-    });
-    const colors=["linear-gradient(135deg,#7c3aed,#a855f7)","linear-gradient(135deg,#059669,#10b981)","linear-gradient(135deg,#b45309,#f59e0b)","linear-gradient(135deg,#0369a1,#38bdf8)","linear-gradient(135deg,#0f766e,#14b8a6)","linear-gradient(135deg,#dc2626,#ef4444)"];
-    const rising=Object.values(tipsters)
-      .filter(t=>t.picks>=3&&t.picks<50)
-      .sort((a,b)=>{
-        const ra=a.stake>0?(a.pnl/a.stake)*100:0;
-        const rb=b.stake>0?(b.pnl/b.stake)*100:0;
-        return rb-ra;
-      }).slice(0,6);
-    if(!rising.length){document.getElementById("risingStarsGrid").innerHTML="<div style="text-align:center;padding:40px;color:var(--mu);grid-column:1/-1">No rising stars yet — be the first!</div>";return;}
-    document.getElementById("risingStarsGrid").innerHTML=rising.map((t,i)=>{
-      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-      const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
-      const init=t.username.substring(0,2).toUpperCase();
-      const rPos=parseFloat(roi)>=0;
-      return`<div onclick="window.location.href="/tipster?u="+"${t.username}"" style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor="rgba(232,255,0,0.25)"" onmouseout="this.style.borderColor="var(--bd)"">
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-          <div style="width:48px;height:48px;border-radius:50%;background:${colors[i%colors.length]};display:flex;align-items:center;justify-content:center;font-family:Bebas Neue,sans-serif;font-size:18px;flex-shrink:0">${init}</div>
-          <div><div style="font-weight:700;font-size:15px">@${t.username}</div><div style="font-size:11px;color:var(--mu);font-family:DM Mono,monospace">${t.picks} picks · 🚀 Rising Star</div></div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
-          <div><div style="font-family:Bebas Neue,sans-serif;font-size:22px;color:${rPos?"var(--gr)":"var(--rd)"}">${rPos?"+":""}${roi}%</div><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">ROI</div></div>
-          <div><div style="font-family:Bebas Neue,sans-serif;font-size:22px">${wr}%</div><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">WIN RATE</div></div>
-          <div><div style="font-family:Bebas Neue,sans-serif;font-size:22px">${t.picks}</div><div style="font-size:9px;color:var(--mu);font-family:DM Mono,monospace;letter-spacing:1px">PICKS</div></div>
-        </div>
-      </div>`;
-    }).join("");
-  }catch(e){console.log("Rising stars error",e);}
-}
-loadRisingStars();
-
-function openAuth(){document.getElementById('authModal').style.display='flex'}
-function closeAuth(){document.getElementById('authModal').style.display='none'}
-
-function switchTab(t){
-  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
-  document.getElementById('registerForm').style.display=t==='register'?'block':'none';
-  document.getElementById('tabLogin').style.background=t==='login'?'#e8ff00':'transparent';
-  document.getElementById('tabLogin').style.color=t==='login'?'#05050a':'#6b6b8a';
-  document.getElementById('tabRegister').style.background=t==='register'?'#e8ff00':'transparent';
-  document.getElementById('tabRegister').style.color=t==='register'?'#05050a':'#6b6b8a';
-}
-
-async function handleRegister(){
-  const email=document.getElementById('regEmail').value;
-  const username=document.getElementById('regUsername').value;
-  const password=document.getElementById('regPassword').value;
-  const msg=document.getElementById('authMsg');
-  msg.textContent='Creating account...';
-  try{
-    const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username,password})});
-    const d=await r.json();
-    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome to LEDGR!';setTimeout(()=>window.location.href='/dashboard',1000);}
-    else{msg.style.color='#ff3355';msg.textContent=d.error||'Error';}
-  }catch(e){msg.style.color='#ff3355';msg.textContent='Connection error';}
-}
-
-async function handleLogin(){
-  const email=document.getElementById('loginEmail').value;
-  const password=document.getElementById('loginPassword').value;
-  const msg=document.getElementById('authMsg');
-  msg.textContent='Logging in...';
-  try{
-    const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
-    const d=await r.json();
-    if(d.token){localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));msg.style.color='#00e5a0';msg.textContent='Welcome back!';setTimeout(()=>window.location.href='/dashboard',1000);}
-    else{msg.style.color='#ff3355';msg.textContent=d.error||'Error';}
-  }catch(e){msg.style.color='#ff3355';msg.textContent='Connection error';}
-}
-</script>
-
 </body>
 </html>
