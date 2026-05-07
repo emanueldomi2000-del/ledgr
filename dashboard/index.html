@@ -114,10 +114,40 @@ select option{background:#111120}
 .not-logged p{color:var(--mu2);margin-bottom:28px}
 .go-home{background:var(--ac);color:#05050a;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
 @media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+
+/* TUTORIAL */
+#tutorial-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none}
+#tutorial-overlay.active{pointer-events:all}
+#tutorial-spotlight{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.82);z-index:9001;transition:top .35s cubic-bezier(.4,0,.2,1),left .35s cubic-bezier(.4,0,.2,1),width .35s cubic-bezier(.4,0,.2,1),height .35s cubic-bezier(.4,0,.2,1),opacity .25s;border:2px solid rgba(232,255,0,0.45);opacity:0}
+#tutorial-card{position:fixed;z-index:9002;background:var(--s1);border:1px solid rgba(232,255,0,0.3);border-radius:16px;padding:24px 26px;width:320px;box-shadow:0 24px 64px rgba(0,0,0,0.7);transition:top .35s cubic-bezier(.4,0,.2,1),left .35s cubic-bezier(.4,0,.2,1),bottom .35s cubic-bezier(.4,0,.2,1)}
+.tut-dots{display:flex;gap:6px;margin-bottom:14px}
+.tut-dot{height:6px;width:6px;border-radius:3px;background:var(--bd);transition:all .25s}
+.tut-dot.active{width:20px;background:var(--ac)}
+.tut-step-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.tut-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--ac);margin-bottom:10px}
+.tut-desc{font-size:13px;color:var(--mu2);line-height:1.65;margin-bottom:20px}
+.tut-footer{display:flex;justify-content:space-between;align-items:center}
+.tut-skip{background:transparent;border:none;color:var(--mu);font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;padding:0;transition:color .2s}
+.tut-skip:hover{color:var(--mu2)}
+.tut-next{background:var(--ac);color:#05050a;border:none;padding:10px 22px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.tut-next:hover{background:#f5ff33;transform:translateY(-1px)}
 </style>
 </head>
 <body>
 <div class="toast" id="toast"></div>
+<div id="tutorial-overlay">
+  <div id="tutorial-spotlight"></div>
+  <div id="tutorial-card">
+    <div class="tut-dots" id="tutDots"></div>
+    <div class="tut-step-lbl" id="tutStepLbl"></div>
+    <div class="tut-title" id="tutTitle"></div>
+    <div class="tut-desc" id="tutDesc"></div>
+    <div class="tut-footer">
+      <button class="tut-skip" onclick="endTutorial()">Skip tutorial</button>
+      <button class="tut-next" id="tutNext" onclick="nextTutStep()">Next →</button>
+    </div>
+  </div>
+</div>
 <div id="notLogged" class="not-logged" style="display:none">
   <h2>ACCESS DENIED</h2>
   <p>You need to log in.</p>
@@ -325,6 +355,7 @@ window.onload=()=>{
   renderMarkets('Soccer');
   loadFixtures();
   loadPicks();
+  setTimeout(startTutorial, 500);
 };
 
 function logout(){localStorage.removeItem('ledgr_token');localStorage.removeItem('ledgr_user');window.location.href='/'}
@@ -607,6 +638,101 @@ async function loadPicks(){
 }
 
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+// — TUTORIAL —
+const TUT_KEY='ledgr_tutorial_seen';
+const TUT_STEPS=[
+  {
+    title:'WELCOME TO LEDGR',
+    lbl:'Step 1 of 4',
+    desc:'Track your picks, build a verified record, and compete with tipsters worldwide. Let\'s take a 30-second tour.',
+    target:null
+  },
+  {
+    title:'POST YOUR FIRST PICK',
+    lbl:'Step 2 of 4',
+    desc:'Choose a sport, search for a match, pick your market and odds, then hit POST PICK. Results are auto-verified when the match ends.',
+    target:'#app .grid .panel:first-child'
+  },
+  {
+    title:'CHECK THE LEADERBOARD',
+    lbl:'Step 3 of 4',
+    desc:'See how you rank against other tipsters by ROI, win rate, and P&L — all transparent and verified in real time.',
+    target:'a[href="/leaderboard"].nav-link'
+  },
+  {
+    title:'YOUR PROFILE',
+    lbl:'Step 4 of 4',
+    desc:'Your badge links to your public tipster page. Share your verified record and build a following.',
+    target:'#userBadge'
+  }
+];
+let tutStep=0;
+
+function startTutorial(){
+  if(localStorage.getItem(TUT_KEY))return;
+  document.getElementById('tutorial-overlay').classList.add('active');
+  showTutStep(0);
+}
+
+function showTutStep(n){
+  tutStep=n;
+  const step=TUT_STEPS[n];
+  document.getElementById('tutDots').innerHTML=TUT_STEPS.map((_,i)=>`<div class="tut-dot${i===n?' active':''}"></div>`).join('');
+  document.getElementById('tutStepLbl').textContent=step.lbl;
+  document.getElementById('tutTitle').textContent=step.title;
+  document.getElementById('tutDesc').textContent=step.desc;
+  document.getElementById('tutNext').textContent=n===TUT_STEPS.length-1?'Done ✓':'Next →';
+
+  const spot=document.getElementById('tutorial-spotlight');
+  const card=document.getElementById('tutorial-card');
+
+  if(!step.target){
+    spot.style.opacity='0';
+    card.style.top='50%';
+    card.style.left='50%';
+    card.style.bottom='auto';
+    card.style.right='auto';
+    card.style.transform='translate(-50%,-50%)';
+    return;
+  }
+
+  card.style.transform='none';
+  const el=document.querySelector(step.target);
+  if(!el)return;
+  const r=el.getBoundingClientRect();
+  const pad=10;
+  spot.style.opacity='1';
+  spot.style.top=(r.top-pad)+'px';
+  spot.style.left=(r.left-pad)+'px';
+  spot.style.width=(r.width+pad*2)+'px';
+  spot.style.height=(r.height+pad*2)+'px';
+
+  // Place card: prefer below, fall back to above; clamp horizontally
+  const vw=window.innerWidth,vh=window.innerHeight,cw=320,ch=230,gap=16;
+  let top,left;
+  top=r.bottom+pad+gap;
+  if(top+ch>vh-16)top=r.top-pad-gap-ch;
+  if(top<16)top=16;
+  left=r.left-pad;
+  if(left+cw>vw-16)left=vw-cw-16;
+  if(left<16)left=16;
+  card.style.top=top+'px';
+  card.style.left=left+'px';
+  card.style.bottom='auto';
+  card.style.right='auto';
+}
+
+function nextTutStep(){
+  if(tutStep>=TUT_STEPS.length-1){endTutorial();return;}
+  showTutStep(tutStep+1);
+}
+
+function endTutorial(){
+  localStorage.setItem(TUT_KEY,'1');
+  document.getElementById('tutorial-overlay').classList.remove('active');
+  document.getElementById('tutorial-spotlight').style.opacity='0';
+}
 </script>
 </body>
 </html>
