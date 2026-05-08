@@ -12,27 +12,30 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
 *{cursor:none!important}
 .cursor{position:fixed;width:8px;height:8px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
-.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(184,159,255,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .12s ease}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(184,159,255,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 .hero-orb{position:fixed;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(124,95,230,0.07) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
 .card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:48px 40px;width:100%;max-width:420px;position:relative;z-index:2}
 .card-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:6px;color:var(--tx);text-align:center;margin-bottom:8px;text-decoration:none;display:block}
 .card-logo span{color:var(--ac)}
 .card-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:36px}
+.tab-row{display:flex;background:var(--s2);border-radius:8px;padding:4px;margin-bottom:28px;gap:4px}
+.tab{flex:1;padding:9px;border:none;background:transparent;color:var(--mu2);font-family:'Syne',sans-serif;font-size:12px;font-weight:600;border-radius:5px;cursor:none;transition:all .2s;letter-spacing:.3px}
+.tab.active{background:var(--ac);color:#07060d}
 .form-group{margin-bottom:18px}
 .form-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2);letter-spacing:1.5px;text-transform:uppercase;display:block;margin-bottom:8px}
 .form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;padding:14px 16px;outline:none;transition:border-color .2s}
 .form-input:focus{border-color:var(--bd2)}
 .form-input::placeholder{color:var(--mu)}
-.btn-submit{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:15px;font-size:14px;font-weight:700;cursor:none;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.3px;margin-top:8px}
+.forgot{text-align:right;margin-top:-10px;margin-bottom:18px}
+.forgot a{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.5px;text-decoration:none;transition:color .2s}
+.forgot a:hover{color:var(--ac)}
+.btn-submit{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:15px;font-size:14px;font-weight:700;cursor:none;transition:all .2s;font-family:'Syne',sans-serif;letter-spacing:.3px;margin-top:4px}
 .btn-submit:hover{background:#cdb8ff;transform:translateY(-1px)}
-.divider{display:flex;align-items:center;gap:12px;margin:24px 0;color:var(--mu);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bd)}
-.card-footer{text-align:center;margin-top:24px;font-size:12px;color:var(--mu2)}
-.card-footer a{color:var(--ac);text-decoration:none;font-weight:600}
-.card-footer a:hover{text-decoration:underline}
 .error-msg{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.2);color:var(--rd);padding:12px 16px;border-radius:8px;font-size:12px;font-family:'DM Mono',monospace;margin-bottom:18px;display:none}
 .success-msg{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--gr);padding:12px 16px;border-radius:8px;font-size:12px;font-family:'DM Mono',monospace;margin-bottom:18px;display:none}
+.panel{display:none}
+.panel.active{display:block}
 </style>
 </head>
 <body>
@@ -42,21 +45,43 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 <div class="card">
   <a href="/" class="card-logo">LEDG<span>R</span></a>
-  <div class="card-sub">Welcome back</div>
-  <div class="error-msg" id="errorMsg"></div>
-  <div class="success-msg" id="successMsg"></div>
-  <div class="form-group">
-    <label class="form-label">Username or Email</label>
-    <input type="text" class="form-input" id="identifier" placeholder="Enter your username or email">
+  <div class="card-sub" id="cardSub">Welcome back</div>
+
+  <div class="tab-row">
+    <button class="tab active" onclick="showPanel('login',this)">Login</button>
+    <button class="tab" onclick="showPanel('forgot',this)">Forgot Password</button>
   </div>
-  <div class="form-group">
-    <label class="form-label">Password</label>
-    <input type="password" class="form-input" id="password" placeholder="Enter your password">
+
+  <!-- LOGIN PANEL -->
+  <div class="panel active" id="panel-login">
+    <div class="error-msg" id="loginError"></div>
+    <div class="success-msg" id="loginSuccess"></div>
+    <div class="form-group">
+      <label class="form-label">Username or Email</label>
+      <input type="text" class="form-input" id="identifier" placeholder="Enter your username or email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-input" id="password" placeholder="Enter your password">
+    </div>
+    <button class="btn-submit" onclick="handleLogin()">Sign In</button>
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--mu2)">
+      No account? <a href="/register" style="color:var(--ac);font-weight:600;text-decoration:none">Sign Up</a>
+    </p>
   </div>
-  <button class="btn-submit" onclick="handleLogin()">Sign In</button>
-  <div class="divider">or</div>
-  <div class="card-footer">
-    Don't have an account? <a href="/register">Sign Up</a>
+
+  <!-- FORGOT PASSWORD PANEL -->
+  <div class="panel" id="panel-forgot">
+    <div class="error-msg" id="forgotError"></div>
+    <div class="success-msg" id="forgotSuccess"></div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" id="forgotEmail" placeholder="Enter your email">
+    </div>
+    <button class="btn-submit" onclick="handleForgot()">Send Reset Link</button>
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--mu2)">
+      Remembered it? <a href="#" onclick="showPanel('login',document.querySelectorAll('.tab')[0]);return false" style="color:var(--ac);font-weight:600;text-decoration:none">Back to Login</a>
+    </p>
   </div>
 </div>
 
@@ -69,42 +94,53 @@ document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.le
 
 const API='https://ledgr-backend-production-c132.up.railway.app';
 
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('cardSub').textContent=name==='login'?'Welcome back':'Reset your password';
+}
+
 async function handleLogin(){
   const identifier=document.getElementById('identifier').value.trim();
   const password=document.getElementById('password').value.trim();
-  const errorMsg=document.getElementById('errorMsg');
-  const successMsg=document.getElementById('successMsg');
-  errorMsg.style.display='none';
-  successMsg.style.display='none';
-  if(!identifier||!password){
-    errorMsg.textContent='Please fill in all fields.';
-    errorMsg.style.display='block';
-    return;
-  }
+  const err=document.getElementById('loginError');
+  const suc=document.getElementById('loginSuccess');
+  err.style.display='none';suc.style.display='none';
+  if(!identifier||!password){err.textContent='Please fill in all fields.';err.style.display='block';return;}
   try{
-    const r=await fetch(API+'/auth/login',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({username:identifier,password})
-    });
+    const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:identifier,password})});
     const data=await r.json();
     if(r.ok){
       localStorage.setItem('token',data.token);
       localStorage.setItem('username',data.username||identifier);
-      successMsg.textContent='Login successful! Redirecting...';
-      successMsg.style.display='block';
+      suc.textContent='Login successful! Redirecting...';suc.style.display='block';
       setTimeout(()=>window.location.href='/dashboard',1200);
     }else{
-      errorMsg.textContent=data.message||'Invalid credentials. Try again.';
-      errorMsg.style.display='block';
+      err.textContent=data.message||'Invalid credentials. Try again.';err.style.display='block';
     }
-  }catch(e){
-    errorMsg.textContent='Connection error. Please try again.';
-    errorMsg.style.display='block';
-  }
+  }catch(e){err.textContent='Connection error. Please try again.';err.style.display='block';}
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Enter')handleLogin()});
+async function handleForgot(){
+  const email=document.getElementById('forgotEmail').value.trim();
+  const err=document.getElementById('forgotError');
+  const suc=document.getElementById('forgotSuccess');
+  err.style.display='none';suc.style.display='none';
+  if(!email){err.textContent='Please enter your email.';err.style.display='block';return;}
+  try{
+    const r=await fetch(API+'/auth/forgot-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+    const data=await r.json();
+    if(r.ok){
+      suc.textContent='Reset link sent! Check your email.';suc.style.display='block';
+    }else{
+      err.textContent=data.message||'Email not found.';err.style.display='block';
+    }
+  }catch(e){err.textContent='Connection error. Please try again.';err.style.display='block';}
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){const p=document.querySelector('.panel.active').id;if(p==='panel-login')handleLogin();else handleForgot();}});
 </script>
 </body>
 </html>
