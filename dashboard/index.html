@@ -20,7 +20,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
 .nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s;letter-spacing:.3px}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
 .nav-link.active{color:var(--ac);background:var(--acg)}
-.user-badge{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2)}
+.user-badge{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:none}
 .logout-btn{background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:6px;padding:7px 14px;font-size:11px;cursor:none;font-family:'Syne',sans-serif;transition:all .2s}
 .logout-btn:hover{border-color:var(--rd);color:var(--rd)}
 .tut-replay{background:var(--acg);border:1px solid var(--bd2);color:var(--ac);border-radius:6px;padding:7px 14px;font-size:11px;cursor:none;font-family:'DM Mono',monospace;letter-spacing:.5px;transition:all .2s}
@@ -41,7 +41,6 @@ label{display:block;font-size:10px;color:var(--mu);letter-spacing:2px;text-trans
 input,select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;padding:10px 14px;outline:none;transition:border-color .2s}
 input:focus,select:focus{border-color:var(--bd2)}
 select option{background:#15122a}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sport-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
 .sport-tab{padding:7px 14px;border:1px solid var(--bd);border-radius:20px;font-size:12px;cursor:none;transition:all .2s;color:var(--mu2)}
 .sport-tab.active{background:var(--acg);border-color:var(--bd2);color:var(--ac)}
@@ -102,11 +101,9 @@ select option{background:#15122a}
 .not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center}
 .not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--ac);margin-bottom:12px}
 .not-logged p{color:var(--mu2);margin-bottom:28px}
-.go-home{background:var(--ac);color:#07060d;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
-
-/* TUTORIAL */
-#tutorial-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none}
-#tutorial-overlay.active{pointer-events:all}
+.go-login{background:var(--ac);color:#07060d;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
+#tutorial-overlay{position:fixed;inset:0;z-index:9000;pointer-events:none;display:none}
+#tutorial-overlay.active{pointer-events:all;display:block}
 #tutorial-spotlight{position:fixed;border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.82);z-index:9001;transition:all .35s cubic-bezier(.4,0,.2,1);border:2px solid rgba(184,159,255,0.4);opacity:0}
 #tutorial-card{position:fixed;z-index:9002;background:var(--s1);border:1px solid rgba(184,159,255,0.25);border-radius:16px;padding:24px 26px;width:340px;box-shadow:0 24px 64px rgba(0,0,0,0.7);transition:all .35s cubic-bezier(.4,0,.2,1)}
 .tut-progress{height:3px;background:var(--s2);border-radius:2px;margin-bottom:18px;overflow:hidden}
@@ -121,7 +118,6 @@ select option{background:#15122a}
 .tut-skip:hover{color:var(--mu2)}
 .tut-next{background:var(--ac);color:#07060d;border:none;padding:10px 22px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:none;transition:all .2s}
 .tut-next:hover{background:#cdb8ff;transform:translateY(-1px)}
-
 @media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}nav{padding:0 16px}.nav-link{display:none}}
 </style>
 </head>
@@ -130,7 +126,6 @@ select option{background:#15122a}
 <div class="cursor-ring" id="ring"></div>
 <div class="toast" id="toast"></div>
 
-<!-- TUTORIAL -->
 <div id="tutorial-overlay">
   <div id="tutorial-spotlight"></div>
   <div id="tutorial-card">
@@ -140,7 +135,7 @@ select option{background:#15122a}
     <div class="tut-desc" id="tutDesc"></div>
     <div class="tut-badges" id="tutBadges"></div>
     <div class="tut-footer">
-      <button class="tut-skip" onclick="endTutorial()">Skip</button>
+      <button class="tut-skip" id="tutSkipBtn" onclick="endTutorial()">Skip</button>
       <button class="tut-next" id="tutNext" onclick="nextTutStep()">Next →</button>
     </div>
   </div>
@@ -149,20 +144,20 @@ select option{background:#15122a}
 <div id="notLogged" class="not-logged" style="display:none">
   <h2>ACCESS DENIED</h2>
   <p>You need to log in to access your dashboard.</p>
-  <a href="/login" class="go-home">Login</a>
+  <a href="/login" class="go-login">Login</a>
 </div>
 
 <div id="app" style="display:none">
   <nav>
-    <a href="/" class="logo">LEDG<span>R</span></a>
+    <a href="/dashboard" class="logo">LEDG<span>R</span></a>
     <div class="nav-r">
-      <a href="/" class="nav-link">Home</a>
+      <a href="/dashboard" class="nav-link active">Home</a>
       <a href="/leaderboard" class="nav-link">Leaderboard</a>
       <a href="/compare" class="nav-link">Compare</a>
       <a href="/simulator" class="nav-link">Simulator</a>
       <a href="/badges" class="nav-link">🏅 Badges</a>
       <button class="tut-replay" onclick="replayTutorial()">? Tutorial</button>
-      <div class="user-badge" id="userBadge">...</div>
+      <div class="user-badge" id="userBadge" onclick="goToProfile()" title="View my profile">...</div>
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </nav>
@@ -242,7 +237,6 @@ select option{background:#15122a}
     </div>
   </div>
 </div>
-
 <script>
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
@@ -280,47 +274,26 @@ const NBA_MARKETS=[
   {id:'nbaast',title:'🎯 Player Assists',playerType:'nba',playerMarkets:['Over 2.5 Ast','Over 3.5 Ast','Over 4.5 Ast','Over 5.5 Ast','Under 3.5 Ast','Under 4.5 Ast']}
 ];
 
-// TUTORIAL STEPS
 const TUT_KEY='ledgr_tut_v3';
 const TUT_STEPS=[
-  {title:'WELCOME TO LEDGR 👋',lbl:'1 / 8',target:null,
-    desc:'You\'re about to build a verified tipster record that nobody can fake. Let\'s walk through everything in 60 seconds.'},
-  {title:'YOUR STATS',lbl:'2 / 8',target:'#statBoxTotal',
-    desc:'These 4 numbers are your public record — Total Picks, ROI, Win Rate, and P&L. They update automatically every time a match result comes in.'},
-  {title:'POST A PICK',lbl:'3 / 8',target:'#postPickPanel',
-    desc:'Choose sport → date → league → search the match → pick your market → set odds and stake → hit POST PICK. The pick is timestamped immediately. Once posted, it cannot be edited — that\'s the whole point.'},
-  {title:'VERIFIED RESULTS',lbl:'4 / 8',target:'#myPicksPanel',
-    desc:'Your picks appear here as PENDING. When the match ends, results are verified automatically by our system — no manual input, no cheating possible.'},
-  {title:'THE LEADERBOARD',lbl:'5 / 8',target:'a[href="/leaderboard"].nav-link',
-    desc:'Every tipster on LEDGR is ranked live by ROI, win rate, and total picks. The leaderboard is your stage — build your record and climb.'},
-  {title:'YOUR BADGES 🏅',lbl:'6 / 8',target:'a[href="/badges"].nav-link',
-    desc:'Earn badges by hitting milestones. They show on your public profile and signal to followers that you\'re legit.',
-    badges:[
-      {icon:'🎯',name:'First Pick',rarity:'common',color:'#6b7280'},
-      {icon:'🔥',name:'Hot Streak',rarity:'rare',color:'#3b82f6'},
-      {icon:'⭐',name:'Rising Star',rarity:'epic',color:'#8b5cf6'},
-      {icon:'💎',name:'Diamond',rarity:'legendary',color:'#f59e0b'},
-      {icon:'🐐',name:'The GOAT',rarity:'elite',color:'#ec4899'},
-    ]},
-  {title:'BADGE RARITIES',lbl:'7 / 8',target:'a[href="/badges"].nav-link',
-    desc:'There are 5 rarity levels. Common badges are easy to get — Elite badges are earned by the best tipsters on the platform. Each badge has a progress bar so you always know how close you are.',
-    badges:[
-      {icon:'⬜',name:'Common',rarity:'common',color:'#6b7280'},
-      {icon:'🔷',name:'Rare',rarity:'rare',color:'#3b82f6'},
-      {icon:'🟣',name:'Epic',rarity:'epic',color:'#8b5cf6'},
-      {icon:'🟡',name:'Legendary',rarity:'legendary',color:'#f59e0b'},
-      {icon:'💗',name:'Elite',rarity:'elite',color:'#ec4899'},
-    ]},
-  {title:'YOU\'RE READY 🚀',lbl:'8 / 8',target:null,
-    desc:'Post your first pick, climb the leaderboard, unlock badges. Your verified record starts now — and nobody can touch it.'},
+  {title:'WELCOME TO LEDGR 👋',lbl:'1 / 8',target:null,desc:'You\'re about to build a verified tipster record that nobody can fake. Let\'s walk through everything in 60 seconds.'},
+  {title:'YOUR STATS',lbl:'2 / 8',target:'#statBoxTotal',desc:'These 4 numbers are your public record — Total Picks, ROI, Win Rate, and P&L. They update automatically every time a match result comes in.'},
+  {title:'POST A PICK',lbl:'3 / 8',target:'#postPickPanel',desc:'Choose sport → date → league → search the match → pick your market → set odds and stake → hit POST PICK. Once posted, it cannot be edited — that\'s the whole point.'},
+  {title:'VERIFIED RESULTS',lbl:'4 / 8',target:'#myPicksPanel',desc:'Your picks appear here as PENDING. When the match ends, results are verified automatically — no manual input, no cheating possible.'},
+  {title:'THE LEADERBOARD',lbl:'5 / 8',target:'a[href="/leaderboard"].nav-link',desc:'Every tipster on LEDGR is ranked live by ROI, win rate, and total picks. The leaderboard is your stage — build your record and climb.'},
+  {title:'YOUR BADGES 🏅',lbl:'6 / 8',target:'a[href="/badges"].nav-link',desc:'Earn badges by hitting milestones. They show on your public profile and signal to followers that you\'re legit.',badges:[{icon:'🎯',name:'First Pick',color:'#6b7280'},{icon:'🔥',name:'Hot Streak',color:'#3b82f6'},{icon:'⭐',name:'Rising Star',color:'#8b5cf6'},{icon:'💎',name:'Diamond',color:'#f59e0b'},{icon:'🐐',name:'The GOAT',color:'#ec4899'}]},
+  {title:'BADGE RARITIES',lbl:'7 / 8',target:'a[href="/badges"].nav-link',desc:'5 rarity levels — Common to Elite. Each badge has a progress bar so you always know how close you are.',badges:[{icon:'⬜',name:'Common',color:'#6b7280'},{icon:'🔷',name:'Rare',color:'#3b82f6'},{icon:'🟣',name:'Epic',color:'#8b5cf6'},{icon:'🟡',name:'Legendary',color:'#f59e0b'},{icon:'💗',name:'Elite',color:'#ec4899'}]},
+  {title:'YOU\'RE READY 🚀',lbl:'8 / 8',target:null,desc:'Post your first pick, climb the leaderboard, unlock badges. Your verified record starts now — and nobody can touch it.'},
 ];
 let tutStep=0;
 
 window.onload=()=>{
-  const tk=localStorage.getItem('token');
-  const un=localStorage.getItem('username');
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  const un=localStorage.getItem('username')||(()=>{try{return JSON.parse(localStorage.getItem('ledgr_user'))?.username;}catch(e){return null;}})();
   if(!tk||!un){document.getElementById('notLogged').style.display='flex';return;}
-  user={id:null,username:un,token:tk};
+  localStorage.setItem('token',tk);
+  localStorage.setItem('username',un);
+  user={username:un,token:tk};
   document.getElementById('app').style.display='block';
   document.getElementById('userBadge').textContent='@'+un;
   renderMarkets('Soccer');
@@ -329,59 +302,41 @@ window.onload=()=>{
   setTimeout(()=>{if(!localStorage.getItem(TUT_KEY))startTutorial();},600);
 };
 
-function logout(){localStorage.removeItem('token');localStorage.removeItem('username');window.location.href='/';}
+function logout(){['token','username','ledgr_token','ledgr_user'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+function goToProfile(){const un=localStorage.getItem('username');if(un)window.location.href='/tipster?u='+un;}
 
-function startTutorial(){
-  document.getElementById('tutorial-overlay').classList.add('active');
-  showTutStep(0);
-}
-function replayTutorial(){
-  localStorage.removeItem(TUT_KEY);
-  startTutorial();
-}
+function startTutorial(){document.getElementById('tutorial-overlay').classList.add('active');showTutStep(0);}
+function replayTutorial(){localStorage.removeItem(TUT_KEY);startTutorial();}
 
 function showTutStep(n){
   tutStep=n;
   const step=TUT_STEPS[n];
-  const pct=((n+1)/TUT_STEPS.length)*100;
-  document.getElementById('tutProgress').style.width=pct+'%';
+  const isLast=(n===TUT_STEPS.length-1);
+  document.getElementById('tutProgress').style.width=(((n+1)/TUT_STEPS.length)*100)+'%';
   document.getElementById('tutStepLbl').textContent=step.lbl;
   document.getElementById('tutTitle').textContent=step.title;
   document.getElementById('tutDesc').textContent=step.desc;
-  document.getElementById('tutNext').textContent=n===TUT_STEPS.length-1?'Done ✓':'Next →';
-
-  // badges row
+  document.getElementById('tutNext').textContent=isLast?'Done ✓':'Next →';
+  document.getElementById('tutSkipBtn').style.display=isLast?'none':'inline';
   const badgesEl=document.getElementById('tutBadges');
   if(step.badges&&step.badges.length){
     badgesEl.innerHTML=step.badges.map(b=>`<div class="tut-badge-pill" style="border-color:${b.color};color:${b.color}">${b.icon} ${b.name}</div>`).join('');
     badgesEl.style.display='flex';
-  }else{
-    badgesEl.innerHTML='';
-    badgesEl.style.display='none';
-  }
-
+  }else{badgesEl.innerHTML='';badgesEl.style.display='none';}
   const spot=document.getElementById('tutorial-spotlight');
   const card=document.getElementById('tutorial-card');
   card.style.transform='none';
-
   if(!step.target){
     spot.style.opacity='0';
-    card.style.top='50%';card.style.left='50%';
-    card.style.bottom='auto';card.style.right='auto';
-    card.style.transform='translate(-50%,-50%)';
-    return;
+    card.style.top='50%';card.style.left='50%';card.style.bottom='auto';card.style.right='auto';
+    card.style.transform='translate(-50%,-50%)';return;
   }
-
   const el=document.querySelector(step.target);
   if(!el){spot.style.opacity='0';return;}
-  const r=el.getBoundingClientRect();
-  const pad=10;
+  const r=el.getBoundingClientRect(),pad=10;
   spot.style.opacity='1';
-  spot.style.top=(r.top-pad)+'px';
-  spot.style.left=(r.left-pad)+'px';
-  spot.style.width=(r.width+pad*2)+'px';
-  spot.style.height=(r.height+pad*2)+'px';
-
+  spot.style.top=(r.top-pad)+'px';spot.style.left=(r.left-pad)+'px';
+  spot.style.width=(r.width+pad*2)+'px';spot.style.height=(r.height+pad*2)+'px';
   const vw=window.innerWidth,vh=window.innerHeight,cw=340,ch=300,gap=16;
   let top=r.bottom+pad+gap;
   if(top+ch>vh-16)top=r.top-pad-gap-ch;
@@ -389,8 +344,7 @@ function showTutStep(n){
   let left=r.left-pad;
   if(left+cw>vw-16)left=vw-cw-16;
   if(left<16)left=16;
-  card.style.top=top+'px';card.style.left=left+'px';
-  card.style.bottom='auto';card.style.right='auto';
+  card.style.top=top+'px';card.style.left=left+'px';card.style.bottom='auto';card.style.right='auto';
 }
 
 function nextTutStep(){
@@ -399,7 +353,9 @@ function nextTutStep(){
 }
 function endTutorial(){
   localStorage.setItem(TUT_KEY,'1');
-  document.getElementById('tutorial-overlay').classList.remove('active');
+  const ov=document.getElementById('tutorial-overlay');
+  ov.classList.remove('active');
+  ov.style.display='none';
   document.getElementById('tutorial-spotlight').style.opacity='0';
 }
 
@@ -447,8 +403,7 @@ function renderMarkets(sport){
     }
     if(s.playerType){
       if(selectedFixture){
-        const pl=s.playerType==='goalkeeper'?[...homeGK,...awayGK]:[...homePlayers,...awayPlayers];
-        body+=`<div class="sub-label">Player</div><select id="psel_${s.id}" onchange="onPlayerSelect('${s.id}')"><option value="">Choose player...</option>${selectedFixture?`<optgroup label="${selectedFixture.home}">${(s.playerType==='goalkeeper'?homeGK:homePlayers).map(p=>`<option>${p}</option>`).join('')}</optgroup><optgroup label="${selectedFixture.away}">${(s.playerType==='goalkeeper'?awayGK:awayPlayers).map(p=>`<option>${p}</option>`).join('')}</optgroup>`:''}</select><div class="sub-label" style="margin-top:8px">Market</div><div class="chips-wrap">${s.playerMarkets.map(m=>`<div class="chip" onclick="selectPlayerMarket('${s.id}','${m}',this)">${m}</div>`).join('')}</div>`;
+        body+=`<div class="sub-label">Player</div><select id="psel_${s.id}" onchange="onPlayerSelect('${s.id}')"><option value="">Choose player...</option><optgroup label="${selectedFixture.home}">${(s.playerType==='goalkeeper'?homeGK:homePlayers).map(p=>`<option>${p}</option>`).join('')}</optgroup><optgroup label="${selectedFixture.away}">${(s.playerType==='goalkeeper'?awayGK:awayPlayers).map(p=>`<option>${p}</option>`).join('')}</optgroup></select><div class="sub-label" style="margin-top:8px">Market</div><div class="chips-wrap">${s.playerMarkets.map(m=>`<div class="chip" onclick="selectPlayerMarket('${s.id}','${m}',this)">${m}</div>`).join('')}</div>`;
       }else{
         body+=`<div style="font-size:11px;color:var(--mu);padding:8px 0;font-family:'DM Mono',monospace">⚠️ Select a match first</div>`;
       }
