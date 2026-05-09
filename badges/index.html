@@ -17,9 +17,7 @@
   --common:#9ca3af;--rare:#60a5fa;--epic:#a78bfa;--legendary:#fbbf24;--elite:#f472b6;
 }
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
-*{cursor:none!important}
-.cursor{position:fixed;width:8px;height:8px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
-.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(184,159,255,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,6,13,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
@@ -35,7 +33,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,6,13,0.85);backdrop-filt
 .page-sub{color:var(--mu2);font-size:14px;margin-top:10px;margin-bottom:40px;line-height:1.7}
 
 .rarity-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px}
-.rf{padding:8px 20px;border-radius:20px;border:1px solid;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;cursor:none;transition:all .25s;background:transparent}
+.rf{padding:8px 20px;border-radius:20px;border:1px solid;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;cursor:pointer;transition:all .25s;background:transparent}
 .rf.all{border-color:var(--bd2);color:var(--mu2)}.rf.all.active{background:var(--acg);color:var(--ac);border-color:var(--ac)}
 .rf.common{border-color:rgba(156,163,175,0.4);color:var(--common)}.rf.common.active{background:rgba(156,163,175,0.12);border-color:var(--common)}
 .rf.rare{border-color:rgba(96,165,250,0.4);color:var(--rare)}.rf.rare.active{background:rgba(96,165,250,0.12);border-color:var(--rare)}
@@ -136,8 +134,6 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,6,13,0.85);backdrop-filt
 </style>
 </head>
 <body>
-<div class="cursor" id="cur"></div>
-<div class="cursor-ring" id="ring"></div>
 <nav>
   <a href="/home" class="logo">LEDG<span>R</span></a>
   <div class="nav-links">
@@ -168,11 +164,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,6,13,0.85);backdrop-filt
   <div id="badgesContainer"></div>
 </div>
 <script>
-const cur=document.getElementById('cur'),ring=document.getElementById('ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function lerp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)})();
-document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px'})});
+
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{});el.addEventListener('mouseleave',()=>{})});
 
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const BADGES=[
@@ -301,8 +294,8 @@ function renderBadges(){
       requestAnimationFrame(()=>{el.style.width=w+'%'});
     });
     document.querySelectorAll('.badge-card').forEach(el=>{
-      el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});
-      el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px'});
+      el.addEventListener('mouseenter',()=>{});
+      el.addEventListener('mouseleave',()=>{});
     });
   },50);
   const unlocked=BADGES.filter(b=>isUnlocked(b));
