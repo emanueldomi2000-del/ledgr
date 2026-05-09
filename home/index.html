@@ -8,131 +8,271 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
+:root{
+  --bg:#07060d;--s1:#0c0a1a;--s2:#15122a;
+  --bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);
+  --ac:#b89fff;--acg:rgba(184,159,255,0.08);
+  --tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;
+  --gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
 *{cursor:none!important}
 .cursor{position:fixed;width:8px;height:8px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
 .cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(184,159,255,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+
+/* BG GLOW */
+.bg-glow{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
 .nav-links{display:flex;gap:4px;align-items:center}
 .nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s;letter-spacing:.3px}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
 .nav-link.active{color:var(--ac);background:var(--acg)}
-.user-badge{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:none}
+.user-badge{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:none;transition:all .2s}
+.user-badge:hover{border-color:var(--bd2);color:var(--ac)}
 .logout-btn{background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:6px;padding:7px 14px;font-size:11px;cursor:none;font-family:'Syne',sans-serif;transition:all .2s}
 .logout-btn:hover{border-color:var(--rd);color:var(--rd)}
-.main{max-width:1100px;margin:0 auto;padding:40px 24px;position:relative;z-index:1}
-.welcome{margin-bottom:32px}
+
+.main{max-width:1140px;margin:0 auto;padding:32px 24px;position:relative;z-index:2}
+
+/* ── HERO HEADER ── */
+.hero-header{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-bottom:28px}
 .welcome-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.welcome-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,56px);letter-spacing:3px;line-height:1;color:var(--tx)}
+.welcome-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,52px);letter-spacing:3px;line-height:1;color:var(--tx)}
 .welcome-title span{color:var(--ac)}
 .welcome-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);margin-top:6px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
-.stat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;transition:border-color .2s}
-.stat:hover{border-color:var(--bd2)}
+.welcome-streak{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.25);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--orange);font-family:'DM Mono',monospace}
+
+/* PROFILE CARD */
+.profile-card{background:var(--s1);border:1px solid var(--bd2);border-radius:16px;padding:20px;min-width:220px;text-align:center;position:relative;overflow:hidden;cursor:none;transition:all .2s}
+.profile-card:hover{border-color:var(--ac);transform:translateY(-2px)}
+.profile-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,159,255,0.06),transparent);pointer-events:none}
+.profile-av{width:64px;height:64px;border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;border:3px solid var(--ac);background:linear-gradient(135deg,#7c3aed,#a855f7);position:relative}
+.profile-av-ring{position:absolute;inset:-4px;border-radius:50%;border:2px solid rgba(184,159,255,0.2);animation:spin 8s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.profile-username{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--tx);margin-bottom:4px}
+.profile-badges-row{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin-bottom:10px;min-height:20px}
+.profile-badge-pill{font-size:14px;background:var(--s2);border-radius:6px;padding:3px 6px;border:1px solid var(--bd)}
+.profile-rank{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
+.profile-rank span{color:var(--gold);font-weight:700}
+.verified-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);color:var(--cyan);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-top:6px}
+.vdot{width:4px;height:4px;background:var(--gr);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.stat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px 20px;transition:all .2s;position:relative;overflow:hidden}
+.stat:hover{border-color:var(--bd2);transform:translateY(-2px)}
 .stat-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.stat-val{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:var(--tx)}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--tx);line-height:1;margin-bottom:6px}
 .stat-val.pos{color:var(--gr)}.stat-val.neg{color:var(--rd)}
-.grid{display:grid;grid-template-columns:1fr 380px;gap:20px}
+.sparkline{width:100%;height:28px;margin-top:4px}
+
+/* ── ACTIVITY FEED ── */
+.activity-bar{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:10px 16px;margin-bottom:24px;display:flex;align-items:center;gap:12px;overflow:hidden}
+.activity-dot{width:6px;height:6px;background:var(--gr);border-radius:50%;flex-shrink:0;animation:blink 1.5s infinite}
+.activity-scroll{display:flex;gap:32px;white-space:nowrap;animation:actscroll 20s linear infinite;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2)}
+.activity-scroll span b{color:var(--ac)}
+@keyframes actscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── MAIN GRID ── */
+.main-grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
+
+/* ── POST A PICK HERO ── */
+.post-pick-hero{background:linear-gradient(135deg,rgba(184,159,255,0.12),rgba(124,95,230,0.08));border:1px solid var(--bd2);border-radius:16px;padding:28px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:20px;text-decoration:none;cursor:none;transition:all .2s;position:relative;overflow:hidden}
+.post-pick-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,159,255,0.05),transparent);pointer-events:none}
+.post-pick-hero:hover{border-color:var(--ac);transform:translateY(-2px);box-shadow:0 8px 32px rgba(184,159,255,0.1)}
+.pph-left h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--ac);margin-bottom:4px}
+.pph-left p{font-size:12px;color:var(--mu2);font-family:'DM Mono',monospace}
+.pph-btn{background:var(--ac);color:#07060d;padding:12px 24px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;flex-shrink:0;transition:all .2s}
+.post-pick-hero:hover .pph-btn{background:#cdb8ff}
+
+/* QUICK ACTIONS SMALL */
+.quick-actions-small{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.qa-btn{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--s1);border:1px solid var(--bd);border-radius:10px;text-decoration:none;cursor:none;transition:all .2s}
+.qa-btn:hover{border-color:var(--bd2);background:var(--s2)}
+.qa-icon{font-size:18px;flex-shrink:0}
+.qa-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--tx)}
+.qa-sub{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace}
+
+/* PANEL */
 .panel{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:border-color .2s}
-.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ac);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--ac);margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .panel-title::after{content:'';flex:1;height:1px;background:var(--bd)}
-.pick-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:8px;transition:border-color .2s}
-.pick-card:hover{border-color:var(--bd2)}
-.pick-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.pick-event{font-weight:700;font-size:13px;margin-bottom:2px}
-.pick-market{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
-.pick-odds{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--ac)}
+
+/* PICK CARD — social style */
+.pick-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:8px;transition:all .2s}
+.pick-card:hover{border-color:var(--bd2);transform:translateX(2px)}
+.pick-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.pick-sport-icon{font-size:16px}
+.pick-event{font-weight:700;font-size:13px;color:var(--tx)}
+.pick-market{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:1px}
+.pick-body{display:flex;justify-content:space-between;align-items:center}
+.pick-odds{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--ac);line-height:1}
 .pick-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
-.badge-win{background:rgba(52,211,153,.12);color:var(--gr)}
-.badge-loss{background:rgba(248,113,113,.12);color:var(--rd)}
-.badge-pending{background:rgba(245,158,11,.12);color:#f59e0b}
-.badge-sport{background:var(--acg);color:var(--ac)}
+.badge-win{background:rgba(52,211,153,.15);color:var(--gr);border:1px solid rgba(52,211,153,.2)}
+.badge-loss{background:rgba(248,113,113,.15);color:var(--rd);border:1px solid rgba(248,113,113,.2)}
+.badge-pending{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
+.badge-sport{background:var(--acg);color:var(--ac);border:1px solid var(--bd)}
 .pick-time{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-left:auto}
 .empty{text-align:center;padding:40px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px}
-.lb-row{display:flex;align-items:center;gap:12px;padding:14px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:none;transition:all .2s;text-decoration:none}
-.lb-row:hover{border-color:var(--bd2);background:var(--s2);transform:translateX(3px)}
-.lb-row.top1{border-color:rgba(251,191,36,0.4);background:linear-gradient(135deg,rgba(251,191,36,0.05),var(--s2))}
+
+/* TOP TIPSTERS */
+.lb-row{display:flex;align-items:center;gap:12px;padding:14px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:none;transition:all .25s;text-decoration:none;position:relative;overflow:hidden}
+.lb-row::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s}
+.lb-row:hover{border-color:var(--bd2);transform:translateX(3px)}
+.lb-row:hover::before{opacity:1}
+.lb-row.top1{border-color:rgba(251,191,36,0.35);background:linear-gradient(135deg,rgba(251,191,36,0.06),var(--s2))}
+.lb-row.top1::before{background:linear-gradient(90deg,rgba(251,191,36,0.04),transparent)}
 .lb-row.top2{border-color:rgba(156,163,175,0.3)}
 .lb-row.top3{border-color:rgba(180,120,80,0.3)}
-.rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--mu);width:28px;text-align:center;flex-shrink:0}
+.rank{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--mu);width:24px;text-align:center;flex-shrink:0}
 .rank.r1{color:#fbbf24}.rank.r2{color:#9ca3af}.rank.r3{color:#b47850}
-.av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;flex-shrink:0;color:#fff}
-.tip-name{font-weight:700;font-size:13px;color:var(--tx)}
-.tip-picks{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.tip-roi{font-family:'Bebas Neue',sans-serif;font-size:18px;margin-left:auto;flex-shrink:0}
+.av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;flex-shrink:0;color:#fff}
+.tip-info{flex:1;min-width:0}
+.tip-name{font-weight:700;font-size:13px;color:var(--tx);display:flex;align-items:center;gap:6px}
+.tip-badges{display:flex;gap:3px}
+.tip-badge-icon{font-size:11px}
+.tip-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
+.tip-right{text-align:right;flex-shrink:0}
+.tip-roi{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1}
 .tip-roi.pos{color:var(--gr)}.tip-roi.neg{color:var(--rd)}
-.view-all{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--mu2);font-family:'DM Mono',monospace;text-decoration:none;padding:10px;border:1px solid var(--bd);border-radius:8px;transition:all .2s}
+.tip-streak{font-size:10px;color:var(--orange);font-family:'DM Mono',monospace;margin-top:2px}
+.view-all{display:block;text-align:center;margin-top:12px;font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;text-decoration:none;padding:10px;border:1px solid var(--bd);border-radius:8px;transition:all .2s}
 .view-all:hover{border-color:var(--ac);color:var(--ac)}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.action-btn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;text-decoration:none;cursor:none;transition:all .2s}
-.action-btn:hover{border-color:var(--bd2);background:var(--s2)}
-.action-icon{font-size:22px;margin-bottom:2px}
-.action-label{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--tx)}
-.action-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
-.action-btn.primary{border-color:var(--bd2);background:var(--acg)}
-.action-btn.primary .action-label{color:var(--ac)}
+
+/* NOT LOGGED */
 .not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center}
 .not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--ac);margin-bottom:12px}
 .not-logged p{color:var(--mu2);margin-bottom:28px}
 .go-home{background:var(--ac);color:#07060d;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
-@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}nav{padding:0 16px}.nav-link{display:none}}
+
+@media(max-width:960px){.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-header{grid-template-columns:1fr}.profile-card{display:none}nav{padding:0 16px}.nav-link{display:none}.quick-actions-small{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="cursor" id="cur"></div>
 <div class="cursor-ring" id="ring"></div>
+<div class="bg-glow"></div>
+
 <div id="notLogged" class="not-logged" style="display:none">
   <h2>ACCESS DENIED</h2>
   <p>You need to log in to view your home page.</p>
   <a href="/" class="go-home">Back to LEDGR</a>
 </div>
+
 <div id="app" style="display:none">
   <nav>
     <a href="/home" class="logo">LEDG<span>R</span></a>
     <div class="nav-links">
       <a href="/home" class="nav-link active">Home</a>
       <a href="/leaderboard" class="nav-link">Leaderboard</a>
+      <a href="/badges" class="nav-link">🏅 Badges</a>
       <a href="/compare" class="nav-link">Compare</a>
       <a href="/simulator" class="nav-link">Simulator</a>
-      <a href="/dashboard" class="nav-link">Dashboard</a>
-      <a href="/badges" class="nav-link">🏅 Badges</a>
-      <div class="user-badge" id="userBadge" onclick="goToProfile()" title="View profile">...</div>
+      <div class="user-badge" id="userBadge" onclick="goToProfile()">...</div>
       <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </nav>
+
   <div class="main">
-    <div class="welcome">
-      <div class="welcome-sub">Welcome back</div>
-      <div class="welcome-title">GM, <span id="welcomeName">—</span></div>
-      <div class="welcome-date" id="welcomeDate"></div>
-    </div>
-    <div class="stats">
-      <div class="stat"><div class="stat-label">Total Picks</div><div class="stat-val" id="statTotal">—</div></div>
-      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR">—</div></div>
-      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI">—</div></div>
-      <div class="stat"><div class="stat-label">Total P&L</div><div class="stat-val" id="statPnL">—</div></div>
-    </div>
-    <div class="grid">
+
+    <!-- HERO HEADER -->
+    <div class="hero-header">
       <div>
-        <div class="panel" style="margin-bottom:20px">
-          <div class="panel-title">QUICK ACTIONS</div>
-          <div class="actions">
-            <a href="/dashboard" class="action-btn primary"><div class="action-icon">＋</div><div class="action-label">POST A PICK</div><div class="action-sub">Log a new bet</div></a>
-            <a href="/leaderboard" class="action-btn"><div class="action-icon">🏆</div><div class="action-label">LEADERBOARD</div><div class="action-sub">See top tipsters</div></a>
-            <a href="/compare" class="action-btn"><div class="action-icon">⚖️</div><div class="action-label">COMPARE</div><div class="action-sub">Head-to-head stats</div></a>
-            <a href="/simulator" class="action-btn"><div class="action-icon">🎯</div><div class="action-label">SIMULATOR</div><div class="action-sub">Test your strategy</div></a>
-          </div>
+        <div class="welcome-sub">Welcome back</div>
+        <div class="welcome-title">GM, <span id="welcomeName">—</span></div>
+        <div class="welcome-date" id="welcomeDate"></div>
+        <div id="streakBadge" style="display:none" class="welcome-streak">🔥 <span id="streakText"></span></div>
+      </div>
+      <div class="profile-card" onclick="goToProfile()">
+        <div class="profile-av" id="profileAv">
+          <div class="profile-av-ring"></div>
+          <span id="profileInitials">?</span>
         </div>
+        <div class="profile-username" id="profileUsername">—</div>
+        <div class="profile-badges-row" id="profileBadgesRow"></div>
+        <div class="profile-rank">Rank <span id="profileRank">#—</span></div>
+        <div class="verified-tag"><div class="vdot"></div> VERIFIED</div>
+      </div>
+    </div>
+
+    <!-- ACTIVITY FEED -->
+    <div class="activity-bar">
+      <div class="activity-dot"></div>
+      <div class="activity-scroll" id="activityFeed">
+        <span><b>LEDGR</b> — Live platform · picks verified in real time</span>
+        <span><b>🔥</b> Post your picks and climb the leaderboard</span>
+        <span><b>LEDGR</b> — Live platform · picks verified in real time</span>
+        <span><b>🔥</b> Post your picks and climb the leaderboard</span>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Total Picks</div>
+        <div class="stat-val" id="statTotal">—</div>
+        <svg class="sparkline" id="spark0" viewBox="0 0 100 28" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Win Rate</div>
+        <div class="stat-val" id="statWR">—</div>
+        <svg class="sparkline" id="spark1" viewBox="0 0 100 28" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="stat">
+        <div class="stat-label">ROI</div>
+        <div class="stat-val" id="statROI">—</div>
+        <svg class="sparkline" id="spark2" viewBox="0 0 100 28" preserveAspectRatio="none"></svg>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Total P&L</div>
+        <div class="stat-val" id="statPnL">—</div>
+        <svg class="sparkline" id="spark3" viewBox="0 0 100 28" preserveAspectRatio="none"></svg>
+      </div>
+    </div>
+
+    <!-- MAIN GRID -->
+    <div class="main-grid">
+      <div>
+        <!-- POST A PICK HERO -->
+        <a href="/dashboard" class="post-pick-hero">
+          <div class="pph-left">
+            <h2>＋ POST A PICK</h2>
+            <p>Log your next bet · results verified automatically</p>
+          </div>
+          <div class="pph-btn">POST NOW →</div>
+        </a>
+
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions-small">
+          <a href="/leaderboard" class="qa-btn">
+            <div class="qa-icon">🏆</div>
+            <div><div class="qa-label">LEADERBOARD</div><div class="qa-sub">See top tipsters</div></div>
+          </a>
+          <a href="/compare" class="qa-btn">
+            <div class="qa-icon">⚖️</div>
+            <div><div class="qa-label">COMPARE</div><div class="qa-sub">Head-to-head</div></div>
+          </a>
+          <a href="/simulator" class="qa-btn">
+            <div class="qa-icon">📈</div>
+            <div><div class="qa-label">SIMULATOR</div><div class="qa-sub">Test strategy</div></div>
+          </a>
+        </div>
+
+        <!-- RECENT PICKS -->
         <div class="panel">
           <div class="panel-title">RECENT PICKS</div>
           <div id="recentPicks"><div class="empty">Loading picks...</div></div>
         </div>
       </div>
+
+      <!-- RIGHT: TOP TIPSTERS -->
       <div class="panel">
         <div class="panel-title">TOP TIPSTERS</div>
         <div id="miniLeaderboard"><div class="empty">Loading...</div></div>
@@ -141,16 +281,56 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
     </div>
   </div>
 </div>
+
 <script>
 const cur=document.getElementById('cur'),ring=document.getElementById('ring');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
 (function lerp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)})();
+document.querySelectorAll('a,button,.profile-card,.stat,.lb-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});
+  el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px'});
+});
+
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;
 const avatarColors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
+
 function logout(){['ledgr_token','ledgr_user','token','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function goToProfile(){if(user)window.location.href='/tipster?u='+user.username;}
+
+function getBadgeIcons(picks){
+  const icons=[];
+  const wins=picks.filter(p=>p.result==='win').length;
+  const losses=picks.filter(p=>p.result==='loss').length;
+  const stake=picks.reduce((s,p)=>s+p.stake,0);
+  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
+  const settled=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
+  if(streak>=5)icons.push('🔥');
+  if(roi>=20&&picks.length>=50)icons.push('💎');
+  if(wr>=60&&(wins+losses)>=30)icons.push('🎯');
+  if(roi>=15&&picks.length>=10&&picks.length<50)icons.push('🚀');
+  if(picks.length>=100)icons.push('👑');
+  return{icons,streak};
+}
+
+function drawSparkline(svgId,values,positive){
+  const svg=document.getElementById(svgId);
+  if(!svg||!values.length)return;
+  const min=Math.min(...values),max=Math.max(...values);
+  const range=max-min||1;
+  const W=100,H=28,pts=values.map((v,i)=>{
+    const x=(i/(values.length-1||1))*W;
+    const y=H-((v-min)/range)*(H-4)-2;
+    return`${x},${y}`;
+  });
+  const color=positive?'#34d399':'#f87171';
+  svg.innerHTML=`<polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>`;
+}
+
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user');
   const tk=localStorage.getItem('ledgr_token');
@@ -160,46 +340,152 @@ window.onload=()=>{
   document.getElementById('userBadge').textContent='@'+user.username;
   document.getElementById('welcomeName').textContent='@'+user.username;
   document.getElementById('welcomeDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('profileInitials').textContent=user.username.substring(0,2).toUpperCase();
+  document.getElementById('profileUsername').textContent='@'+user.username;
   loadData();
 };
+
 async function loadData(){
   try{
-    const r=await fetch(API+'/picks');
+    const r=await fetch(API+'/picks',{cache:'no-store'});
     const allPicks=await r.json();
     renderMyStats(allPicks);
     renderRecentPicks(allPicks);
     renderMiniLeaderboard(allPicks);
-  }catch(e){document.getElementById('recentPicks').innerHTML='<div class="empty">Could not load picks.</div>';}
+    renderActivityFeed(allPicks);
+    renderProfileCard(allPicks);
+  }catch(e){
+    document.getElementById('recentPicks').innerHTML='<div class="empty">Could not load picks.</div>';
+  }
 }
+
 function renderMyStats(all){
-  const my=all.filter(p=>p.userId===user.id);
+  const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
   const wins=my.filter(p=>p.result==='win').length;
   const losses=my.filter(p=>p.result==='loss').length;
   const ts=my.reduce((s,p)=>s+p.stake,0);
   const tp=my.reduce((s,p)=>s+p.pnl,0);
   const roi=ts>0?((tp/ts)*100).toFixed(1):'0';
   const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):'0';
+
   document.getElementById('statTotal').textContent=my.length;
   document.getElementById('statWR').textContent=wr+'%';
   document.getElementById('statROI').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
   document.getElementById('statROI').className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');
   document.getElementById('statPnL').textContent=(tp>=0?'+€':'-€')+Math.abs(tp).toFixed(2);
   document.getElementById('statPnL').className='stat-val '+(tp>=0?'pos':'neg');
+
+  // sparklines — cumulative pnl over time
+  const cumPnl=[];let cum=0;
+  my.forEach(p=>{cum+=p.pnl;cumPnl.push(cum);});
+  const wrArr=[];let w=0,total=0;
+  my.forEach(p=>{if(p.result==='win')w++;if(p.result!=='pending')total++;wrArr.push(total>0?w/total*100:0);});
+  const roiArr=[];let rs=0,rp=0;
+  my.forEach(p=>{rs+=p.stake;rp+=p.pnl;roiArr.push(rs>0?rp/rs*100:0);});
+  const pickArr=my.map((_,i)=>i+1);
+
+  drawSparkline('spark0',pickArr,true);
+  drawSparkline('spark1',wrArr,parseFloat(wr)>=50);
+  drawSparkline('spark2',roiArr,parseFloat(roi)>=0);
+  drawSparkline('spark3',cumPnl,tp>=0);
+
+  // streak badge
+  const settled=[...my].filter(p=>p.result!=='pending').reverse();
+  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
+  if(streak>=3){
+    document.getElementById('streakBadge').style.display='inline-flex';
+    document.getElementById('streakText').textContent=streak+' WIN STREAK 🔥';
+  }
 }
+
+function renderProfileCard(all){
+  const my=all.filter(p=>p.userId===user.id);
+  const {icons}=getBadgeIcons(my);
+  document.getElementById('profileBadgesRow').innerHTML=icons.slice(0,4).map(i=>`<div class="profile-badge-pill">${i}</div>`).join('')||'<div style="font-size:10px;color:var(--mu);font-family:DM Mono,monospace">No badges yet</div>';
+
+  // rank
+  const tipsters={};
+  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
+  const sorted=Object.entries(tipsters).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
+  const rank=sorted.findIndex(([u])=>u===user.username)+1;
+  document.getElementById('profileRank').textContent=rank>0?'#'+rank:'#—';
+}
+
+function renderActivityFeed(all){
+  if(!all.length)return;
+  const recent=all.filter(p=>p.user).slice(0,10);
+  const items=recent.map(p=>{
+    const res=p.result==='win'?'✅ won':'pending';
+    return`<span><b>@${p.user.username}</b> posted ${p.event} at ${p.odds} odds</span>`;
+  });
+  const doubled=[...items,...items].join('');
+  document.getElementById('activityFeed').innerHTML=doubled;
+}
+
 function renderRecentPicks(all){
-  const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
+  const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
   const c=document.getElementById('recentPicks');
-  if(!my.length){c.innerHTML='<div class="empty">No picks yet. Post your first from Dashboard.</div>';return;}
-  c.innerHTML=my.map(p=>{const rb=p.result==='win'?'<span class="badge badge-win">WIN</span>':p.result==='loss'?'<span class="badge badge-loss">LOSS</span>':'<span class="badge badge-pending">PENDING</span>';return`<div class="pick-card"><div class="pick-top"><div><div class="pick-event">${p.event}</div><div class="pick-market">${p.market}</div></div><div class="pick-odds">${p.odds}</div></div><div class="pick-meta"><span class="badge badge-sport">${p.sport}</span><span style="font-size:11px;color:var(--mu)">${p.stake}u</span>${rb}<span class="pick-time">${new Date(p.createdAt).toLocaleDateString('en-GB')}</span></div></div>`;}).join('');
+  if(!my.length){c.innerHTML='<div class="empty">No picks yet.<br>Post your first from Dashboard.</div>';return;}
+  const sportIcon={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
+  c.innerHTML=my.map(p=>{
+    const rb=p.result==='win'?'<span class="badge badge-win">WIN</span>':p.result==='loss'?'<span class="badge badge-loss">LOSS</span>':'<span class="badge badge-pending">PENDING</span>';
+    const icon=sportIcon[p.sport]||'🎯';
+    return`<div class="pick-card">
+      <div class="pick-header">
+        <span class="pick-sport-icon">${icon}</span>
+        <div><div class="pick-event">${p.event}</div><div class="pick-market">${p.market}</div></div>
+      </div>
+      <div class="pick-body">
+        <div class="pick-meta"><span class="badge badge-sport">${p.sport}</span><span style="font-size:11px;color:var(--mu)">${p.stake}u</span>${rb}</div>
+        <div style="text-align:right"><div class="pick-odds">${p.odds}</div><div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace">${new Date(p.createdAt).toLocaleDateString('en-GB')}</div></div>
+      </div>
+    </div>`;
+  }).join('');
 }
+
 function renderMiniLeaderboard(all){
   const map={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0};map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;if(p.result==='win')map[u].wins++;if(p.result==='loss')map[u].losses++;});
-  const top3=Object.values(map).sort((a,b)=>{const ra=a.stake>0?(a.pnl/a.stake)*100:0;const rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;}).slice(0,3);
+  all.forEach(p=>{
+    if(!p.user)return;
+    const u=p.user.username;
+    if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0};
+    map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;
+    if(p.result==='win')map[u].wins++;
+    if(p.result==='loss')map[u].losses++;
+  });
+  const top5=Object.values(map).sort((a,b)=>{
+    const ra=a.stake>0?(a.pnl/a.stake)*100:0;
+    const rb=b.stake>0?(b.pnl/b.stake)*100:0;
+    return rb-ra;
+  }).slice(0,5);
   const c=document.getElementById('miniLeaderboard');
-  if(!top3.length){c.innerHTML='<div class="empty">No tipsters yet.</div>';return;}
+  if(!top5.length){c.innerHTML='<div class="empty">No tipsters yet.</div>';return;}
   const medals=['🥇','🥈','🥉'];const rankCls=['r1','r2','r3'];const rowCls=['top1','top2','top3'];
-  c.innerHTML=top3.map((t,i)=>{const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):'0';const roiPos=parseFloat(roi)>=0;return`<a class="lb-row ${rowCls[i]}" href="/tipster?u=${encodeURIComponent(t.username)}"><div class="rank ${rankCls[i]}">${medals[i]}</div><div class="av" style="background:${avatarColors[i]}">${t.username.substring(0,2).toUpperCase()}</div><div><div class="tip-name">@${t.username}</div><div class="tip-picks">${t.picks} picks</div></div><div class="tip-roi ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div></a>`;}).join('');
+  c.innerHTML=top5.map((t,i)=>{
+    const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):'0';
+    const roiPos=parseFloat(roi)>=0;
+    const myPicks=all.filter(p=>p.user&&p.user.username===t.username);
+    const {icons,streak}=getBadgeIcons(myPicks);
+    const badgeHtml=icons.slice(0,2).map(ic=>`<span class="tip-badge-icon">${ic}</span>`).join('');
+    return`<a class="lb-row ${i<3?rowCls[i]:''}" href="/tipster?u=${encodeURIComponent(t.username)}">
+      <div class="rank ${i<3?rankCls[i]:''}">${i<3?medals[i]:i+1}</div>
+      <div class="av" style="background:${avatarColors[i%avatarColors.length]}">${t.username.substring(0,2).toUpperCase()}</div>
+      <div class="tip-info">
+        <div class="tip-name">@${t.username}<div class="tip-badges">${badgeHtml}</div></div>
+        <div class="tip-sub">${t.picks} picks · ${((t.wins/(t.wins+t.losses||1))*100).toFixed(0)}% WR</div>
+      </div>
+      <div class="tip-right">
+        <div class="tip-roi ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div>
+        ${streak>=3?`<div class="tip-streak">🔥 W${streak}</div>`:''}
+      </div>
+    </a>`;
+  }).join('');
+
+  // re-attach cursor
+  document.querySelectorAll('.lb-row').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});
+    el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px'});
+  });
 }
 </script>
 </body>
