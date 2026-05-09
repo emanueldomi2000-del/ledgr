@@ -10,9 +10,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--bl:#38bdf8}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
-*{cursor:none!important}
-.cursor{position:fixed;width:8px;height:8px;background:var(--ac);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s}
-.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(184,159,255,0.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
@@ -21,7 +19,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
 .nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s;letter-spacing:.3px}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
 .nav-link.active{color:var(--ac);background:var(--acg)}
-.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:none;font-family:'Syne',sans-serif;transition:all .2s}
+.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
 .main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:1}
 .page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px;color:var(--tx)}
@@ -32,10 +30,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
 .select-row{display:grid;grid-template-columns:1fr 60px 1fr auto;gap:12px;align-items:end}
 .vs{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--mu);text-align:center;padding-bottom:12px}
 .form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.form-select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;padding:12px 16px;outline:none;cursor:none;transition:border-color .2s}
+.form-select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;padding:12px 16px;outline:none;cursor:pointer;transition:border-color .2s}
 .form-select:focus{border-color:var(--bd2)}
 .form-select option{background:#15122a}
-.compare-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:12px 28px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:none;white-space:nowrap;transition:all .2s}
+.compare-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:12px 28px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all .2s}
 .compare-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
 .comp-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-bottom:24px}
 .comp-side{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:28px}
@@ -70,8 +68,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
 </style>
 </head>
 <body>
-<div class="cursor" id="cur"></div>
-<div class="cursor-ring" id="ring"></div>
 <nav>
   <a href="/home" class="logo">LEDG<span>R</span></a>
   <div class="nav-links">
@@ -110,11 +106,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
   </div>
 </div>
 <script>
-const cur=document.getElementById('cur'),ring=document.getElementById('ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
-(function lerp(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(lerp)})();
-document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px'})});
+
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{});el.addEventListener('mouseleave',()=>{})});
 
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let allPicks=[];
@@ -222,8 +215,8 @@ function runComparison(){
     </div>`;
 
   document.querySelectorAll('.stat-compare,.verdict-btn').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cur.style.width='14px';cur.style.height='14px'});
-    el.addEventListener('mouseleave',()=>{cur.style.width='8px';cur.style.height='8px'});
+    el.addEventListener('mouseenter',()=>{});
+    el.addEventListener('mouseleave',()=>{});
   });
 }
 
