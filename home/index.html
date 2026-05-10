@@ -151,7 +151,41 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .not-logged p{color:var(--mu2);margin-bottom:28px}
 .go-home{background:var(--ac);color:#07060d;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
 
-@media(max-width:960px){.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-header{grid-template-columns:1fr}.profile-card{display:none}nav{padding:0 16px}.nav-link{display:none}.qa-grid{grid-template-columns:1fr 1fr}.trending-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:960px){.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-header{grid-template-columns:1fr}.profile-card{display:none}nav{padding:0 16px}.nav-link{display:none}.qa-grid{grid-template-columns:1fr 1fr}.trending-grid{grid-template-columns:repeat(3,1fr);gap:8px}}
+@media(max-width:600px){
+  .main{padding:20px 16px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat{padding:12px 14px}
+  .stat-val{font-size:22px}
+  .stat-label{font-size:9px}
+  .sparkline{height:18px}
+  .trending-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .trend-card{padding:8px 10px}
+  .trend-icon{font-size:14px;margin-bottom:3px}
+  .trend-label{font-size:8px}
+  .trend-val{font-size:11px}
+  .trend-sub{font-size:9px}
+  .post-hero{padding:16px 18px;flex-wrap:nowrap}
+  .post-hero h2{font-size:20px;letter-spacing:2px}
+  .post-hero p{font-size:10px}
+  .post-hero-btn{padding:8px 16px;font-size:14px;white-space:nowrap}
+  .qa-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .qa-btn{padding:10px}
+  .qa-icon{font-size:16px}
+  .qa-label{font-size:11px}
+  .welcome-title{font-size:32px}
+  .activity-bar{padding:8px 12px}
+  .activity-inner{font-size:10px}
+  nav{padding:0 14px;height:54px}
+  .logo{font-size:22px}
+  .user-badge{padding:6px 10px;font-size:11px}
+  .logout-btn{padding:6px 10px;font-size:10px}
+  .panel{padding:16px}
+  .panel-title{font-size:15px;margin-bottom:12px}
+  .feed-card{padding:12px}
+  .feed-odds{font-size:22px}
+  .lb-row{padding:10px 12px}
+}
 @media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}.trending-grid{grid-template-columns:1fr}.qa-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -262,7 +296,7 @@ const avatarColors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(1
 const sportIcon={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
 const confLabels={low:'🔴',medium:'🟡',high:'🟢',max:'⚡'};
 
-function logout(){['ledgr_token','ledgr_user','token','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function goToProfile(){if(user)window.location.href='/tipster?u='+user.username;}
 
 function getBadgeIcons(picks){
@@ -308,10 +342,11 @@ function drawSparkline(svgId,values,positive){
 }
 
 window.onload=()=>{
-  const ud=localStorage.getItem('ledgr_user');
-  const tk=localStorage.getItem('ledgr_token');
+  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
   if(!ud||!tk){document.getElementById('notLogged').style.display='flex';return;}
-  user=JSON.parse(ud);
+  try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
+  if(!user||!user.username){document.getElementById('notLogged').style.display='flex';return;}
   document.getElementById('app').style.display='block';
   document.getElementById('userBadge').textContent='@'+user.username;
   document.getElementById('welcomeName').textContent='@'+user.username;
@@ -501,6 +536,13 @@ function renderActivity(all){
   const items=recent.map(p=>`<span><b>@${p.user.username}</b> posted ${p.event} @ ${p.odds}</span>`);
   document.getElementById('activityInner').innerHTML=[...items,...items].join('');
 }
+</script>
+
+<!-- FLOATING POST BUTTON — mobile only -->
+<a href="/dashboard" id="floatingPost" style="display:none;position:fixed;bottom:24px;right:20px;z-index:100;background:var(--ac);color:#07060d;width:56px;height:56px;border-radius:50%;align-items:center;justify-content:center;font-size:24px;font-weight:700;box-shadow:0 4px 20px rgba(184,159,255,0.35);text-decoration:none;transition:transform .2s">＋</a>
+<script>
+if(window.innerWidth<=600){document.getElementById('floatingPost').style.display='flex';}
+window.addEventListener('resize',()=>{document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';});
 </script>
 </body>
 </html>
