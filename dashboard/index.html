@@ -190,8 +190,97 @@ select option{background:#15122a}
 .tut-next{background:var(--ac);color:#07060d;border:none;padding:10px 22px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;transition:all .2s}
 .tut-next:hover{background:#cdb8ff}
 
-@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}nav{padding:0 16px}.nav-link{display:none}}
-@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}.sport-tabs{gap:4px}.sport-tab{padding:6px 10px;font-size:11px}}
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  nav{padding:0 16px}
+  .nav-link{display:none}
+}
+@media(max-width:600px){
+  nav{height:52px;padding:0 12px}
+  .logo{font-size:20px;letter-spacing:4px}
+  .user-badge{padding:5px 10px;font-size:11px}
+  .logout-btn{padding:5px 10px;font-size:10px}
+  .main{padding:16px 12px}
+  .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+  .stat{padding:12px}
+  .stat-label{font-size:9px}
+  .stat-val{font-size:22px}
+  .panel{padding:16px 14px}
+  .panel-title{font-size:16px;letter-spacing:2px;margin-bottom:12px}
+  /* SPORT TABS — scrollable row */
+  .sport-tabs{display:flex;gap:5px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .sport-tabs::-webkit-scrollbar{display:none}
+  .sport-tab{padding:6px 12px;font-size:11px;white-space:nowrap;flex-shrink:0}
+  /* DATE TABS */
+  .date-tabs{gap:6px}
+  .date-tab{padding:7px 6px;font-size:11px}
+  /* LEAGUE FILTER */
+  .league-filter{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .league-filter::-webkit-scrollbar{display:none}
+  .league-chip{white-space:nowrap;flex-shrink:0}
+  /* MARKETS — more compact */
+  .market-section-header{padding:9px 12px}
+  .market-section-title{font-size:10px}
+  .market-section-body{padding:10px}
+  .chip{padding:5px 10px;font-size:10px}
+  .chips-wrap{gap:4px}
+  /* ODDS/STAKE */
+  input,select{padding:9px 12px;font-size:13px}
+  /* CONFIDENCE */
+  .conf-tab{padding:7px 4px;font-size:10px;min-width:46px}
+  /* BET SLIP */
+  .bet-slip{padding:12px}
+  .bet-slip-title{font-size:9px;margin-bottom:10px}
+  .bet-slip-row{font-size:11px}
+  .bet-slip-key{font-size:9px}
+  /* SUBMIT */
+  .submit-btn{font-size:18px;padding:13px}
+  /* MY PICKS */
+  .picks-filter-tabs{gap:4px}
+  .pf-tab{padding:6px 4px;font-size:10px}
+  .pick-card{padding:12px}
+  .pick-event{font-size:12px}
+  .pick-market{font-size:10px}
+  .pick-odds{font-size:22px}
+  .pick-time{font-size:9px}
+  .badge{font-size:9px;padding:2px 6px}
+  .conf-badge{font-size:9px;padding:2px 6px}
+  .pick-reasoning{font-size:10px}
+  /* STAKE TYPE */
+  .stake-type-tab{padding:6px 4px;font-size:10px}
+  /* FORM LABELS */
+  label{font-size:9px;letter-spacing:1.5px}
+  /* TEAM BUTTONS */
+  .team-btn{padding:5px;font-size:10px}
+  /* LOCKED BADGE */
+  .locked-badge{font-size:9px}
+  /* ROI MINI CHART */
+  .roi-mini-chart{height:32px}
+}
+
+/* MOBILE SLIDE NAV */
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.slide-nav.open{right:0}
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
+.slide-nav-overlay.open{display:block}
+.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo span{color:var(--ac)}
+.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
+.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
+.snl:hover{background:var(--acg)}
+.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.slide-nav-links{padding:12px 8px}
+.slide-nav-logout{padding:0 16px 16px}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
+@media(max-width:600px){
+  .mobile-menu-btn{display:block}
+  .nav-r .user-badge,.nav-r .logout-btn{display:none}
+}
 </style>
 </head>
 <body>
@@ -215,6 +304,24 @@ select option{background:#15122a}
   <a href="/" class="go-home">Back to LEDGR</a>
 </div>
 <div id="app" style="display:none">
+<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
+<div class="slide-nav" id="slideNav">
+  <div class="slide-nav-header">
+    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-links">
+    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
+    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
+    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
+    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+  </div>
+  <div class="slide-nav-logout">
+    <button class="snl-logout" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
   <nav>
     <a href="/home" class="logo">LEDG<span>R</span></a>
     <div class="nav-r">
@@ -224,7 +331,7 @@ select option{background:#15122a}
       <a href="/simulator" class="nav-link">Simulator</a>
       <a href="/badges" class="nav-link">🏅 Badges</a>
       <div class="user-badge" id="userBadge" onclick="goToProfile()">...</div>
-      <button class="logout-btn" onclick="logout()">Log Out</button>
+      <button class="logout-btn" onclick="logout()">Log Out</button><button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
     </div>
   </nav>
   <div class="main">
@@ -753,6 +860,9 @@ function endTutorial(){
   o.style.display='none';
   document.getElementById('tutorial-spotlight').style.opacity='0';
 }
+
+function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>
