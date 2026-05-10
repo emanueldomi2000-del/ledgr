@@ -934,7 +934,7 @@ function renderStats(all){
   if(my.length>1){drawSparkline('sp0',pkA,true);drawSparkline('sp1',wA,parseFloat(wr)>=50);drawSparkline('sp2',rA,parseFloat(roi)>=0);drawSparkline('sp3',pA,pnl>=0);}
 }
 
-function renderProfileCard(all)renderIdentityPanel(my, rank, sorted.length);{
+function renderProfileCard(all){renderIdentityPanel(my, rank, sorted.length);
   const my=all.filter(p=>p.userId===user.id);
   const tipsters={};
   all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
