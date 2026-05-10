@@ -172,9 +172,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div class="select-box">
     <div class="select-title">SELECT TWO TIPSTERS</div>
     <div class="select-row">
-      <div><label class="form-label">Tipster A</label><select class="form-select" id="selectA"><option value="">Loading...</option></select></div>
+      <div><label class="form-label">Tipster A</label><select class="form-select" id="selectA"><option value="">⏳ Loading tipsters...</option></select></div>
       <div class="vs">VS</div>
-      <div><label class="form-label">Tipster B</label><select class="form-select" id="selectB"><option value="">Loading...</option></select></div>
+      <div><label class="form-label">Tipster B</label><select class="form-select" id="selectB"><option value="">⏳ Loading tipsters...</option></select></div>
       <button class="compare-btn" onclick="runComparison()">BATTLE →</button>
     </div>
   </div>
@@ -215,11 +215,24 @@ function getReliability(picks){
   return Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
 }
 
+async function fetchWithRetry(url, attempts=3){
+  for(let i=0;i<attempts;i++){
+    try{
+      const r=await fetch(url,{cache:'no-store'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const d=await r.json();
+      if(Array.isArray(d))return d;
+      throw new Error('Invalid response');
+    }catch(e){
+      if(i===attempts-1)throw e;
+      await new Promise(r=>setTimeout(r,2000));
+    }
+  }
+}
+
 async function loadTipsters(){
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    allPicks=await r.json();
-    if(!Array.isArray(allPicks))allPicks=[];
+    allPicks=await fetchWithRetry(API+'/picks');
     const tipsters={};
     allPicks.forEach(p=>{if(p.user)tipsters[p.user.username]=true;});
     const names=Object.keys(tipsters).sort();
@@ -228,7 +241,8 @@ async function loadTipsters(){
     optA.innerHTML='<option value="">Select tipster A...</option>'+names.map(n=>`<option value="${n}">@${n}</option>`).join('');
     optB.innerHTML='<option value="">Select tipster B...</option>'+names.map(n=>`<option value="${n}">@${n}</option>`).join('');
   }catch(e){
-    document.getElementById('selectA').innerHTML='<option>Could not load</option>';
+    document.getElementById('selectA').innerHTML='<option>⚠️ Could not load — refresh</option>';
+    document.getElementById('selectB').innerHTML='<option>⚠️ Could not load — refresh</option>';
     document.getElementById('compResult').innerHTML='<div class="err-state"><div class="icon">⚠️</div><h3>SYNC IN PROGRESS</h3><p>We're syncing verified stats.<br>Try refreshing in a moment.</p></div>';
     document.getElementById('selectB').innerHTML='<option>Could not load</option>';
   }
