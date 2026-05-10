@@ -268,6 +268,37 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .share-copy-btn:hover{background:#cdb8ff}
 .share-x-btn{padding:10px 14px;border:1px solid var(--bd2);color:var(--mu2);background:none;border-radius:8px;font-size:12px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
 .share-x-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+/* DIVISION SYSTEM */
+.division-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 14px;border-radius:20px;font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;margin-top:8px}
+.div-bronze{background:rgba(180,120,80,0.12);border:1px solid rgba(180,120,80,0.3);color:#b47850}
+.div-silver{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.25);color:#94a3b8}
+.div-gold{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);color:var(--gold)}
+.div-platinum{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8}
+.div-diamond{background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.3);color:var(--ac)}
+.div-elite{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:var(--rd)}
+.div-legend{background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(184,159,255,0.1));border:1px solid rgba(251,191,36,0.4);color:var(--gold)}
+
+/* PICK OF THE DAY */
+.potd-banner{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(184,159,255,0.06),var(--s1));border:1px solid rgba(251,191,36,0.2);border-radius:14px;padding:16px 20px;margin-bottom:14px;position:relative;overflow:hidden;cursor:pointer;transition:all .2s}
+.potd-banner:hover{border-color:rgba(251,191,36,0.35);transform:translateY(-2px)}
+.potd-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.potd-event{font-weight:700;font-size:14px;color:var(--tx);margin-bottom:4px}
+.potd-market{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace}
+.potd-right{position:absolute;top:50%;right:20px;transform:translateY(-50%);text-align:right}
+.potd-odds{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);line-height:1}
+.potd-by{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
+
+/* DAILY LOGIN STREAK */
+.login-streak-bar{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ls-left{display:flex;align-items:center;gap:10px}
+.ls-icon{font-size:20px}
+.ls-title{font-size:12px;font-weight:700;color:var(--tx)}
+.ls-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
+.ls-days{display:flex;gap:4px}
+.ls-day{width:22px;height:22px;border-radius:5px;background:rgba(255,255,255,0.04);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:9px;font-family:'DM Mono',monospace;color:var(--mu)}
+.ls-day.done{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.3);color:var(--gr)}
+.ls-day.today{background:var(--acg);border-color:var(--bd2);color:var(--ac);font-weight:700}
 </style>
 </head>
 <body>
@@ -328,6 +359,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
         <div class="welcome-sub">Welcome back</div>
         <div class="welcome-title">GM, <span id="welcomeName">—</span></div>
         <div class="welcome-date" id="welcomeDate"></div>
+        <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
         <div id="streakBadge" style="display:none" class="streak-badge">🔥 <span id="streakText"></span></div>
       </div>
       <div class="profile-card" onclick="goToProfile()">
@@ -362,6 +394,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
     <!-- MAIN GRID -->
     <div class="main-grid">
       <div>
+        <!-- LOGIN STREAK -->
+        <div class="login-streak-bar" id="loginStreakBar">
+          <div class="ls-left">
+            <div class="ls-icon">🔥</div>
+            <div>
+              <div class="ls-title">Daily Streak</div>
+              <div class="ls-sub" id="loginStreakCount">1 day</div>
+            </div>
+          </div>
+          <div class="ls-days" id="loginStreakDays"></div>
+        </div>
+        <!-- PICK OF THE DAY -->
+        <div class="potd-banner" id="pickOfTheDay" style="display:none"></div>
         <!-- POST HERO -->
         <a href="/dashboard" class="post-hero">
           <div><h2>＋ POST A PICK</h2><p>Log your next bet · results verified automatically</p></div>
@@ -480,6 +525,19 @@ function drawSparkline(svgId,values,positive){
 }
 
 
+
+function drawStreakDays(n){
+  const el=document.getElementById('loginStreakDays');
+  if(!el)return;
+  const days=['M','T','W','T','F','S','S'];
+  const today=new Date().getDay();
+  el.innerHTML=days.map((d,i)=>{
+    const dayOffset=(i-((today+6)%7)+7)%7;
+    const isPast=dayOffset<(n>7?7:n);
+    const isToday=dayOffset===0;
+    return`<div class="ls-day ${isToday?'today':isPast?'done':''}">${d}</div>`;
+  }).join('');
+}
 function animateCounter(id,target,suffix){
   const el=document.getElementById(id);
   if(!el)return;
@@ -512,6 +570,7 @@ window.onload=()=>{
   document.getElementById('welcomeName').textContent='@'+user.username;
   updateOnlineCount();
   setInterval(updateOnlineCount,30000);
+  drawStreakDays(getLoginStreak());
   document.getElementById('welcomeDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('pcAv').textContent=user.username.substring(0,2).toUpperCase();
   document.getElementById('pcName').textContent='@'+user.username;
@@ -701,6 +760,42 @@ function renderLeaderboard(all){
   }).join('');
 }
 
+
+function getDivision(picks){
+  const wins=picks.filter(p=>p.result==='win').length;
+  const losses=picks.filter(p=>p.result==='loss').length;
+  const stake=picks.reduce((s,p)=>s+p.stake,0);
+  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
+  const score=Math.round(
+    Math.min(40,Math.max(0,(roi/20)*40))+
+    Math.min(30,Math.max(0,(wr/70)*30))+
+    Math.min(20,Math.max(0,(picks.length/100)*20))+
+    Math.min(10,picks.length)
+  );
+  if(score>=90)return{name:'LEGEND',cls:'div-legend',icon:'🐐'};
+  if(score>=75)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
+  if(score>=60)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
+  if(score>=45)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
+  if(score>=30)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
+  if(score>=15)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
+  return{name:'BRONZE',cls:'div-bronze',icon:'🥉'};
+}
+
+function getLoginStreak(){
+  const key='ledgr_login_streak';
+  const today=new Date().toDateString();
+  const data=JSON.parse(localStorage.getItem(key)||'{"days":[],"last":""}');
+  if(data.last!==today){
+    const yesterday=new Date(Date.now()-86400000).toDateString();
+    if(data.last===yesterday){data.days.push(today);}
+    else{data.days=[today];}
+    data.last=today;
+    localStorage.setItem(key,JSON.stringify(data));
+  }
+  return data.days.length;
+}
 function getDNATags(picks){
   const tags=[];
   const wins=picks.filter(p=>p.result==='win').length;
