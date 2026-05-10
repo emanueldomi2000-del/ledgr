@@ -358,6 +358,30 @@ function getELOLabel(elo){
   if(elo>=900)return{label:'Developing',color:'var(--mu2)'};
   return{label:'Beginner',color:'var(--mu)'};
 }
+
+function getBestStreak(picks){
+  const settled=[...picks].filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  let max=0,cur=0;
+  for(const p of settled){if(p.result==='win'){cur++;max=Math.max(max,cur);}else cur=0;}
+  return max;
+}
+function getBiggestWin(picks){
+  const wins=picks.filter(p=>p.result==='win');
+  if(!wins.length)return'0.00';
+  return Math.max(...wins.map(p=>p.pnl)).toFixed(2);
+}
+function getFavMarket(picks){
+  if(!picks.length)return'—';
+  const markets={};
+  picks.forEach(p=>{const m=p.market.split(' ')[0];markets[m]=(markets[m]||0)+1;});
+  return Object.entries(markets).sort((a,b)=>b[1]-a[1])[0][0];
+}
+function getFavSport(picks){
+  if(!picks.length)return'—';
+  const sports={};
+  picks.forEach(p=>{sports[p.sport]=(sports[p.sport]||0)+1;});
+  return Object.entries(sports).sort((a,b)=>b[1]-a[1])[0][0];
+}
 function getDivision(picks){
   const wins=picks.filter(p=>p.result==='win').length;
   const losses=picks.filter(p=>p.result==='loss').length;
@@ -487,6 +511,10 @@ async function loadProfile(){
             <div class="perf-row"><span class="perf-key">Reliability</span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Global Rank</span><span class="perf-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</span></div>
             <div class="perf-row"><span class="perf-key">ELO Rating</span><span class="perf-val" style="color:var(--ac)">${getELOFromPicks(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">Best Streak Ever</span><span class="perf-val" style="color:var(--orange)">🔥 W${getBestStreak(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">Biggest Win</span><span class="perf-val pos">+€${getBiggestWin(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">Fav Market</span><span class="perf-val">${getFavMarket(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">Fav Sport</span><span class="perf-val">${getFavSport(allPicks)}</span></div>
             <div class="pnl-chart" id="pnlChart"></div>
           </div>
           ${sportList.length>0?`<div class="panel"><div class="panel-title">BY SPORT</div>${sportList.map(([s,c])=>`<div class="sport-bar"><div class="sport-bar-label"><span>${sportIcon[s]||'🎯'} ${s}</span><span>${c} picks</span></div><div class="sbar"><div class="sbar-fill" style="width:${(c/allPicks.length*100).toFixed(0)}%"></div></div></div>`).join('')}</div>`:''}
