@@ -374,7 +374,39 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 .animated{animation:countUp .5s ease both}
 .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
-
+.hero-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start;padding:64px 0 0;margin-bottom:48px}
+.hero-identity{display:flex;flex-direction:column;gap:12px;animation:fadeSlideUp .7s .15s ease both;opacity:0;animation-fill-mode:forwards}
+.identity-card{background:linear-gradient(135deg,rgba(184,159,255,0.07),rgba(100,70,200,0.03));border:1px solid rgba(184,159,255,0.12);border-radius:20px;padding:22px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.identity-card:hover{border-color:rgba(184,159,255,0.22);transform:translateY(-3px);box-shadow:0 16px 48px rgba(184,159,255,0.1)}
+.id-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.id-av{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;position:relative;box-shadow:0 0 20px rgba(124,58,237,0.3)}
+.id-verified{position:absolute;bottom:-4px;right:-4px;width:18px;height:18px;background:var(--gr);border-radius:50%;border:2px solid var(--s1);display:flex;align-items:center;justify-content:center;font-size:8px}
+.id-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--tx);margin-bottom:3px}
+.id-division{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px}
+.id-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.id-stat{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px}
+.id-stat-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.id-stat-val{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1}
+.id-stat-val.pos{color:var(--gr)}.id-stat-val.neg{color:var(--rd)}.id-stat-val.orange{color:var(--orange)}.id-stat-val.ac{color:var(--ac)}.id-stat-val.cyan{color:var(--cyan)}
+.id-graph{width:100%;height:40px;margin-bottom:14px}
+.id-rank-bar{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.id-rank-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);white-space:nowrap}
+.id-rank-track{flex:1;height:3px;background:rgba(255,255,255,0.04);border-radius:2px;overflow:hidden}
+.id-rank-fill{height:100%;background:linear-gradient(to right,var(--ac),var(--cyan));border-radius:2px;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.id-rank-num{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--ac)}
+.id-view-btn{display:block;width:100%;text-align:center;background:rgba(184,159,255,0.08);border:1px solid rgba(184,159,255,0.15);color:var(--ac);border-radius:10px;padding:9px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;cursor:pointer;transition:all .2s;text-decoration:none}
+.id-view-btn:hover{background:rgba(184,159,255,0.15)}
+.missions-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:16px}
+.missions-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.mission-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.mission-row:last-child{border:none;padding-bottom:0}
+.mission-icon{font-size:14px;flex-shrink:0}
+.mission-text{font-size:11px;color:var(--mu2);flex:1;font-family:'DM Mono',monospace}
+.mission-badge{font-family:'DM Mono',monospace;font-size:9px;padding:2px 8px;border-radius:10px;flex-shrink:0}
+.mission-badge.done{background:rgba(52,211,153,0.12);color:var(--gr);border:1px solid rgba(52,211,153,0.15)}
+.mission-badge.todo{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
+.lb-row.top1{background:linear-gradient(135deg,rgba(251,191,36,0.04),transparent);border-left:2px solid rgba(251,191,36,0.25)}
+@media(max-width:960px){.hero-layout{grid-template-columns:1fr;padding:40px 0 0}.hero-identity{display:none}}
 /* RESPONSIVE */
 @media(max-width:960px){.main-grid{grid-template-columns:1fr}nav{padding:0 16px}.nav-link{display:none}.matchup-grid{gap:12px}}
 @media(max-width:700px){
@@ -435,23 +467,38 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 
 <!-- ══════════════ HERO ══════════════ -->
 <div class="main">
-  <div class="hero">
-    <div class="hero-eyebrow" id="heroEyebrow">YOUR RECORD</div>
-    <div class="hero-tagline" id="heroTagline">THE STREAK<br><span class="ac">CONTINUES<span class="dim">.</span></span></div>
-    <div class="hero-meta">
-      <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
-      <div id="streakPill" style="display:none" class="streak-pill">🔥 <span id="streakText"></span></div>
+  <div class="hero-layout">
+<div class="hero">
+... tuo hero esistente ...
+</div>
+<div class="hero-identity">
+  <div class="identity-card" onclick="goToProfile()">
+    <div class="id-top">
+      <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
+      <div>
+        <div class="id-name" id="idName">@—</div>
+        <div class="id-division div-bronze" id="idDiv">🥉 BRONZE</div>
+      </div>
     </div>
-    <div class="hero-sub">
-      <span><b id="hsROI">—</b> ROI</span>
-      <span class="vdiv">·</span>
-      <span><b id="hsStreak">—</b> streak</span>
-      <span class="vdiv">·</span>
-      <span>rank <b id="hsRank">—</b></span>
-      <span class="vdiv">·</span>
-      <span><b id="hsRel">—</b> reliability</span>
+    <div class="id-stats">
+      <div class="id-stat"><div class="id-stat-lbl">ROI</div><div class="id-stat-val pos" id="idROI">—</div></div>
+      <div class="id-stat"><div class="id-stat-lbl">Rank</div><div class="id-stat-val ac" id="idRank">—</div></div>
+      <div class="id-stat"><div class="id-stat-lbl">Streak</div><div class="id-stat-val orange" id="idStreak">—</div></div>
+      <div class="id-stat"><div class="id-stat-lbl">Rel.</div><div class="id-stat-val cyan" id="idRel">—</div></div>
     </div>
+    <svg class="id-graph" id="idGraph" viewBox="0 0 280 40" preserveAspectRatio="none"></svg>
+    <div class="id-rank-bar">
+      <span class="id-rank-lbl">Global rank</span>
+      <div class="id-rank-track"><div class="id-rank-fill" id="idRankFill" style="width:0%"></div></div>
+      <span class="id-rank-num" id="idRankNum">#—</span>
+    </div>
+    <a href="#" onclick="goToProfile();return false" class="id-view-btn">VIEW MY PROFILE →</a>
   </div>
+  <div class="missions-card">
+    <div class="missions-title">⚡ Daily Missions</div>
+    <div id="dailyMissions">Loading...</div>
+  </div>
+</div>
 </div>
 
 <!-- TICKER — slim -->
@@ -841,7 +888,34 @@ async function loadData(){
     renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all);renderActivityTicker(all);
   }catch(e){document.getElementById('communityFeed').innerHTML='<div class="empty">Syncing feed...</div>';}
 }
-
+function renderIdentityPanel(myPicks,rank,totalTipsters){
+  if(!user)return;
+  const av=document.getElementById('idAv');
+  if(av)av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+  const nameEl=document.getElementById('idName');if(nameEl)nameEl.textContent='@'+user.username;
+  const wins=myPicks.filter(p=>p.result==='win').length;
+  const stake=myPicks.reduce((s,p)=>s+p.stake,0);const pnl=myPicks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';
+  const settled=[...myPicks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
+  const rel=getReliability(myPicks).score;
+  const idROI=document.getElementById('idROI');if(idROI){idROI.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
+  const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=rank>0?'#'+rank:'#—';
+  const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=streak>0?streak+'W 🔥':'—';
+  const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'—';
+  const div=getDivision(myPicks);const idDiv=document.getElementById('idDiv');
+  if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
+  const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
+  setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
+  const idRankNum=document.getElementById('idRankNum');if(idRankNum)idRankNum.textContent=rank>0?'#'+rank:'#—';
+  const sorted=[...myPicks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  let cum=0,cumStake=0;
+  const pts=[0,...sorted.map(p=>{cum+=p.pnl;cumStake+=p.stake;return cumStake>0?(cum/cumStake)*100:0;})];
+  if(pts.length>1){const min=Math.min(...pts),max=Math.max(...pts),range=max-min||1;const W=280,H=40;const svgPts=pts.map((v,i)=>`${(i/(pts.length-1||1))*W},${H-((v-min)/range)*(H-6)-3}`).join(' ');const isPos=pts[pts.length-1]>=0;const color=isPos?'#34d399':'#f87171';const graph=document.getElementById('idGraph');if(graph)graph.innerHTML=`<defs><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.2"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${H} ${svgPts} ${W},${H}" fill="url(#ig)"/><polyline points="${svgPts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;}
+  const today=new Date().toDateString();const todayPicks=myPicks.filter(p=>new Date(p.createdAt).toDateString()===today);const todayWins=todayPicks.filter(p=>p.result==='win').length;const tails=getTails();const tailedToday=Object.values(tails).filter(t=>t&&new Date(t.ts).toDateString()===today).length;
+  const missions=[{icon:'🎯',text:'Post 1 pick today',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',done:streak>=1},{icon:'👥',text:'Tail 2 picks',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',done:todayWins>=1}];
+  const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-row"><span class="mission-icon">${m.icon}</span><span class="mission-text">${m.text}</span><span class="mission-badge ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</span></div>`).join('');
+}
 function renderStats(all){
   const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
   const wins=my.filter(p=>p.result==='win').length;const losses=my.filter(p=>p.result==='loss').length;
@@ -860,7 +934,7 @@ function renderStats(all){
   if(my.length>1){drawSparkline('sp0',pkA,true);drawSparkline('sp1',wA,parseFloat(wr)>=50);drawSparkline('sp2',rA,parseFloat(roi)>=0);drawSparkline('sp3',pA,pnl>=0);}
 }
 
-function renderProfileCard(all){
+function renderProfileCard(all)renderIdentityPanel(my, rank, sorted.length);{
   const my=all.filter(p=>p.userId===user.id);
   const tipsters={};
   all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
