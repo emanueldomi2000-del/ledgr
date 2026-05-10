@@ -123,6 +123,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 @media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
+
+.err-state{text-align:center;padding:48px 24px;color:var(--mu)}
+.err-state .icon{font-size:36px;margin-bottom:12px}
+.err-state h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--mu2);margin-bottom:8px}
+.err-state p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace;line-height:1.8}
+.err-state a{color:var(--ac);text-decoration:none}
 </style>
 </head>
 <body>
@@ -221,6 +227,7 @@ async function loadTipsters(){
     optB.innerHTML='<option value="">Select tipster B...</option>'+names.map(n=>`<option value="${n}">@${n}</option>`).join('');
   }catch(e){
     document.getElementById('selectA').innerHTML='<option>Could not load</option>';
+    document.getElementById('compResult').innerHTML='<div class="err-state"><div class="icon">⚠️</div><h3>SYNC IN PROGRESS</h3><p>We're syncing verified stats.<br>Try refreshing in a moment.</p></div>';
     document.getElementById('selectB').innerHTML='<option>Could not load</option>';
   }
 }
