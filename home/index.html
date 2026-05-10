@@ -301,6 +301,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .ls-day.today{background:var(--acg);border-color:var(--bd2);color:var(--ac);font-weight:700}
 
 .elo-mini{font-family:'DM Mono',monospace;font-size:9px;color:var(--ac);margin-top:3px}
+
+/* TAIL PICK */
+.tail-btn{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:var(--gr);border-radius:20px;padding:4px 12px;font-size:10px;font-family:'DM Mono',monospace;font-weight:700;cursor:pointer;transition:all .2s}
+.tail-btn:hover{background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.4)}
+.tail-btn.tailed{background:rgba(52,211,153,0.2);border-color:var(--gr);color:var(--gr)}
+.tail-count{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
+
+/* FOLLOW SYSTEM */
+.follow-tip-btn{padding:5px 14px;border:1px solid var(--bd2);color:var(--ac);background:var(--acg);border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Mono',monospace;margin-left:auto;flex-shrink:0}
+.follow-tip-btn:hover{background:var(--ac);color:#07060d}
+.follow-tip-btn.following{background:var(--ac);color:#07060d;border-color:var(--ac)}
+
+/* TOAST */
+.pick-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gr);color:#07060d;padding:10px 20px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.pick-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 </style>
 </head>
 <body>
@@ -312,6 +327,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 </div>
 <div id="app" style="display:none">
 <!-- SLIDE NAV OVERLAY -->
+<div class="pick-toast" id="pickToast"></div>
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <!-- SLIDE NAV -->
 <div class="slide-nav" id="slideNav">
@@ -720,9 +736,9 @@ function renderFeed(all){
       </div>
       ${p.reasoning?`<div class="feed-reason">💭 "${p.reasoning}"</div>`:''}
       <div class="feed-reactions">
+        <button class="tail-btn ${getTails()[p.id]?'tailed':''}" id="tailBtn_${p.id}" onclick="tailPick('${p.id}','${p.event}','${p.market}',${p.odds},'${p.user.username}',this,document.getElementById('tailCount_${p.id}'))">${getTails()[p.id]?'Tailed ✓':'Tail'}</button>
+        <span class="tail-count" id="tailCount_${p.id}">0 tails</span>
         <button class="react-btn fire" onclick="toggleReact(this,'fire_${p.id}')">🔥 <span id="fc_${p.id}">0</span></button>
-        <button class="react-btn rocket" onclick="toggleReact(this,'rocket_${p.id}')">🚀 <span id="rc_${p.id}">0</span></button>
-        <button class="react-btn" onclick="toggleReact(this,'agree_${p.id}')">✅ <span id="ac_${p.id}">0</span></button>
         <button class="react-btn" style="margin-left:auto" onclick="sharePick('${p.event}','${p.market}',${p.odds},'${p.user.username}',${p.stake})">📤</button>
       </div>
     </div>`;
@@ -758,7 +774,7 @@ function renderLeaderboard(all){
       <div class="rank ${i<3?rankCls[i]:''}">${i<3?medals[i]:i+1}</div>
       <div class="av" style="background:${avatarColors[i%avatarColors.length]}">${t.username.substring(0,2).toUpperCase()}</div>
       <div class="tip-info">
-        <div class="tip-name">@${t.username} ${badgeHtml}</div>
+        <div class="tip-name" style="display:flex;align-items:center;gap:6px">@${t.username} ${badgeHtml}<button class="follow-tip-btn ${isFollowing(t.username)?'following':''}" onclick="event.stopPropagation();toggleFollow('${t.username}',this)">${isFollowing(t.username)?'Following ✓':'Follow'}</button></div>
         <div class="dna-tags">${getDNATags(t.allPicks).map(tag=>`<span class="dna-tag ${tag.cls}">${tag.icon} ${tag.label}</span>`).join('')}</div>
         <div class="tip-sub">${t.picks} picks · ${wr}% WR</div>
         ${score>0?`<div class="tip-rel" style="color:${color}">${score}/100 rel.</div>`:''}
@@ -823,6 +839,51 @@ function getLoginStreak(){
     localStorage.setItem(key,JSON.stringify(data));
   }
   return data.days.length;
+}
+
+function getFollowing(){return JSON.parse(localStorage.getItem('ledgr_following')||'[]');}
+function saveFollowing(f){localStorage.setItem('ledgr_following',JSON.stringify(f));}
+
+function toggleFollow(username,btn){
+  const f=getFollowing();
+  const isFollowing=f.includes(username);
+  if(isFollowing){
+    saveFollowing(f.filter(u=>u!==username));
+    btn.textContent='Follow';btn.classList.remove('following');
+  }else{
+    saveFollowing([...f,username]);
+    btn.textContent='Following ✓';btn.classList.add('following');
+    showPickToast('Following @'+username+'!');
+  }
+}
+
+function isFollowing(username){return getFollowing().includes(username);}
+
+function getTails(){return JSON.parse(localStorage.getItem('ledgr_tails')||'{}');}
+function saveTails(t){localStorage.setItem('ledgr_tails',JSON.stringify(t));}
+
+function tailPick(pickId,event,market,odds,username,btn,countEl){
+  const tails=getTails();
+  if(tails[pickId]){
+    delete tails[pickId];
+    saveTails(tails);
+    btn.textContent='Tail';btn.classList.remove('tailed');
+    const count=parseInt(countEl.textContent)-1;
+    countEl.textContent=count+' tail'+(count!==1?'s':'');
+  }else{
+    tails[pickId]={event,market,odds,username,ts:Date.now()};
+    saveTails(tails);
+    btn.textContent='Tailed ✓';btn.classList.add('tailed');
+    const count=parseInt(countEl.textContent)+1;
+    countEl.textContent=count+' tail'+(count!==1?'s':'');
+    showPickToast('Tailing @'+username+' — '+market+' @ '+odds);
+  }
+}
+
+function showPickToast(msg){
+  const t=document.getElementById('pickToast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
 }
 function getDNATags(picks){
   const tags=[];
