@@ -590,7 +590,7 @@ window.onload=()=>{
   document.getElementById('welcomeName').textContent='@'+user.username;
   // Dynamic greeting based on time
   const hr=new Date().getHours();
-  const greetings=hr<12?['GM,','Rise and grind,','Another day,','Morning,']:hr<18?['Welcome back,','Good to see you,','Ready to climb,','Let's go,']:['GN,','Evening,','Late session,','One more pick,'];
+  const greetings=hr<12?['GM,','Rise and grind,','Another day,','Morning,']:hr<18?['Welcome back,','Good to see you,','Ready to climb,',Let's go,]:['GN,','Evening,','Late session,','One more pick,'];
   document.getElementById('welcomeSub2').textContent=greetings[Math.floor(Math.random()*greetings.length)];
   updateOnlineCount();
   setInterval(updateOnlineCount,30000);
