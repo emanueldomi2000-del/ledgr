@@ -168,7 +168,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
       <div>
         <label class="form-label">Tipster</label>
         <select class="form-select" id="tipsterFilter">
-          <option value="all">⏳ Loading...</option>
+          <option value="all">⏳ Loading tipsters...</option>
         </select>
       </div>
       <button class="sim-btn" onclick="runSimulator()">SIMULATE →</button>
@@ -203,17 +203,30 @@ function selectRisk(mode,el){
   el.classList.add('active');
 }
 
+async function fetchWithRetry(url, attempts=3){
+  for(let i=0;i<attempts;i++){
+    try{
+      const r=await fetch(url,{cache:'no-store'});
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      const d=await r.json();
+      if(Array.isArray(d))return d;
+      throw new Error('Invalid response');
+    }catch(e){
+      if(i===attempts-1)throw e;
+      await new Promise(r=>setTimeout(r,2000));
+    }
+  }
+}
+
 async function loadPicks(){
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    allPicks=await r.json();
-    if(!Array.isArray(allPicks))allPicks=[];
+    allPicks=await fetchWithRetry(API+'/picks');
     const tipsters={};
     allPicks.forEach(p=>{if(p.user)tipsters[p.user.username]=true;});
     const sel=document.getElementById('tipsterFilter');
     sel.innerHTML='<option value="all">All Tipsters</option>'+Object.keys(tipsters).sort().map(n=>`<option value="${n}">@${n}</option>`).join('');
   }catch(e){
-    document.getElementById('tipsterFilter').innerHTML='<option value="all">All Tipsters</option>';
+    document.getElementById('tipsterFilter').innerHTML='<option value="all">⚠️ Could not load — refresh</option>';
     document.getElementById('resultsContainer').innerHTML='<div class="err-state"><div class="icon">⚠️</div><h3>SYNC IN PROGRESS</h3><p>We're syncing verified performance data.<br>Try refreshing in a moment.</p></div>';
   }
 }
