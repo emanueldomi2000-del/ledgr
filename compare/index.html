@@ -101,6 +101,28 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .empty-state p{font-size:14px;color:var(--mu2);line-height:1.7}
 
 @media(max-width:700px){.select-row{grid-template-columns:1fr;gap:10px}.vs{display:none}.compare-btn{width:100%}.battle-side.left{border-radius:16px;border-right:1px solid var(--bd);margin-bottom:8px}.battle-side.right{border-radius:16px;border-left:1px solid var(--bd);text-align:left}.battle-side.right .battle-av{margin:0 auto 8px}.battle-mid{display:none}.winner-stats{gap:16px}.similar-grid{grid-template-columns:repeat(2,1fr)}nav{padding:0 16px}.nav-link{display:none}}
+
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.slide-nav.open{right:0}
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
+.slide-nav-overlay.open{display:block}
+.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo span{color:var(--ac)}
+.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
+.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
+.snl:hover{background:var(--acg)}
+.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.slide-nav-links{padding:12px 8px}
+.slide-nav-post{padding:0 16px 12px}
+.snp-post-btn{display:block;width:100%;background:var(--ac);color:#07060d;border:none;border-radius:10px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;text-align:center;text-decoration:none;cursor:pointer;transition:background .2s}
+.snp-post-btn:hover{background:#cdb8ff}
+.slide-nav-logout{padding:0 16px 16px}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
+@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
 </style>
 </head>
 <body>
@@ -113,8 +135,29 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/simulator" class="nav-link">Simulator</a>
     <a href="/badges" class="nav-link">🏅 Badges</a>
   </div>
-  <button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
+  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button><button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
 </nav>
+<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
+<div class="slide-nav" id="slideNav">
+  <div class="slide-nav-header">
+    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-links">
+    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
+    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
+    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
+    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+  </div>
+  <div class="slide-nav-post">
+    <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
+  </div>
+  <div class="slide-nav-logout">
+    <button class="snl-logout" onclick="window.location.href='/'">Log Out</button>
+  </div>
+</div>
+
 <div class="main">
   <div class="page-title">COMPARE <span>TIPSTERS</span></div>
   <div class="page-sub">HEAD TO HEAD · WHO PERFORMED BETTER?</div>
@@ -339,6 +382,9 @@ function runComparison(){
 }
 
 loadTipsters();
+
+function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>
