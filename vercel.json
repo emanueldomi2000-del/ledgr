@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/home", "destination": "/home/index.html" },
+    { "source": "/dashboard", "destination": "/dashboard/index.html" },
+    { "source": "/leaderboard", "destination": "/leaderboard/index.html" },
+    { "source": "/tipster", "destination": "/tipster/index.html" },
+    { "source": "/compare", "destination": "/compare/index.html" },
+    { "source": "/simulator", "destination": "/simulator/index.html" },
+    { "source": "/badges", "destination": "/badges/index.html" },
+    { "source": "/login", "destination": "/login/index.html" },
+    { "source": "/register", "destination": "/register/index.html" },
+    { "source": "/hall-of-fame", "destination": "/hall-of-fame/index.html" },
+    { "source": "/become-a-tipster", "destination": "/become-a-tipster/index.html" }
+  ]
+}
