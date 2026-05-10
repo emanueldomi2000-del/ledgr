@@ -8,129 +8,83 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#07060d;--s1:#0c0a1a;--s2:#15122a;
-  --bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);
-  --ac:#b89fff;--acg:rgba(184,159,255,0.08);
-  --tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;
-  --gr:#34d399;--rd:#f87171;
-  --common:#9ca3af;--rare:#60a5fa;--epic:#a78bfa;--legendary:#fbbf24;--elite:#f472b6;
-}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
-
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c;--cyan:#38bdf8}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-nav{position:sticky;top:0;z-index:100;background:rgba(7,6,13,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
-.nav-links{display:flex;gap:4px;align-items:center}
+.nav-links{display:flex;gap:4px}
 .nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
 .nav-link.active{color:var(--ac);background:var(--acg)}
-.main{max-width:1100px;margin:0 auto;padding:52px 24px;position:relative;z-index:2}
-.sec-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:10px;opacity:.8}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:3px;line-height:1;color:var(--tx)}
+.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.nav-btn:hover{background:#cdb8ff}
+.main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:2}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
 .page-title span{color:var(--ac)}
-.page-sub{color:var(--mu2);font-size:14px;margin-top:10px;margin-bottom:40px;line-height:1.7}
+.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
 
-.rarity-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:40px}
-.rf{padding:8px 20px;border-radius:20px;border:1px solid;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;cursor:pointer;transition:all .25s;background:transparent}
-.rf.all{border-color:var(--bd2);color:var(--mu2)}.rf.all.active{background:var(--acg);color:var(--ac);border-color:var(--ac)}
-.rf.common{border-color:rgba(156,163,175,0.4);color:var(--common)}.rf.common.active{background:rgba(156,163,175,0.12);border-color:var(--common)}
-.rf.rare{border-color:rgba(96,165,250,0.4);color:var(--rare)}.rf.rare.active{background:rgba(96,165,250,0.12);border-color:var(--rare)}
-.rf.epic{border-color:rgba(167,139,250,0.4);color:var(--epic)}.rf.epic.active{background:rgba(167,139,250,0.12);border-color:var(--epic)}
-.rf.legendary{border-color:rgba(251,191,36,0.4);color:var(--legendary)}.rf.legendary.active{background:rgba(251,191,36,0.12);border-color:var(--legendary)}
-.rf.elite{border-color:rgba(244,114,182,0.4);color:var(--elite)}.rf.elite.active{background:rgba(244,114,182,0.12);border-color:var(--elite)}
+/* PROGRESS */
+.progress-bar{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px 28px;margin-bottom:32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.pb-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--ac);margin-bottom:4px}
+.pb-sub{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
+.pb-track{flex:1;min-width:200px;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.pb-fill{height:100%;background:linear-gradient(90deg,var(--ac),rgba(184,159,255,0.6));border-radius:3px;transition:width 1.2s ease}
+.pb-count{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--tx);flex-shrink:0}
 
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:48px}
-.sb{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px;text-align:center;transition:border-color .2s}
-.sb:hover{border-color:var(--bd2)}
-.sb-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--ac);line-height:1;letter-spacing:1px}
-.sb-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+/* RARITY TABS */
+.rarity-tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
+.rt{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;border:1px solid var(--bd);color:var(--mu2)}
+.rt:hover{border-color:var(--bd2)}
+.rt.active.all{border-color:var(--bd2);color:var(--ac);background:var(--acg)}
+.rt.active.common{border-color:rgba(148,163,184,.4);color:#94a3b8;background:rgba(148,163,184,.08)}
+.rt.active.rare{border-color:rgba(56,189,248,.4);color:var(--cyan);background:rgba(56,189,248,.08)}
+.rt.active.epic{border-color:rgba(184,159,255,.5);color:var(--ac);background:var(--acg)}
+.rt.active.legendary{border-color:rgba(251,191,36,.5);color:var(--gold);background:rgba(251,191,36,.08)}
+.rt.active.elite{border-color:rgba(248,113,113,.5);color:var(--rd);background:rgba(248,113,113,.08)}
 
-.badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+/* BADGES GRID */
+.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.badge-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
+.badge-card.unlocked{cursor:default}
+.badge-card.locked{opacity:.5;filter:grayscale(.6)}
+.badge-card.unlocked:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
+.badge-card.common.unlocked{border-color:rgba(148,163,184,.3)}
+.badge-card.rare.unlocked{border-color:rgba(56,189,248,.35);box-shadow:0 0 20px rgba(56,189,248,.06)}
+.badge-card.epic.unlocked{border-color:rgba(184,159,255,.4);box-shadow:0 0 24px rgba(184,159,255,.08)}
+.badge-card.legendary.unlocked{border-color:rgba(251,191,36,.45);box-shadow:0 0 28px rgba(251,191,36,.1)}
+.badge-card.elite.unlocked{border-color:rgba(248,113,113,.5);box-shadow:0 0 32px rgba(248,113,113,.12)}
 
-.badge-card{border-radius:16px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
+.badge-glow{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;opacity:.15;filter:blur(30px);pointer-events:none}
+.badge-card.common .badge-glow{background:#94a3b8}
+.badge-card.rare .badge-glow{background:var(--cyan)}
+.badge-card.epic .badge-glow{background:var(--ac)}
+.badge-card.legendary .badge-glow{background:var(--gold)}
+.badge-card.elite .badge-glow{background:var(--rd)}
 
-/* Common */
-.badge-card.common{background:linear-gradient(135deg,rgba(156,163,175,0.08),var(--s1));border:1px solid rgba(156,163,175,0.2)}
-.badge-card.common:hover{border-color:rgba(156,163,175,0.5);box-shadow:0 8px 32px rgba(156,163,175,0.1);transform:translateY(-4px)}
-.badge-card.common.unlocked{border-color:rgba(156,163,175,0.4);background:linear-gradient(135deg,rgba(156,163,175,0.12),var(--s1))}
+.badge-icon{font-size:40px;margin-bottom:12px;display:block;line-height:1}
+.badge-rarity{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;display:inline-block;padding:2px 10px;border-radius:20px}
+.badge-card.common .badge-rarity{color:#94a3b8;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.2)}
+.badge-card.rare .badge-rarity{color:var(--cyan);background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2)}
+.badge-card.epic .badge-rarity{color:var(--ac);background:var(--acg);border:1px solid var(--bd2)}
+.badge-card.legendary .badge-rarity{color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2)}
+.badge-card.elite .badge-rarity{color:var(--rd);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2)}
 
-/* Rare */
-.badge-card.rare{background:linear-gradient(135deg,rgba(96,165,250,0.08),var(--s1));border:1px solid rgba(96,165,250,0.2)}
-.badge-card.rare:hover{border-color:rgba(96,165,250,0.5);box-shadow:0 8px 32px rgba(96,165,250,0.15);transform:translateY(-4px)}
-.badge-card.rare.unlocked{border-color:rgba(96,165,250,0.4);background:linear-gradient(135deg,rgba(96,165,250,0.12),var(--s1))}
+.badge-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--tx);margin-bottom:6px}
+.badge-desc{font-size:12px;color:var(--mu2);line-height:1.6;margin-bottom:12px}
+.badge-req{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;font-style:italic}
+.badge-unlocked-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:var(--gr);font-family:'DM Mono',monospace;font-size:9px;padding:3px 10px;border-radius:20px;margin-top:8px}
+.badge-locked-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid var(--bd);color:var(--mu);font-family:'DM Mono',monospace;font-size:9px;padding:3px 10px;border-radius:20px;margin-top:8px}
+.badge-progress{margin-top:10px}
+.badge-prog-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:4px}
+.badge-prog-fill{height:100%;border-radius:2px;transition:width 1s ease}
+.badge-prog-lbl{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;display:flex;justify-content:space-between}
 
-/* Epic */
-.badge-card.epic{background:linear-gradient(135deg,rgba(167,139,250,0.1),var(--s1));border:1px solid rgba(167,139,250,0.25)}
-.badge-card.epic:hover{border-color:rgba(167,139,250,0.6);box-shadow:0 8px 40px rgba(167,139,250,0.2);transform:translateY(-4px)}
-.badge-card.epic.unlocked{border-color:rgba(167,139,250,0.5);background:linear-gradient(135deg,rgba(167,139,250,0.15),var(--s1))}
+.empty{text-align:center;padding:60px;color:var(--mu);font-family:'DM Mono',monospace}
 
-/* Legendary */
-.badge-card.legendary{background:linear-gradient(135deg,rgba(251,191,36,0.08),var(--s1));border:1px solid rgba(251,191,36,0.2)}
-.badge-card.legendary:hover{border-color:rgba(251,191,36,0.6);box-shadow:0 8px 40px rgba(251,191,36,0.2);transform:translateY(-4px)}
-.badge-card.legendary.unlocked{border-color:rgba(251,191,36,0.5);background:linear-gradient(135deg,rgba(251,191,36,0.12),var(--s1))}
-
-/* Elite */
-.badge-card.elite{background:linear-gradient(135deg,rgba(244,114,182,0.1),rgba(167,139,250,0.08),var(--s1));border:1px solid rgba(244,114,182,0.25)}
-.badge-card.elite:hover{border-color:rgba(244,114,182,0.6);box-shadow:0 8px 48px rgba(244,114,182,0.25);transform:translateY(-4px)}
-.badge-card.elite.unlocked{border-color:rgba(244,114,182,0.5);background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(167,139,250,0.1),var(--s1))}
-
-.badge-card.locked{opacity:.45}
-.badge-card.unlocked::after{content:'';position:absolute;inset:0;border-radius:16px;pointer-events:none}
-
-.badge-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
-.badge-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
-.badge-icon.locked-icon{filter:grayscale(1);opacity:.35}
-.badge-icon.common-bg{background:rgba(156,163,175,0.15);border:1px solid rgba(156,163,175,0.3)}
-.badge-icon.rare-bg{background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.35)}
-.badge-icon.epic-bg{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.35)}
-.badge-icon.legendary-bg{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35)}
-.badge-icon.elite-bg{background:linear-gradient(135deg,rgba(244,114,182,0.2),rgba(167,139,250,0.15));border:1px solid rgba(244,114,182,0.4)}
-
-.badge-info{flex:1}
-.badge-name{font-weight:700;font-size:15px;margin-bottom:4px;color:var(--tx)}
-.badge-rarity{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:700}
-.badge-rarity.common{color:var(--common)}.badge-rarity.rare{color:var(--rare)}.badge-rarity.epic{color:var(--epic)}.badge-rarity.legendary{color:var(--legendary)}.badge-rarity.elite{color:var(--elite)}
-.badge-desc{font-size:12px;color:var(--mu2);line-height:1.6}
-
-.progress-section{margin-top:14px}
-.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.progress-req{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
-.progress-val{font-size:11px;font-weight:700;font-family:'DM Mono',monospace}
-.progress-val.common{color:var(--common)}.progress-val.rare{color:var(--rare)}.progress-val.epic{color:var(--epic)}.progress-val.legendary{color:var(--legendary)}.progress-val.elite{color:var(--elite)}
-.progress-bar{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden}
-.progress-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
-.progress-fill.common{background:linear-gradient(90deg,#9ca3af,#d1d5db)}
-.progress-fill.rare{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
-.progress-fill.epic{background:linear-gradient(90deg,#7c3aed,#a78bfa)}
-.progress-fill.legendary{background:linear-gradient(90deg,#d97706,#fbbf24,#fcd34d)}
-.progress-fill.elite{background:linear-gradient(90deg,#db2777,#f472b6,#a78bfa)}
-
-.unlocked-stamp{position:absolute;top:14px;right:14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:4px 10px;border-radius:4px;font-weight:700}
-.unlocked-stamp.common{background:rgba(156,163,175,0.15);border:1px solid rgba(156,163,175,0.3);color:var(--common)}
-.unlocked-stamp.rare{background:rgba(96,165,250,0.15);border:1px solid rgba(96,165,250,0.3);color:var(--rare)}
-.unlocked-stamp.epic{background:rgba(167,139,250,0.15);border:1px solid rgba(167,139,250,0.3);color:var(--epic)}
-.unlocked-stamp.legendary{background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:var(--legendary)}
-.unlocked-stamp.elite{background:linear-gradient(90deg,rgba(244,114,182,0.2),rgba(167,139,250,0.2));border:1px solid rgba(244,114,182,0.4);color:var(--elite)}
-
-.locked-text{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.5px;margin-top:12px;text-align:center;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px}
-
-.section-header{margin:48px 0 20px;display:flex;align-items:center;gap:14px}
-.section-line{flex:1;height:1px}
-.section-line.common{background:rgba(156,163,175,0.2)}
-.section-line.rare{background:rgba(96,165,250,0.2)}
-.section-line.epic{background:rgba(167,139,250,0.25)}
-.section-line.legendary{background:rgba(251,191,36,0.25)}
-.section-line.elite{background:linear-gradient(90deg,rgba(244,114,182,0.3),rgba(167,139,250,0.3))}
-.section-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;white-space:nowrap;padding:4px 12px;border-radius:20px;font-weight:700}
-.section-label.common{color:var(--common);background:rgba(156,163,175,0.1);border:1px solid rgba(156,163,175,0.2)}
-.section-label.rare{color:var(--rare);background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.2)}
-.section-label.epic{color:var(--epic);background:rgba(167,139,250,0.1);border:1px solid rgba(167,139,250,0.2)}
-.section-label.legendary{color:var(--legendary);background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25)}
-.section-label.elite{color:var(--elite);background:linear-gradient(90deg,rgba(244,114,182,0.1),rgba(167,139,250,0.1));border:1px solid rgba(244,114,182,0.3)}
-
-@media(max-width:768px){nav{padding:0 20px}.stats-bar{grid-template-columns:repeat(2,1fr)}.badges-grid{grid-template-columns:1fr}.nav-link{display:none}}
+@media(max-width:700px){.badges-grid{grid-template-columns:1fr 1fr}nav{padding:0 16px}.nav-link{display:none}}
+@media(max-width:480px){.badges-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -139,174 +93,123 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,6,13,0.85);backdrop-filt
   <div class="nav-links">
     <a href="/home" class="nav-link">Home</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>
-    <a href="/dashboard" class="nav-link">Dashboard</a>
     <a href="/badges" class="nav-link active">🏅 Badges</a>
+    <a href="/compare" class="nav-link">Compare</a>
+    <a href="/simulator" class="nav-link">Simulator</a>
   </div>
+  <button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
 </nav>
 <div class="main">
-  <span class="sec-tag">Achievements</span>
   <div class="page-title">YOUR <span>BADGES</span></div>
-  <p class="page-sub">Earn badges by hitting milestones. Show them off on your public profile.</p>
-  <div class="stats-bar">
-    <div class="sb"><div class="sb-val" id="statUnlocked">0</div><div class="sb-lbl">Unlocked</div></div>
-    <div class="sb"><div class="sb-val" id="statTotal">0</div><div class="sb-lbl">Total Badges</div></div>
-    <div class="sb"><div class="sb-val" id="statRarest">—</div><div class="sb-lbl">Rarest Earned</div></div>
-    <div class="sb"><div class="sb-val" id="statPct">0%</div><div class="sb-lbl">Completion</div></div>
+  <div class="page-sub">EARN TROPHIES · BUILD YOUR LEGACY</div>
+  <div class="progress-bar">
+    <div><div class="pb-title">BADGE PROGRESS</div><div class="pb-sub" id="pbSub">Loading...</div></div>
+    <div class="pb-track"><div class="pb-fill" id="pbFill" style="width:0%"></div></div>
+    <div class="pb-count"><span id="pbUnlocked">0</span>/<span id="pbTotal">0</span></div>
   </div>
-  <div class="rarity-filters">
-    <button class="rf all active" onclick="filterRarity('all',this)">All</button>
-    <button class="rf common" onclick="filterRarity('common',this)">⬜ Common</button>
-    <button class="rf rare" onclick="filterRarity('rare',this)">🔷 Rare</button>
-    <button class="rf epic" onclick="filterRarity('epic',this)">🟣 Epic</button>
-    <button class="rf legendary" onclick="filterRarity('legendary',this)">🟡 Legendary</button>
-    <button class="rf elite" onclick="filterRarity('elite',this)">💗 Elite</button>
+  <div class="rarity-tabs">
+    <div class="rt active all" onclick="filterRarity('all',this)">All</div>
+    <div class="rt common" onclick="filterRarity('common',this)">⚪ Common</div>
+    <div class="rt rare" onclick="filterRarity('rare',this)">🔵 Rare</div>
+    <div class="rt epic" onclick="filterRarity('epic',this)">🟣 Epic</div>
+    <div class="rt legendary" onclick="filterRarity('legendary',this)">🟡 Legendary</div>
+    <div class="rt elite" onclick="filterRarity('elite',this)">🔴 Elite</div>
   </div>
-  <div id="badgesContainer"></div>
+  <div class="badges-grid" id="badgesGrid"><div class="empty">Loading badges...</div></div>
 </div>
 <script>
-
-document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{});el.addEventListener('mouseleave',()=>{})});
-
 const API='https://ledgr-backend-production-c132.up.railway.app';
-const BADGES=[
-  {id:'first_pick',rarity:'common',icon:'🎯',name:'First Pick',desc:'Post your very first verified pick on LEDGR.',req:'Post 1 pick',target:1,stat:'picks'},
-  {id:'getting_started',rarity:'common',icon:'🚀',name:'Getting Started',desc:'Post 10 verified picks.',req:'10 picks',target:10,stat:'picks'},
-  {id:'on_the_board',rarity:'common',icon:'📋',name:'On The Board',desc:'Appear on the leaderboard for the first time.',req:'Post 5+ picks',target:5,stat:'picks'},
-  {id:'first_win',rarity:'common',icon:'✅',name:'First Win',desc:'Record your first winning pick.',req:'Win 1 pick',target:1,stat:'wins'},
-  {id:'first_follower',rarity:'common',icon:'👥',name:'First Follower',desc:'Get your first follower on LEDGR.',req:'1 follower',target:1,stat:'followers'},
-  {id:'hot_streak',rarity:'rare',icon:'🔥',name:'Hot Streak',desc:'Win 5 picks in a row without a single loss.',req:'5 win streak',target:5,stat:'streak'},
-  {id:'sharp',rarity:'rare',icon:'🎯',name:'Sharp',desc:'Maintain 60%+ win rate across 30+ picks.',req:'60% WR / 30 picks',target:30,stat:'picks'},
-  {id:'consistent',rarity:'rare',icon:'📈',name:'Consistent',desc:'Post picks for 4 consecutive weeks.',req:'4 weeks active',target:4,stat:'weeks'},
-  {id:'crowd_pleaser',rarity:'rare',icon:'💬',name:'Crowd Pleaser',desc:'Get 25 followers.',req:'25 followers',target:25,stat:'followers'},
-  {id:'half_century',rarity:'rare',icon:'5️⃣',name:'Half Century',desc:'Post 50 verified picks.',req:'50 picks',target:50,stat:'picks'},
-  {id:'rising_star',rarity:'epic',icon:'⭐',name:'Rising Star',desc:'Achieve +15% ROI in your first 20 picks.',req:'+15% ROI / 20 picks',target:20,stat:'picks'},
-  {id:'value_hunter',rarity:'epic',icon:'💡',name:'Value Hunter',desc:'Maintain positive ROI on odds above 2.5 across 20+ picks.',req:'Positive ROI high odds',target:20,stat:'picks'},
-  {id:'inferno',rarity:'epic',icon:'🌋',name:'Inferno',desc:'Win 10 picks in a row.',req:'10 win streak',target:10,stat:'streak'},
-  {id:'century',rarity:'epic',icon:'💯',name:'Century',desc:'Post 100 verified picks.',req:'100 picks',target:100,stat:'picks'},
-  {id:'big_following',rarity:'epic',icon:'🏟️',name:'Big Following',desc:'Reach 100 followers.',req:'100 followers',target:100,stat:'followers'},
-  {id:'diamond',rarity:'legendary',icon:'💎',name:'Diamond',desc:'Achieve +20% ROI across 50+ picks. The mark of a true professional.',req:'+20% ROI / 50 picks',target:50,stat:'picks'},
-  {id:'unstoppable',rarity:'legendary',icon:'⚡',name:'Unstoppable',desc:'Win 15 picks in a row.',req:'15 win streak',target:15,stat:'streak'},
-  {id:'veteran',rarity:'legendary',icon:'👑',name:'Veteran',desc:'Post 200+ verified picks.',req:'200 picks',target:200,stat:'picks'},
-  {id:'top10',rarity:'legendary',icon:'🏆',name:'Top 10',desc:'Reach the top 10 on the global leaderboard.',req:'Top 10 leaderboard',target:10,stat:'rank'},
-  {id:'fan_favourite',rarity:'legendary',icon:'❤️',name:'Fan Favourite',desc:'Reach 500 followers.',req:'500 followers',target:500,stat:'followers'},
-  {id:'goat',rarity:'elite',icon:'🐐',name:'The GOAT',desc:'Maintain +25% ROI across 100+ picks. Untouchable.',req:'+25% ROI / 100 picks',target:100,stat:'picks'},
-  {id:'god_streak',rarity:'elite',icon:'🌠',name:'God Streak',desc:'Win 20 picks in a row. Almost impossible.',req:'20 win streak',target:20,stat:'streak'},
-  {id:'number_one',rarity:'elite',icon:'🥇',name:'Number One',desc:'Reach #1 on the global leaderboard.',req:'#1 leaderboard',target:1,stat:'rank'},
-  {id:'legend',rarity:'elite',icon:'🔮',name:'Legend',desc:'Post 500+ verified picks and maintain positive ROI.',req:'500 picks + positive ROI',target:500,stat:'picks'},
-  {id:'massive',rarity:'elite',icon:'🌍',name:'Massive',desc:'Reach 1,000 followers on LEDGR.',req:'1000 followers',target:1000,stat:'followers'},
+let allBadges=[];let currentRarity='all';
+
+const BADGE_DEFS=[
+  {id:'first_pick',icon:'🎯',name:'First Pick',rarity:'common',desc:'Posted your first verified pick.',req:'Post 1 pick',check:(s)=>s.picks>=1,prog:(s)=>({cur:s.picks,max:1})},
+  {id:'five_picks',icon:'📋',name:'Getting Started',rarity:'common',desc:'Posted 5 verified picks.',req:'Post 5 picks',check:(s)=>s.picks>=5,prog:(s)=>({cur:Math.min(s.picks,5),max:5})},
+  {id:'ten_picks',icon:'📊',name:'In The Zone',rarity:'common',desc:'Logged 10 verified picks.',req:'Post 10 picks',check:(s)=>s.picks>=10,prog:(s)=>({cur:Math.min(s.picks,10),max:10})},
+  {id:'first_win',icon:'✅',name:'Winner',rarity:'common',desc:'Won your first verified pick.',req:'Win 1 pick',check:(s)=>s.wins>=1,prog:(s)=>({cur:Math.min(s.wins,1),max:1})},
+  {id:'three_streak',icon:'🔥',name:'On Fire',rarity:'rare',desc:'3 consecutive wins in a row.',req:'3 win streak',check:(s)=>s.streak>=3,prog:(s)=>({cur:Math.min(s.streak,3),max:3})},
+  {id:'five_streak',icon:'💥',name:'Unstoppable',rarity:'rare',desc:'5 consecutive wins without a loss.',req:'5 win streak',check:(s)=>s.streak>=5,prog:(s)=>({cur:Math.min(s.streak,5),max:5})},
+  {id:'pos_roi',icon:'📈',name:'In Profit',rarity:'rare',desc:'Positive ROI with at least 10 picks.',req:'ROI > 0% with 10+ picks',check:(s)=>s.roi>0&&s.picks>=10,prog:(s)=>({cur:Math.min(s.picks,10),max:10})},
+  {id:'wr60',icon:'🎯',name:'Sharp',rarity:'rare',desc:'60%+ win rate with 20+ settled picks.',req:'60%+ WR with 20+ picks',check:(s)=>s.wr>=60&&s.settled>=20,prog:(s)=>({cur:Math.min(s.settled,20),max:20})},
+  {id:'fifty_picks',icon:'🚀',name:'Rising Star',rarity:'epic',desc:'Posted 50 verified picks.',req:'Post 50 picks',check:(s)=>s.picks>=50,prog:(s)=>({cur:Math.min(s.picks,50),max:50})},
+  {id:'roi15',icon:'💎',name:'Diamond Hands',rarity:'epic',desc:'15%+ ROI with 50+ picks.',req:'ROI 15%+ with 50+ picks',check:(s)=>s.roi>=15&&s.picks>=50,prog:(s)=>({cur:Math.min(s.picks,50),max:50})},
+  {id:'ten_streak',icon:'⚡',name:'Max Streak',rarity:'epic',desc:'10 wins in a row. Absolutely unreal.',req:'10 win streak',check:(s)=>s.streak>=10,prog:(s)=>({cur:Math.min(s.streak,10),max:10})},
+  {id:'wr70',icon:'🔬',name:'Surgeon',rarity:'epic',desc:'70%+ win rate with 30+ settled picks.',req:'70%+ WR with 30+ picks',check:(s)=>s.wr>=70&&s.settled>=30,prog:(s)=>({cur:Math.min(s.settled,30),max:30})},
+  {id:'hundred_picks',icon:'👑',name:'Veteran',rarity:'legendary',desc:'100 verified picks. This is dedication.',req:'Post 100 picks',check:(s)=>s.picks>=100,prog:(s)=>({cur:Math.min(s.picks,100),max:100})},
+  {id:'roi20',icon:'🏆',name:'Champion',rarity:'legendary',desc:'20%+ ROI with 100+ picks. Top 1%.',req:'ROI 20%+ with 100+ picks',check:(s)=>s.roi>=20&&s.picks>=100,prog:(s)=>({cur:Math.min(s.picks,100),max:100})},
+  {id:'value',icon:'⚡',name:'Value Hunter',rarity:'legendary',desc:'Avg odds 2.5+ with positive ROI over 20+ picks.',req:'Avg odds 2.5+ · ROI > 0 · 20+ picks',check:(s)=>s.avgOdds>=2.5&&s.roi>0&&s.picks>=20,prog:(s)=>({cur:Math.min(s.picks,20),max:20})},
+  {id:'sharp',icon:'🔱',name:'LEDGR Sharp',rarity:'elite',desc:'70%+ WR, 20%+ ROI and 100+ picks. You are verified elite.',req:'WR 70%+ · ROI 20%+ · 100+ picks',check:(s)=>s.wr>=70&&s.roi>=20&&s.picks>=100,prog:(s)=>({cur:Math.min(s.picks,100),max:100})},
+  {id:'goat',icon:'🐐',name:'G.O.A.T.',rarity:'elite',desc:'The greatest of all time on LEDGR. 200+ picks, 20%+ ROI.',req:'200+ picks · ROI 20%+',check:(s)=>s.picks>=200&&s.roi>=20,prog:(s)=>({cur:Math.min(s.picks,200),max:200})},
 ];
 
-const RARITY_ORDER=['common','rare','epic','legendary','elite'];
-let userStats={picks:0,wins:0,losses:0,streak:0,followers:0,weeks:1,rank:999,roi:0};
-let currentFilter='all';
+const rarityColors={common:'#94a3b8',rare:'#38bdf8',epic:'#b89fff',legendary:'#fbbf24',elite:'#f87171'};
 
-async function loadUserStats(){
-  const ud=localStorage.getItem('ledgr_user');
-  const tk=localStorage.getItem('ledgr_token');
-  if(!ud||!tk){renderBadges();return;}
+function calcStats(picks){
+  const settled=picks.filter(p=>p.result==='win'||p.result==='loss');
+  const wins=settled.filter(p=>p.result==='win').length;
+  const stake=picks.reduce((s,p)=>s+p.stake,0);
+  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?((pnl/stake)*100):0;
+  const wr=settled.length>0?((wins/settled.length)*100):0;
+  const avgOdds=picks.length>0?(picks.reduce((s,p)=>s+p.odds,0)/picks.length):0;
+  const sorted=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let streak=0;for(const p of sorted){if(p.result==='win')streak++;else break;}
+  return{picks:picks.length,wins,settled:settled.length,roi,wr,avgOdds,streak};
+}
+
+function filterRarity(r,el){
+  currentRarity=r;
+  document.querySelectorAll('.rt').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderBadges(allBadges);
+}
+
+function renderBadges(stats){
+  const grid=document.getElementById('badgesGrid');
+  const filtered=currentRarity==='all'?BADGE_DEFS:BADGE_DEFS.filter(b=>b.rarity===currentRarity);
+  if(!filtered.length){grid.innerHTML='<div class="empty">No badges in this category yet.</div>';return;}
+  grid.innerHTML=filtered.map(b=>{
+    const unlocked=b.check(stats);
+    const prog=b.prog(stats);
+    const pct=Math.round((prog.cur/prog.max)*100);
+    const color=rarityColors[b.rarity];
+    return`<div class="badge-card ${b.rarity} ${unlocked?'unlocked':'locked'}">
+      <div class="badge-glow"></div>
+      <span class="badge-icon">${b.icon}</span>
+      <div class="badge-rarity">${b.rarity.toUpperCase()}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      <div class="badge-req">${b.req}</div>
+      ${unlocked
+        ?`<div class="badge-unlocked-tag">✅ UNLOCKED</div>`
+        :`<div class="badge-locked-tag">🔒 LOCKED</div>
+         <div class="badge-progress">
+           <div class="badge-prog-lbl"><span>Progress</span><span>${prog.cur}/${prog.max}</span></div>
+           <div class="badge-prog-bar"><div class="badge-prog-fill" style="width:${pct}%;background:${color}"></div></div>
+         </div>`}
+    </div>`;
+  }).join('');
+}
+
+async function loadBadges(){
+  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  if(!ud){document.getElementById('badgesGrid').innerHTML='<div class="empty">Please log in to see your badges.</div>';return;}
   const user=JSON.parse(ud);
   try{
     const r=await fetch(API+'/picks',{cache:'no-store'});
-    if(r.ok){
-      const picks=await r.json();
-      const mine=picks.filter(p=>p.userId===user.id);
-      userStats.picks=mine.length;
-      userStats.wins=mine.filter(p=>p.result==='win').length;
-      userStats.losses=mine.filter(p=>p.result==='loss').length;
-      const stake=mine.reduce((s,p)=>s+p.stake,0);
-      const pnl=mine.reduce((s,p)=>s+p.pnl,0);
-      userStats.roi=stake>0?(pnl/stake)*100:0;
-      let streak=0;
-      const settled=[...mine].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-      for(const p of settled){if(p.result==='win')streak++;else break;}
-      userStats.streak=streak;
-      // calc rank
-      const tipsters={};
-      picks.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
-      const sorted=Object.entries(tipsters).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
-      const rankIdx=sorted.findIndex(([u])=>u===user.username);
-      userStats.rank=rankIdx>=0?rankIdx+1:999;
-    }
-  }catch(e){console.log(e);}
-  renderBadges();
-}
-
-function getProgress(badge){
-  const v=userStats[badge.stat]||0;
-  if(badge.stat==='rank')return badge.target===1?Math.min(100,Math.max(0,100-(userStats.rank-1))):Math.min(100,Math.max(0,(11-userStats.rank)/10*100));
-  return Math.min(100,(v/badge.target)*100);
-}
-function isUnlocked(badge){
-  if(badge.stat==='rank')return userStats.rank<=badge.target;
-  return getProgress(badge)>=100;
-}
-function filterRarity(rarity,btn){
-  currentFilter=rarity;
-  document.querySelectorAll('.rf').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderBadges();
-}
-
-function renderBadges(){
-  const container=document.getElementById('badgesContainer');
-  const filtered=currentFilter==='all'?BADGES:BADGES.filter(b=>b.rarity===currentFilter);
-  const byRarity={};
-  RARITY_ORDER.forEach(r=>{byRarity[r]=filtered.filter(b=>b.rarity===r)});
-  const LABELS={common:'⬜ Common',rare:'🔷 Rare',epic:'🟣 Epic',legendary:'🟡 Legendary',elite:'💗 Elite'};
-  let html='';
-  for(const rarity of RARITY_ORDER){
-    const group=byRarity[rarity];
-    if(!group.length)continue;
-    html+=`<div class="section-header"><div class="section-line ${rarity}"></div><span class="section-label ${rarity}">${LABELS[rarity]}</span><div class="section-line ${rarity}"></div></div>`;
-    html+=`<div class="badges-grid">`;
-    for(const badge of group){
-      const unlocked=isUnlocked(badge);
-      const pct=getProgress(badge);
-      const cur=badge.stat==='rank'?'Rank #'+userStats.rank:Math.min(userStats[badge.stat]||0,badge.target)+' / '+badge.target;
-      html+=`<div class="badge-card ${badge.rarity} ${unlocked?'unlocked':'locked'}">
-        ${unlocked?`<div class="unlocked-stamp ${badge.rarity}">✓ UNLOCKED</div>`:''}
-        <div class="badge-top">
-          <div class="badge-icon ${badge.rarity}-bg ${unlocked?'':'locked-icon'}">${badge.icon}</div>
-          <div class="badge-info">
-            <div class="badge-name">${badge.name}</div>
-            <div class="badge-rarity ${badge.rarity}">${badge.rarity.toUpperCase()}</div>
-            <div class="badge-desc">${badge.desc}</div>
-          </div>
-        </div>
-        <div class="progress-section">
-          <div class="progress-header">
-            <span class="progress-req">${badge.req}</span>
-            <span class="progress-val ${badge.rarity}">${cur}</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill ${badge.rarity}" style="width:0%" data-pct="${pct}"></div>
-          </div>
-        </div>
-        ${!unlocked?`<div class="locked-text">🔒 Keep going — ${badge.req}</div>`:''}
-      </div>`;
-    }
-    html+=`</div>`;
+    const all=await r.json();
+    const myPicks=all.filter(p=>p.userId===user.id);
+    allBadges=calcStats(myPicks);
+    const unlocked=BADGE_DEFS.filter(b=>b.check(allBadges)).length;
+    document.getElementById('pbUnlocked').textContent=unlocked;
+    document.getElementById('pbTotal').textContent=BADGE_DEFS.length;
+    document.getElementById('pbFill').style.width=(unlocked/BADGE_DEFS.length*100)+'%';
+    document.getElementById('pbSub').textContent=`${unlocked} unlocked · ${BADGE_DEFS.length-unlocked} remaining`;
+    renderBadges(allBadges);
+  }catch(e){
+    document.getElementById('badgesGrid').innerHTML='<div class="empty">We\'re syncing your badge data. Try again shortly.</div>';
   }
-  container.innerHTML=html;
-  setTimeout(()=>{
-    document.querySelectorAll('.progress-fill').forEach(el=>{
-      const w=el.getAttribute('data-pct');
-      requestAnimationFrame(()=>{el.style.width=w+'%'});
-    });
-    document.querySelectorAll('.badge-card').forEach(el=>{
-      el.addEventListener('mouseenter',()=>{});
-      el.addEventListener('mouseleave',()=>{});
-    });
-  },50);
-  const unlocked=BADGES.filter(b=>isUnlocked(b));
-  document.getElementById('statUnlocked').textContent=unlocked.length;
-  document.getElementById('statTotal').textContent=BADGES.length;
-  document.getElementById('statPct').textContent=Math.round((unlocked.length/BADGES.length)*100)+'%';
-  const rarityRank={elite:4,legendary:3,epic:2,rare:1,common:0};
-  const rarest=unlocked.sort((a,b)=>rarityRank[b.rarity]-rarityRank[a.rarity])[0];
-  document.getElementById('statRarest').textContent=rarest?rarest.icon+' '+rarest.rarity[0].toUpperCase()+rarest.rarity.slice(1):'—';
 }
-loadUserStats();
+loadBadges();
 </script>
 </body>
 </html>
