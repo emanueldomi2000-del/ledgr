@@ -168,6 +168,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 @media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
+
+.dna-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.dna-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:11px;font-family:'DM Mono',monospace;font-weight:700}
+.dna-tag.sharp{background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);color:var(--gr)}
+.dna-tag.safe{background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);color:#38bdf8}
+.dna-tag.aggressive{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);color:var(--rd)}
+.dna-tag.value{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:var(--gold)}
+.dna-tag.grinder{background:var(--acg);border:1px solid var(--bd2);color:var(--ac)}
+.dna-tag.highvol{background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);color:#fb923c}
 </style>
 </head>
 <body>
@@ -306,6 +315,22 @@ function filterPicks(filter,el){
   renderPicks();
 }
 
+function getDNATags(picks){
+  const tags=[];
+  const wins=picks.filter(p=>p.result==='win').length;
+  const losses=picks.filter(p=>p.result==='loss').length;
+  const stake=picks.reduce((s,p)=>s+p.stake,0);
+  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
+  const avgOdds=picks.length>0?picks.reduce((s,p)=>s+p.odds,0)/picks.length:0;
+  if(wr>=65&&picks.length>=20)tags.push({icon:'🎯',label:'Sharp',cls:'sharp'});
+  if(avgOdds<=1.8&&roi>0)tags.push({icon:'🛡️',label:'Safe Bettor',cls:'safe'});
+  if(avgOdds>=2.8&&picks.length>=10)tags.push({icon:'⚡',label:'Value Hunter',cls:'value'});
+  if(picks.length>=50&&roi>0)tags.push({icon:'⚙️',label:'Grinder',cls:'grinder'});
+  if(avgOdds>=3.0&&picks.length>=10)tags.push({icon:'🎲',label:'Aggressive',cls:'aggressive'});
+  return tags.slice(0,3);
+}
 async function loadProfile(){
   if(!username){showNotFound();return;}
   try{
@@ -365,6 +390,7 @@ async function loadProfile(){
           </div>
         </div>
         <div class="badges-row">${badgesHtml}</div>
+        <div class="dna-tags">${getDNATags(allPicks).map(t=>`<span class="dna-tag ${t.cls}">${t.icon} ${t.label}</span>`).join('')}</div>
         ${reliabilityHtml}
       </div>
 
