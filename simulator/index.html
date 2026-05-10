@@ -213,7 +213,7 @@ async function loadPicks(){
     sel.innerHTML='<option value="all">All Tipsters</option>'+Object.keys(tipsters).sort().map(n=>`<option value="${n}">@${n}</option>`).join('');
   }catch(e){
     document.getElementById('tipsterFilter').innerHTML='<option value="all">⚠️ Could not load — refresh</option>';
-    document.getElementById('resultsContainer').innerHTML='<div class="err-state"><div class="icon">⚠️</div><h3>SYNC IN PROGRESS</h3><p>We're syncing verified performance data.<br>Try refreshing in a moment.</p></div>';
+    document.getElementById('resultsContainer').innerHTML='<div class="err-state"><div class="icon">⚠️</div><h3>SYNC IN PROGRESS</h3><p>We are syncing verified performance data.<br>Try refreshing in a moment.</p></div>';
   }
 }
 
