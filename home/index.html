@@ -469,7 +469,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 <div class="main">
   <div class="hero-layout">
 <div class="hero">
-... tuo hero esistente ...
+<div class="hero-eyebrow" id="heroEyebrow">YOUR RECORD</div>
+    <div class="hero-tagline" id="heroTagline">THE STREAK<br><span class="ac">CONTINUES<span class="dim">.</span></span></div>
+    <div class="hero-meta">
+      <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
+      <div id="streakPill" style="display:none" class="streak-pill">🔥 <span id="streakText"></span></div>
+    </div>
+    <div class="hero-sub">
+      <span><b id="hsROI">—</b> ROI</span>
+      <span class="vdiv">·</span>
+      <span><b id="hsStreak">—</b> streak</span>
+      <span class="vdiv">·</span>
+      <span>rank <b id="hsRank">—</b></span>
+      <span class="vdiv">·</span>
+      <span><b id="hsRel">—</b> reliability</span>
+    </div>
 </div>
 <div class="hero-identity">
   <div class="identity-card" onclick="goToProfile()">
