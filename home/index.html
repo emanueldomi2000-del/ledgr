@@ -360,7 +360,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
     <div class="hero-header">
       <div>
         <div class="welcome-sub">Welcome back</div>
-        <div class="welcome-title">GM, <span id="welcomeName">—</span></div>
+        <div class="welcome-title"><span id="welcomeSub2">GM,</span> <span id="welcomeName">—</span></div>
         <div class="welcome-date" id="welcomeDate"></div>
         <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
         <div id="streakBadge" style="display:none" class="streak-badge">🔥 <span id="streakText"></span></div>
@@ -572,6 +572,10 @@ window.onload=()=>{
   document.getElementById('slideAvatar').textContent=user.username.substring(0,2).toUpperCase();
   document.getElementById('slideName').textContent='@'+user.username;
   document.getElementById('welcomeName').textContent='@'+user.username;
+  // Dynamic greeting based on time
+  const hr=new Date().getHours();
+  const greetings=hr<12?['GM,','Rise and grind,','Another day,','Morning,']:hr<18?['Welcome back,','Good to see you,','Ready to climb,','Let's go,']:['GN,','Evening,','Late session,','One more pick,'];
+  document.getElementById('welcomeSub2').textContent=greetings[Math.floor(Math.random()*greetings.length)];
   updateOnlineCount();
   setInterval(updateOnlineCount,30000);
   drawStreakDays(getLoginStreak());
@@ -594,7 +598,7 @@ async function loadData(){
     renderLeaderboard(all);
     renderActivity(all);
   }catch(e){
-    document.getElementById('communityFeed').innerHTML='<div class="empty">Could not load feed.</div>';
+    document.getElementById('communityFeed').innerHTML='<div class="empty">We are syncing the feed. Pull to refresh.</div>';
   }
 }
 
