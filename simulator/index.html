@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -203,24 +202,11 @@ function selectRisk(mode,el){
   el.classList.add('active');
 }
 
-async function fetchWithRetry(url){
-  for(let attempt=0;attempt<3;attempt++){
-    try{
-      const resp=await fetch(url,{cache:'no-store'});
-      if(!resp.ok)throw new Error('HTTP '+resp.status);
-      const data=await resp.json();
-      if(Array.isArray(data))return data;
-      throw new Error('Invalid response');
-    }catch(err){
-      if(attempt===2)throw err;
-      await new Promise(resolve=>setTimeout(resolve,2000));
-    }
-  }
-}
-
 async function loadPicks(){
   try{
-    allPicks=await fetchWithRetry(API+'/picks');
+    const resp=await fetch(API+'/picks',{cache:'no-store'});
+    allPicks=await resp.json();
+    if(!Array.isArray(allPicks))allPicks=[];
     const tipsters={};
     allPicks.forEach(p=>{if(p.user)tipsters[p.user.username]=true;});
     const sel=document.getElementById('tipsterFilter');
