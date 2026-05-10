@@ -70,8 +70,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .podium-streak{font-size:11px;color:var(--orange);margin-top:4px}
 
 /* LB TABLE */
-.lb-head{display:grid;grid-template-columns:56px 1fr 80px 80px 80px 90px 100px 110px;gap:8px;padding:0 20px 12px;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;border-bottom:1px solid var(--bd);margin-bottom:8px}
-.lb-row{display:grid;grid-template-columns:56px 1fr 80px 80px 80px 90px 100px 110px;gap:8px;padding:14px 20px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;align-items:center;transition:all .2s;cursor:pointer}
+.lb-head{display:grid;grid-template-columns:56px 1fr 80px 80px 80px 90px 80px 100px 110px;gap:8px;padding:0 20px 12px;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;border-bottom:1px solid var(--bd);margin-bottom:8px}
+.lb-row{display:grid;grid-template-columns:56px 1fr 80px 80px 80px 90px 80px 100px 110px;gap:8px;padding:14px 20px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;align-items:center;transition:all .2s;cursor:pointer}
 .lb-row:hover{border-color:var(--bd2);background:var(--s2);transform:translateX(3px)}
 .rank-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--mu);text-align:center;line-height:1}
 .tipster-col{display:flex;align-items:center;gap:10px}
@@ -140,6 +140,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .rank-move.down{color:var(--rd)}
 .rank-move.same{color:var(--mu)}
 .podium-div{font-size:10px;font-family:'DM Mono',monospace;margin-top:6px;font-weight:700}
+
+.elo-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(184,159,255,0.08);border:1px solid rgba(184,159,255,0.2);border-radius:6px;padding:3px 8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);font-weight:700}
+.elo-badge.top{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25);color:var(--gold)}
+.elo-badge.low{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2);color:var(--rd)}
+.elo-change-pos{color:var(--gr);font-size:9px;font-family:'DM Mono',monospace}
+.elo-change-neg{color:var(--rd);font-size:9px;font-family:'DM Mono',monospace}
 </style>
 </head>
 <body>
@@ -226,6 +232,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <span style="text-align:center">Picks</span>
     <span style="text-align:center">Streak</span>
     <span style="text-align:center">Reliability</span>
+    <span style="text-align:center">ELO</span>
     <span></span>
   </div>
   <div id="lbContainer"><div class="empty">Loading leaderboard...</div></div>
@@ -302,6 +309,14 @@ async function loadLeaderboard(){
     if(!r.ok)throw new Error('Server error');
     allPicks=await r.json();
     if(!Array.isArray(allPicks))allPicks=[];
+    // Build ELO map from picks data (eloAfter field)
+    const eloMap={};
+    allPicks.forEach(p=>{
+      if(p.user&&p.eloAfter){
+        eloMap[p.user.username]=p.eloAfter;
+      }
+    });
+    window._eloMap=eloMap;
     buildTipsters();
     updateStats();
     renderLeaderboard();
@@ -326,6 +341,7 @@ function buildTipsters(){
     const userPicks=filtered.filter(p=>p.user&&p.user.username===u).filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let streak=0;for(const p of userPicks){if(p.result==='win')streak++;else break;}
     map[u].streak=streak;
+    map[u].elo=window._eloMap&&window._eloMap[u]?window._eloMap[u]:1000;
   });
   allTipsters=Object.values(map);
 }
@@ -401,6 +417,7 @@ function renderLeaderboard(){
         ${score>0?`<div class="podium-rel" style="color:${color}">${score}/100 reliability</div>`:''}
         <div class="podium-div ${getDivision(t).cls}">${getDivision(t).icon} ${getDivision(t).name}</div>
         ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak} win streak</div>`:''}
+        <div style="margin-top:8px"><span class="elo-badge ${(t.elo||1000)>=1200?'top':(t.elo||1000)<900?'low':''}" style="font-size:11px">⚡ ELO ${t.elo||1000}</span></div>
       </div>`;
     }).join('');
   }else{
@@ -436,6 +453,7 @@ function renderLeaderboard(){
       <div class="rel-col">
         ${score>0?`<div class="rel-score" style="color:${color}">${score}</div><div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace">/100</div>`:'<span style="color:var(--mu);font-size:11px">—</span>'}
       </div>
+      <div class="lb-stat"><div class="elo-badge ${t.elo>=1200?'top':t.elo<900?'low':''}">${t.elo||1000}</div></div>
       <button class="follow-btn" onclick="event.stopPropagation();this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following ✓':'Follow'">Follow</button>
     </div>`;
   }).join('');
