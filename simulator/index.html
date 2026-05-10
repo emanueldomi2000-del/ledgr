@@ -8,62 +8,84 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171}
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
-
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
 .nav-links{display:flex;gap:4px}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s;letter-spacing:.3px}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
 .nav-link.active{color:var(--ac);background:var(--acg)}
 .nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:1}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px;color:var(--tx)}
+.main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:2}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
 .page-title span{color:var(--ac)}
 .page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
-.sim-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:32px;margin-bottom:32px}
-.sim-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ac);margin-bottom:24px}
-.sim-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:16px}
-.form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;padding:12px 16px;outline:none;transition:border-color .2s}
+
+/* SIM BOX */
+.sim-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:28px}
+.sim-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--ac);margin-bottom:20px}
+.sim-grid{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;margin-bottom:12px}
+.form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:11px 14px;outline:none;transition:border-color .2s}
 .form-input:focus{border-color:var(--bd2)}
-.form-select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:14px;padding:12px 16px;outline:none;cursor:pointer;transition:border-color .2s;appearance:none}
+.form-select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:11px 14px;outline:none;cursor:pointer;transition:border-color .2s}
 .form-select:focus{border-color:var(--bd2)}
 .form-select option{background:#15122a}
-.sim-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:13px 28px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all .2s}
+.sim-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:11px 24px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all .2s}
 .sim-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.sim-hint{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:.5px}
-.result-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:12px;cursor:pointer;transition:all .2s;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+.sim-hint{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
+
+/* RISK MODES */
+.risk-modes{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.risk-btn{padding:7px 16px;border:1px solid var(--bd);border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2);font-family:'DM Mono',monospace;font-weight:600}
+.risk-btn:hover{border-color:var(--bd2)}
+.risk-btn.active.safe{border-color:rgba(52,211,153,.5);color:var(--gr);background:rgba(52,211,153,.08)}
+.risk-btn.active.moderate{border-color:rgba(251,191,36,.5);color:var(--gold);background:rgba(251,191,36,.08)}
+.risk-btn.active.aggressive{border-color:rgba(248,113,113,.5);color:var(--rd);background:rgba(248,113,113,.08)}
+
+/* BANKROLL CHART */
+.chart-section{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:20px}
+.chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.chart-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--ac)}
+.chart-stats{display:flex;gap:20px;flex-wrap:wrap}
+.chart-stat{text-align:center}
+.chart-stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
+.chart-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.chart-area{width:100%;height:160px}
+
+/* RESULT CARDS */
+.result-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:12px;cursor:pointer;transition:all .2s;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
 .result-card:hover{border-color:var(--bd2);transform:translateX(3px)}
 .result-card.positive{border-left:3px solid var(--gr)}
 .result-card.negative{border-left:3px solid var(--rd)}
-.rc-tipster{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.rc-av{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:17px;flex-shrink:0;color:#fff}
-.rc-name{font-weight:700;font-size:15px}
-.rc-picks{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.rc-stats{display:flex;gap:20px;flex-wrap:wrap}
-.rc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px}
-.rc-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:2px}
-.rc-right{text-align:right}
-.rc-result-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.rc-result-num{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:1px;line-height:1}
+.rc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.rc-av{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0;color:#fff}
+.rc-name{font-weight:700;font-size:14px}
+.rc-picks{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
+.rc-stats{display:flex;gap:16px;flex-wrap:wrap}
+.rc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+.rc-stat-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.rc-right{text-align:right;flex-shrink:0}
+.rc-result-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.rc-result-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:1px;line-height:1}
 .rc-result-num.pos{color:var(--gr)}.rc-result-num.neg{color:var(--rd)}
-.rc-pct{font-family:'DM Mono',monospace;font-size:12px;margin-top:4px}
+.rc-pct{font-family:'DM Mono',monospace;font-size:11px;margin-top:3px}
 .rc-pct.pos{color:var(--gr)}.rc-pct.neg{color:var(--rd)}
-.view-btn{margin-top:8px;font-size:11px;color:var(--ac);font-family:'DM Mono',monospace;cursor:pointer;display:inline-block}
+.risk-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;font-weight:700;margin-top:6px}
+.risk-badge.low{background:rgba(52,211,153,.1);color:var(--gr)}
+.risk-badge.medium{background:rgba(251,191,36,.1);color:var(--gold)}
+.risk-badge.high{background:rgba(248,113,113,.1);color:var(--rd)}
+
 .empty-state{text-align:center;padding:60px;color:var(--mu)}
 .empty-state .icon{font-size:48px;margin-bottom:16px}
 .empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:8px;color:var(--tx)}
-.empty-state p{font-size:14px;line-height:1.7;color:var(--mu2)}
-.loading-tip{display:flex;align-items:center;gap:8px;padding:8px 0;font-size:12px;color:var(--mu);font-family:'DM Mono',monospace}
-.tipster-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tipster-chip{padding:6px 14px;border:1px solid var(--bd);border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--mu2);font-family:'DM Mono',monospace}
-.tipster-chip.active{background:var(--acg);border-color:var(--bd2);color:var(--ac)}
-@media(max-width:700px){.sim-grid{grid-template-columns:1fr}.result-card{grid-template-columns:1fr}.rc-right{text-align:left}nav{padding:0 16px}.nav-link{display:none}}
+.empty-state p{font-size:14px;color:var(--mu2);line-height:1.7}
+
+@media(max-width:700px){.sim-grid{grid-template-columns:1fr;gap:10px}.sim-btn{width:100%}.result-card{grid-template-columns:1fr}.rc-right{text-align:left}nav{padding:0 16px}.nav-link{display:none}}
 </style>
 </head>
 <body>
@@ -76,7 +98,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
     <a href="/simulator" class="nav-link active">Simulator</a>
     <a href="/badges" class="nav-link">🏅 Badges</a>
   </div>
-  <button class="nav-btn" onclick="window.location.href='/dashboard'">My Dashboard</button>
+  <button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
 </nav>
 <div class="main">
   <div class="page-title">BANKROLL <span>SIMULATOR</span></div>
@@ -95,50 +117,73 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.85);backdrop-filte
       <div>
         <label class="form-label">Tipster</label>
         <select class="form-select" id="tipsterFilter">
-          <option value="all">⏳ Loading tipsters...</option>
+          <option value="all">⏳ Loading...</option>
         </select>
       </div>
       <button class="sim-btn" onclick="runSimulator()">SIMULATE →</button>
     </div>
-    <div class="sim-hint">💡 Select "All Tipsters" to compare everyone, or pick one to simulate following them specifically.</div>
+    <div style="margin-bottom:12px">
+      <label class="form-label" style="margin-bottom:8px">Risk Mode</label>
+      <div class="risk-modes">
+        <div class="risk-btn safe active" onclick="selectRisk('safe',this)">🟢 Safe (flat stake)</div>
+        <div class="risk-btn moderate" onclick="selectRisk('moderate',this)">🟡 Moderate (compound)</div>
+        <div class="risk-btn aggressive" onclick="selectRisk('aggressive',this)">🔴 Aggressive (Kelly)</div>
+      </div>
+    </div>
+    <div class="sim-hint">💡 Safe = same stake every pick · Moderate = stake grows with bankroll · Aggressive = Kelly criterion sizing</div>
   </div>
   <div id="resultsContainer">
     <div class="empty-state">
       <div class="icon">💰</div>
       <h3>SET YOUR BANKROLL</h3>
-      <p>Enter your starting bankroll and stake %, choose a tipster or compare all, then hit Simulate.</p>
+      <p>Enter your starting bankroll, stake %, choose a tipster or compare all, select risk mode — then hit Simulate.</p>
     </div>
   </div>
 </div>
 <script>
-
-document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>{});el.addEventListener('mouseleave',()=>{})});
-
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let allPicks=[];
+let currentRisk='safe';
 const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
+
+function selectRisk(mode,el){
+  currentRisk=mode;
+  document.querySelectorAll('.risk-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
 
 async function loadPicks(){
   try{
     const r=await fetch(API+'/picks',{cache:'no-store'});
-    if(!r.ok)throw new Error('error');
     allPicks=await r.json();
     if(!Array.isArray(allPicks))allPicks=[];
     const tipsters={};
     allPicks.forEach(p=>{if(p.user)tipsters[p.user.username]=true;});
     const sel=document.getElementById('tipsterFilter');
-    sel.innerHTML='<option value="all">All Tipsters</option>';
-    Object.keys(tipsters).sort().forEach(name=>{
-      const opt=document.createElement('option');
-      opt.value=name;opt.textContent='@'+name;
-      sel.appendChild(opt);
-    });
-    // cursor on new select
-    sel.addEventListener('mouseenter',()=>{});
-    sel.addEventListener('mouseleave',()=>{});
+    sel.innerHTML='<option value="all">All Tipsters</option>'+Object.keys(tipsters).sort().map(n=>`<option value="${n}">@${n}</option>`).join('');
   }catch(e){
     document.getElementById('tipsterFilter').innerHTML='<option value="all">All Tipsters</option>';
   }
+}
+
+function drawBankrollChart(tipsterResults,startBankroll){
+  if(!tipsterResults.length)return'';
+  const W=500,H=140;
+  const allPoints=tipsterResults.flatMap(t=>t.history);
+  const min=Math.min(...allPoints,startBankroll*0.8);
+  const max=Math.max(...allPoints,startBankroll*1.1);
+  const range=max-min||1;
+  function toPath(pts,color){
+    const svgPts=pts.map((v,i)=>`${(i/(pts.length-1||1))*W},${H-((v-min)/range)*(H-8)-4}`).join(' ');
+    return`<polyline points="${svgPts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>`;
+  }
+  // Zero line
+  const zeroY=H-((startBankroll-min)/range)*(H-8)-4;
+  const chartColors=['#b89fff','#34d399','#fbbf24','#38bdf8','#fb923c','#f87171'];
+  return`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <line x1="0" y1="${zeroY}" x2="${W}" y2="${zeroY}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+    ${tipsterResults.map((t,i)=>toPath(t.history,chartColors[i%chartColors.length])).join('')}
+  </svg>`;
 }
 
 function runSimulator(){
@@ -148,7 +193,6 @@ function runSimulator(){
   const c=document.getElementById('resultsContainer');
 
   if(!allPicks.length){
-    c.innerHTML='<div class="empty-state"><div class="icon">⏳</div><h3>LOADING</h3><p>Please wait while we load the data...</p></div>';
     loadPicks().then(()=>setTimeout(runSimulator,500));
     return;
   }
@@ -163,19 +207,46 @@ function runSimulator(){
   });
 
   const results=Object.values(tipsters).map((t,idx)=>{
-    let currentBankroll=bankroll,totalProfit=0;
-    const settled=t.picks.filter(p=>p.result==='win'||p.result==='loss');
-    settled.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+    const settled=t.picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+    let currentBankroll=bankroll;
+    let totalProfit=0;
+    let maxDrawdown=0;
+    let peakBankroll=bankroll;
+    const history=[bankroll];
+
     settled.forEach(p=>{
-      const stakeAmt=currentBankroll*(stakePercent/100);
-      if(p.result==='win'){const profit=stakeAmt*(p.odds-1);currentBankroll+=profit;totalProfit+=profit;}
-      else{currentBankroll-=stakeAmt;totalProfit-=stakeAmt;}
+      let stakeAmt;
+      if(currentRisk==='safe'){
+        stakeAmt=bankroll*(stakePercent/100);
+      }else if(currentRisk==='moderate'){
+        stakeAmt=currentBankroll*(stakePercent/100);
+      }else{
+        // Kelly approximation
+        const wr=settled.filter(x=>x.result==='win').length/settled.length||0.5;
+        const b=p.odds-1;
+        const kelly=Math.max(0,(b*wr-(1-wr))/b);
+        stakeAmt=currentBankroll*Math.min(kelly,stakePercent/100);
+      }
+
+      if(p.result==='win'){
+        const profit=stakeAmt*(p.odds-1);
+        currentBankroll+=profit;totalProfit+=profit;
+      }else{
+        currentBankroll-=stakeAmt;totalProfit-=stakeAmt;
+      }
+      if(currentBankroll>peakBankroll)peakBankroll=currentBankroll;
+      const drawdown=((peakBankroll-currentBankroll)/peakBankroll)*100;
+      if(drawdown>maxDrawdown)maxDrawdown=drawdown;
+      history.push(Math.max(0,currentBankroll));
     });
+
     const wins=settled.filter(p=>p.result==='win').length;
     const losses=settled.filter(p=>p.result==='loss').length;
     const wr=settled.length>0?((wins/settled.length)*100).toFixed(0):0;
     const roi=bankroll>0?((totalProfit/bankroll)*100).toFixed(1):0;
-    return{username:t.username,totalProfit,finalBankroll:bankroll+totalProfit,wins,losses,wr,roi,settled:settled.length,color:colors[idx%colors.length]};
+    const riskScore=maxDrawdown>40?'high':maxDrawdown>20?'medium':'low';
+
+    return{username:t.username,totalProfit,finalBankroll:Math.max(0,bankroll+totalProfit),wins,losses,wr,roi,settled:settled.length,color:colors[idx%colors.length],history,maxDrawdown:maxDrawdown.toFixed(1),riskScore};
   }).sort((a,b)=>b.totalProfit-a.totalProfit);
 
   if(!results.length){
@@ -183,35 +254,48 @@ function runSimulator(){
     return;
   }
 
-  c.innerHTML=`<div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--tx);margin-bottom:20px">${tipsterFilter==='all'?'ALL TIPSTERS':'@'+tipsterFilter.toUpperCase()} — Starting €${bankroll.toLocaleString()}</div>`+
-  results.map(r=>{
-    const pos=r.totalProfit>=0;
-    return`<div class="result-card ${pos?'positive':'negative'}" onclick="window.location.href='/tipster?u=${r.username}'">
-      <div>
-        <div class="rc-tipster">
-          <div class="rc-av" style="background:${r.color}">${r.username.substring(0,2).toUpperCase()}</div>
-          <div><div class="rc-name">@${r.username}</div><div class="rc-picks">${r.settled} settled picks · ${r.wins}W ${r.losses}L</div></div>
-        </div>
-        <div class="rc-stats">
-          <div><div class="rc-stat-val" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi}%</div><div class="rc-stat-lbl">ROI</div></div>
-          <div><div class="rc-stat-val">${r.wr}%</div><div class="rc-stat-lbl">Win Rate</div></div>
-          <div><div class="rc-stat-val">€${r.finalBankroll.toFixed(0)}</div><div class="rc-stat-lbl">Final Bankroll</div></div>
-        </div>
-      </div>
-      <div class="rc-right">
-        <div class="rc-result-label">You would have ${pos?'made':'lost'}</div>
-        <div class="rc-result-num ${pos?'pos':'neg'}">${pos?'+':'-'}€${Math.abs(r.totalProfit).toFixed(0)}</div>
-        <div class="rc-pct ${pos?'pos':'neg'}">${pos?'+':''}${r.roi}% on your bankroll</div>
-        <div class="view-btn" onclick="event.stopPropagation();window.location.href='/tipster?u=${r.username}'">View Profile →</div>
-      </div>
-    </div>`;
-  }).join('');
+  const riskLabels={safe:'🟢 Safe',moderate:'🟡 Moderate',aggressive:'🔴 Aggressive'};
 
-  // cursor on new cards
-  document.querySelectorAll('.result-card').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{});
-    el.addEventListener('mouseleave',()=>{});
-  });
+  c.innerHTML=`
+    ${results.length>1?`<div class="chart-section">
+      <div class="chart-header">
+        <div class="chart-title">BANKROLL EVOLUTION</div>
+        <div class="chart-stats">
+          ${results.slice(0,3).map((r,i)=>{const chartColors=['#b89fff','#34d399','#fbbf24'];return`<div class="chart-stat"><div class="chart-stat-val" style="color:${chartColors[i]};font-size:12px">── @${r.username}</div><div class="chart-stat-lbl">${r.roi>=0?'+':''}${r.roi}%</div></div>`;}).join('')}
+        </div>
+      </div>
+      <div class="chart-area">${drawBankrollChart(results.slice(0,3),bankroll)}</div>
+      <div style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:8px">Starting bankroll: €${bankroll.toLocaleString()} · Mode: ${riskLabels[currentRisk]} · Stake: ${stakePercent}%</div>
+    </div>`:''}
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--tx);margin-bottom:14px">
+      ${tipsterFilter==='all'?'ALL TIPSTERS':'@'+tipsterFilter.toUpperCase()} — Starting €${bankroll.toLocaleString()}
+    </div>
+    ${results.map(r=>{
+      const pos=r.totalProfit>=0;
+      return`<div class="result-card ${pos?'positive':'negative'}" onclick="window.location.href='/tipster?u=${r.username}'">
+        <div>
+          <div class="rc-top">
+            <div class="rc-av" style="background:${r.color}">${r.username.substring(0,2).toUpperCase()}</div>
+            <div>
+              <div class="rc-name">@${r.username}</div>
+              <div class="rc-picks">${r.settled} settled · ${r.wins}W ${r.losses}L</div>
+            </div>
+          </div>
+          <div class="rc-stats">
+            <div><div class="rc-stat-val" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi}%</div><div class="rc-stat-lbl">ROI</div></div>
+            <div><div class="rc-stat-val">${r.wr}%</div><div class="rc-stat-lbl">Win Rate</div></div>
+            <div><div class="rc-stat-val">€${r.finalBankroll.toFixed(0)}</div><div class="rc-stat-lbl">Final</div></div>
+            <div><div class="rc-stat-val">${r.maxDrawdown}%</div><div class="rc-stat-lbl">Max DD</div></div>
+          </div>
+          <div class="risk-badge ${r.riskScore}">${r.riskScore==='low'?'🟢 Low Risk':r.riskScore==='medium'?'🟡 Medium Risk':'🔴 High Risk'}</div>
+        </div>
+        <div class="rc-right">
+          <div class="rc-result-lbl">You would have ${pos?'made':'lost'}</div>
+          <div class="rc-result-num ${pos?'pos':'neg'}">${pos?'+':'-'}€${Math.abs(r.totalProfit).toFixed(0)}</div>
+          <div class="rc-pct ${pos?'pos':'neg'}">${pos?'+':''}${r.roi}% return</div>
+        </div>
+      </div>`;
+    }).join('')}`;
 }
 
 loadPicks();
