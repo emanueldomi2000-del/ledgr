@@ -28,12 +28,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .main{max-width:1140px;margin:0 auto;padding:32px 24px;position:relative;z-index:2}
 
 /* HERO HEADER */
-.hero-header{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-bottom:20px}
+.hero-header{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;margin-bottom:20px}
 .welcome-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
 .welcome-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,52px);letter-spacing:3px;line-height:1;color:var(--tx)}
 .welcome-title span{color:var(--ac)}
 .welcome-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);margin-top:6px}
 .streak-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.25);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--orange);font-family:'DM Mono',monospace}
+
+/* HERO STATS ROW (new) */
+.hero-stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.hs-card{background:rgba(255,255,255,0.04);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;transition:all .25s}
+.hs-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.hs-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.hs-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1}
+.hs-val.pos{color:var(--gr)}.hs-val.neg{color:var(--rd)}.hs-val.ac{color:var(--ac)}.hs-val.gold{color:var(--gold)}.hs-val.ora{color:var(--orange)}
 
 /* PROFILE CARD */
 .profile-card{background:var(--s1);border:1px solid var(--bd2);border-radius:16px;padding:20px;min-width:200px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
@@ -65,6 +73,25 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--tx);line-height:1;margin-bottom:4px}
 .stat-val.pos{color:var(--gr)}.stat-val.neg{color:var(--rd)}
 .sparkline{width:100%;height:24px}
+
+/* MVP CARD (new) */
+.mvp-section{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.mvp-card{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(184,159,255,0.04),var(--s1));border:1px solid rgba(251,191,36,0.2);border-radius:16px;padding:20px;position:relative;overflow:hidden;cursor:pointer;transition:all .2s}
+.mvp-card:hover{border-color:rgba(251,191,36,0.38);transform:translateY(-2px);box-shadow:0 8px 28px rgba(251,191,36,0.06)}
+.mvp-tag{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.mvp-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--tx);line-height:1;margin-bottom:4px}
+.mvp-sport{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;margin-bottom:14px}
+.mvp-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd);font-size:11px}
+.mvp-row:last-child{border-bottom:none}
+.mvp-row span:first-child{color:var(--mu);font-family:'DM Mono',monospace}
+.mvp-row span:last-child{font-weight:700}
+.mvp-glow{position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,rgba(251,191,36,0.08),transparent 70%);pointer-events:none}
+
+/* LIVE FEED CARD (new) */
+.live-feed-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:8px}
+.lfc-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.lf-item{background:rgba(255,255,255,0.03);border:1px solid var(--bd);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;transition:background .2s}
+.lf-item:hover{background:var(--acg)}
 
 /* MAIN GRID */
 .main-grid{display:grid;grid-template-columns:1fr 360px;gap:20px}
@@ -125,6 +152,29 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .conf-badge.max{background:var(--acg);color:var(--ac)}
 .feed-reason{font-size:11px;color:var(--mu2);font-style:italic;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
 
+/* TRENDING PICKS RICH CARDS (new) */
+.pick-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:0}
+.hot-pick-card{background:linear-gradient(135deg,rgba(255,255,255,0.04),transparent);border:1px solid var(--bd);border-radius:14px;padding:16px;transition:all .2s;position:relative;overflow:hidden}
+.hot-pick-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.hpc-hot{font-size:10px;color:var(--ac);font-family:'DM Mono',monospace;font-weight:700;margin-bottom:6px}
+.hpc-user{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--tx);margin-bottom:2px}
+.hpc-match{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:10px}
+.hpc-pick-box{background:rgba(0,0,0,0.35);border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px}
+.hpc-pick-lbl{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.hpc-pick-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--tx);line-height:1}
+.hpc-bottom{display:flex;align-items:center;justify-content:space-between}
+.hpc-odds{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gr);line-height:1}
+.hpc-tails{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
+.hpc-conf{padding:4px 12px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;font-weight:700}
+.hpc-conf.max{background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.25);color:var(--ac)}
+.hpc-conf.high{background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);color:var(--gr)}
+.hpc-conf.medium{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.2);color:var(--gold)}
+.hpc-actions{display:flex;gap:6px;margin-top:10px}
+.hpc-tail-btn{flex:1;background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.2);color:var(--ac);border-radius:8px;padding:7px;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;cursor:pointer;transition:all .2s}
+.hpc-tail-btn:hover{background:var(--ac);color:#07060d}
+.hpc-view-btn{padding:7px 14px;border:1px solid var(--bd);background:transparent;color:var(--mu2);border-radius:8px;font-size:11px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
+.hpc-view-btn:hover{border-color:var(--bd2);color:var(--tx)}
+
 /* TOP TIPSTERS */
 .lb-row{display:flex;align-items:center;gap:10px;padding:13px;background:var(--s2);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all .2s;text-decoration:none}
 .lb-row:hover{border-color:var(--bd2);transform:translateX(3px)}
@@ -142,6 +192,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .tip-roi.pos{color:var(--gr)}.tip-roi.neg{color:var(--rd)}
 .tip-streak{font-size:10px;color:var(--orange);font-family:'DM Mono',monospace;margin-top:2px}
 .tip-rel{font-size:9px;font-family:'DM Mono',monospace;margin-top:2px}
+/* ROI progress bar inside tipster row (new) */
+.tip-bar{height:3px;border-radius:2px;background:rgba(255,255,255,0.06);margin-top:6px;overflow:hidden}
+.tip-bar-fill{height:100%;border-radius:2px;background:linear-gradient(to right,var(--ac),var(--cyan));transition:width .6s ease}
 .view-all{display:block;text-align:center;margin-top:10px;font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;text-decoration:none;padding:9px;border:1px solid var(--bd);border-radius:8px;transition:all .2s}
 .view-all:hover{border-color:var(--ac);color:var(--ac)}
 
@@ -151,7 +204,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .not-logged p{color:var(--mu2);margin-bottom:28px}
 .go-home{background:var(--ac);color:#07060d;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
 
-@media(max-width:960px){.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-header{grid-template-columns:1fr}.profile-card{display:none}nav{padding:0 16px}.nav-link{display:none}.qa-grid{grid-template-columns:1fr 1fr}.trending-grid{grid-template-columns:repeat(3,1fr);gap:8px}}
+@media(max-width:960px){.main-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero-header{grid-template-columns:1fr}.profile-card{display:none}nav{padding:0 16px}.nav-link{display:none}.qa-grid{grid-template-columns:1fr 1fr}.trending-grid{grid-template-columns:repeat(3,1fr);gap:8px}.mvp-section{grid-template-columns:1fr}.pick-cards-grid{grid-template-columns:1fr}}
 @media(max-width:600px){
   .main{padding:20px 16px}
   .stats{grid-template-columns:repeat(2,1fr);gap:8px}
@@ -159,6 +212,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
   .stat-val{font-size:22px}
   .stat-label{font-size:9px}
   .sparkline{height:18px}
+  .hero-stats-row{grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+  .hs-val{font-size:20px}
+  .mvp-section{grid-template-columns:1fr}
   .trending-grid{grid-template-columns:repeat(3,1fr);gap:6px}
   .trend-card{padding:8px 10px}
   .trend-icon{font-size:14px;margin-bottom:3px}
@@ -185,6 +241,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
   .feed-card{padding:12px}
   .feed-odds{font-size:22px}
   .lb-row{padding:10px 12px}
+  .pick-cards-grid{grid-template-columns:1fr}
 }
 @media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}.trending-grid{grid-template-columns:1fr}.qa-grid{grid-template-columns:1fr 1fr}}
 
@@ -316,6 +373,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 /* TOAST */
 .pick-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--gr);color:#07060d;padding:10px 20px;border-radius:8px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;z-index:500;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
 .pick-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SECTION LABEL */
+.section-eyebrow{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-eyebrow::before{content:'';width:20px;height:1px;background:var(--bd2)}
 </style>
 </head>
 <body>
@@ -326,7 +387,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
   <a href="/" class="go-home">Back to LEDGR</a>
 </div>
 <div id="app" style="display:none">
-<!-- SLIDE NAV OVERLAY -->
 <div class="pick-toast" id="pickToast"></div>
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <!-- SLIDE NAV -->
@@ -363,16 +423,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
     <div class="nav-links">
       <a href="/home" class="nav-link active">Home</a>
       <a href="/leaderboard" class="nav-link">Leaderboard</a>
-    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
+      <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
       <a href="/badges" class="nav-link">🏅 Badges</a>
       <a href="/compare" class="nav-link">Compare</a>
       <a href="/simulator" class="nav-link">Simulator</a>
       <div class="user-badge" id="userBadge" onclick="goToProfile()">...</div>
-      <button class="logout-btn" onclick="logout()">Log Out</button><button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+      <button class="logout-btn" onclick="logout()">Log Out</button>
+      <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
     </div>
   </nav>
+
   <div class="main">
-    <!-- HERO -->
+
+    <!-- ═══ HERO HEADER ═══ -->
     <div class="hero-header">
       <div>
         <div class="welcome-sub">Welcome back</div>
@@ -380,6 +443,13 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
         <div class="welcome-date" id="welcomeDate"></div>
         <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
         <div id="streakBadge" style="display:none" class="streak-badge">🔥 <span id="streakText"></span></div>
+        <!-- HERO MINI STATS ROW (new from React design) -->
+        <div class="hero-stats-row">
+          <div class="hs-card"><div class="hs-lbl">ROI</div><div class="hs-val pos" id="hsROI">—</div></div>
+          <div class="hs-card"><div class="hs-lbl">Streak</div><div class="hs-val ora" id="hsStreak">—</div></div>
+          <div class="hs-card"><div class="hs-lbl">Rank</div><div class="hs-val ac" id="hsRank">—</div></div>
+          <div class="hs-card"><div class="hs-lbl">Reliability</div><div class="hs-val gold" id="hsRel">—</div></div>
+        </div>
       </div>
       <div class="profile-card" onclick="goToProfile()">
         <div class="pc-av" id="pcAv">?</div>
@@ -392,9 +462,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
       </div>
     </div>
 
-    <!-- ACTIVITY -->
+    <!-- ═══ ACTIVITY TICKER ═══ -->
     <div class="activity-bar">
-      <div class="live-dot"></div><span class="online-badge"><div class="online-dot"></div><span id="onlineCount">—</span> ONLINE</span>
+      <div class="live-dot"></div>
+      <span class="online-badge"><div class="online-dot"></div><span id="onlineCount">—</span> ONLINE</span>
       <div class="activity-ticker"><div class="activity-inner" id="activityInner">
         <span><b>LEDGR</b> — Live platform · picks verified in real time</span>
         <span><b>🔥</b> Post picks · climb the leaderboard · build your record</span>
@@ -403,7 +474,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
       </div></div>
     </div>
 
-    <!-- STATS -->
+    <!-- ═══ STATS ═══ -->
     <div class="stats">
       <div class="stat"><div class="stat-label">Total Picks</div><div class="stat-val" id="statTotal">—</div><svg class="sparkline" id="sp0" viewBox="0 0 100 24" preserveAspectRatio="none"></svg></div>
       <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR">—</div><svg class="sparkline" id="sp1" viewBox="0 0 100 24" preserveAspectRatio="none"></svg></div>
@@ -411,9 +482,31 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
       <div class="stat"><div class="stat-label">Total P&L</div><div class="stat-val" id="statPnL">—</div><svg class="sparkline" id="sp3" viewBox="0 0 100 24" preserveAspectRatio="none"></svg></div>
     </div>
 
-    <!-- MAIN GRID -->
+    <!-- ═══ MVP + LIVE FEED (new section from React design) ═══ -->
+    <div class="mvp-section">
+      <!-- TODAY'S MVP -->
+      <div class="mvp-card" id="mvpCard" onclick="if(window._mvpUser)window.location.href='/tipster?u='+window._mvpUser">
+        <div class="mvp-glow"></div>
+        <div class="mvp-tag">⭐ Today's MVP</div>
+        <div class="mvp-name" id="mvpName">—</div>
+        <div class="mvp-sport" id="mvpSport">Loading...</div>
+        <div class="mvp-row"><span>ROI</span><span id="mvpROI" style="color:var(--gr)">—</span></div>
+        <div class="mvp-row"><span>Streak</span><span id="mvpStreak" style="color:var(--orange)">—</span></div>
+        <div class="mvp-row"><span>Picks</span><span id="mvpPicks">—</span></div>
+      </div>
+      <!-- LIVE ACTIVITY FEED (new) -->
+      <div class="live-feed-card">
+        <div class="lfc-title"><div class="live-dot"></div> Live Now</div>
+        <div id="liveFeedItems">
+          <div class="lf-item">Loading activity...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MAIN GRID ═══ -->
     <div class="main-grid">
       <div>
+
         <!-- LOGIN STREAK -->
         <div class="login-streak-bar" id="loginStreakBar">
           <div class="ls-left">
@@ -425,8 +518,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
           </div>
           <div class="ls-days" id="loginStreakDays"></div>
         </div>
+
         <!-- PICK OF THE DAY -->
         <div class="potd-banner" id="pickOfTheDay" style="display:none"></div>
+
         <!-- POST HERO -->
         <a href="/dashboard" class="post-hero">
           <div><h2>＋ POST A PICK</h2><p>Log your next bet · results verified automatically</p></div>
@@ -447,6 +542,14 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
             <div class="trend-card"><div class="trend-icon">🔥</div><div class="trend-label">Most Backed</div><div class="trend-val" id="trendBacked">—</div><div class="trend-sub" id="trendBackedSub"></div></div>
             <div class="trend-card"><div class="trend-icon">📈</div><div class="trend-label">Trending Tipster</div><div class="trend-val" id="trendTipster">—</div><div class="trend-sub" id="trendTipsterSub"></div></div>
             <div class="trend-card"><div class="trend-icon">💰</div><div class="trend-label">Best ROI Today</div><div class="trend-val" id="trendROI">—</div><div class="trend-sub" id="trendROISub"></div></div>
+          </div>
+        </div>
+
+        <!-- TRENDING PICKS RICH CARDS (new from React design) -->
+        <div class="panel" style="margin-bottom:16px">
+          <div class="panel-title">TRENDING PICKS</div>
+          <div class="pick-cards-grid" id="trendingPicksGrid">
+            <div class="empty">Loading trending picks...</div>
           </div>
         </div>
 
@@ -492,6 +595,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
   </div>
 </div>
 </div>
+
+<a href="/dashboard" id="floatingPost" style="display:none;position:fixed;bottom:24px;right:18px;z-index:200;background:var(--ac);color:#07060d;width:52px;height:52px;border-radius:50%;align-items:center;justify-content:center;font-size:22px;font-weight:900;box-shadow:0 4px 20px rgba(184,159,255,0.4);text-decoration:none">＋</a>
+
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;
@@ -544,8 +650,6 @@ function drawSparkline(svgId,values,positive){
   svg.innerHTML=`<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/>`;
 }
 
-
-
 function drawStreakDays(n){
   const el=document.getElementById('loginStreakDays');
   if(!el)return;
@@ -558,6 +662,7 @@ function drawStreakDays(n){
     return`<div class="ls-day ${isToday?'today':isPast?'done':''}">${d}</div>`;
   }).join('');
 }
+
 function animateCounter(id,target,suffix){
   const el=document.getElementById(id);
   if(!el)return;
@@ -571,12 +676,12 @@ function animateCounter(id,target,suffix){
 }
 
 function updateOnlineCount(){
-  // Simulate online users based on time of day
   const h=new Date().getHours();
   const base=h>=18&&h<=23?12:h>=14&&h<=17?8:h>=9&&h<=13?6:3;
   const count=base+Math.floor(Math.random()*4);
   document.getElementById('onlineCount').textContent=count;
 }
+
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
@@ -588,16 +693,20 @@ window.onload=()=>{
   document.getElementById('slideAvatar').textContent=user.username.substring(0,2).toUpperCase();
   document.getElementById('slideName').textContent='@'+user.username;
   document.getElementById('welcomeName').textContent='@'+user.username;
-  // Dynamic greeting based on time
   const hr=new Date().getHours();
-  const greetings=hr<12?['GM,','Rise and grind,','Another day,','Morning,']:hr<18?['Welcome back,','Good to see you,','Ready to climb,',Let's go,]:['GN,','Evening,','Late session,','One more pick,'];
+  const greetings=hr<12?['GM,','Rise and grind,','Another day,','Morning,']:hr<18?['Welcome back,','Good to see you,','Ready to climb,','Let\'s go,']:['GN,','Evening,','Late session,','One more pick,'];
   document.getElementById('welcomeSub2').textContent=greetings[Math.floor(Math.random()*greetings.length)];
   updateOnlineCount();
   setInterval(updateOnlineCount,30000);
-  drawStreakDays(getLoginStreak());
+  const streak=getLoginStreak();
+  drawStreakDays(streak);
+  document.getElementById('loginStreakCount').textContent=streak+(streak===1?' day':' days');
   document.getElementById('welcomeDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   document.getElementById('pcAv').textContent=user.username.substring(0,2).toUpperCase();
   document.getElementById('pcName').textContent='@'+user.username;
+  // mobile float
+  document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';
+  window.addEventListener('resize',()=>{document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';});
   loadData();
 };
 
@@ -609,12 +718,16 @@ async function loadData(){
     if(!Array.isArray(all))throw new Error('Invalid data');
     renderStats(all);
     renderProfileCard(all);
+    renderMVP(all);
+    renderLiveFeed(all);
     renderTrending(all);
+    renderTrendingPicks(all);
     renderFeed(all);
     renderLeaderboard(all);
     renderActivity(all);
   }catch(e){
     document.getElementById('communityFeed').innerHTML='<div class="empty">We are syncing the feed. Pull to refresh.</div>';
+    document.getElementById('liveFeedItems').innerHTML='<div class="lf-item">Syncing live feed...</div>';
   }
 }
 
@@ -632,6 +745,13 @@ function renderStats(all){
   document.getElementById('statROI').className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');
   document.getElementById('statPnL').textContent=(tp>=0?'+€':'-€')+Math.abs(tp).toFixed(2);
   document.getElementById('statPnL').className='stat-val '+(tp>=0?'pos':'neg');
+  // hero stats row
+  const roiEl=document.getElementById('hsROI');
+  if(roiEl){roiEl.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';roiEl.className='hs-val '+(parseFloat(roi)>=0?'pos':'neg');}
+  const settled=[...my].filter(p=>p.result!=='pending').reverse();
+  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
+  const hsS=document.getElementById('hsStreak');
+  if(hsS)hsS.textContent=streak>0?streak+'W 🔥':'—';
   // sparklines
   let cumPnl=0,cumStake=0,w=0,tot=0;
   const pnlArr=[],roiArr=[],wrArr=[],pickArr=[];
@@ -642,9 +762,6 @@ function renderStats(all){
     drawSparkline('sp2',roiArr,parseFloat(roi)>=0);
     drawSparkline('sp3',pnlArr,tp>=0);
   }
-  // streak
-  const settled=[...my].filter(p=>p.result!=='pending').reverse();
-  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
   if(streak>=3){document.getElementById('streakBadge').style.display='inline-flex';document.getElementById('streakText').textContent=streak+' WIN STREAK 🔥';}
 }
 
@@ -658,24 +775,130 @@ function renderProfileCard(all){
   const sorted=Object.entries(tipsters).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
   const rank=sorted.findIndex(([u])=>u===user.username)+1;
   document.getElementById('pcRank').textContent=rank>0?'#'+rank:'#—';
+  const hsRankEl=document.getElementById('hsRank');
+  if(hsRankEl)hsRankEl.textContent=rank>0?'#'+rank:'#—';
   document.getElementById('pcRel').innerHTML=score>0?`<span style="color:${color};font-weight:700">${score}/100</span> Reliability`:'<span style="color:var(--mu)">Need more picks</span>';
+  const hsRelEl=document.getElementById('hsRel');
+  if(hsRelEl)hsRelEl.textContent=score>0?score+'%':'—';
   const myELO=getELOFromPicks(my);
   const pcEloEl=document.getElementById('pcElo');
   if(pcEloEl)pcEloEl.textContent='⚡ ELO '+myELO;
+  // division badge
+  const div=getDivision(my);
+  const db=document.getElementById('divisionBadge');
+  if(db){db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;}
+}
+
+// ── NEW: TODAY'S MVP ──────────────────────────────────────────────
+function renderMVP(all){
+  const tipsterMap={};
+  all.forEach(p=>{
+    if(!p.user)return;
+    const u=p.user.username;
+    if(!tipsterMap[u])tipsterMap[u]={username:u,picks:[],sport:{},pnl:0,stake:0};
+    tipsterMap[u].picks.push(p);
+    tipsterMap[u].pnl+=p.pnl;
+    tipsterMap[u].stake+=p.stake;
+    if(p.sport)tipsterMap[u].sport[p.sport]=(tipsterMap[u].sport[p.sport]||0)+1;
+  });
+  const sorted=Object.values(tipsterMap)
+    .filter(t=>t.picks.length>=3)
+    .sort((a,b)=>{
+      const ra=a.stake>0?(a.pnl/a.stake)*100:0;
+      const rb=b.stake>0?(b.pnl/b.stake)*100:0;
+      return rb-ra;
+    });
+  if(!sorted.length)return;
+  const mvp=sorted[0];
+  window._mvpUser=mvp.username;
+  const roi=mvp.stake>0?((mvp.pnl/mvp.stake)*100).toFixed(1):'0';
+  const topSport=Object.entries(mvp.sport).sort((a,b)=>b[1]-a[1])[0];
+  const {icons,streak}=getBadgeIcons(mvp.picks);
+  document.getElementById('mvpName').textContent='@'+mvp.username+(icons[0]?' '+icons[0]:'');
+  document.getElementById('mvpSport').textContent=(topSport?topSport[0]+' Specialist':'Multi-Sport')+' · '+mvp.picks.length+' picks';
+  document.getElementById('mvpROI').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
+  document.getElementById('mvpStreak').textContent=streak>0?streak+'W 🔥':'—';
+  document.getElementById('mvpPicks').textContent=mvp.picks.length;
+}
+
+// ── NEW: LIVE FEED ITEMS ──────────────────────────────────────────
+function renderLiveFeed(all){
+  const recent=all.filter(p=>p.user).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
+  const wins=all.filter(p=>p.result==='win').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,2);
+  const items=[];
+  wins.forEach(p=>{if(p.user)items.push(`🔥 @${p.user.username} hit ${p.market} +${p.pnl>=0?p.pnl.toFixed(1):'?'}u`);});
+  recent.slice(0,4).forEach(p=>{
+    if(p.result==='pending')items.push(`📈 @${p.user.username} posted ${p.event} @ ${p.odds}`);
+  });
+  const lf=document.getElementById('liveFeedItems');
+  if(!lf)return;
+  lf.innerHTML=items.slice(0,4).map(i=>`<div class="lf-item">${i}</div>`).join('')||'<div class="lf-item">No recent activity</div>';
+}
+
+// ── NEW: TRENDING PICKS RICH CARDS ────────────────────────────────
+function renderTrendingPicks(all){
+  const tailMap=getTails();
+  // pick most tailed / most recent high-confidence pending
+  const hotPicks=all
+    .filter(p=>p.user&&p.result==='pending')
+    .sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt))
+    .slice(0,4);
+  const grid=document.getElementById('trendingPicksGrid');
+  if(!hotPicks.length){grid.innerHTML='<div class="empty">No trending picks right now.</div>';return;}
+  grid.innerHTML=hotPicks.map((p,i)=>{
+    const confCls=p.confidence||'medium';
+    const confLabel=p.confidence?p.confidence.toUpperCase()+' CONFIDENCE':'PENDING';
+    return`<div class="hot-pick-card">
+      <div class="hpc-hot">🔥 HOT PICK</div>
+      <div class="hpc-user" onclick="window.location.href='/tipster?u=${p.user.username}'" style="cursor:pointer">@${p.user.username}</div>
+      <div class="hpc-match">${p.event}</div>
+      <div class="hpc-pick-box">
+        <div class="hpc-pick-lbl">Pick</div>
+        <div class="hpc-pick-val">${p.market}</div>
+      </div>
+      <div class="hpc-bottom">
+        <div>
+          <div class="hpc-odds">${parseFloat(p.odds).toFixed(2)}</div>
+          <div class="hpc-tails" id="hpcTC_${p.id}">— tails</div>
+        </div>
+        <div class="hpc-conf ${confCls}">${confLabel}</div>
+      </div>
+      <div class="hpc-actions">
+        <button class="hpc-tail-btn ${tailMap[p.id]?'tailed':''}" id="hpcTailBtn_${p.id}" onclick="tailHotPick('${p.id}','${p.event}','${p.market}',${p.odds},'${p.user.username}',this,document.getElementById('hpcTC_${p.id}'))">${tailMap[p.id]?'Tailed ✓':'Tail Pick'}</button>
+        <button class="hpc-view-btn" onclick="window.location.href='/tipster?u=${p.user.username}'">View</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function tailHotPick(pickId,event,market,odds,username,btn,countEl){
+  const tails=getTails();
+  if(tails[pickId]){
+    delete tails[pickId];
+    saveTails(tails);
+    btn.textContent='Tail Pick';btn.classList.remove('tailed');
+    const c=parseInt(countEl.textContent)||1;
+    countEl.textContent=(c-1)+' tail'+((c-1)!==1?'s':'');
+  }else{
+    tails[pickId]={event,market,odds,username,ts:Date.now()};
+    saveTails(tails);
+    btn.textContent='Tailed ✓';btn.classList.add('tailed');
+    const c=parseInt(countEl.textContent)||0;
+    countEl.textContent=(c+1)+' tail'+((c+1)!==1?'s':'');
+    showPickToast('Tailing @'+username+' — '+market+' @ '+odds);
+  }
 }
 
 function renderTrending(all){
   if(!all.length)return;
-  // Most backed pick (most common event in pending)
   const pending=all.filter(p=>p.result==='pending');
   const eventCount={};
   pending.forEach(p=>{eventCount[p.event]=(eventCount[p.event]||0)+1;});
   const topEvent=Object.entries(eventCount).sort((a,b)=>b[1]-a[1])[0];
   if(topEvent){
-    document.getElementById('trendBacked').textContent=topEvent[0].split(' vs ')[0]+' vs '+topEvent[0].split(' vs ')[1];
+    document.getElementById('trendBacked').textContent=topEvent[0].split(' vs ')[0]+' vs '+(topEvent[0].split(' vs ')[1]||'…');
     document.getElementById('trendBackedSub').textContent=topEvent[1]+' tipsters backing';
   }
-  // Trending tipster (most picks today)
   const today=new Date().toDateString();
   const todayPicks=all.filter(p=>new Date(p.createdAt).toDateString()===today&&p.user);
   const tipsterToday={};
@@ -684,11 +907,7 @@ function renderTrending(all){
   if(topTipster){
     document.getElementById('trendTipster').textContent='@'+topTipster[0];
     document.getElementById('trendTipsterSub').textContent=topTipster[1]+' picks today';
-  } else {
-    document.getElementById('trendTipster').textContent='—';
-    document.getElementById('trendTipsterSub').textContent='No picks today yet';
-  }
-  // Best ROI today
+  }else{document.getElementById('trendTipster').textContent='—';document.getElementById('trendTipsterSub').textContent='No picks today yet';}
   const tipsterROI={};
   todayPicks.forEach(p=>{if(!tipsterROI[p.user.username])tipsterROI[p.user.username]={pnl:0,stake:0};tipsterROI[p.user.username].pnl+=p.pnl;tipsterROI[p.user.username].stake+=p.stake;});
   const topROI=Object.entries(tipsterROI).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;})[0];
@@ -696,14 +915,10 @@ function renderTrending(all){
     const roi=topROI[1].stake>0?((topROI[1].pnl/topROI[1].stake)*100).toFixed(1):0;
     document.getElementById('trendROI').textContent='@'+topROI[0];
     document.getElementById('trendROISub').textContent=(parseFloat(roi)>=0?'+':'')+roi+'% ROI today';
-  } else {
-    document.getElementById('trendROI').textContent='—';
-    document.getElementById('trendROISub').textContent='No data yet';
-  }
+  }else{document.getElementById('trendROI').textContent='—';document.getElementById('trendROISub').textContent='No data yet';}
 }
 
 function renderFeed(all){
-  // Community feed — recent picks from all users, most recent first
   const feed=all.filter(p=>p.user).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,10);
   const c=document.getElementById('communityFeed');
   if(!feed.length){c.innerHTML='<div class="empty">No picks yet — be the first!</div>';return;}
@@ -763,6 +978,8 @@ function renderLeaderboard(all){
   const c=document.getElementById('miniLeaderboard');
   if(!top5.length){c.innerHTML='<div class="empty">No tipsters yet.</div>';return;}
   const medals=['🥇','🥈','🥉'];const rankCls=['r1','r2','r3'];const rowCls=['top1','top2','top3'];
+  // max roi for bar
+  const maxROI=Math.max(...top5.map(t=>t.stake>0?(t.pnl/t.stake)*100:0));
   c.innerHTML=top5.map((t,i)=>{
     const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):'0';
     const roiPos=parseFloat(roi)>=0;
@@ -770,6 +987,7 @@ function renderLeaderboard(all){
     const {icons,streak}=getBadgeIcons(t.allPicks);
     const {score,color}=getReliability(t.allPicks);
     const badgeHtml=icons.slice(0,2).map(ic=>`<span style="font-size:11px">${ic}</span>`).join('');
+    const barWidth=maxROI>0?Math.max(8,Math.min(100,(parseFloat(roi)/maxROI)*100)):0;
     return`<a class="lb-row ${i<3?rowCls[i]:''}" href="/tipster?u=${encodeURIComponent(t.username)}">
       <div class="rank ${i<3?rankCls[i]:''}">${i<3?medals[i]:i+1}</div>
       <div class="av" style="background:${avatarColors[i%avatarColors.length]}">${t.username.substring(0,2).toUpperCase()}</div>
@@ -778,17 +996,16 @@ function renderLeaderboard(all){
         <div class="dna-tags">${getDNATags(t.allPicks).map(tag=>`<span class="dna-tag ${tag.cls}">${tag.icon} ${tag.label}</span>`).join('')}</div>
         <div class="tip-sub">${t.picks} picks · ${wr}% WR</div>
         ${score>0?`<div class="tip-rel" style="color:${color}">${score}/100 rel.</div>`:''}
+        <div class="tip-bar"><div class="tip-bar-fill" style="width:${barWidth}%"></div></div>
       </div>
       <div class="tip-right">
         <div class="tip-roi ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div>
         ${streak>=3?`<div class="tip-streak">🔥 W${streak}</div>`:''}
-      <div class="elo-mini">⚡ ELO ${getELOFromPicks(t.allPicks)}</div>
+        <div class="elo-mini">⚡ ELO ${getELOFromPicks(t.allPicks)}</div>
       </div>
     </a>`;
   }).join('');
 }
-
-
 
 function getELOFromPicks(picks){
   const BASE=1000;const K=32;
@@ -805,6 +1022,7 @@ function getELOFromPicks(picks){
   }
   return Math.round(elo);
 }
+
 function getDivision(picks){
   const wins=picks.filter(p=>p.result==='win').length;
   const losses=picks.filter(p=>p.result==='loss').length;
@@ -812,12 +1030,7 @@ function getDivision(picks){
   const pnl=picks.reduce((s,p)=>s+p.pnl,0);
   const roi=stake>0?(pnl/stake)*100:0;
   const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
-  const score=Math.round(
-    Math.min(40,Math.max(0,(roi/20)*40))+
-    Math.min(30,Math.max(0,(wr/70)*30))+
-    Math.min(20,Math.max(0,(picks.length/100)*20))+
-    Math.min(10,picks.length)
-  );
+  const score=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
   if(score>=90)return{name:'LEGEND',cls:'div-legend',icon:'🐐'};
   if(score>=75)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
   if(score>=60)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
@@ -846,17 +1059,10 @@ function saveFollowing(f){localStorage.setItem('ledgr_following',JSON.stringify(
 
 function toggleFollow(username,btn){
   const f=getFollowing();
-  const isFollowing=f.includes(username);
-  if(isFollowing){
-    saveFollowing(f.filter(u=>u!==username));
-    btn.textContent='Follow';btn.classList.remove('following');
-  }else{
-    saveFollowing([...f,username]);
-    btn.textContent='Following ✓';btn.classList.add('following');
-    showPickToast('Following @'+username+'!');
-  }
+  const isF=f.includes(username);
+  if(isF){saveFollowing(f.filter(u=>u!==username));btn.textContent='Follow';btn.classList.remove('following');}
+  else{saveFollowing([...f,username]);btn.textContent='Following ✓';btn.classList.add('following');showPickToast('Following @'+username+'!');}
 }
-
 function isFollowing(username){return getFollowing().includes(username);}
 
 function getTails(){return JSON.parse(localStorage.getItem('ledgr_tails')||'{}');}
@@ -865,17 +1071,12 @@ function saveTails(t){localStorage.setItem('ledgr_tails',JSON.stringify(t));}
 function tailPick(pickId,event,market,odds,username,btn,countEl){
   const tails=getTails();
   if(tails[pickId]){
-    delete tails[pickId];
-    saveTails(tails);
-    btn.textContent='Tail';btn.classList.remove('tailed');
-    const count=parseInt(countEl.textContent)-1;
-    countEl.textContent=count+' tail'+(count!==1?'s':'');
+    delete tails[pickId];saveTails(tails);btn.textContent='Tail';btn.classList.remove('tailed');
+    const count=parseInt(countEl.textContent)-1;countEl.textContent=count+' tail'+(count!==1?'s':'');
   }else{
-    tails[pickId]={event,market,odds,username,ts:Date.now()};
-    saveTails(tails);
+    tails[pickId]={event,market,odds,username,ts:Date.now()};saveTails(tails);
     btn.textContent='Tailed ✓';btn.classList.add('tailed');
-    const count=parseInt(countEl.textContent)+1;
-    countEl.textContent=count+' tail'+(count!==1?'s':'');
+    const count=parseInt(countEl.textContent)+1;countEl.textContent=count+' tail'+(count!==1?'s':'');
     showPickToast('Tailing @'+username+' — '+market+' @ '+odds);
   }
 }
@@ -885,6 +1086,7 @@ function showPickToast(msg){
   t.textContent=msg;t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2500);
 }
+
 function getDNATags(picks){
   const tags=[];
   const wins=picks.filter(p=>p.result==='win').length;
@@ -906,15 +1108,8 @@ function getDNATags(picks){
 function toggleReact(btn,key){
   const stored=JSON.parse(localStorage.getItem('ledgr_reactions')||'{}');
   const countEl=btn.querySelector('span');
-  if(stored[key]){
-    delete stored[key];
-    btn.classList.remove('active');
-    countEl.textContent=Math.max(0,parseInt(countEl.textContent)-1);
-  }else{
-    stored[key]=1;
-    btn.classList.add('active');
-    countEl.textContent=parseInt(countEl.textContent)+1;
-  }
+  if(stored[key]){delete stored[key];btn.classList.remove('active');countEl.textContent=Math.max(0,parseInt(countEl.textContent)-1);}
+  else{stored[key]=1;btn.classList.add('active');countEl.textContent=parseInt(countEl.textContent)+1;}
   localStorage.setItem('ledgr_reactions',JSON.stringify(stored));
 }
 
@@ -954,26 +1149,6 @@ function renderActivity(all){
   const items=recent.map(p=>`<span><b>@${p.user.username}</b> posted ${p.event} @ ${p.odds}</span>`);
   document.getElementById('activityInner').innerHTML=[...items,...items].join('');
 }
-
-function openSlideNav(){
-  document.getElementById('slideNav').classList.add('open');
-  document.getElementById('slideOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeSlideNav(){
-  document.getElementById('slideNav').classList.remove('open');
-  document.getElementById('slideOverlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-</script>
-
-<a href="/dashboard" id="floatingPost" style="display:none;position:fixed;bottom:24px;right:18px;z-index:200;background:var(--ac);color:#07060d;width:52px;height:52px;border-radius:50%;align-items:center;justify-content:center;font-size:22px;font-weight:900;box-shadow:0 4px 20px rgba(184,159,255,0.4);text-decoration:none">＋</a>
-<script>
-(function(){
-  function checkMobile(){document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';}
-  checkMobile();
-  window.addEventListener('resize',checkMobile);
-})();
 
 function openSlideNav(){
   document.getElementById('slideNav').classList.add('open');
