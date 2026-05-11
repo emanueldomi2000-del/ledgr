@@ -464,6 +464,7 @@ select option{background:#15122a}
   </div>
 </div>
 
+<script src="/animations.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null,currentSport='Soccer',currentDateOffset=0,currentLeague='all';
@@ -768,6 +769,9 @@ async function loadPicks(){
     document.getElementById('statPnL').className='stat-val '+(tp>=0?'pos':'neg');
     drawROIChart(allMyPicks);
     renderMyPicks();
+    if(window.checkRankUp)window.checkRankUp(allMyPicks);
+    if(window.checkBadgeUnlock)window.checkBadgeUnlock(allMyPicks);
+    if(window.checkStreak)window.checkStreak(allMyPicks);
   }catch(e){console.error(e);}
 }
 

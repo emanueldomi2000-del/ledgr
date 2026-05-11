@@ -847,6 +847,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 </div>
 </div><!-- /app -->
 
+<script src="/animations.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;
@@ -1079,6 +1080,9 @@ function renderProfileCard(all){
   const hsRank=document.getElementById('hsRank');if(hsRank)hsRank.textContent=rank>0?'#'+rank:'#—';
   const {score}=getReliability(my);const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'—';
   const div=getDivision(my);const db=document.getElementById('divisionBadge');if(db){db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;renderIdentityPanel(my, rank, sorted.length);}
+  if(window.checkRankUp)window.checkRankUp(my);
+  if(window.checkBadgeUnlock)window.checkBadgeUnlock(my);
+  if(window.checkStreak)window.checkStreak(my);
 }
 
 function renderMVP(all){
