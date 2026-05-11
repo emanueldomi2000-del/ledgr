@@ -276,6 +276,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 </div>
 <script src="/archetypes.js"></script>
 <script src="/live.js"></script>
+<script src="/follows.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
@@ -394,8 +395,9 @@ function buildTipsters(){
   finalPicks.forEach(p=>{
     if(!p.user)return;
     const u=p.user.username;
-    if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0,streak:0};
+    if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0,streak:0,userId:null};
     map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;
+    if(!map[u].userId)map[u].userId=p.userId||null;
     if(p.result==='win')map[u].wins++;
     if(p.result==='loss')map[u].losses++;
   });
@@ -523,10 +525,11 @@ function renderLeaderboard(){
         ${score>0?`<div class="rel-score" style="color:${color}">${score}</div><div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace">/100</div>`:'<span style="color:var(--mu);font-size:11px">—</span>'}
       </div>
       <div class="lb-stat">${(()=>{const ss=t.sharpScore||0;const sc=ss>=70?'var(--gr)':ss>=40?'var(--gold)':'var(--rd)';return ss>0?`<div class="at-ss-val" style="color:${sc}">${Math.round(ss)}</div><div class="at-ss-lbl">SHARP</div>`:`<div class="elo-badge ${t.elo>=1200?'top':t.elo<900?'low':''}">${t.elo||1000}</div>`;})()}</div>
-      <button class="follow-btn" onclick="event.stopPropagation();this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following ✓':'Follow'">Follow</button>
+      <button class="follow-btn" data-user-id="${t.userId||''}" onclick="event.stopPropagation()">Follow</button>
     </div>`;
   }).join('');
   if(window.animateSharpGauges)setTimeout(window.animateSharpGauges,60);
+  if(window.Follows)setTimeout(window.Follows.initFollowButtons,80);
 }
 
 loadLeaderboard();

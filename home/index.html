@@ -587,6 +587,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
       <div class="id-rank-track"><div class="id-rank-fill" id="idRankFill" style="width:0%"></div></div>
       <span class="id-rank-num" id="idRankNum">#—</span>
     </div>
+    <div id="idFollowers" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);text-align:center;padding:4px 0 0;letter-spacing:1px">— followers</div>
     <a href="#" onclick="goToProfile();return false" class="id-view-btn">VIEW MY PROFILE →</a>
   </div>
   <div class="missions-card">
@@ -849,6 +850,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 
 <script src="/animations.js"></script>
 <script src="/live.js"></script>
+<script src="/follows.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
@@ -1055,6 +1057,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const today=new Date().toDateString();const todayPicks=myPicks.filter(p=>new Date(p.createdAt).toDateString()===today);const todayWins=todayPicks.filter(p=>p.result==='win').length;const tails=getTails();const tailedToday=Object.values(tails).filter(t=>t&&new Date(t.ts).toDateString()===today).length;
   const missions=[{icon:'🎯',text:'Post 1 pick today',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',done:streak>=1},{icon:'👥',text:'Tail 2 picks',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',done:todayWins>=1}];
   const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-row"><span class="mission-icon">${m.icon}</span><span class="mission-text">${m.text}</span><span class="mission-badge ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</span></div>`).join('');
+  if(window.Follows&&user&&user.id){window.Follows.getFollowerCount(user.id).then(count=>{const el=document.getElementById('idFollowers');if(el)el.textContent=count+(count===1?' follower':' followers');});}
 }
 function renderStats(all){
   const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));

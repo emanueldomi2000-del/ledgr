@@ -255,6 +255,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:'DM Mono',monospace">Loading profile...</div>
 </div>
 <script src="/archetypes.js"></script>
+<script src="/follows.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
@@ -491,6 +492,7 @@ async function loadProfile(){
     const {badges,streak}=getBadges(allPicks);
     const sharpScore=window.getSharpScore?window.getSharpScore(allPicks):0;
     const autoArchetype=window.getArchetype?window.getArchetype(allPicks):null;
+    const tipsterUserId=allPicks.length>0?allPicks[0].userId:null;
 
     // global rank
     const tipsterMap={};
@@ -536,11 +538,12 @@ async function loadProfile(){
               ${archetypeHtml}
             </div>
             <div class="profile-username">@${username}</div>
+            <div id="followerCount" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:5px;letter-spacing:1px">— followers</div>
           </div>
           <div class="profile-actions">
             <a class="share-btn" href="/analytics?u=${username}" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px" id="analyticsBtn">📊 Analytics</a>
             <button class="share-btn" onclick="shareProfile()">📤 Share</button>
-            <button class="follow-btn" id="followBtn" onclick="toggleFollow()">Follow</button>
+            <button class="follow-btn" id="followBtn" data-user-id="${tipsterUserId||''}">Follow</button>
             <button class="sub-btn" onclick="showToast('Subscriptions coming soon! 🚀')">Subscribe €10/mo</button>
           </div>
         </div>
@@ -595,20 +598,26 @@ async function loadProfile(){
         </div>
       </div>`;
 
-    setTimeout(()=>{drawPnLChart(allPicks,'pnlChart');renderPicks();if(window.animateSharpGauges)window.animateSharpGauges();},80);
+    setTimeout(()=>{
+      drawPnLChart(allPicks,'pnlChart');
+      renderPicks();
+      if(window.animateSharpGauges)window.animateSharpGauges();
+      if(window.Follows){
+        window.Follows.initFollowButtons();
+        if(tipsterUserId){
+          window.Follows.getFollowerCount(tipsterUserId).then(count=>{
+            const el=document.getElementById('followerCount');
+            if(el)el.textContent=count+(count===1?' follower':' followers');
+          });
+        }
+      }
+    },80);
 
   }catch(e){
     document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>ERROR</h2><p style="color:var(--mu2)">Could not load profile.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';
   }
 }
 
-function toggleFollow(){
-  const btn=document.getElementById('followBtn');
-  if(!btn)return;
-  const f=btn.classList.contains('following');
-  btn.classList.toggle('following',!f);
-  btn.textContent=f?'Follow':'Following ✓';
-}
 function showNotFound(){document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>404</h2><p style="color:var(--mu2)">Tipster not found.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';}
 function shareProfile(){
   const url=window.location.href;
