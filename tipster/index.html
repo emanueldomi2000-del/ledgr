@@ -254,6 +254,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 <div class="main" id="mainContent">
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:'DM Mono',monospace">Loading profile...</div>
 </div>
+<script src="/archetypes.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const username=new URLSearchParams(window.location.search).get('u')||'';
@@ -486,6 +487,8 @@ async function loadProfile(){
     const rPos=parseFloat(roi)>=0,pPos=pnl>=0;
     const {score,desc,color,needs,needsN}=getScore(allPicks);
     const {badges,streak}=getBadges(allPicks);
+    const sharpScore=window.getSharpScore?window.getSharpScore(allPicks):0;
+    const autoArchetype=window.getArchetype?window.getArchetype(allPicks):null;
 
     // global rank
     const tipsterMap={};
@@ -511,7 +514,11 @@ async function loadProfile(){
     const borderRingCls=profileCfg.border==='pulse'?'ring-pulse':profileCfg.border==='gold'?'ring-gold':profileCfg.border==='fire'?'ring-fire':profileCfg.border==='diamond'?'ring-diamond':profileCfg.border==='legend'?'ring-legend':'';
     const favSports=profileCfg.favSports&&profileCfg.favSports.length?profileCfg.favSports:[];
     const favSportsHtml=favSports.length?`<div class="dna-tags" style="margin-top:8px">${favSports.map(s=>`<span class="dna-tag grinder">${SPORT_ICONS_MINI[s]||'🎯'} ${s}</span>`).join('')}</div>`:'';
-    const archetypeHtml=arch?`<div class="archetype-badge" style="color:${arch.color};border-color:${arch.color}55;background:${arch.color}11">${arch.icon} ${arch.name.replace('The ','').toUpperCase()}</div>`:'';
+    const displayArch=arch||autoArchetype;
+    const archetypeHtml=displayArch?`<div class="archetype-badge" style="color:${displayArch.color};border-color:${displayArch.color}55;background:${displayArch.color}11" title="${displayArch.desc||''}">${displayArch.icon} ${displayArch.name.replace('The ','').toUpperCase()}</div>`:'';
+    const ssColor=sharpScore>=70?'var(--gr)':sharpScore>=40?'var(--gold)':'var(--rd)';
+    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(sharpScore,{size:76}):'';
+    const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
 
     document.getElementById('mainContent').innerHTML=`
       <div class="cover-banner" style="background:${bannerGradient}"><div class="cover-grid"></div></div>
@@ -564,6 +571,8 @@ async function loadProfile(){
         <div>
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
+            ${gaugeHTML?`<div class="at-gauge-section"><div class="at-tip" data-tip="${SHARP_TIP}"><div class="at-gauge-wrap">${gaugeHTML}<div class="at-gauge-lbl">Sharp Score</div>${displayArch?`<span class="at-badge" style="color:${displayArch.color};border-color:${displayArch.color}44;background:${displayArch.color}11;margin-top:2px">${displayArch.icon} ${displayArch.name}</span>`:''}</div></div></div>`:''}
+            <div class="perf-row"><span class="perf-key">Sharp Score</span><span class="perf-val" style="color:${ssColor}">${sharpScore>0?sharpScore.toFixed(0)+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${wins}W — ${losses}L — ${pending}P</span></div>
             <div class="perf-row"><span class="perf-key">ROI</span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
             <div class="perf-row"><span class="perf-key">Win Rate</span><span class="perf-val">${wr}%</span></div>
@@ -584,7 +593,7 @@ async function loadProfile(){
         </div>
       </div>`;
 
-    setTimeout(()=>{drawPnLChart(allPicks,'pnlChart');renderPicks();},80);
+    setTimeout(()=>{drawPnLChart(allPicks,'pnlChart');renderPicks();if(window.animateSharpGauges)window.animateSharpGauges();},80);
 
   }catch(e){
     document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>ERROR</h2><p style="color:var(--mu2)">Could not load profile.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';

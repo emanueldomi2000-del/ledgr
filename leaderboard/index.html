@@ -269,11 +269,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <span style="text-align:center">Picks</span>
     <span style="text-align:center">Streak</span>
     <span style="text-align:center">Reliability</span>
-    <span style="text-align:center">ELO</span>
+    <span style="text-align:center">Sharp</span>
     <span></span>
   </div>
   <div id="lbContainer"><div class="empty">Loading leaderboard...</div></div>
 </div>
+<script src="/archetypes.js"></script>
 <script src="/live.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
@@ -396,12 +397,15 @@ function buildTipsters(){
     if(p.result==='win')map[u].wins++;
     if(p.result==='loss')map[u].losses++;
   });
-  // calc streaks
+  // calc streaks + sharp score + archetype (use all-time picks for skill metrics)
   Object.keys(map).forEach(u=>{
     const userPicks=filtered.filter(p=>p.user&&p.user.username===u).filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let streak=0;for(const p of userPicks){if(p.result==='win')streak++;else break;}
     map[u].streak=streak;
     map[u].elo=window._eloMap&&window._eloMap[u]?window._eloMap[u]:1000;
+    const allTimePicks=allPicks.filter(p=>p.user&&p.user.username===u);
+    map[u].sharpScore=window.getSharpScore?window.getSharpScore(allTimePicks):0;
+    map[u].archetype=window.getArchetype?window.getArchetype(allTimePicks):null;
   });
   allTipsters=Object.values(map);
 }
@@ -478,6 +482,8 @@ function renderLeaderboard(){
         <div class="podium-div ${getDivision(t).cls}">${getDivision(t).icon} ${getDivision(t).name}</div>
         ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak} win streak</div>`:''}
         <div style="margin-top:8px"><span class="elo-badge ${(t.elo||1000)>=1200?'top':(t.elo||1000)<900?'low':''}" style="font-size:11px">⚡ ELO ${t.elo||1000}</span></div>
+        ${t.sharpScore>0&&window.sharpGaugeHTML?`<div class="at-podium-gauge"><div class="at-tip" data-tip="Sharp Score: a true measure of skill, not luck.">${window.sharpGaugeHTML(t.sharpScore,{size:48,strokeWidth:4})}</div><div class="at-podium-lbl">SHARP</div></div>`:''}
+        ${t.archetype&&window.archetypeBadgeHTML?window.archetypeBadgeHTML(t.archetype,false):''}
       </div>`;
     }).join('');
   }else{
@@ -504,6 +510,7 @@ function renderLeaderboard(){
           <div class="tip-name">@${t.username} ${badgeHtml}</div>
           <div class="tip-picks-sub">${t.picks} picks</div>
           <span class="division-badge-sm ${getDivision(t).cls}">${getDivision(t).icon} ${getDivision(t).name}</span>
+          ${t.archetype&&window.archetypeBadgeHTML?'<br>'+window.archetypeBadgeHTML(t.archetype,true):''}
         </div>
       </div>
       <div class="lb-stat"><div class="lsv ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div><div class="lsl">ROI</div></div>
@@ -513,10 +520,11 @@ function renderLeaderboard(){
       <div class="rel-col">
         ${score>0?`<div class="rel-score" style="color:${color}">${score}</div><div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace">/100</div>`:'<span style="color:var(--mu);font-size:11px">—</span>'}
       </div>
-      <div class="lb-stat"><div class="elo-badge ${t.elo>=1200?'top':t.elo<900?'low':''}">${t.elo||1000}</div></div>
+      <div class="lb-stat">${(()=>{const ss=t.sharpScore||0;const sc=ss>=70?'var(--gr)':ss>=40?'var(--gold)':'var(--rd)';return ss>0?`<div class="at-ss-val" style="color:${sc}">${Math.round(ss)}</div><div class="at-ss-lbl">SHARP</div>`:`<div class="elo-badge ${t.elo>=1200?'top':t.elo<900?'low':''}">${t.elo||1000}</div>`;})()}</div>
       <button class="follow-btn" onclick="event.stopPropagation();this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following ✓':'Follow'">Follow</button>
     </div>`;
   }).join('');
+  if(window.animateSharpGauges)setTimeout(window.animateSharpGauges,60);
 }
 
 loadLeaderboard();
