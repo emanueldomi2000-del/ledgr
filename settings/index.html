@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Customize Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
+.logo span{color:var(--ac)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
+.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
+.nav-link.active{color:var(--ac)}
+.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center}
+.nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+
+/* ── SLIDE NAV ── */
+.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.slide-nav.open{right:0}
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
+.slide-nav-overlay.open{display:block}
+.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo span{color:var(--ac)}
+.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
+.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
+.snl:hover{background:var(--acg)}
+.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.slide-nav-links{padding:12px 8px}
+.slide-nav-user{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
+.sn-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center}
+.sn-name{font-family:'DM Mono',monospace;font-size:12px;color:var(--mu2)}
+.slide-nav-logout{padding:0 16px 16px}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
+
+/* ── MAIN ── */
+.main{max-width:1120px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
+
+/* ── NOT LOGGED IN ── */
+.not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
+.not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--mu)}
+.not-logged p{color:var(--mu2);font-size:14px}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:56px}
+.page-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.page-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--mu)}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,9vw,90px);letter-spacing:1px;line-height:.88;color:var(--tx);margin-bottom:16px}
+.page-title span{color:var(--ac)}
+.page-sub{font-size:14px;color:var(--mu2);line-height:1.7;max-width:480px}
+
+/* ── LAYOUT ── */
+.settings-layout{display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start}
+
+/* ── PREVIEW PANEL ── */
+.preview-panel{position:sticky;top:80px}
+.preview-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--mu);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.preview-label::after{content:'';flex:1;height:1px;background:var(--bd)}
+.preview-card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;overflow:hidden;transition:all .3s}
+.preview-banner{height:110px;transition:all .5s ease;position:relative;overflow:hidden}
+.preview-banner-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.06) 1px,transparent 1px);background-size:32px 32px;opacity:0;transition:opacity .4s}
+.preview-body{padding:0 20px 20px}
+.preview-av-wrap{position:relative;width:64px;height:64px;margin-top:-32px;margin-bottom:14px}
+.preview-av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;display:flex;align-items:center;justify-content:center;border:3px solid var(--bg);position:relative;z-index:1}
+.preview-av-ring{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(184,159,255,0.2);z-index:0;transition:all .3s}
+.preview-tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.v-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);color:var(--cyan);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;border-radius:20px}
+.at-badge{display:none;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;border:1px solid;transition:all .3s}
+.preview-uname{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--tx);margin-bottom:10px}
+.preview-sports{display:flex;gap:4px;flex-wrap:wrap;min-height:20px}
+.sport-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu2)}
+.preview-tip{padding:10px 16px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px;border-top:1px solid var(--bd);line-height:1.5}
+
+/* ── SECTIONS ── */
+.settings-sections{display:flex;flex-direction:column;gap:0}
+.settings-section{padding-bottom:52px;margin-bottom:52px;border-bottom:1px solid var(--bd)}
+.settings-section:last-of-type{border-bottom:none;margin-bottom:0}
+.section-header{display:flex;align-items:flex-start;gap:18px;margin-bottom:28px}
+.section-num{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1;color:rgba(184,159,255,0.12);letter-spacing:2px;flex-shrink:0;margin-top:-4px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--tx);margin-bottom:4px}
+.section-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.5px;line-height:1.5}
+
+/* ── ARCHETYPE GRID ── */
+.archetype-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+.archetype-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:14px;padding:18px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.archetype-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;pointer-events:none}
+.archetype-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.archetype-card.selected{transform:translateY(-2px)}
+.archetype-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--ac);color:#07060d;font-size:9px;font-weight:900;display:none;align-items:center;justify-content:center;font-family:'Syne',sans-serif;flex-shrink:0}
+.archetype-card.selected .archetype-check{display:flex}
+.archetype-icon{font-size:30px;margin-bottom:12px;display:block;line-height:1}
+.archetype-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;margin-bottom:6px;color:var(--tx)}
+.archetype-desc{font-size:10px;color:var(--mu2);line-height:1.55;font-family:'DM Mono',monospace}
+
+/* ── BANNER GRID ── */
+.banner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.banner-card{border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .18s;position:relative;background:var(--s1)}
+.banner-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.banner-card.selected{border-color:var(--ac)}
+.banner-prev{height:72px;position:relative}
+.banner-prev-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.08) 1px,transparent 1px);background-size:20px 20px;opacity:.6}
+.banner-info{padding:10px 12px;border-top:1px solid rgba(255,255,255,0.04)}
+.banner-name{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:2px}
+.banner-tier{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:.5px}
+.banner-ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--ac);display:none;align-items:center;justify-content:center;font-size:10px;color:#07060d;font-weight:900}
+.banner-card.selected .banner-ck{display:flex}
+
+/* ── BORDER GRID ── */
+.border-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.border-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:14px;padding:22px 12px 16px;cursor:pointer;transition:all .18s;text-align:center;position:relative}
+.border-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.border-card.selected{border-color:var(--ac);background:var(--acg)}
+.border-av-wrap{position:relative;width:48px;height:48px;margin:0 auto 14px}
+.border-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
+.border-ring{position:absolute;inset:-4px;border-radius:50%}
+.border-name{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:3px}
+.border-tier{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
+
+/* ── BORDER RING STYLES ── */
+.ring-clean{border:2px solid rgba(184,159,255,0.2)}
+.ring-pulse{border:2px solid rgba(184,159,255,0.45);animation:ringPulse 2s ease-in-out infinite}
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(184,159,255,0)}50%{box-shadow:0 0 0 6px rgba(184,159,255,0.12)}}
+.ring-gold{border:2px solid rgba(251,191,36,0.7);box-shadow:0 0 10px rgba(251,191,36,0.18),0 0 20px rgba(251,191,36,0.06)}
+.ring-fire{background:conic-gradient(from 0deg,#ff6b00,#ff3500,#ff6b00,#ffaa00,#ff6b00);animation:spinRing 3s linear infinite}
+.ring-diamond{border:2px solid rgba(56,189,248,0.7);animation:diamondRing 2s ease-in-out infinite}
+@keyframes diamondRing{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0);border-color:rgba(56,189,248,0.7)}50%{box-shadow:0 0 0 6px rgba(56,189,248,0.1);border-color:rgba(56,189,248,1)}}
+.ring-legend{background:conic-gradient(from 0deg,#f59e0b,#b89fff,#34d399,#38bdf8,#f87171,#f59e0b);animation:spinRing 4s linear infinite}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+
+/* ── SPORTS ── */
+.sports-grid{display:flex;flex-wrap:wrap;gap:10px}
+.sport-toggle{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;transition:all .18s;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--mu2);letter-spacing:.5px;user-select:none}
+.sport-toggle:hover{border-color:var(--bd2);color:var(--tx);transform:translateY(-1px)}
+.sport-toggle.selected{border-color:var(--ac);color:var(--ac);background:var(--acg)}
+.sport-toggle-icon{font-size:16px}
+
+/* ── SAVE ── */
+.save-wrap{padding-top:8px}
+.save-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:14px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:4px;cursor:pointer;transition:all .25s;margin-bottom:14px;position:relative;overflow:hidden}
+.save-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent 60%);pointer-events:none}
+.save-btn:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 14px 40px rgba(184,159,255,0.22)}
+.save-btn:active{transform:translateY(0)}
+.save-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);text-align:center;letter-spacing:.5px;line-height:1.7}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--gr);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:320px}
+.toast.show{transform:translateY(0);opacity:1}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){.settings-layout{grid-template-columns:1fr}.preview-panel{position:relative;top:0}}
+@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.archetype-grid{grid-template-columns:repeat(2,1fr)}.banner-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a href="/home" class="logo">LEDG<span>R</span></a>
+  <div class="nav-links">
+    <a href="/home" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
+    <a href="/compare" class="nav-link">Compare</a>
+    <a href="/simulator" class="nav-link">Simulator</a>
+    <a href="/badges" class="nav-link">🏅 Badges</a>
+    <a href="/settings" class="nav-link active">⚙️ Profile</a>
+  </div>
+  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+  <a href="/home" class="nav-btn">← Dashboard</a>
+</nav>
+
+<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
+<div class="slide-nav" id="slideNav">
+  <div class="slide-nav-header">
+    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-user">
+    <div class="sn-av" id="snAv">??</div>
+    <div class="sn-name" id="snName">@username</div>
+  </div>
+  <div class="slide-nav-links">
+    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
+    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
+    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
+    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
+    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
+  </div>
+  <div class="slide-nav-logout">
+    <button class="snl-logout" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="not-logged" id="notLogged" style="display:none">
+    <h2>NOT LOGGED IN</h2>
+    <p style="color:var(--mu2)">You need an account to customize your profile.</p>
+    <a href="/login" class="nav-btn" style="text-decoration:none;margin-top:8px">Log In</a>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="page-header">
+      <div class="page-eyebrow">Profile Customization</div>
+      <h1 class="page-title">SHAPE YOUR<br><span>IDENTITY</span></h1>
+      <p class="page-sub">Make your profile unforgettable. Build an image that commands respect on the leaderboard.</p>
+    </div>
+
+    <div class="settings-layout">
+      <!-- LIVE PREVIEW -->
+      <div class="preview-panel">
+        <div class="preview-label">Live Preview</div>
+        <div class="preview-card">
+          <div class="preview-banner" id="previewBanner">
+            <div class="preview-banner-grid" id="previewBannerGrid"></div>
+          </div>
+          <div class="preview-body">
+            <div class="preview-av-wrap">
+              <div class="preview-av-ring" id="previewRing"></div>
+              <div class="preview-av" id="previewAv">??</div>
+            </div>
+            <div class="preview-tags">
+              <span class="v-tag">✓ VERIFIED</span>
+              <span class="at-badge" id="previewArchBadge"></span>
+            </div>
+            <div class="preview-uname" id="previewUname">@username</div>
+            <div class="preview-sports" id="previewSports"></div>
+          </div>
+          <div class="preview-tip">Your customization shows on your own profile view. Backend sync will make it visible to others.</div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="settings-sections">
+
+        <!-- 01 ARCHETYPE -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">01</div>
+            <div>
+              <div class="section-title">BETTOR ARCHETYPE</div>
+              <div class="section-sub">Your identity. The lens through which you bet. Choose one.</div>
+            </div>
+          </div>
+          <div class="archetype-grid" id="archetypeGrid"></div>
+        </section>
+
+        <!-- 02 BANNER -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">02</div>
+            <div>
+              <div class="section-title">PROFILE BANNER</div>
+              <div class="section-sub">The backdrop that sets the scene. Higher tiers unlock rarer banners.</div>
+            </div>
+          </div>
+          <div class="banner-grid" id="bannerGrid"></div>
+        </section>
+
+        <!-- 03 BORDER -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">03</div>
+            <div>
+              <div class="section-title">AVATAR BORDER</div>
+              <div class="section-sub">The aura around your avatar. Let it speak before you do.</div>
+            </div>
+          </div>
+          <div class="border-grid" id="borderGrid"></div>
+        </section>
+
+        <!-- 04 SPORTS -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">04</div>
+            <div>
+              <div class="section-title">FAVORITE SPORTS</div>
+              <div class="section-sub">What you live to bet on. Shown on your profile as sport icons.</div>
+            </div>
+          </div>
+          <div class="sports-grid" id="sportsGrid"></div>
+        </section>
+
+        <!-- SAVE -->
+        <div class="save-wrap">
+          <button class="save-btn" onclick="saveProfile()">SAVE PROFILE</button>
+          <div class="save-hint">Stored locally in your browser · Applies to your profile page instantly</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ARCHETYPES=[
+  {id:'sniper',icon:'🎯',name:'The Sniper',desc:'Precision over volume. Every pick is deliberate and lethal.',color:'#34d399'},
+  {id:'demon',icon:'😈',name:'The Demon',desc:'Ruthless. Aggressive. Built to dominate the books.',color:'#f87171'},
+  {id:'grinder',icon:'⚙️',name:'The Grinder',desc:'Consistency is the weapon. Volume is the strategy.',color:'#b89fff'},
+  {id:'sharp',icon:'📐',name:'The Sharp',desc:'Beats the close. CLV is the only true measure.',color:'#38bdf8'},
+  {id:'value-hunter',icon:'💎',name:'The Value Hunter',desc:'Spots odds the market has not caught up to yet.',color:'#fbbf24'},
+  {id:'lock-machine',icon:'🔒',name:'The Lock Machine',desc:'High confidence, low variance. Favorites are the play.',color:'#94a3b8'},
+  {id:'ice-cold',icon:'🧊',name:'The Ice Cold',desc:'Unshakeable. Never tilts. Ice in the veins.',color:'#38bdf8'},
+  {id:'profit-farmer',icon:'🌾',name:'The Profit Farmer',desc:'Patient. Methodical. Steady returns, season after season.',color:'#34d399'},
+  {id:'underdog-king',icon:'👑',name:'The Underdog King',desc:'Lives for the long shot. Thrives at +300 and beyond.',color:'#fbbf24'},
+  {id:'data-nerd',icon:'📊',name:'The Data Nerd',desc:'Every pick backed by models, trends, and hard numbers.',color:'#b89fff'},
+  {id:'momentum-monster',icon:'🔥',name:'The Momentum Monster',desc:'Rides hot streaks. Doubles down when running hot.',color:'#fb923c'},
+];
+
+const BANNERS=[
+  {id:'default',name:'VOID GRID',gradient:'linear-gradient(135deg,#0c0a1a,#15122a,#1a1040)',tier:'Free',grid:true},
+  {id:'purple-haze',name:'PURPLE HAZE',gradient:'linear-gradient(135deg,#1a0530,#2d1060,#0a0720)',tier:'Free',grid:false},
+  {id:'cyber-teal',name:'CYBER TEAL',gradient:'linear-gradient(135deg,#041a1a,#0a3028,#021520)',tier:'Free',grid:false},
+  {id:'gold-rush',name:'GOLD RUSH',gradient:'linear-gradient(135deg,#1a1000,#3a2000,#1a0800)',tier:'Silver+',grid:false},
+  {id:'fire-wave',name:'FIRE WAVE',gradient:'linear-gradient(135deg,#1a0500,#3a1000,#200400)',tier:'Gold+',grid:false},
+  {id:'ice-storm',name:'ICE STORM',gradient:'linear-gradient(135deg,#00101a,#001a30,#000a1a)',tier:'Platinum+',grid:false},
+  {id:'diamond',name:'DIAMOND',gradient:'linear-gradient(135deg,#0a0520,#1a0a40,#050a28)',tier:'Diamond+',grid:false},
+  {id:'legend-aura',name:'LEGEND AURA',gradient:'linear-gradient(135deg,#1a0a00,#180030,#001a10)',tier:'Legend',grid:false},
+];
+
+const BORDERS=[
+  {id:'clean',name:'CLEAN',desc:'Minimal. Timeless.',ring:'ring-clean',tier:''},
+  {id:'pulse',name:'PULSE',desc:'Soft animated glow.',ring:'ring-pulse',tier:''},
+  {id:'gold',name:'GOLD RING',desc:'Bold. Premium.',ring:'ring-gold',tier:'Silver+'},
+  {id:'fire',name:'FIRE RING',desc:'Burning. Intense.',ring:'ring-fire',tier:'Gold+'},
+  {id:'diamond',name:'DIAMOND',desc:'Crystal shimmer.',ring:'ring-diamond',tier:'Diamond+'},
+  {id:'legend',name:'LEGEND GLOW',desc:'Mythic rainbow aura.',ring:'ring-legend',tier:'Legend'},
+];
+
+const SPORTS=['Soccer','Basketball','Tennis','Football','Baseball','MMA/Boxing'];
+const SPORT_ICONS={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
+
+let user=null;
+let config={archetype:null,banner:'default',border:'clean',favSports:[]};
+
+/* ── INIT ── */
+window.onload=()=>{
+  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!ud||!tk){document.getElementById('notLogged').style.display='flex';return;}
+  try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
+  if(!user||!user.username){document.getElementById('notLogged').style.display='flex';return;}
+
+  document.getElementById('app').style.display='block';
+  document.getElementById('snAv').textContent=user.username.slice(0,2).toUpperCase();
+  document.getElementById('snName').textContent='@'+user.username;
+  document.getElementById('previewAv').textContent=user.username.slice(0,2).toUpperCase();
+  document.getElementById('previewUname').textContent='@'+user.username;
+
+  const saved=localStorage.getItem('ledgr_profile_'+user.username);
+  if(saved){try{config=JSON.parse(saved);}catch(e){}}
+
+  renderArchetypes();
+  renderBanners();
+  renderBorders();
+  renderSports();
+  applyPreview();
+};
+
+/* ── RENDER ARCHETYPES ── */
+function renderArchetypes(){
+  const grid=document.getElementById('archetypeGrid');
+  grid.innerHTML=ARCHETYPES.map(a=>{
+    const sel=config.archetype===a.id;
+    return`<div class="archetype-card${sel?' selected':''}" onclick="selectArchetype('${a.id}')" id="arch_${a.id}" style="${sel?`border-color:${a.color};background:${a.color}11`:''}" data-color="${a.color}">
+      <div class="archetype-check">✓</div>
+      <span class="archetype-icon">${a.icon}</span>
+      <div class="archetype-name" style="${sel?`color:${a.color}`:''}"> ${a.name}</div>
+      <div class="archetype-desc">${a.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectArchetype(id){
+  config.archetype=id;
+  document.querySelectorAll('.archetype-card').forEach(c=>{
+    const cid=c.id.replace('arch_','');const a=ARCHETYPES.find(x=>x.id===cid);
+    const sel=cid===id;
+    c.classList.toggle('selected',sel);
+    c.style.borderColor=sel?a.color:'';
+    c.style.background=sel?a.color+'11':'';
+    c.querySelector('.archetype-name').style.color=sel?a.color:'';
+  });
+  applyPreview();
+}
+
+/* ── RENDER BANNERS ── */
+function renderBanners(){
+  const grid=document.getElementById('bannerGrid');
+  grid.innerHTML=BANNERS.map(b=>`<div class="banner-card${config.banner===b.id?' selected':''}" onclick="selectBanner('${b.id}')" id="ban_${b.id}">
+    <div class="banner-prev" style="background:${b.gradient}">${b.grid?'<div class="banner-prev-grid"></div>':''}</div>
+    <div class="banner-ck">✓</div>
+    <div class="banner-info">
+      <div class="banner-name">${b.name}</div>
+      <div class="banner-tier">${b.tier}</div>
+    </div>
+  </div>`).join('');
+}
+
+function selectBanner(id){
+  config.banner=id;
+  document.querySelectorAll('.banner-card').forEach(c=>c.classList.toggle('selected',c.id==='ban_'+id));
+  applyPreview();
+}
+
+/* ── RENDER BORDERS ── */
+function renderBorders(){
+  const grid=document.getElementById('borderGrid');
+  grid.innerHTML=BORDERS.map(b=>`<div class="border-card${config.border===b.id?' selected':''}" onclick="selectBorder('${b.id}')" id="brd_${b.id}">
+    <div class="border-av-wrap">
+      <div class="border-ring ${b.ring}"></div>
+      <div class="border-av">ME</div>
+    </div>
+    <div class="border-name">${b.name}</div>
+    <div class="border-tier">${b.tier||'Free'}</div>
+  </div>`).join('');
+}
+
+function selectBorder(id){
+  config.border=id;
+  document.querySelectorAll('.border-card').forEach(c=>c.classList.toggle('selected',c.id==='brd_'+id));
+  applyPreview();
+}
+
+/* ── RENDER SPORTS ── */
+function renderSports(){
+  const grid=document.getElementById('sportsGrid');
+  grid.innerHTML=SPORTS.map(s=>`<div class="sport-toggle${config.favSports.includes(s)?' selected':''}" onclick="toggleSport('${s}')" id="spt_${s.replace('/','_')}">
+    <span class="sport-toggle-icon">${SPORT_ICONS[s]}</span>${s}
+  </div>`).join('');
+}
+
+function toggleSport(s){
+  if(config.favSports.includes(s)){config.favSports=config.favSports.filter(x=>x!==s);}
+  else if(config.favSports.length<4){config.favSports.push(s);}
+  else{showToast('MAX 4 SPORTS');return;}
+  document.querySelectorAll('.sport-toggle').forEach(el=>{
+    const sport=el.id.replace('spt_','').replace('_','/');
+    el.classList.toggle('selected',config.favSports.includes(sport));
+  });
+  applyPreview();
+}
+
+/* ── PREVIEW ── */
+function applyPreview(){
+  const banner=BANNERS.find(b=>b.id===config.banner)||BANNERS[0];
+  const border=BORDERS.find(b=>b.id===config.border)||BORDERS[0];
+  const arch=ARCHETYPES.find(a=>a.id===config.archetype);
+
+  document.getElementById('previewBanner').style.background=banner.gradient;
+  document.getElementById('previewBannerGrid').style.opacity=banner.grid?.6:0;
+
+  const ring=document.getElementById('previewRing');
+  ring.className='preview-av-ring border-ring '+border.ring;
+
+  const badge=document.getElementById('previewArchBadge');
+  if(arch){
+    badge.style.display='inline-flex';
+    badge.style.color=arch.color;
+    badge.style.borderColor=arch.color+'55';
+    badge.style.background=arch.color+'11';
+    badge.textContent=arch.icon+' '+arch.name.replace('The ','').toUpperCase();
+  }else{
+    badge.style.display='none';
+  }
+
+  const sportsEl=document.getElementById('previewSports');
+  sportsEl.innerHTML=config.favSports.map(s=>`<span class="sport-chip">${SPORT_ICONS[s]} ${s}</span>`).join('');
+}
+
+/* ── SAVE ── */
+function saveProfile(){
+  if(!user)return;
+  localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
+  const btn=document.querySelector('.save-btn');
+  const orig=btn.textContent;
+  btn.textContent='✓ SAVED!';
+  btn.style.background='var(--gr)';
+  setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);
+  showToast('PROFILE SAVED ✓');
+}
+
+/* ── UTILS ── */
+function showToast(msg,isErr){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=isErr?'var(--rd)':'var(--gr)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+function logout(){localStorage.removeItem('ledgr_user');localStorage.removeItem('ledgr_token');localStorage.removeItem('user');localStorage.removeItem('token');window.location.href='/';}
+function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+</script>
+</body>
+</html>

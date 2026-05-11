@@ -23,9 +23,22 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .main{max-width:1100px;margin:0 auto;padding:40px 24px;position:relative;z-index:2}
 
 /* COVER */
-.cover-banner{height:160px;background:linear-gradient(135deg,#0c0a1a,#15122a,#1a1040);border-radius:20px 20px 0 0;position:relative;overflow:hidden}
+.cover-banner{height:160px;background:linear-gradient(135deg,#0c0a1a,#15122a,#1a1040);border-radius:20px 20px 0 0;position:relative;overflow:hidden;transition:background .5s ease}
 .cover-banner::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,95,230,0.15),rgba(184,159,255,0.08),rgba(52,211,153,0.05))}
 .cover-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.06) 1px,transparent 1px);background-size:40px 40px}
+
+/* BORDER RING ANIMATIONS */
+@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(184,159,255,0)}50%{box-shadow:0 0 0 8px rgba(184,159,255,0.12)}}
+@keyframes diamondRing{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0);border-color:rgba(56,189,248,0.6)}50%{box-shadow:0 0 0 8px rgba(56,189,248,0.1);border-color:rgba(56,189,248,1)}}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+.ring-pulse{border:2px solid rgba(184,159,255,0.45)!important;animation:ringPulse 2s ease-in-out infinite}
+.ring-gold{border:2px solid rgba(251,191,36,0.7)!important;box-shadow:0 0 12px rgba(251,191,36,0.2),0 0 28px rgba(251,191,36,0.06)}
+.ring-fire{background:conic-gradient(from 0deg,#ff6b00,#ff3500,#ff6b00,#ffaa00,#ff6b00)!important;border:none!important;animation:spinRing 3s linear infinite}
+.ring-diamond{border:2px solid rgba(56,189,248,0.7)!important;animation:diamondRing 2s ease-in-out infinite}
+.ring-legend{background:conic-gradient(from 0deg,#f59e0b,#b89fff,#34d399,#38bdf8,#f87171,#f59e0b)!important;border:none!important;animation:spinRing 4s linear infinite}
+
+/* ARCHETYPE BADGE */
+.archetype-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;border:1px solid}
 
 /* HERO */
 .profile-hero{background:var(--s1);border:1px solid var(--bd);border-radius:0 0 20px 20px;padding:0 36px 28px;margin-bottom:24px}
@@ -205,6 +218,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/compare" class="nav-link">Compare</a>
     <a href="/simulator" class="nav-link">Simulator</a>
     <a href="/badges" class="nav-link">🏅 Badges</a>
+    <a href="/settings" class="nav-link">⚙️ Profile</a>
   </div>
   <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button><button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
 </nav>
@@ -221,6 +235,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
   </div>
   <div class="slide-nav-post">
     <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
@@ -414,12 +429,44 @@ function getDNATags(picks){
   if(avgOdds>=3.0&&picks.length>=10)tags.push({icon:'🎲',label:'Aggressive',cls:'aggressive'});
   return tags.slice(0,3);
 }
+const ARCHETYPES={
+  'sniper':{icon:'🎯',name:'The Sniper',color:'#34d399'},
+  'demon':{icon:'😈',name:'The Demon',color:'#f87171'},
+  'grinder':{icon:'⚙️',name:'The Grinder',color:'#b89fff'},
+  'sharp':{icon:'📐',name:'The Sharp',color:'#38bdf8'},
+  'value-hunter':{icon:'💎',name:'The Value Hunter',color:'#fbbf24'},
+  'lock-machine':{icon:'🔒',name:'The Lock Machine',color:'#94a3b8'},
+  'ice-cold':{icon:'🧊',name:'The Ice Cold',color:'#38bdf8'},
+  'profit-farmer':{icon:'🌾',name:'The Profit Farmer',color:'#34d399'},
+  'underdog-king':{icon:'👑',name:'The Underdog King',color:'#fbbf24'},
+  'data-nerd':{icon:'📊',name:'The Data Nerd',color:'#b89fff'},
+  'momentum-monster':{icon:'🔥',name:'The Momentum Monster',color:'#fb923c'},
+};
+
+const BANNER_GRADIENTS={
+  'default':'linear-gradient(135deg,#0c0a1a,#15122a,#1a1040)',
+  'purple-haze':'linear-gradient(135deg,#1a0530,#2d1060,#0a0720)',
+  'cyber-teal':'linear-gradient(135deg,#041a1a,#0a3028,#021520)',
+  'gold-rush':'linear-gradient(135deg,#1a1000,#3a2000,#1a0800)',
+  'fire-wave':'linear-gradient(135deg,#1a0500,#3a1000,#200400)',
+  'ice-storm':'linear-gradient(135deg,#00101a,#001a30,#000a1a)',
+  'diamond':'linear-gradient(135deg,#0a0520,#1a0a40,#050a28)',
+  'legend-aura':'linear-gradient(135deg,#1a0a00,#180030,#001a10)',
+};
+
+const SPORT_ICONS_MINI={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
+
+function getProfileConfig(uname){
+  try{const s=localStorage.getItem('ledgr_profile_'+uname);return s?JSON.parse(s):{};}catch(e){return{};}
+}
+
 async function loadProfile(){
   if(!username){showNotFound();return;}
   try{
     const r=await fetch(API+'/picks',{cache:'no-store'});
     const all=await r.json();
     allPicks=all.filter(p=>p.user&&p.user.username===username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    const profileCfg=getProfileConfig(username);
 
     const wins=allPicks.filter(p=>p.result==='win').length;
     const losses=allPicks.filter(p=>p.result==='loss').length;
@@ -453,17 +500,25 @@ async function loadProfile(){
       ?`<div class="reliability-box"><div class="rel-score" style="color:var(--mu)">—</div><div><div class="rel-label">Reliability Score</div><div class="rel-needs">Need ${needsN} more picks to unlock</div></div></div>`
       :`<div class="reliability-box"><div class="rel-score" style="color:${color}">${score}</div><div><div class="rel-label">Reliability Score</div><div class="rel-bar"><div class="rel-fill" style="width:${score}%;background:${color}"></div></div><div class="rel-desc">${desc}</div></div></div>`;
 
+    const arch=profileCfg.archetype?ARCHETYPES[profileCfg.archetype]:null;
+    const bannerGradient=BANNER_GRADIENTS[profileCfg.banner]||BANNER_GRADIENTS['default'];
+    const borderRingCls=profileCfg.border==='pulse'?'ring-pulse':profileCfg.border==='gold'?'ring-gold':profileCfg.border==='fire'?'ring-fire':profileCfg.border==='diamond'?'ring-diamond':profileCfg.border==='legend'?'ring-legend':'';
+    const favSports=profileCfg.favSports&&profileCfg.favSports.length?profileCfg.favSports:[];
+    const favSportsHtml=favSports.length?`<div class="dna-tags" style="margin-top:8px">${favSports.map(s=>`<span class="dna-tag grinder">${SPORT_ICONS_MINI[s]||'🎯'} ${s}</span>`).join('')}</div>`:'';
+    const archetypeHtml=arch?`<div class="archetype-badge" style="color:${arch.color};border-color:${arch.color}55;background:${arch.color}11">${arch.icon} ${arch.name.replace('The ','').toUpperCase()}</div>`:'';
+
     document.getElementById('mainContent').innerHTML=`
-      <div class="cover-banner"><div class="cover-grid"></div></div>
+      <div class="cover-banner" style="background:${bannerGradient}"><div class="cover-grid"></div></div>
       <div class="profile-hero">
         <div class="profile-top">
-          <div class="avatar-wrap"><div class="avatar-ring"></div><div class="avatar-big">${username.substring(0,2).toUpperCase()}</div></div>
+          <div class="avatar-wrap"><div class="avatar-ring ${borderRingCls}"></div><div class="avatar-big">${username.substring(0,2).toUpperCase()}</div></div>
           <div class="profile-main">
             <div class="profile-tags">
               <div class="verified-tag"><div class="vdot"></div> VERIFIED</div>
               ${rank>0?`<div class="rank-tag">🏆 RANK #${rank}</div>`:''}
               <div class="division-badge ${getDivision(allPicks).cls}">${getDivision(allPicks).icon} ${getDivision(allPicks).name}</div>
               ${streak>=3?`<div class="streak-tag">🔥 ${streak} WIN STREAK</div>`:''}
+              ${archetypeHtml}
             </div>
             <div class="profile-username">@${username}</div>
           </div>
@@ -475,6 +530,7 @@ async function loadProfile(){
         </div>
         <div class="badges-row">${badgesHtml}</div>
         <div class="dna-tags">${getDNATags(allPicks).map(t=>`<span class="dna-tag ${t.cls}">${t.icon} ${t.label}</span>`).join('')}</div>
+        ${favSportsHtml}
         ${reliabilityHtml}
         ${(()=>{const elo=getELOFromPicks(allPicks);const{label,color}=getELOLabel(elo);return`<div class="elo-box"><div class="elo-val" style="color:${color}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
       </div>
