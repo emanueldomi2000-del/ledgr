@@ -73,6 +73,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <a href="/" class="back">← Back to homepage</a>
 </div>
 
+<script src="/verify.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const TIMEOUT=25000; // 25 second timeout for cold start
@@ -197,13 +198,18 @@ async function handleRegister(){
     });
     hideWakeBar();clearInterval(wakeIv);
     const d=await r.json();
-    if(d.token&&d.user&&d.user.id){
-      localStorage.setItem('ledgr_token',d.token);
-      localStorage.setItem('ledgr_user',JSON.stringify(d.user));
-      localStorage.setItem('token',d.token);
-      localStorage.setItem('user',JSON.stringify(d.user));
-      setMsg('Welcome to LEDGR! Redirecting...','var(--gr)');
-      setTimeout(()=>window.location.href='/home',600);
+    if(d.message){
+      window.VerifyEmail.show({
+        email,
+        box:document.querySelector('.box'),
+        onSuccess(data){
+          localStorage.setItem('ledgr_token',data.token);
+          localStorage.setItem('ledgr_user',JSON.stringify(data.user));
+          localStorage.setItem('token',data.token);
+          localStorage.setItem('user',JSON.stringify(data.user));
+          window.location.href='/home';
+        }
+      });
     }else{
       setMsg(d.error||'Could not create account — try again','var(--rd)');
       btn.disabled=false;btn.textContent='Create Account →';

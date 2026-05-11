@@ -371,6 +371,7 @@ footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items
   </div>
 </div>
 
+<script src="/verify.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
@@ -481,11 +482,18 @@ async function handleRegister(){
     const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username,password})});
     hideWakeBar();clearInterval(wv);
     const d=await r.json();
-    if(d.token&&d.user){
-      localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));
-      localStorage.setItem('token',d.token);localStorage.setItem('user',JSON.stringify(d.user));
-      setMsg('Welcome to LEDGR!','var(--gr)');
-      setTimeout(()=>window.location.href='/home',600);
+    if(d.message){
+      window.VerifyEmail.show({
+        email,
+        box:document.querySelector('.modal-box'),
+        onSuccess(data){
+          localStorage.setItem('ledgr_token',data.token);
+          localStorage.setItem('ledgr_user',JSON.stringify(data.user));
+          localStorage.setItem('token',data.token);
+          localStorage.setItem('user',JSON.stringify(data.user));
+          window.location.href='/home';
+        }
+      });
     }else{setMsg(d.error||'Could not create account','var(--rd)');btn.disabled=false;btn.textContent='Create Account →';}
   }catch(e){hideWakeBar();clearInterval(wv);setMsg('Connection error — try again','var(--rd)');btn.disabled=false;btn.textContent='Create Account →';}
 }
