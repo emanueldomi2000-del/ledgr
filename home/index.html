@@ -465,6 +465,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
     <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
   </div>
   <div class="slide-nav-post"><a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a></div>
@@ -480,6 +481,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
     <a href="/badges" class="nav-link">🏅 Badges</a>
     <a href="/compare" class="nav-link">Compare</a>
     <a href="/simulator" class="nav-link">Simulator</a>
+    <a href="/feed" class="nav-link">🔴 Live</a>
     <a href="/settings" class="nav-link">⚙️ Profile</a>
     <div class="user-badge" id="userBadge" onclick="goToProfile()">...</div>
     <button class="logout-btn" onclick="logout()">Log Out</button>
@@ -1212,8 +1214,27 @@ function toggleFollow(username,btn){
 }
 
 function renderActivityTicker(all){
-  const recent=all.filter(p=>p.user).slice(0,10);if(!recent.length)return;
-  const items=recent.map(p=>`<span><b>@${p.user.username}</b> posted ${p.event} @ ${p.odds}</span>`);
+  if(!all.length)return;
+  const now=Date.now();
+  const settled=all.filter(p=>p.user&&p.result&&p.result!=='pending');
+  const events=[];
+  settled.filter(p=>p.result==='win').forEach(p=>{
+    const pnl=parseFloat(p.pnl)||0;
+    if(pnl>=5)events.push(`🔥 <b>@${p.user.username}</b> cashed <b>+${pnl.toFixed(1)}u</b> on ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
+    else if(parseFloat(p.odds)>=2.5)events.push(`💥 Underdog hit — <b>@${p.user.username}</b> wins ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
+    else events.push(`✅ <b>@${p.user.username}</b> won ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
+  });
+  const byUser={};settled.forEach(p=>{const u=p.user.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
+  Object.entries(byUser).forEach(([u,picks])=>{
+    const sorted=picks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    let streak=0;for(const p of sorted){if(p.result==='win')streak++;else break;}
+    if(streak>=4)events.push(`🔥🔥 <b>@${u}</b> is on a <b>${streak}-WIN STREAK</b>`);
+    else if(streak>=3)events.push(`⚡ <b>@${u}</b> on a <b>${streak}-win streak</b>`);
+  });
+  all.filter(p=>p.user&&(!p.result||p.result==='pending')&&now-new Date(p.createdAt).getTime()<86400000*2)
+    .slice(0,4).forEach(p=>events.push(`📌 <b>@${p.user.username}</b> posted ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`));
+  if(!events.length)all.filter(p=>p.user).slice(0,8).forEach(p=>events.push(`📌 <b>@${p.user.username}</b> posted ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`));
+  const items=events.slice(0,14).map(e=>`<span>${e}</span>`);
   document.getElementById('tickerText').innerHTML=[...items,...items].join('');
 }
 
