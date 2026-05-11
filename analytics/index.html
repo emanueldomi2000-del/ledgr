@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
+.logo span{color:var(--ac)}
+.nav-links{display:flex;gap:4px;align-items:center}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
+.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
+.nav-link.active{color:var(--ac)}
+.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center}
+.nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px}
+
+.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.slide-nav.open{right:0}
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
+.slide-nav-overlay.open{display:block}
+.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo span{color:var(--ac)}
+.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
+.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
+.snl:hover{background:var(--acg)}
+.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.slide-nav-links{padding:12px 8px}
+.slide-nav-logout{padding:0 16px 16px}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
+
+.main{max-width:1100px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
+.not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
+.not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--mu)}
+
+/* ── PAGE HEADER ── */
+.page-header{margin-bottom:40px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.page-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.page-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--mu)}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,80px);letter-spacing:1px;line-height:.9;color:var(--tx)}
+.page-title span{color:var(--ac)}
+.view-profile-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border:1px solid var(--bd2);border-radius:8px;color:var(--ac);font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;font-family:'Syne',sans-serif;white-space:nowrap;background:var(--acg)}
+.view-profile-btn:hover{background:var(--ac);color:#07060d}
+
+/* ── HERO STATS ── */
+.hero-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:32px}
+.hstat{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:18px 14px;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.hstat::before{content:'';display:block;width:32px;height:2px;background:var(--ac);margin:0 auto 12px;opacity:.3;border-radius:1px}
+.hstat:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.hstat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:4px}
+.hstat-val.pos{color:var(--gr)}.hstat-val.neg{color:var(--rd)}.hstat-val.neu{color:var(--tx)}.hstat-val.gold{color:var(--gold)}
+.hstat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+
+/* ── P&L CHART ── */
+.pnl-chart-wrap{width:100%;overflow:hidden}
+.chart-loading{text-align:center;padding:60px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px}
+
+/* ── HEATMAP ── */
+.heatmap-wrap{overflow-x:auto;padding-bottom:4px}
+.heatmap-labels{display:flex;gap:0;margin-bottom:6px;padding-left:28px}
+.hm-month-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px;min-width:0;flex:1;text-align:center}
+.heatmap-body{display:flex;gap:6px}
+.hm-day-labels{display:flex;flex-direction:column;gap:3px;width:24px;flex-shrink:0;padding-top:0}
+.hm-day-label{height:13px;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);justify-content:flex-end;padding-right:4px}
+.heatmap-grid{display:grid;grid-template-rows:repeat(7,13px);grid-auto-flow:column;gap:3px}
+.hm-cell{width:13px;height:13px;border-radius:2px;cursor:default;transition:opacity .15s}
+.hm-cell:hover{opacity:.7;outline:1px solid rgba(255,255,255,0.2)}
+.hm-legend{display:flex;align-items:center;gap:8px;margin-top:12px;justify-content:flex-end}
+.hm-legend-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
+.hm-legend-dots{display:flex;gap:2px}
+.hm-legend-dot{width:12px;height:12px;border-radius:2px}
+
+/* ── SPORT/MARKET BARS ── */
+.breakdown-row{margin-bottom:12px}
+.breakdown-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.breakdown-name{font-size:12px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:6px}
+.breakdown-stats{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);display:flex;gap:10px}
+.breakdown-bar-track{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin-bottom:3px}
+.breakdown-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.breakdown-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
+
+/* ── MONTHLY ── */
+.monthly-grid{display:flex;gap:8px;align-items:flex-end;overflow-x:auto;padding-bottom:8px;min-height:120px}
+.month-col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:52px;flex:1}
+.month-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%;min-height:80px}
+.month-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s ease}
+.month-bar.pos{background:linear-gradient(180deg,var(--gr),rgba(52,211,153,0.4))}
+.month-bar.neg{background:linear-gradient(180deg,var(--rd),rgba(248,113,113,0.4))}
+.month-pnl{font-family:'DM Mono',monospace;font-size:9px;text-align:center;letter-spacing:.5px}
+.month-pnl.pos{color:var(--gr)}.month-pnl.neg{color:var(--rd)}
+.month-name{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px}
+
+/* ── STREAK ── */
+.streak-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.streak-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:16px;text-align:center}
+.streak-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;line-height:1;margin-bottom:4px}
+.streak-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.form-strip{display:flex;gap:4px;flex-wrap:wrap}
+.form-dot{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;transition:transform .2s}
+.form-dot:hover{transform:scale(1.1)}
+.form-dot.w{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:var(--gr)}
+.form-dot.l{background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:var(--rd)}
+.form-dot.p{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);color:#f59e0b}
+
+/* ── ROLLING CHART ── */
+.rolling-chart-wrap{width:100%;overflow:hidden}
+
+/* ── EMPTY ── */
+.empty-card{text-align:center;padding:48px 24px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;line-height:1.8}
+.empty-card .empty-icon{font-size:32px;margin-bottom:12px;display:block;opacity:.5}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ac);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){.hero-stats{grid-template-columns:repeat(3,1fr)}.two-col{grid-template-columns:1fr}.streak-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.hero-stats{grid-template-columns:repeat(2,1fr)}.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.streak-cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="toast" id="toast"></div>
+
+<nav>
+  <a href="/home" class="logo">LEDG<span>R</span></a>
+  <div class="nav-links">
+    <a href="/home" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
+    <a href="/compare" class="nav-link">Compare</a>
+    <a href="/simulator" class="nav-link">Simulator</a>
+    <a href="/badges" class="nav-link">🏅 Badges</a>
+    <a href="/analytics" class="nav-link active">📊 Analytics</a>
+    <a href="/settings" class="nav-link">⚙️ Profile</a>
+  </div>
+  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+  <a href="/home" class="nav-btn">← Dashboard</a>
+</nav>
+
+<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
+<div class="slide-nav" id="slideNav">
+  <div class="slide-nav-header">
+    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-links">
+    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
+    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
+    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
+    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
+    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
+  </div>
+  <div class="slide-nav-logout">
+    <button class="snl-logout" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="not-logged" id="notLogged" style="display:none">
+    <h2>NOT LOGGED IN</h2>
+    <p style="color:var(--mu2)">Log in to see your analytics.</p>
+    <a href="/login" class="nav-btn" style="text-decoration:none;margin-top:8px">Log In</a>
+  </div>
+
+  <div id="app" style="display:none">
+    <div class="page-header">
+      <div>
+        <div class="page-eyebrow">Performance Analytics</div>
+        <div class="page-title" id="pageTitle">YOUR <span>RECORD</span></div>
+      </div>
+      <a href="#" class="view-profile-btn" id="profileLink">View Profile →</a>
+    </div>
+
+    <div class="hero-stats" id="heroStats">
+      <div class="hstat"><div class="hstat-val neu" id="hs0">—</div><div class="hstat-lbl">Total Picks</div></div>
+      <div class="hstat"><div class="hstat-val neu" id="hs1">—</div><div class="hstat-lbl">Win Rate</div></div>
+      <div class="hstat"><div class="hstat-val neu" id="hs2">—</div><div class="hstat-lbl">ROI</div></div>
+      <div class="hstat"><div class="hstat-val neu" id="hs3">—</div><div class="hstat-lbl">Total P&L</div></div>
+      <div class="hstat"><div class="hstat-val gold" id="hs4">—</div><div class="hstat-lbl">Best Streak</div></div>
+      <div class="hstat"><div class="hstat-val neu" id="hs5">—</div><div class="hstat-lbl">Division</div></div>
+    </div>
+
+    <!-- P&L EVOLUTION -->
+    <div class="card">
+      <div class="card-title">P&L EVOLUTION</div>
+      <div class="pnl-chart-wrap" id="pnlChartWrap"><div class="chart-loading">Loading chart...</div></div>
+    </div>
+
+    <!-- ROLLING WR + SPORT DISTRIBUTION -->
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">WIN RATE TREND</div>
+        <div class="rolling-chart-wrap" id="rollingWRWrap"><div class="chart-loading">Loading...</div></div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:10px">Rolling average over last 10 picks</div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">SPORT DISTRIBUTION</div>
+        <div id="sportDistWrap"><div class="chart-loading">Loading...</div></div>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+
+    <!-- ACTIVITY HEATMAP -->
+    <div class="card">
+      <div class="card-title">ACTIVITY MAP</div>
+      <div class="heatmap-wrap">
+        <div class="heatmap-body">
+          <div class="hm-day-labels">
+            <div class="hm-day-label">Mon</div>
+            <div class="hm-day-label">Tue</div>
+            <div class="hm-day-label">Wed</div>
+            <div class="hm-day-label">Thu</div>
+            <div class="hm-day-label">Fri</div>
+            <div class="hm-day-label">Sat</div>
+            <div class="hm-day-label">Sun</div>
+          </div>
+          <div>
+            <div class="heatmap-labels" id="hmMonthLabels"></div>
+            <div class="heatmap-grid" id="hmGrid"></div>
+          </div>
+        </div>
+        <div class="hm-legend">
+          <span class="hm-legend-label">Less</span>
+          <div class="hm-legend-dots">
+            <div class="hm-legend-dot" style="background:rgba(255,255,255,0.04)"></div>
+            <div class="hm-legend-dot" style="background:rgba(52,211,153,0.2)"></div>
+            <div class="hm-legend-dot" style="background:rgba(52,211,153,0.5)"></div>
+            <div class="hm-legend-dot" style="background:rgba(52,211,153,0.85)"></div>
+          </div>
+          <span class="hm-legend-label">Wins · More</span>
+          <div class="hm-legend-dots" style="margin-left:8px">
+            <div class="hm-legend-dot" style="background:rgba(248,113,113,0.2)"></div>
+            <div class="hm-legend-dot" style="background:rgba(248,113,113,0.5)"></div>
+            <div class="hm-legend-dot" style="background:rgba(248,113,113,0.85)"></div>
+          </div>
+          <span class="hm-legend-label">Losses</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BY SPORT + BY MARKET -->
+    <div class="two-col">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">BY SPORT</div>
+        <div id="bySportWrap"><div class="chart-loading">Loading...</div></div>
+      </div>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">BY MARKET</div>
+        <div id="byMarketWrap"><div class="chart-loading">Loading...</div></div>
+      </div>
+    </div>
+    <div style="height:20px"></div>
+
+    <!-- MONTHLY PERFORMANCE -->
+    <div class="card">
+      <div class="card-title">MONTHLY PERFORMANCE</div>
+      <div class="monthly-grid" id="monthlyGrid"><div class="chart-loading">Loading...</div></div>
+    </div>
+
+    <!-- STREAK ANALYSIS -->
+    <div class="card">
+      <div class="card-title">STREAK ANALYSIS</div>
+      <div class="streak-cards">
+        <div class="streak-card">
+          <div class="streak-num" style="color:var(--orange)" id="bestStreakNum">0</div>
+          <div class="streak-lbl">Best Win Streak</div>
+        </div>
+        <div class="streak-card">
+          <div class="streak-num" id="curStreakNum" style="color:var(--gr)">0</div>
+          <div class="streak-lbl" id="curStreakLbl">Current Streak</div>
+        </div>
+        <div class="streak-card">
+          <div class="streak-num" style="color:var(--rd)" id="coldStreakNum">0</div>
+          <div class="streak-lbl">Worst Losing Run</div>
+        </div>
+      </div>
+      <div class="card-title" style="font-size:13px;margin-bottom:12px">RECENT FORM — LAST 20 PICKS</div>
+      <div class="form-strip" id="formStrip"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API='https://ledgr-backend-production-c132.up.railway.app';
+const SPORT_ICON={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
+let user=null,allPicks=[];
+
+const urlUser=new URLSearchParams(window.location.search).get('u');
+
+window.onload=()=>{
+  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!urlUser&&(!ud||!tk)){document.getElementById('notLogged').style.display='flex';return;}
+  if(ud){try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}}
+  document.getElementById('app').style.display='block';
+  loadData();
+};
+
+async function loadData(){
+  try{
+    const r=await fetch(API+'/picks',{cache:'no-store'});
+    const all=await r.json();
+    const targetUser=urlUser||(user?user.username:null);
+    if(!targetUser){document.getElementById('notLogged').style.display='flex';document.getElementById('app').style.display='none';return;}
+
+    allPicks=all.filter(p=>p.user&&p.user.username===targetUser).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+
+    document.getElementById('pageTitle').innerHTML=`<span style="color:var(--ac)">@${targetUser}</span> ANALYTICS`;
+    document.getElementById('profileLink').href='/tipster?u='+targetUser;
+    document.title='LEDGR — @'+targetUser+' Analytics';
+
+    renderHeroStats(all,targetUser);
+    renderPnLChart();
+    renderRollingWR();
+    renderSportDist();
+    renderHeatmap();
+    renderBySport();
+    renderByMarket();
+    renderMonthly();
+    renderStreaks();
+  }catch(e){
+    document.getElementById('app').innerHTML='<div class="empty-card"><span class="empty-icon">⚠️</span>Could not load data. Try again.</div>';
+  }
+}
+
+function renderHeroStats(all,targetUser){
+  const picks=allPicks;
+  const wins=picks.filter(p=>p.result==='win').length;
+  const losses=picks.filter(p=>p.result==='loss').length;
+  const stake=picks.reduce((s,p)=>s+p.stake,0);
+  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?((pnl/stake)*100).toFixed(1):0;
+  const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):0;
+  const settled=picks.filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let cur=0,best=0,curRun=0;for(const p of settled){if(p.result==='win'){cur++;best=Math.max(best,cur);}else cur=0;}
+  cur=0;for(const p of settled){if(p.result==='win')cur++;else break;}
+
+  // global rank
+  const tmap={};all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tmap[u])tmap[u]={pnl:0,stake:0};tmap[u].pnl+=p.pnl;tmap[u].stake+=p.stake;});
+  const sorted=Object.entries(tmap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
+  const rank=sorted.findIndex(([u])=>u===targetUser)+1;
+
+  const divScore=Math.round(Math.min(40,Math.max(0,(parseFloat(roi)/20)*40))+Math.min(30,Math.max(0,(parseFloat(wr)/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
+  const divName=divScore>=90?'LEGEND':divScore>=75?'ELITE':divScore>=60?'DIAMOND':divScore>=45?'PLATINUM':divScore>=30?'GOLD':divScore>=15?'SILVER':'BRONZE';
+  const rPos=parseFloat(roi)>=0,pPos=pnl>=0;
+
+  document.getElementById('hs0').textContent=picks.length;
+  const hs1=document.getElementById('hs1');hs1.textContent=wr+'%';hs1.className='hstat-val '+(parseFloat(wr)>=50?'pos':'neg');
+  const hs2=document.getElementById('hs2');hs2.textContent=(rPos?'+':'')+roi+'%';hs2.className='hstat-val '+(rPos?'pos':'neg');
+  const hs3=document.getElementById('hs3');hs3.textContent=(pPos?'+€':'-€')+Math.abs(pnl).toFixed(1);hs3.className='hstat-val '+(pPos?'pos':'neg');
+  document.getElementById('hs4').textContent=best+'W';
+  document.getElementById('hs5').textContent=divName;
+}
+
+function renderPnLChart(){
+  const el=document.getElementById('pnlChartWrap');
+  const picks=allPicks;
+  if(picks.length<2){el.innerHTML='<div class="empty-card"><span class="empty-icon">📈</span>Post at least 2 picks to see your P&L chart.</div>';return;}
+  let cum=0;const points=[{i:0,pnl:0,date:picks[0].createdAt}];
+  picks.forEach((p,i)=>{cum+=p.pnl;points.push({i:i+1,pnl:cum,date:p.createdAt});});
+  const W=800,H=200,PT=16,PR=16,PB=36,PL=52,CW=W-PL-PR,CH=H-PT-PB;
+  const allPnl=points.map(p=>p.pnl);
+  const mn=Math.min(0,...allPnl),mx=Math.max(0,...allPnl),range=mx-mn||1;
+  const toX=i=>PL+(i/(points.length-1))*CW;
+  const toY=v=>PT+CH-((v-mn)/range)*CH;
+  const pathPts=points.map((p,i)=>`${toX(i)},${toY(p.pnl)}`).join(' ');
+  const zeroY=toY(0);
+  const last=points[points.length-1];
+  const isPos=last.pnl>=0;const color=isPos?'#34d399':'#f87171';
+  const ySteps=4;const yLabels=[];
+  for(let i=0;i<=ySteps;i++){const v=mn+(range/ySteps)*i;const y=toY(v);yLabels.push(`<text x="${PL-8}" y="${y+4}" text-anchor="end" fill="#6a6690" font-size="10" font-family="DM Mono,monospace">${v>=0?'+':''}${v.toFixed(1)}u</text><line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>`);}
+  const seen=new Set();const monthLines=[];
+  points.forEach((p,i)=>{const d=new Date(p.date);const mk=d.getFullYear()+'-'+d.getMonth();if(!seen.has(mk)){seen.add(mk);const x=toX(i);const lbl=d.toLocaleDateString('en-GB',{month:'short'});if(i>0)monthLines.push(`<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+CH}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`);monthLines.push(`<text x="${x}" y="${H-6}" text-anchor="middle" fill="#6a6690" font-size="10" font-family="DM Mono,monospace">${lbl}</text>`);}});
+  const finalX=toX(points.length-1),finalY=toY(last.pnl);
+  const lbW=70,lbH=18;const lbX=Math.min(finalX-lbW/2,W-PR-lbW);
+  el.innerHTML=`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible">
+    <defs><linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.25"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    ${yLabels.join('')}${monthLines.join('')}
+    <line x1="${PL}" y1="${zeroY}" x2="${W-PR}" y2="${zeroY}" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+    <polygon points="${PL},${zeroY} ${pathPts} ${W-PR},${zeroY}" fill="url(#pg2)"/>
+    <polyline points="${pathPts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${finalX}" cy="${finalY}" r="5" fill="${color}" stroke="#07060d" stroke-width="2"/>
+    <rect x="${lbX}" y="${finalY-24}" width="${lbW}" height="${lbH}" rx="4" fill="${color}"/>
+    <text x="${lbX+lbW/2}" y="${finalY-24+13}" text-anchor="middle" fill="#07060d" font-size="11" font-weight="700" font-family="DM Mono,monospace">${last.pnl>=0?'+':''}${last.pnl.toFixed(2)}u</text>
+  </svg>`;
+}
+
+function renderRollingWR(){
+  const el=document.getElementById('rollingWRWrap');
+  const settled=allPicks.filter(p=>p.result!=='pending');
+  if(settled.length<3){el.innerHTML='<div class="empty-card" style="padding:24px"><span class="empty-icon" style="font-size:20px">📊</span>Need 3+ settled picks.</div>';return;}
+  const WIN=10;const pts=[];
+  settled.forEach((p,i)=>{const sl=settled.slice(Math.max(0,i-WIN+1),i+1);const w=sl.filter(x=>x.result==='win').length;pts.push((w/sl.length)*100);});
+  const W=400,H=120,PT=8,PR=8,PB=8,PL=8,CW=W-PL-PR,CH=H-PT-PB;
+  const toX=i=>PL+(i/(pts.length-1||1))*CW;const toY=v=>PT+CH-((v)/100)*CH;
+  const pathPts=pts.map((v,i)=>`${toX(i)},${toY(v)}`).join(' ');
+  const cur=pts[pts.length-1];const color=cur>=50?'#34d399':'#f87171';
+  const halfY=toY(50);
+  el.innerHTML=`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible">
+    <defs><linearGradient id="wrG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.2"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${PL}" y1="${halfY}" x2="${W-PR}" y2="${halfY}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="${PL}" y="${halfY-4}" fill="#6a6690" font-size="9" font-family="DM Mono,monospace">50%</text>
+    <polygon points="${PL},${PT+CH} ${pathPts} ${W-PR},${PT+CH}" fill="url(#wrG)"/>
+    <polyline points="${pathPts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${toX(pts.length-1)}" cy="${toY(cur)}" r="4" fill="${color}" stroke="#07060d" stroke-width="2"/>
+    <text x="${toX(pts.length-1)+8}" y="${toY(cur)+4}" fill="${color}" font-size="10" font-weight="700" font-family="DM Mono,monospace">${cur.toFixed(0)}%</text>
+  </svg>`;
+}
+
+function renderSportDist(){
+  const el=document.getElementById('sportDistWrap');
+  const map={};allPicks.forEach(p=>{if(!map[p.sport])map[p.sport]={picks:0,wins:0,losses:0,pnl:0,stake:0};map[p.sport].picks++;map[p.sport].pnl+=p.pnl;map[p.sport].stake+=p.stake;if(p.result==='win')map[p.sport].wins++;if(p.result==='loss')map[p.sport].losses++;});
+  const list=Object.entries(map).sort((a,b)=>b[1].picks-a[1].picks);
+  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
+  const maxPicks=list[0][1].picks;
+  el.innerHTML=list.map(([sport,d])=>{const roi=d.stake>0?((d.pnl/d.stake)*100).toFixed(1):'0';const wr=(d.wins+d.losses)>0?((d.wins/(d.wins+d.losses))*100).toFixed(0):'0';const rPos=parseFloat(roi)>=0;const barW=Math.max(6,(d.picks/maxPicks)*100).toFixed(0);const barColor=rPos?'var(--gr)':'var(--rd)';return`<div class="breakdown-row"><div class="breakdown-header"><div class="breakdown-name">${SPORT_ICON[sport]||'🎯'} ${sport}</div><div class="breakdown-stats"><span style="color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</span><span>${d.picks}p</span></div></div><div class="breakdown-bar-track"><div class="breakdown-bar-fill" style="width:${barW}%;background:${barColor}"></div></div><div class="breakdown-sub">${d.wins}W ${d.losses}L · ${wr}% WR</div></div>`;}).join('');
+}
+
+function renderHeatmap(){
+  const grid=document.getElementById('hmGrid');
+  const monthLabels=document.getElementById('hmMonthLabels');
+  const DAYS=91;const today=new Date();
+  const dayMap={};
+  allPicks.forEach(p=>{const d=new Date(p.createdAt);const key=d.toISOString().split('T')[0];if(!dayMap[key])dayMap[key]={picks:0,pnl:0,wins:0,losses:0};dayMap[key].picks++;dayMap[key].pnl+=p.pnl;if(p.result==='win')dayMap[key].wins++;if(p.result==='loss')dayMap[key].losses++;});
+  const startDate=new Date(today);startDate.setDate(startDate.getDate()-(DAYS-1));
+  let html='';const weekMonths=[];let curMonth='';let weekCount=0;
+  for(let i=0;i<DAYS;i++){
+    const d=new Date(startDate);d.setDate(d.getDate()+i);
+    const key=d.toISOString().split('T')[0];
+    const data=dayMap[key];
+    let bg;
+    if(!data||data.picks===0){bg='rgba(255,255,255,0.04)';}
+    else{const intensity=Math.min(0.9,0.25+data.picks*0.2);bg=data.pnl>0?`rgba(52,211,153,${intensity})`:data.pnl<0?`rgba(248,113,113,${intensity})`:`rgba(251,191,36,0.5)`;}
+    const tip=data?`${key}: ${data.picks} pick${data.picks>1?'s':''} · ${data.pnl>=0?'+':''}${data.pnl.toFixed(2)}u`:key;
+    html+=`<div class="hm-cell" style="background:${bg}" title="${tip}"></div>`;
+    if(i%7===0){const mo=d.toLocaleDateString('en-GB',{month:'short'});if(mo!==curMonth){weekMonths.push({mo,col:weekCount});curMonth=mo;}weekCount++;}
+  }
+  grid.innerHTML=html;
+  monthLabels.innerHTML=weekMonths.map(w=>`<div class="hm-month-label" style="margin-left:${w.col*16}px">${w.mo}</div>`).join('');
+}
+
+function renderBySport(){
+  const el=document.getElementById('bySportWrap');
+  const map={};allPicks.forEach(p=>{if(!map[p.sport])map[p.sport]={picks:0,wins:0,losses:0,pnl:0,stake:0};map[p.sport].picks++;map[p.sport].pnl+=p.pnl;map[p.sport].stake+=p.stake;if(p.result==='win')map[p.sport].wins++;if(p.result==='loss')map[p.sport].losses++;});
+  const list=Object.entries(map).sort((a,b)=>b[1].pnl-a[1].pnl);
+  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
+  const maxAbs=Math.max(...list.map(([,d])=>Math.abs(d.pnl)));
+  el.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="border-bottom:1px solid var(--bd)">
+      <th style="text-align:left;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">SPORT</th>
+      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">ROI</th>
+      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">W-L</th>
+      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">P&L</th>
+    </tr></thead><tbody>
+    ${list.map(([sport,d])=>{const roi=d.stake>0?((d.pnl/d.stake)*100).toFixed(1):'0';const rPos=parseFloat(roi)>=0;const pPos=d.pnl>=0;return`<tr style="border-bottom:1px solid var(--bd)"><td style="padding:8px 4px;font-weight:600">${SPORT_ICON[sport]||'🎯'} ${sport}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:var(--mu2)">${d.wins}–${d.losses}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td></tr>`;}).join('')}
+    </tbody></table>`;
+}
+
+function renderByMarket(){
+  const el=document.getElementById('byMarketWrap');
+  const map={};allPicks.forEach(p=>{const m=p.market.split(' ').slice(0,2).join(' ');if(!map[m])map[m]={picks:0,wins:0,losses:0,pnl:0,stake:0};map[m].picks++;map[m].pnl+=p.pnl;map[m].stake+=p.stake;if(p.result==='win')map[m].wins++;if(p.result==='loss')map[m].losses++;});
+  const list=Object.entries(map).sort((a,b)=>b[1].picks-a[1].picks).slice(0,8);
+  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
+  el.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12px">
+    <thead><tr style="border-bottom:1px solid var(--bd)">
+      <th style="text-align:left;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">MARKET</th>
+      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">ROI</th>
+      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">PICKS</th>
+      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">P&L</th>
+    </tr></thead><tbody>
+    ${list.map(([market,d])=>{const roi=d.stake>0?((d.pnl/d.stake)*100).toFixed(1):'0';const rPos=parseFloat(roi)>=0;const pPos=d.pnl>=0;return`<tr style="border-bottom:1px solid var(--bd)"><td style="padding:8px 4px;font-weight:600;font-size:11px;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${market}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:var(--mu2)">${d.picks}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td></tr>`;}).join('')}
+    </tbody></table>`;
+}
+
+function renderMonthly(){
+  const el=document.getElementById('monthlyGrid');
+  const map={};allPicks.forEach(p=>{const d=new Date(p.createdAt);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(!map[key])map[key]={pnl:0,picks:0,wins:0,losses:0};map[key].pnl+=p.pnl;map[key].picks++;if(p.result==='win')map[key].wins++;if(p.result==='loss')map[key].losses++;});
+  const list=Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0]));
+  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
+  const maxAbs=Math.max(...list.map(([,d])=>Math.abs(d.pnl)))||1;
+  const MAXH=100;
+  el.innerHTML=list.map(([key,d])=>{
+    const [yr,mo]=key.split('-');const mName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('en-GB',{month:'short'});
+    const h=Math.max(4,Math.round((Math.abs(d.pnl)/maxAbs)*MAXH));const pos=d.pnl>=0;
+    return`<div class="month-col">
+      <div class="month-bar-wrap"><div class="month-bar ${pos?'pos':'neg'}" style="height:${h}px"></div></div>
+      <div class="month-pnl ${pos?'pos':'neg'}">${pos?'+':''}${d.pnl.toFixed(1)}u</div>
+      <div class="month-name">${mName}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderStreaks(){
+  const settled=allPicks.filter(p=>p.result!=='pending').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  let bestW=0,bestL=0,curW=0,curL=0;
+  settled.forEach(p=>{if(p.result==='win'){curW++;curL=0;bestW=Math.max(bestW,curW);}else{curL++;curW=0;bestL=Math.max(bestL,curL);}});
+  // current streak from end
+  let curStreak=0,curType=null;
+  for(let i=settled.length-1;i>=0;i--){
+    if(curType===null){curType=settled[i].result;curStreak=1;}
+    else if(settled[i].result===curType)curStreak++;
+    else break;
+  }
+  document.getElementById('bestStreakNum').textContent=bestW+'W';
+  const csEl=document.getElementById('curStreakNum');
+  const csLbl=document.getElementById('curStreakLbl');
+  if(curType==='win'){csEl.style.color='var(--gr)';csEl.textContent=curStreak+'W';}
+  else if(curType==='loss'){csEl.style.color='var(--rd)';csEl.textContent=curStreak+'L';}
+  else{csEl.textContent='—';}
+  csLbl.textContent=curType==='win'?'Current Win Streak':curType==='loss'?'Current Losing Run':'Current Streak';
+  document.getElementById('coldStreakNum').textContent=bestL+'L';
+
+  // recent form
+  const recent=allPicks.slice(-20);
+  document.getElementById('formStrip').innerHTML=recent.map(p=>{
+    const cls=p.result==='win'?'w':p.result==='loss'?'l':'p';
+    const lbl=p.result==='win'?'W':p.result==='loss'?'L':'—';
+    const tip=p.event+' @ '+p.odds;
+    return`<div class="form-dot ${cls}" title="${tip}">${lbl}</div>`;
+  }).join('');
+}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function logout(){localStorage.removeItem('ledgr_user');localStorage.removeItem('ledgr_token');localStorage.removeItem('user');localStorage.removeItem('token');window.location.href='/';}
+function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
+function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+</script>
+</body>
+</html>

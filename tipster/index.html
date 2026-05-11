@@ -523,6 +523,7 @@ async function loadProfile(){
             <div class="profile-username">@${username}</div>
           </div>
           <div class="profile-actions">
+            <a class="share-btn" href="/analytics?u=${username}" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px" id="analyticsBtn">📊 Analytics</a>
             <button class="share-btn" onclick="shareProfile()">📤 Share</button>
             <button class="follow-btn" id="followBtn" onclick="toggleFollow()">Follow</button>
             <button class="sub-btn" onclick="showToast('Subscriptions coming soon! 🚀')">Subscribe €10/mo</button>

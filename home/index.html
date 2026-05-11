@@ -348,25 +348,45 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 .snl-logout:hover{color:var(--rd);border-color:rgba(248,113,113,0.3)}
 
 /* SHARE MODAL */
-.share-modal{display:none;position:fixed;inset:0;background:rgba(6,5,8,0.92);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(20px)}
+.share-modal{display:none;position:fixed;inset:0;background:rgba(6,5,8,0.94);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(24px)}
 .share-modal.open{display:flex}
-.share-card{background:var(--s1);border:1px solid var(--bd2);border-radius:20px;padding:28px;width:320px;margin:0 20px;position:relative}
-.share-card-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--mu);font-size:16px;cursor:pointer}
-.sc-header{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.sc-logo{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--ac)}
-.sc-event{font-weight:700;font-size:15px;color:var(--tx);margin-bottom:4px}
-.sc-market{font-size:12px;color:var(--mu2);font-family:'DM Mono',monospace;margin-bottom:14px}
-.sc-stats{display:flex;gap:16px;margin-bottom:16px}
-.sc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--ac);line-height:1}
-.sc-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.sc-user{display:flex;align-items:center;gap:8px;padding-top:14px;border-top:1px solid var(--bd)}
-.sc-av{width:28px;height:28px;border-radius:7px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:11px;color:#fff;flex-shrink:0}
-.sc-username{font-size:12px;font-weight:700;color:var(--tx)}
-.sc-sub{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.share-btns{display:flex;gap:8px;margin-top:16px}
-.share-copy-btn{flex:1;background:var(--ac);color:#060508;border:none;border-radius:8px;padding:10px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;cursor:pointer}
-.share-x-btn{padding:10px 14px;border:1px solid var(--bd2);color:var(--mu2);background:none;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif}
-.share-x-btn:hover{color:var(--ac);border-color:rgba(184,159,255,0.3)}
+.share-modal-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:380px;margin:0 20px}
+.share-card{width:100%;position:relative;border-radius:24px;overflow:hidden;background:var(--s1);border:1px solid var(--bd2)}
+.share-card-inner{padding:28px}
+.share-card-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.08);border:none;color:var(--mu2);font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+.share-card-close:hover{background:rgba(255,255,255,0.14);color:var(--tx)}
+.sc-banner{height:6px;width:100%;background:linear-gradient(90deg,var(--ac),#7c3aed,var(--cyan));position:absolute;top:0;left:0}
+.sc-header{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;padding-top:4px}
+.sc-logo{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:4px;color:var(--ac)}
+.sc-live{display:inline-flex;align-items:center;gap:4px;font-size:8px;color:var(--gr)}
+.sc-live-dot{width:5px;height:5px;border-radius:50%;background:var(--gr);animation:blink 1.5s infinite}
+.sc-event{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;color:var(--tx);margin-bottom:3px;line-height:1.3}
+.sc-market{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;margin-bottom:20px;letter-spacing:.3px}
+.sc-odds-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px}
+.sc-odds-block{display:flex;flex-direction:column}
+.sc-odds-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.sc-odds-val{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--ac);line-height:.9;letter-spacing:1px}
+.sc-stake-block{text-align:right}
+.sc-stake-val{font-family:'DM Mono',monospace;font-size:18px;color:var(--tx);font-weight:700}
+.sc-result-badge{display:inline-flex;align-items:center;gap:5px;padding:5px 14px;border-radius:20px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;margin-top:4px}
+.sc-result-badge.win{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--gr)}
+.sc-result-badge.loss{background:rgba(248,113,113,0.12);border:1px solid rgba(248,113,113,0.3);color:var(--rd)}
+.sc-result-badge.pending{background:rgba(184,159,255,0.08);border:1px solid var(--bd2);color:var(--mu2)}
+.sc-divider{height:1px;background:var(--bd);margin-bottom:16px}
+.sc-user{display:flex;align-items:center;gap:10px}
+.sc-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:12px;color:#fff;flex-shrink:0}
+.sc-user-info{flex:1}
+.sc-username{font-size:13px;font-weight:700;color:var(--tx)}
+.sc-sub{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px;display:flex;align-items:center;gap:6px}
+.sc-verified{color:var(--cyan)}
+.sc-url{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);text-align:right}
+.share-btns{display:flex;gap:8px;width:100%}
+.share-copy-btn{flex:1;background:var(--ac);color:#060508;border:none;border-radius:10px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:all .2s}
+.share-copy-btn:hover{background:#cdb8ff}
+.share-x-btn{padding:12px 18px;border:1px solid var(--bd2);color:var(--mu2);background:rgba(255,255,255,0.03);border-radius:10px;font-size:13px;cursor:pointer;font-family:'Syne',sans-serif;font-weight:600;transition:all .2s}
+.share-x-btn:hover{color:var(--tx);border-color:var(--bd2);background:rgba(255,255,255,0.06)}
+.share-analytics-btn{padding:12px 14px;border:1px solid var(--bd);color:var(--mu);background:none;border-radius:10px;font-size:12px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+.share-analytics-btn:hover{color:var(--ac);border-color:var(--bd2)}
 
 /* ANIMATIONS */
 @keyframes fadeSlideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
@@ -704,23 +724,44 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 </div>
 
 <!-- SHARE MODAL -->
-<div class="share-modal" id="shareModal">
-  <div class="share-card">
-    <button class="share-card-close" onclick="closeShareModal()">✕</button>
-    <div class="sc-header"><span>🔒 VERIFIED PICK</span><span class="sc-logo">LEDGR</span></div>
-    <div class="sc-event" id="scEvent">—</div>
-    <div class="sc-market" id="scMarket">—</div>
-    <div class="sc-stats">
-      <div><div class="sc-stat-val" id="scOdds">—</div><div class="sc-stat-lbl">Odds</div></div>
-      <div><div class="sc-stat-val" id="scStake">—</div><div class="sc-stat-lbl">Stake</div></div>
-    </div>
-    <div class="sc-user">
-      <div class="sc-av" id="scAv">?</div>
-      <div><div class="sc-username" id="scUser">—</div><div class="sc-sub">✅ Verified · getledgr.bet</div></div>
+<div class="share-modal" id="shareModal" onclick="if(event.target===this)closeShareModal()">
+  <div class="share-modal-wrap">
+    <div class="share-card">
+      <div class="sc-banner"></div>
+      <div class="share-card-inner">
+        <button class="share-card-close" onclick="closeShareModal()">✕</button>
+        <div class="sc-header">
+          <div class="sc-live"><div class="sc-live-dot"></div>VERIFIED PICK</div>
+          <span class="sc-logo">LEDGR</span>
+        </div>
+        <div class="sc-event" id="scEvent">—</div>
+        <div class="sc-market" id="scMarket">—</div>
+        <div class="sc-odds-row">
+          <div class="sc-odds-block">
+            <div class="sc-odds-lbl">Odds</div>
+            <div class="sc-odds-val" id="scOdds">—</div>
+          </div>
+          <div class="sc-stake-block">
+            <div class="sc-odds-lbl" style="text-align:right">Stake</div>
+            <div class="sc-stake-val" id="scStake">—</div>
+            <div class="sc-result-badge pending" id="scResultBadge" style="display:none"></div>
+          </div>
+        </div>
+        <div class="sc-divider"></div>
+        <div class="sc-user">
+          <div class="sc-av" id="scAv">?</div>
+          <div class="sc-user-info">
+            <div class="sc-username" id="scUser">—</div>
+            <div class="sc-sub"><span class="sc-verified">✓</span> Verified Record · getledgr.bet</div>
+          </div>
+          <div class="sc-url">📊 LEDGR</div>
+        </div>
+      </div>
     </div>
     <div class="share-btns">
-      <button class="share-copy-btn" onclick="copyShareCard()">📋 COPY LINK</button>
-      <button class="share-x-btn" onclick="shareToX()">𝕏 Share</button>
+      <button class="share-copy-btn" onclick="copyShareCard()">📋 COPY</button>
+      <button class="share-x-btn" onclick="shareToX()">𝕏 POST</button>
+      <a class="share-analytics-btn" id="scAnalyticsLink" href="/analytics">📊</a>
     </div>
   </div>
 </div>
@@ -1176,10 +1217,17 @@ function renderActivityTicker(all){
   document.getElementById('tickerText').innerHTML=[...items,...items].join('');
 }
 
-function sharePick(event,market,odds,username,stake){
-  document.getElementById('scEvent').textContent=event;document.getElementById('scMarket').textContent=market;
-  document.getElementById('scOdds').textContent=parseFloat(odds).toFixed(2);document.getElementById('scStake').textContent=(stake||'—')+'u';
-  document.getElementById('scUser').textContent='@'+username;document.getElementById('scAv').textContent=username.slice(0,2).toUpperCase();
+function sharePick(event,market,odds,username,stake,result){
+  document.getElementById('scEvent').textContent=event;
+  document.getElementById('scMarket').textContent=market;
+  document.getElementById('scOdds').textContent=parseFloat(odds).toFixed(2);
+  document.getElementById('scStake').textContent=(stake||'—')+'u';
+  document.getElementById('scUser').textContent='@'+username;
+  document.getElementById('scAv').textContent=username.slice(0,2).toUpperCase();
+  const rb=document.getElementById('scResultBadge');
+  if(result&&result!=='pending'){rb.style.display='inline-flex';rb.className='sc-result-badge '+(result==='win'?'win':'loss');rb.textContent=result==='win'?'✓ WIN':'✗ LOSS';}
+  else{rb.style.display='none';}
+  document.getElementById('scAnalyticsLink').href='/analytics?u='+encodeURIComponent(username);
   document.getElementById('shareModal').classList.add('open');
 }
 function closeShareModal(){document.getElementById('shareModal').classList.remove('open');}

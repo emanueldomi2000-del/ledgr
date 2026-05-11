@@ -115,10 +115,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 @media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
 
-.time-filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.time-filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
 .tf-btn{padding:7px 16px;border:1px solid var(--bd);border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2);font-family:'DM Mono',monospace;font-weight:600;background:none}
 .tf-btn:hover{border-color:var(--bd2);color:var(--tx)}
 .tf-btn.active{background:var(--acg);border-color:var(--bd2);color:var(--ac)}
+.tf-btn.season{border-color:rgba(251,191,36,0.2);color:#b89464}
+.tf-btn.season.active{background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.4);color:var(--gold)}
+.tf-divider{width:1px;height:20px;background:var(--bd);flex-shrink:0}
+.tf-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.season-banner{background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(184,159,255,0.04));border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;gap:12px}
+.season-banner.show{display:flex}
+.season-banner-icon{font-size:20px}
+.season-banner-info{flex:1}
+.season-banner-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--gold);line-height:1}
+.season-banner-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px;margin-top:2px}
+.season-winner-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:700}
 .min-picks-wrap{display:flex;align-items:center;gap:8px;margin-bottom:20px}
 .min-picks-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
 .min-picks-select{background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--mu2);font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;outline:none;cursor:pointer}
@@ -158,6 +169,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/compare" class="nav-link">Compare</a>
     <a href="/simulator" class="nav-link">Simulator</a>
     <a href="/badges" class="nav-link">🏅 Badges</a>
+    <a href="/analytics" class="nav-link">📊 Analytics</a>
+    <a href="/settings" class="nav-link">⚙️ Profile</a>
   </div>
   <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button><button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
 </nav>
@@ -174,6 +187,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
   </div>
   <div class="slide-nav-post">
     <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
@@ -203,9 +218,23 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     </select>
   </div>
   <div class="time-filters">
+    <span class="tf-label">Period</span>
     <button class="tf-btn active" onclick="setTimeFilter('all',this)">All Time</button>
     <button class="tf-btn" onclick="setTimeFilter('30d',this)">30 Days</button>
     <button class="tf-btn" onclick="setTimeFilter('7d',this)">7 Days</button>
+    <div class="tf-divider"></div>
+    <span class="tf-label">🏆 Seasons</span>
+    <button class="tf-btn season" onclick="setTimeFilter('s3',this)">Season 3</button>
+    <button class="tf-btn season" onclick="setTimeFilter('s2',this)">Season 2</button>
+    <button class="tf-btn season" onclick="setTimeFilter('s1',this)">Season 1</button>
+  </div>
+  <div class="season-banner" id="seasonBanner">
+    <div class="season-banner-icon">🏆</div>
+    <div class="season-banner-info">
+      <div class="season-banner-title" id="seasonBannerTitle">SEASON 3</div>
+      <div class="season-banner-sub" id="seasonBannerSub">Current season · Last 90 days</div>
+    </div>
+    <div class="season-winner-badge" id="seasonWinnerBadge" style="display:none">👑 Champion: —</div>
   </div>
   <div class="min-picks-wrap">
     <span class="min-picks-label">Min picks:</span>
@@ -295,14 +324,36 @@ function setTimeFilter(t,el){
   currentTimeFilter=t;
   document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
-  buildTipsters();renderLeaderboard();
+  buildTipsters();
+  updateSeasonBanner(t,allTipsters);
+  renderLeaderboard();
 }
+
+const SEASON_CONFIG={
+  s3:{title:'SEASON 3',sub:'Current season · Last 90 days',start:Date.now()-90*86400000,end:Date.now()},
+  s2:{title:'SEASON 2',sub:'90–180 days ago',start:Date.now()-180*86400000,end:Date.now()-90*86400000},
+  s1:{title:'SEASON 1',sub:'180–270 days ago',start:Date.now()-270*86400000,end:Date.now()-180*86400000},
+};
 
 function filterPicksByTime(picks){
   if(currentTimeFilter==='all')return picks;
-  const days=currentTimeFilter==='7d'?7:30;
-  const cutoff=Date.now()-days*86400000;
-  return picks.filter(p=>new Date(p.createdAt)>=cutoff);
+  if(currentTimeFilter==='7d'){const c=Date.now()-7*86400000;return picks.filter(p=>new Date(p.createdAt)>=c);}
+  if(currentTimeFilter==='30d'){const c=Date.now()-30*86400000;return picks.filter(p=>new Date(p.createdAt)>=c);}
+  if(SEASON_CONFIG[currentTimeFilter]){const{start,end}=SEASON_CONFIG[currentTimeFilter];return picks.filter(p=>{const t=new Date(p.createdAt).getTime();return t>=start&&t<=end;});}
+  return picks;
+}
+
+function updateSeasonBanner(filter,tipsters){
+  const banner=document.getElementById('seasonBanner');
+  const cfg=SEASON_CONFIG[filter];
+  if(!cfg){banner.classList.remove('show');return;}
+  banner.classList.add('show');
+  document.getElementById('seasonBannerTitle').textContent=cfg.title;
+  document.getElementById('seasonBannerSub').textContent=cfg.sub;
+  const winner=tipsters&&tipsters.length?tipsters[0]:null;
+  const wb=document.getElementById('seasonWinnerBadge');
+  if(winner&&filter!=='s3'){wb.style.display='inline-flex';wb.textContent='👑 Champion: @'+winner.username;}
+  else{wb.style.display='none';}
 }
 
 async function loadLeaderboard(){
