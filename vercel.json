@@ -10,6 +10,11 @@
     { "source": "/login", "destination": "/login/index.html" },
     { "source": "/register", "destination": "/register/index.html" },
     { "source": "/hall-of-fame", "destination": "/hall-of-fame/index.html" },
-    { "source": "/become-a-tipster", "destination": "/become-a-tipster/index.html" }
+    { "source": "/become-a-tipster", "destination": "/become-a-tipster/index.html" },
+    { "source": "/analytics", "destination": "/analytics/index.html" },
+    { "source": "/settings", "destination": "/settings/index.html" },
+    { "source": "/feed", "destination": "/feed/index.html" },
+    { "source": "/parlay", "destination": "/parlay/index.html" },
+    { "source": "/notifications", "destination": "/notifications/index.html" }
   ]
 }
