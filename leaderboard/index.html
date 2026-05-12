@@ -312,6 +312,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   </div>
   <div id="lbContainer"></div>
 </div>
+<script src="/divisions.js"></script>
 <script src="/archetypes.js"></script>
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
@@ -344,13 +345,14 @@ showSkeletons();
 function getDivision(t){
   const roi=t.stake>0?(t.pnl/t.stake)*100:0;
   const wr=(t.wins+t.losses)>0?(t.wins/(t.wins+t.losses))*100:0;
+  if(window.Divisions)return window.Divisions.getFromStats(roi,wr,t.picks);
   const score=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(t.picks/100)*20))+Math.min(10,t.picks));
-  if(score>=90)return{name:'LEGEND',cls:'div-legend',icon:'🐐'};
-  if(score>=75)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
-  if(score>=60)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
-  if(score>=45)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
-  if(score>=30)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
-  if(score>=15)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
+  if(score>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'🐐'};
+  if(score>=80)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
+  if(score>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
+  if(score>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
+  if(score>=35)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
+  if(score>=20)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
   return{name:'BRONZE',cls:'div-bronze',icon:'🥉'};
 }
 
@@ -629,15 +631,19 @@ function renderLeaderboard(){
       const icons=getBadgeIcons(t);
       const {score,color}=getReliability(t);
       const cls=['p1','p2','p3'][i];
+      const div=getDivision(t);
+      const podiumAv=window.Divisions
+        ?window.Divisions.avHTML(t.username.substring(0,2).toUpperCase(),colors[i],div,{width:56,height:56,borderRadius:'50%',classes:'podium-av'})
+        :`<div class="podium-av" style="background:${colors[i]}">${t.username.substring(0,2).toUpperCase()}</div>`;
       return`<div class="podium-card ${cls}" onclick="window.location.href='/tipster?u=${t.username}'">
         <span class="podium-medal">${medals[i]}</span>
-        <div class="podium-av" style="background:${colors[i]}">${t.username.substring(0,2).toUpperCase()}</div>
+        ${podiumAv}
         <div class="podium-name">@${t.username}</div>
         <div class="podium-roi">${parseFloat(roi)>=0?'+':''}${roi}%</div>
         <div class="podium-sub">${t.picks} picks · ${((t.wins/(t.wins+t.losses||1))*100).toFixed(0)}% WR</div>
         <div class="podium-badges">${icons.slice(0,3).map(ic=>`<span style="font-size:16px">${ic}</span>`).join('')}</div>
         ${score>0?`<div class="podium-rel" style="color:${color}">${score}/100 reliability</div>`:''}
-        <div class="podium-div ${getDivision(t).cls}">${getDivision(t).icon} ${getDivision(t).name}</div>
+        ${window.Divisions?window.Divisions.pillHTML(div,'md'):`<div class="podium-div ${div.cls}">${div.icon} ${div.name}</div>`}
         ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak} win streak</div>`:''}
         <div style="margin-top:8px"><span class="elo-badge ${(t.elo||1000)>=1200?'top':(t.elo||1000)<900?'low':''}" style="font-size:11px">⚡ ELO ${t.elo||1000}</span></div>
         ${t.sharpScore>0&&window.sharpGaugeHTML?`<div class="at-podium-gauge"><div class="at-tip" data-tip="Sharp Score: a true measure of skill, not luck.">${window.sharpGaugeHTML(t.sharpScore,{size:48,strokeWidth:4})}</div><div class="at-podium-lbl">SHARP</div></div>`:''}
@@ -660,14 +666,21 @@ function renderLeaderboard(){
     const icons=getBadgeIcons(t);
     const {score,color}=getReliability(t);
     const badgeHtml=icons.slice(0,2).map(ic=>`<span style="font-size:11px">${ic}</span>`).join('');
+    const rowDiv=getDivision(t);
+    const rowAv=window.Divisions
+      ?window.Divisions.avHTML(t.username.substring(0,2).toUpperCase(),colors[i%colors.length],rowDiv,{width:38,height:38,borderRadius:10,noParticles:true})
+      :`<div class="av" style="background:${colors[i%colors.length]}">${t.username.substring(0,2).toUpperCase()}</div>`;
+    const rowPill=window.Divisions
+      ?window.Divisions.pillHTML(rowDiv,'sm')
+      :`<span class="division-badge-sm ${rowDiv.cls}">${rowDiv.icon} ${rowDiv.name}</span>`;
     return`<div class="lb-row" onclick="window.location.href='/tipster?u=${t.username}'">
       <div class="rank-num">${i+1}</div>
       <div class="tipster-col">
-        <div class="av" style="background:${colors[i%colors.length]}">${t.username.substring(0,2).toUpperCase()}</div>
+        ${rowAv}
         <div>
           <div class="tip-name">@${t.username} ${badgeHtml}</div>
           <div class="tip-picks-sub">${t.picks} picks</div>
-          <span class="division-badge-sm ${getDivision(t).cls}">${getDivision(t).icon} ${getDivision(t).name}</span>
+          ${rowPill}
           ${t.archetype&&window.archetypeBadgeHTML?'<br>'+window.archetypeBadgeHTML(t.archetype,true):''}
         </div>
       </div>

@@ -899,6 +899,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 </div>
 </div><!-- /app -->
 
+<script src="/divisions.js"></script>
 <script src="/animations.js"></script>
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
@@ -979,16 +980,17 @@ function getELO(picks){
 }
 
 function getDivision(picks){
+  if(window.Divisions)return window.Divisions.get(picks);
   const wins=picks.filter(p=>p.result==='win').length;const losses=picks.filter(p=>p.result==='loss').length;
   const stake=picks.reduce((s,p)=>s+p.stake,0);const pnl=picks.reduce((s,p)=>s+p.pnl,0);
   const roi=stake>0?(pnl/stake)*100:0;const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
   const s=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
-  if(s>=90)return{name:'LEGEND',cls:'div-legend',icon:'🐐'};
-  if(s>=75)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
-  if(s>=60)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
-  if(s>=45)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
-  if(s>=30)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
-  if(s>=15)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
+  if(s>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'🐐'};
+  if(s>=80)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
+  if(s>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
+  if(s>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
+  if(s>=35)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
+  if(s>=20)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
   return{name:'BRONZE',cls:'div-bronze',icon:'🥉'};
 }
 
@@ -1122,7 +1124,13 @@ async function loadData(){
 function renderIdentityPanel(myPicks,rank,totalTipsters){
   if(!user)return;
   const av=document.getElementById('idAv');
-  if(av)av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+  if(av){
+    av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+    if(window.Divisions){
+      const avDiv=getDivision(myPicks);
+      window.Divisions.applyGlow(av,avDiv);
+    }
+  }
   const nameEl=document.getElementById('idName');if(nameEl)nameEl.textContent='@'+user.username;
   const wins=myPicks.filter(p=>p.result==='win').length;
   const stake=myPicks.reduce((s,p)=>s+p.stake,0);const pnl=myPicks.reduce((s,p)=>s+p.pnl,0);
@@ -1199,7 +1207,12 @@ function renderProfileCard(all){
   const rank=sorted.findIndex(([u])=>u===user.username)+1;
   const hsRank=document.getElementById('hsRank');if(hsRank)hsRank.textContent=rank>0?'#'+rank:'#—';
   const {score}=getReliability(my);const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'—';
-  const div=getDivision(my);const db=document.getElementById('divisionBadge');if(db){db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;renderIdentityPanel(my, rank, sorted.length);}
+  const div=getDivision(my);const db=document.getElementById('divisionBadge');
+  if(db){
+    if(window.Divisions){db.className='division-badge';db.innerHTML=window.Divisions.pillHTML(div,'md');}
+    else{db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;}
+    renderIdentityPanel(my, rank, sorted.length);
+  }
   if(window.checkRankUp)window.checkRankUp(my);
   if(window.checkBadgeUnlock)window.checkBadgeUnlock(my);
   if(window.checkStreak)window.checkStreak(my);
