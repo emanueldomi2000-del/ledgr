@@ -125,6 +125,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .badge-loss{background:rgba(248,113,113,.12);color:var(--rd);border:1px solid rgba(248,113,113,.2)}
 .badge-pending{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
 .badge-sport{background:var(--acg);color:var(--ac);border:1px solid var(--bd)}
+.badge.clv-pos{background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.28)}
+.badge.clv-neg{background:rgba(248,113,113,0.1);color:var(--rd);border:1px solid rgba(248,113,113,0.28)}
+.badge.clv-null{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
 .pick-pnl{font-family:'DM Mono',monospace;font-size:11px;font-weight:700}
 .pick-pnl.pos{color:var(--gr)}.pick-pnl.neg{color:var(--rd)}.pick-pnl.zero{color:var(--mu)}
 .pick-time{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-left:auto}
@@ -328,6 +331,14 @@ function renderPicks(){
     const borderCls=p.result==='win'?'win-border':p.result==='loss'?'loss-border':'pending-border';
     const confHtml=p.confidence?`<span class="conf-badge ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
     const icon=sportIcon[p.sport]||'🎯';
+    const CLV_TIP='Closing Line Value measures if you got better odds than the market closed at. Positive CLV = sharp bettor.';
+    const clvHtml=p.clv!=null
+      ?p.clv>=0
+        ?`<span class="badge clv-pos" title="${CLV_TIP}">▲ +${p.clv.toFixed(1)}% CLV</span>`
+        :`<span class="badge clv-neg" title="${CLV_TIP}">▼ ${p.clv.toFixed(1)}% CLV</span>`
+      :p.result!=='pending'
+        ?`<span class="badge clv-null" title="${CLV_TIP}">CLV pending</span>`
+        :'';
     return`<div class="pick-card ${borderCls}">
       <div class="pick-header">
         <span class="pick-sport-icon">${icon}</span>
@@ -337,7 +348,7 @@ function renderPicks(){
         <div class="pick-meta">
           <span class="badge badge-sport">${p.sport}</span>
           <span style="font-size:11px;color:var(--mu)">${p.stake}u</span>
-          ${confHtml}${rb}${ps}
+          ${confHtml}${rb}${ps}${clvHtml}
         </div>
         <div style="text-align:right">
           <div class="pick-odds">${p.odds}</div>

@@ -123,6 +123,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 /* ── ROLLING CHART ── */
 .rolling-chart-wrap{width:100%;overflow:hidden}
 
+/* ── CLV SECTION ── */
+.clv-top{display:grid;grid-template-columns:180px 1fr;gap:24px;margin-bottom:20px;align-items:start}
+.clv-avg-val{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:2px;line-height:1;margin-bottom:4px}
+.clv-avg-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.clv-note{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;line-height:1.6}
+.sharp-signal-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);color:var(--gr);font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-left:10px}
+.clv-sport-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.clv-sport-row:last-child{border:none}
+.clv-sport-name{font-size:12px;color:var(--tx);flex:1}
+.clv-sport-avg{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;min-width:56px;text-align:right}
+.clv-sport-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);min-width:48px;text-align:right}
+.clv-chart-labels{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:5px}
+@media(max-width:600px){.clv-top{grid-template-columns:1fr}}
+
 /* ── EMPTY ── */
 .empty-card{text-align:center;padding:48px 24px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;line-height:1.8}
 .empty-card .empty-icon{font-size:32px;margin-bottom:12px;display:block;opacity:.5}
@@ -305,6 +319,26 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
       <div class="form-strip" id="formStrip"></div>
     </div>
 
+    <!-- CLV ANALYSIS -->
+    <div class="card" id="clvCard">
+      <div class="card-title">CLOSING LINE VALUE <span class="sharp-signal-badge" id="sharpSignalBadge" style="display:none">🎯 SHARP BETTOR</span></div>
+      <div class="clv-top">
+        <div>
+          <div class="clv-avg-val" id="clvAvgVal" style="color:var(--mu)">—</div>
+          <div class="clv-avg-lbl">Avg CLV</div>
+          <div class="clv-note" id="clvNote">CLV data accumulates as picks settle and closing odds are fetched.</div>
+        </div>
+        <div id="clvBySport"></div>
+      </div>
+      <div class="card-title" style="font-size:13px;margin-bottom:12px">CLV TREND — LAST 20 SETTLED PICKS</div>
+      <div id="clvChartWrap"><div class="chart-loading">No CLV data yet</div></div>
+      <div class="clv-chart-labels" id="clvChartLabels" style="display:none">
+        <span id="clvLabelLeft"></span>
+        <span style="color:var(--mu)">← Older · Newer →</span>
+        <span id="clvLabelRight"></span>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -346,6 +380,7 @@ async function loadData(){
     renderByMarket();
     renderMonthly();
     renderStreaks();
+    renderCLV();
   }catch(e){
     document.getElementById('app').innerHTML='<div class="empty-card"><span class="empty-icon">⚠️</span>Could not load data. Try again.</div>';
   }
@@ -552,6 +587,93 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 function logout(){localStorage.removeItem('ledgr_user');localStorage.removeItem('ledgr_token');localStorage.removeItem('user');localStorage.removeItem('token');window.location.href='/';}
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+
+// ── CLV ANALYSIS ───────────────────────────────────────────────
+function renderCLV(){
+  const settled=allPicks.filter(p=>p.result!=='pending');
+  const withCLV=settled.filter(p=>p.clv!=null);
+
+  const avgEl=document.getElementById('clvAvgVal');
+  const noteEl=document.getElementById('clvNote');
+  const badgeEl=document.getElementById('sharpSignalBadge');
+
+  if(!withCLV.length){
+    noteEl.textContent='CLV data accumulates as picks settle and closing odds are fetched from The Odds API.';
+    return;
+  }
+
+  const avgCLV=withCLV.reduce((s,p)=>s+p.clv,0)/withCLV.length;
+  avgEl.textContent=(avgCLV>=0?'+':'')+avgCLV.toFixed(2)+'%';
+  avgEl.style.color=avgCLV>2?'var(--gr)':avgCLV>=0?'var(--gold)':'var(--rd)';
+
+  // Sharp Signal badge
+  if(avgCLV>2){badgeEl.style.display='inline-flex';}
+
+  // Interpretation
+  if(avgCLV>5)noteEl.textContent='Elite — significantly beating the market on closing odds.';
+  else if(avgCLV>2)noteEl.textContent='Sharp signal — consistently getting better prices than the closing line.';
+  else if(avgCLV>0)noteEl.textContent='Marginal positive CLV — slight edge over closing prices.';
+  else if(avgCLV>-3)noteEl.textContent='Near closing line — recreational betting range.';
+  else noteEl.textContent='Negative CLV — typically placed at worse prices than the closing market.';
+
+  // CLV by sport
+  const bySport={};
+  withCLV.forEach(p=>{
+    if(!bySport[p.sport])bySport[p.sport]={total:0,count:0};
+    bySport[p.sport].total+=p.clv;
+    bySport[p.sport].count++;
+  });
+  document.getElementById('clvBySport').innerHTML=Object.entries(bySport)
+    .sort((a,b)=>(b[1].total/b[1].count)-(a[1].total/a[1].count))
+    .map(([sport,d])=>{
+      const avg=d.total/d.count;const pos=avg>=0;
+      return`<div class="clv-sport-row">
+        <div class="clv-sport-name">${SPORT_ICON[sport]||'🎯'} ${sport}</div>
+        <div class="clv-sport-avg" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${avg.toFixed(1)}%</div>
+        <div class="clv-sport-count">${d.count} pick${d.count!==1?'s':''}</div>
+      </div>`;
+    }).join('');
+
+  // Trend chart — last 20 picks with CLV
+  renderCLVChart(withCLV.slice(-20));
+}
+
+function renderCLVChart(picks){
+  const el=document.getElementById('clvChartWrap');
+  const labelsEl=document.getElementById('clvChartLabels');
+  if(!picks.length){el.innerHTML='<div class="chart-loading">No CLV data yet</div>';return;}
+
+  const W=800,H=110,midY=H/2;
+  const maxAbs=Math.max(...picks.map(p=>Math.abs(p.clv)),3);
+  const gap=2;
+  const barW=Math.max(6,Math.floor((W-20)/picks.length)-gap);
+
+  const bars=picks.map((p,i)=>{
+    const barH=Math.max(3,(Math.abs(p.clv)/maxAbs)*(midY-10));
+    const x=10+i*(barW+gap);
+    const y=p.clv>=0?midY-barH:midY;
+    const color=p.clv>=0?'#34d399':'#f87171';
+    const opacity=0.55+0.45*(Math.abs(p.clv)/maxAbs);
+    const label=`${p.clv>=0?'+':''}${p.clv.toFixed(1)}% CLV | ${p.event.length>40?p.event.slice(0,38)+'…':p.event}`;
+    return`<rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="2" fill="${color}" fill-opacity="${opacity}"><title>${label}</title></rect>`;
+  }).join('');
+
+  // Zero line + scale labels
+  const posLabel='+'+maxAbs.toFixed(0)+'%';
+  const negLabel='-'+maxAbs.toFixed(0)+'%';
+
+  el.innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="display:block;overflow:visible">
+    <text x="6" y="12" font-family="'DM Mono',monospace" font-size="9" fill="rgba(106,102,144,0.6)">${posLabel}</text>
+    <text x="6" y="${H-4}" font-family="'DM Mono',monospace" font-size="9" fill="rgba(106,102,144,0.6)">${negLabel}</text>
+    <line x1="10" y1="${midY}" x2="${W-10}" y2="${midY}" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
+    ${bars}
+  </svg>`;
+
+  // Date labels
+  labelsEl.style.display='flex';
+  document.getElementById('clvLabelLeft').textContent=new Date(picks[0].createdAt).toLocaleDateString('en-GB');
+  document.getElementById('clvLabelRight').textContent=new Date(picks[picks.length-1].createdAt).toLocaleDateString('en-GB');
+}
 </script>
 </body>
 </html>

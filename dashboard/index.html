@@ -156,6 +156,9 @@ select option{background:#15122a}
 .badge-loss{background:rgba(248,113,113,.12);color:var(--rd);border:1px solid rgba(248,113,113,.2)}
 .badge-pending{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2)}
 .badge-sport{background:var(--acg);color:var(--ac)}
+.badge.clv-pos{background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.28)}
+.badge.clv-neg{background:rgba(248,113,113,0.1);color:var(--rd);border:1px solid rgba(248,113,113,0.28)}
+.badge.clv-null{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
 .pick-time{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-left:auto}
 .locked-badge{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:6px}
 .conf-badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace}
@@ -790,6 +793,14 @@ function renderMyPicks(){
     const cardCls=p.result==='win'?'win-card':p.result==='loss'?'loss-card':'pending-card';
     const confHtml=p.confidence?`<span class="conf-badge ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
     const pnlHtml=p.pnl>0?`<span style="font-size:11px;color:var(--gr);font-family:'DM Mono',monospace;font-weight:700">+€${p.pnl.toFixed(2)}</span>`:p.pnl<0?`<span style="font-size:11px;color:var(--rd);font-family:'DM Mono',monospace;font-weight:700">-€${Math.abs(p.pnl).toFixed(2)}</span>`:'';
+    const CLV_TIP='Closing Line Value measures if you got better odds than the market closed at. Positive CLV = sharp bettor.';
+    const clvHtml=p.clv!=null
+      ?p.clv>=0
+        ?`<span class="badge clv-pos" title="${CLV_TIP}">▲ +${p.clv.toFixed(1)}% CLV</span>`
+        :`<span class="badge clv-neg" title="${CLV_TIP}">▼ ${p.clv.toFixed(1)}% CLV</span>`
+      :p.result!=='pending'
+        ?`<span class="badge clv-null" title="${CLV_TIP}">CLV pending</span>`
+        :'';
     return`<div class="pick-card ${cardCls}">
       <div class="pick-top">
         <div>
@@ -801,7 +812,7 @@ function renderMyPicks(){
       <div class="pick-meta">
         <span class="badge badge-sport">${p.sport}</span>
         <span style="font-size:11px;color:var(--mu)">${p.stake}u</span>
-        ${confHtml}${rb}${pnlHtml}
+        ${confHtml}${rb}${pnlHtml}${clvHtml}
         <span class="pick-time">${new Date(p.createdAt).toLocaleDateString('en-GB')}</span>
       </div>
       ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
