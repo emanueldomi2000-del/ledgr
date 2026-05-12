@@ -851,6 +851,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 <script src="/animations.js"></script>
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
+<script src="/push.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
@@ -1002,6 +1003,7 @@ window.onload=()=>{
   document.getElementById('userBadge').textContent='@'+user.username;
   document.getElementById('slideAvatar').textContent=user.username.slice(0,2).toUpperCase();
   document.getElementById('slideName').textContent='@'+user.username;
+  if(window.Push)window.Push.init();
 
   const tl=HERO_TAGLINES[Math.floor(Math.random()*HERO_TAGLINES.length)];
   document.getElementById('heroEyebrow').textContent=user.username.toUpperCase()+'\'S RECORD';
