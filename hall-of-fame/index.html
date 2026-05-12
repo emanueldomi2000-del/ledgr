@@ -98,6 +98,23 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .legend-badge{font-size:14px}
 .legend-div{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:1px;margin-top:6px;font-weight:700}
 
+/* SEASON CHAMPIONS */
+.season-champions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:40px}
+.sc-card{background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04),var(--s1));border:1px solid rgba(251,191,36,.2);border-radius:18px;padding:28px 24px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.sc-card:hover{border-color:rgba(251,191,36,.4);transform:translateY(-4px);box-shadow:0 16px 48px rgba(251,191,36,.1)}
+.sc-card::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:200px;height:200px;background:radial-gradient(circle,rgba(251,191,36,.08),transparent 70%);pointer-events:none}
+.sc-number{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:4px;color:rgba(251,191,36,.5);margin-bottom:8px;text-transform:uppercase}
+.sc-crown{font-size:36px;line-height:1;margin-bottom:10px;display:block}
+.sc-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--gold);margin-bottom:4px}
+.sc-roi{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gr);line-height:1;margin-bottom:10px}
+.sc-stats-row{display:flex;justify-content:center;gap:18px;margin-bottom:12px}
+.sc-stat-val{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--tx);line-height:1}
+.sc-stat-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.sc-dates{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px}
+.sc-div{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);font-weight:700;margin-top:6px;letter-spacing:2px}
+.sc-active-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:20px;padding:3px 10px;font-family:'DM Mono',monospace;font-size:8px;color:var(--gr);letter-spacing:1px;margin-top:6px}
+.sc-active-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 /* MILESTONES */
 .milestones{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:40px}
 .milestone-row{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--bd)}
@@ -173,6 +190,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     </div>
   </div>
 
+  <!-- SEASON CHAMPIONS -->
+  <div class="sec-title">🏆 SEASON <span>CHAMPIONS</span></div>
+  <div class="season-champions-grid" id="seasonChampionsGrid">
+    <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px">Loading seasons…</div>
+  </div>
+
   <!-- RECORDS -->
   <div class="sec-title">🏆 ALL-TIME <span>RECORDS</span></div>
   <div class="records-grid" id="recordsGrid">
@@ -237,8 +260,54 @@ function getDivision(s){
 
 async function loadHOF(){
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
+    const [r,sr]=await Promise.all([
+      fetch(API+'/picks',{cache:'no-store'}),
+      fetch(API+'/seasons',{cache:'no-store'}).catch(()=>null)
+    ]);
     const allPicks=await r.json();
+
+    // Render season champions
+    if(sr&&sr.ok){
+      const seasons=await sr.json();
+      const fmt=d=>new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+      const grid=document.getElementById('seasonChampionsGrid');
+
+      if(!seasons.length){
+        grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--mu);font-family:\'DM Mono\',monospace">No seasons yet.</div>';
+      }else{
+        grid.innerHTML=seasons.map(s=>{
+          if(s.isActive){
+            const daysLeft=Math.max(0,Math.ceil((new Date(s.endDate)-Date.now())/86400000));
+            return`<div class="sc-card" onclick="window.location.href='/leaderboard'">
+              <div class="sc-number">${s.name}</div>
+              <div class="sc-crown">⚡</div>
+              <div class="sc-name" style="color:var(--ac)">LIVE NOW</div>
+              <div class="sc-roi" style="color:var(--ac)">–</div>
+              <div class="sc-dates">${fmt(s.startDate)} – ${fmt(s.endDate)}</div>
+              <div class="sc-active-badge"><div class="sc-active-dot"></div>${daysLeft} days remaining</div>
+            </div>`;
+          }
+          if(!s.champion){
+            return`<div class="sc-card">
+              <div class="sc-number">${s.name}</div>
+              <div class="sc-crown">🏆</div>
+              <div class="sc-name" style="color:var(--mu)">NO DATA</div>
+              <div class="sc-dates">${fmt(s.startDate)} – ${fmt(s.endDate)}</div>
+            </div>`;
+          }
+          // Past season with champion
+          const result=null; // results are on SeasonResult, not season itself
+          return`<div class="sc-card" onclick="window.location.href='/tipster?u=${s.champion}'">
+            <div class="sc-number">${s.name}</div>
+            <div class="sc-crown">👑</div>
+            <div class="sc-name">@${s.champion}</div>
+            <div class="sc-dates">${fmt(s.startDate)} – ${fmt(s.endDate)}</div>
+            <div class="sc-div">SEASON CHAMPION</div>
+          </div>`;
+        }).join('');
+      }
+    }
+
     if(!Array.isArray(allPicks)||!allPicks.length){
       document.getElementById('recordsGrid').innerHTML='<div class="empty-hof" style="grid-column:1/-1"><div class="icon">📊</div><h3>NO DATA YET</h3><p>The Hall of Fame will fill up as tipsters post and win picks.</p></div>';
       document.getElementById('legendsGrid').innerHTML='';

@@ -90,6 +90,26 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .follow-btn{padding:7px 14px;border:1px solid var(--bd2);color:var(--ac);background:var(--acg);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;white-space:nowrap}
 .follow-btn:hover,.follow-btn.following{background:var(--ac);color:#07060d;border-color:var(--ac)}
 .empty{text-align:center;padding:60px;color:var(--mu);font-family:'DM Mono',monospace;font-size:13px}
+/* FROZEN SEASON */
+.frozen-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:16px 20px;margin-bottom:20px}
+.frozen-banner-icon{font-size:28px;flex-shrink:0}
+.frozen-banner-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gold);line-height:1;margin-bottom:3px}
+.frozen-banner-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2);letter-spacing:.5px}
+.frozen-champion-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:700;margin-left:auto;white-space:nowrap}
+.frozen-row{display:grid;grid-template-columns:56px 1fr 90px 90px 80px 90px 110px;gap:8px;padding:14px 20px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;align-items:center;cursor:pointer;transition:all .2s}
+.frozen-row:hover{border-color:var(--bd2);background:var(--s2)}
+.frozen-row.champion-row{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,191,36,.02));border-color:rgba(251,191,36,.35);box-shadow:0 0 28px rgba(251,191,36,.07)}
+.fr-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--mu);text-align:center}
+.fr-rank.gold{color:var(--gold)}.fr-rank.silver{color:#94a3b8}.fr-rank.bronze{color:#b47850}
+.fr-tipster{display:flex;align-items:center;gap:10px}
+.fr-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0}
+.fr-name{font-weight:700;font-size:13px;margin-bottom:1px;display:flex;align-items:center;gap:5px}
+.fr-div{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--mu);margin-top:2px}
+.fr-stat{text-align:center}
+.fr-sv{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+.fr-sv.pos{color:var(--gr)}.fr-sv.neg{color:var(--rd)}.fr-sv.neu{color:var(--tx)}
+.fr-sl{font-size:8px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px;margin-top:2px}
+@media(max-width:700px){.frozen-row{grid-template-columns:36px 1fr 60px 60px}.frozen-row>*:nth-child(5),.frozen-row>*:nth-child(6),.frozen-row>*:nth-child(7){display:none}}
 @media(max-width:1000px){.lb-head,.lb-row{grid-template-columns:44px 1fr 70px 70px 70px 80px}.lb-head>*:nth-child(7),.lb-row>*:nth-child(7),.lb-head>*:nth-child(8),.lb-row>*:nth-child(8){display:none}.stats-bar{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.lb-head,.lb-row{grid-template-columns:36px 1fr 60px 60px}.lb-head>*:nth-child(5),.lb-row>*:nth-child(5),.lb-head>*:nth-child(6),.lb-row>*:nth-child(6),.lb-head>*:nth-child(7),.lb-row>*:nth-child(7),.lb-head>*:nth-child(8),.lb-row>*:nth-child(8){display:none}.podium{grid-template-columns:1fr}nav{padding:0 16px}.nav-link{display:none}}
 
@@ -330,21 +350,95 @@ function getReliability(t){
 }
 
 let currentTimeFilter='all';
+let allSeasons=[];
 
-function setTimeFilter(t,el){
+// Match tf-btn key (s1/s2/s3) to a Season object by number
+function seasonForKey(key){
+  const num=parseInt(key.replace('s',''));
+  return allSeasons.find(s=>s.number===num)||null;
+}
+
+async function setTimeFilter(t,el){
   currentTimeFilter=t;
   document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
+
+  // For past seasons with frozen results, load from API
+  if(t.startsWith('s')){
+    const season=seasonForKey(t);
+    if(season&&!season.isActive&&season.champion){
+      await renderFrozenSeason(season);
+      return;
+    }
+  }
+
+  // Live path
+  document.getElementById('podium').style.display='none';
+  document.getElementById('lbHead').style.display='none';
+  document.getElementById('lbContainer').innerHTML='';
   buildTipsters();
   updateSeasonBanner(t,allTipsters);
   renderLeaderboard();
 }
 
 const SEASON_CONFIG={
-  s3:{title:'SEASON 3',sub:'Current season · Last 90 days',start:Date.now()-90*86400000,end:Date.now()},
-  s2:{title:'SEASON 2',sub:'90–180 days ago',start:Date.now()-180*86400000,end:Date.now()-90*86400000},
-  s1:{title:'SEASON 1',sub:'180–270 days ago',start:Date.now()-270*86400000,end:Date.now()-180*86400000},
+  s3:{title:'SEASON 3',sub:'Current season',start:new Date('2025-07-01').getTime(),end:new Date('2026-08-31').getTime()},
+  s2:{title:'SEASON 2',sub:'Jan 2025 – Jun 2025',start:new Date('2025-01-01').getTime(),end:new Date('2025-06-30').getTime()},
+  s1:{title:'SEASON 1',sub:'Sep 2024 – Dec 2024',start:new Date('2024-09-01').getTime(),end:new Date('2024-12-31').getTime()},
 };
+
+async function renderFrozenSeason(season){
+  document.getElementById('podium').style.display='none';
+  document.getElementById('lbHead').style.display='none';
+  const c=document.getElementById('lbContainer');
+  c.innerHTML='<div class="empty">Loading season results…</div>';
+  const banner=document.getElementById('seasonBanner');banner.classList.remove('show');
+
+  try{
+    const r=await fetch(API+'/seasons/'+season.id+'/leaderboard');
+    const results=await r.json();
+
+    const fmt=d=>new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+    const dateRange=fmt(season.startDate)+' – '+fmt(season.endDate);
+    const champHtml=season.champion?`<div class="frozen-champion-badge">👑 Champion: @${season.champion}</div>`:'';
+
+    if(!results.length){
+      c.innerHTML=`<div class="frozen-banner"><div class="frozen-banner-icon">🏆</div><div><div class="frozen-banner-title">${season.name}</div><div class="frozen-banner-sub">${dateRange}</div></div>${champHtml}</div><div class="empty">No results recorded for this season.</div>`;
+      return;
+    }
+
+    const colorsArr=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)'];
+    const rankCls=i=>i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const medals=['🥇','🥈','🥉'];
+
+    c.innerHTML=`<div class="frozen-banner">
+      <div class="frozen-banner-icon">🏆</div>
+      <div><div class="frozen-banner-title">${season.name} — FINAL STANDINGS</div><div class="frozen-banner-sub">🔒 Frozen · ${dateRange}</div></div>
+      ${champHtml}
+    </div>`+results.map((r,i)=>{
+      const isChamp=r.user?.username===season.champion;
+      const uname=r.user?.username||'Unknown';
+      const roiPos=r.roi>=0;
+      return`<div class="frozen-row ${isChamp?'champion-row':''}" onclick="window.location.href='/tipster?u=${uname}'">
+        <div class="fr-rank ${rankCls(i)}">${i<3?medals[i]:r.rank}</div>
+        <div class="fr-tipster">
+          <div class="fr-av" style="background:${colorsArr[i%colorsArr.length]}">${uname.substring(0,2).toUpperCase()}</div>
+          <div>
+            <div class="fr-name">${isChamp?'👑 ':''}<span style="${isChamp?'color:var(--gold)':''}" >@${uname}</span></div>
+            <div class="fr-div">${r.division}</div>
+          </div>
+        </div>
+        <div class="fr-stat"><div class="fr-sv ${roiPos?'pos':'neg'}">${roiPos?'+':''}${r.roi.toFixed(1)}%</div><div class="fr-sl">ROI</div></div>
+        <div class="fr-stat"><div class="fr-sv neu">${r.winRate.toFixed(0)}%</div><div class="fr-sl">WIN RATE</div></div>
+        <div class="fr-stat"><div class="fr-sv neu">${r.totalPicks}</div><div class="fr-sl">PICKS</div></div>
+        <div class="fr-stat"><div class="fr-sv ${r.totalPnL>=0?'pos':'neg'}">${r.totalPnL>=0?'+€':'-€'}${Math.abs(r.totalPnL).toFixed(1)}</div><div class="fr-sl">P&L</div></div>
+        <div class="fr-stat"><div class="fr-sv" style="color:${r.sharpScore>=70?'var(--gr)':r.sharpScore>=40?'var(--gold)':'var(--rd)'}">${r.sharpScore.toFixed(0)}</div><div class="fr-sl">SHARP</div></div>
+      </div>`;
+    }).join('');
+  }catch(e){
+    c.innerHTML='<div class="empty">⚠️ Could not load season results.</div>';
+  }
+}
 
 function filterPicksByTime(picks){
   if(currentTimeFilter==='all')return picks;
@@ -359,27 +453,50 @@ function updateSeasonBanner(filter,tipsters){
   const cfg=SEASON_CONFIG[filter];
   if(!cfg){banner.classList.remove('show');return;}
   banner.classList.add('show');
-  document.getElementById('seasonBannerTitle').textContent=cfg.title;
-  document.getElementById('seasonBannerSub').textContent=cfg.sub;
-  const winner=tipsters&&tipsters.length?tipsters[0]:null;
+
+  // Use real API season data if available
+  const apiSeason=filter.startsWith('s')?seasonForKey(filter):null;
+  const title=apiSeason?apiSeason.name:cfg.title;
+  const fmt=d=>new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
+  const sub=apiSeason?(fmt(apiSeason.startDate)+' – '+fmt(apiSeason.endDate)+(apiSeason.isActive?' · ACTIVE':' · Ended')):cfg.sub;
+  document.getElementById('seasonBannerTitle').textContent=title;
+  document.getElementById('seasonBannerSub').textContent=sub;
+
   const wb=document.getElementById('seasonWinnerBadge');
-  if(winner&&filter!=='s3'){wb.style.display='inline-flex';wb.textContent='👑 Champion: @'+winner.username;}
+  const champ=apiSeason?.champion;
+  if(champ){wb.style.display='inline-flex';wb.textContent='👑 Champion: @'+champ;}
+  else if(!apiSeason&&tipsters&&tipsters.length&&filter!=='s3'){wb.style.display='inline-flex';wb.textContent='👑 Leader: @'+tipsters[0].username;}
   else{wb.style.display='none';}
 }
 
 async function loadLeaderboard(){
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    if(!r.ok)throw new Error('Server error');
-    allPicks=await r.json();
+    // Fetch seasons and picks in parallel
+    const [picksRes,seasonsRes]=await Promise.all([
+      fetch(API+'/picks',{cache:'no-store'}),
+      fetch(API+'/seasons',{cache:'no-store'}).catch(()=>null)
+    ]);
+    if(!picksRes.ok)throw new Error('Server error');
+    allPicks=await picksRes.json();
     if(!Array.isArray(allPicks))allPicks=[];
-    // Build ELO map from picks data (eloAfter field)
+
+    if(seasonsRes&&seasonsRes.ok){
+      allSeasons=await seasonsRes.json();
+      // Update season button labels with real data
+      allSeasons.forEach(s=>{
+        const key='s'+s.number;
+        const btn=document.querySelector(`.tf-btn.season[onclick*="'${key}'"]`);
+        if(btn){
+          const isActive=s.isActive;
+          const isFrozen=!isActive&&s.champion;
+          btn.innerHTML=s.name+(isActive?' <span style="color:var(--gr);font-size:8px">● LIVE</span>':isFrozen?` 🔒`:'');
+          if(isFrozen)btn.title='Champion: @'+s.champion;
+        }
+      });
+    }
+
     const eloMap={};
-    allPicks.forEach(p=>{
-      if(p.user&&p.eloAfter){
-        eloMap[p.user.username]=p.eloAfter;
-      }
-    });
+    allPicks.forEach(p=>{if(p.user&&p.eloAfter)eloMap[p.user.username]=p.eloAfter;});
     window._eloMap=eloMap;
     buildTipsters();
     updateStats();

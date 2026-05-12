@@ -68,7 +68,28 @@
 @keyframes la-fire-wave{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.1) rotate(3deg)}}
 .la-streak-count{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:4px;color:#fb923c;line-height:1;text-shadow:0 0 40px rgba(251,146,60,.4)}
 .la-streak-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:5px;color:rgba(251,146,60,.65);text-transform:uppercase;margin-top:6px}
+
+/* ── SEASON END ── */
+.la-season-overlay{position:fixed;inset:0;z-index:9100;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(4,3,9,0);animation:la-sn-bg .5s ease forwards}
+@keyframes la-sn-bg{to{background:rgba(4,3,9,.97)}}
+.la-season-rays{position:absolute;inset:0;background:conic-gradient(from 0deg at 50% 50%,transparent 0deg,rgba(251,191,36,.04) 20deg,transparent 40deg,rgba(184,159,255,.04) 60deg,transparent 80deg,rgba(251,191,36,.03) 100deg,transparent 120deg,rgba(56,189,248,.03) 140deg,transparent 180deg,rgba(251,191,36,.04) 200deg,transparent 220deg,rgba(184,159,255,.04) 240deg,transparent 260deg,rgba(251,191,36,.03) 280deg,transparent 300deg,rgba(56,189,248,.03) 320deg,transparent 360deg);animation:la-sn-spin 20s linear infinite;pointer-events:none}
+@keyframes la-sn-spin{to{transform:rotate(360deg)}}
+.la-season-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:10px;transform:scale(.7) translateY(40px);opacity:0;animation:la-sn-in .6s .3s cubic-bezier(.34,1.4,.64,1) forwards;text-align:center;padding:0 24px}
+@keyframes la-sn-in{to{transform:scale(1) translateY(0);opacity:1}}
+.la-sn-season{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:6px;color:rgba(251,191,36,.7);text-transform:uppercase;margin-bottom:4px}
+.la-sn-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,32px);letter-spacing:8px;color:rgba(240,237,255,.55);margin-bottom:4px}
+.la-sn-crown{font-size:64px;line-height:1;animation:la-sn-crown-bounce .8s .6s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes la-sn-crown-bounce{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.la-sn-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,10vw,96px);letter-spacing:6px;line-height:1;color:#fbbf24;text-shadow:0 0 80px rgba(251,191,36,.5),0 0 24px rgba(251,191,36,.7);margin:4px 0}
+.la-sn-div{display:inline-flex;align-items:center;gap:6px;padding:5px 16px;border-radius:20px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:2px;color:#fbbf24;margin-bottom:8px}
+.la-sn-stats{display:flex;gap:24px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.la-sn-stat{text-align:center}
+.la-sn-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#f0edff;line-height:1}
+.la-sn-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(240,237,255,.35);text-transform:uppercase;margin-top:2px}
+.la-sn-tap{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(240,237,255,.2);margin-top:24px;animation:la-blink 1.5s 1s infinite}
+.la-sn-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.14),transparent 70%);pointer-events:none;animation:la-glow-pulse 2s ease-in-out infinite}
 `;
+
     document.head.appendChild(s);
   }
 
@@ -218,6 +239,68 @@
       localStorage.setItem('ledgr_earned_badges',
         JSON.stringify(stored.concat(fresh.map(function (b) { return b.key; }))));
     }
+  };
+
+  // ── seasonEndAnimation ───────────────────────────────────────────────
+  // champion: string username
+  // stats: { roi, winRate, picks, division, seasonName, seasonNumber }
+  window.seasonEndAnimation = function (champion, stats) {
+    stats = stats || {};
+    var overlay = document.createElement('div');
+    overlay.className = 'la-season-overlay';
+
+    var seasonLabel = stats.seasonName || ('SEASON ' + (stats.seasonNumber || ''));
+    var divIcon = stats.division ? ({LEGEND:'🐐',ELITE:'🔱',DIAMOND:'💎',PLATINUM:'⚡',GOLD:'🏆',SILVER:'🥈',BRONZE:'🥉'}[stats.division] || '🏆') : '🏆';
+
+    var statsHtml = '';
+    if (stats.roi != null) statsHtml += '<div class="la-sn-stat"><div class="la-sn-stat-val">' + (stats.roi >= 0 ? '+' : '') + parseFloat(stats.roi).toFixed(1) + '%</div><div class="la-sn-stat-lbl">ROI</div></div>';
+    if (stats.winRate != null) statsHtml += '<div class="la-sn-stat"><div class="la-sn-stat-val">' + parseFloat(stats.winRate).toFixed(0) + '%</div><div class="la-sn-stat-lbl">Win Rate</div></div>';
+    if (stats.picks != null) statsHtml += '<div class="la-sn-stat"><div class="la-sn-stat-val">' + stats.picks + '</div><div class="la-sn-stat-lbl">Picks</div></div>';
+
+    overlay.innerHTML =
+      '<div class="la-sn-glow"></div>' +
+      '<div class="la-season-rays"></div>' +
+      '<div class="la-season-content">' +
+        '<div class="la-sn-season">' + seasonLabel + '</div>' +
+        '<div class="la-sn-title">SEASON CHAMPION</div>' +
+        '<div class="la-sn-crown">👑</div>' +
+        '<div class="la-sn-name">@' + champion + '</div>' +
+        (stats.division ? '<div class="la-sn-div">' + divIcon + ' ' + stats.division + '</div>' : '') +
+        (statsHtml ? '<div class="la-sn-stats">' + statsHtml + '</div>' : '') +
+        '<div class="la-sn-tap">Tap to continue</div>' +
+      '</div>';
+
+    // Confetti — LEDGR palette
+    var confettiColors = ['#fbbf24','#b89fff','#34d399','#38bdf8','#fb923c','#f87171','#f0edff'];
+    for (var i = 0; i < 50; i++) {
+      var angle = (i / 50) * 360 + (Math.random() - .5) * 14;
+      var dist  = 120 + Math.random() * 180;
+      var dx    = Math.cos(angle * Math.PI / 180) * dist;
+      var dy    = Math.sin(angle * Math.PI / 180) * dist;
+      var size  = 3 + Math.random() * 6;
+      var p = document.createElement('div');
+      p.className = 'la-particle';
+      p.style.cssText =
+        'background:' + confettiColors[i % confettiColors.length] + ';' +
+        'width:' + (Math.random() > .5 ? size + 'px' : size * 0.5 + 'px') + ';' +
+        'height:' + size + 'px;border-radius:' + (Math.random() > .5 ? '50%' : '2px') + ';' +
+        '--dx:' + dx.toFixed(1) + 'px;--dy:' + dy.toFixed(1) + 'px;' +
+        '--dur:' + (1.0 + Math.random() * 0.8).toFixed(2) + 's;' +
+        '--dly:' + (0.3 + Math.random() * 0.5).toFixed(2) + 's';
+      overlay.appendChild(p);
+    }
+
+    document.body.appendChild(overlay);
+
+    function dismiss() {
+      overlay.style.transition = 'opacity .5s ease';
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+      setTimeout(function () { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 520);
+    }
+
+    overlay.addEventListener('click', dismiss);
+    setTimeout(dismiss, 8000);
   };
 
   window.checkStreak = function (picks) {

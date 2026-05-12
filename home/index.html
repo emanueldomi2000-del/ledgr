@@ -594,6 +594,18 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
     <div class="missions-title">⚡ Daily Missions</div>
     <div id="dailyMissions">Loading...</div>
   </div>
+  <div id="seasonInfoCard" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:16px;margin-top:0">
+    <div style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:8px">🏆 Current Season</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--gold);margin-bottom:4px" id="sidSeasonName">Season 3</div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2)" id="sidSeasonDays">— days left</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--ac)" id="sidSeasonRank">#—</div>
+    </div>
+    <div style="margin-top:8px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
+      <div id="sidSeasonBar" style="height:100%;background:linear-gradient(90deg,#fbbf24,#b89fff);border-radius:2px;width:0%;transition:width 1.2s ease"></div>
+    </div>
+    <a href="/leaderboard" style="display:block;text-align:center;margin-top:10px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(251,191,36,.5);text-decoration:none">VIEW SEASON LEADERBOARD →</a>
+  </div>
 </div>
 </div>
 
@@ -1060,7 +1072,30 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const missions=[{icon:'🎯',text:'Post 1 pick today',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',done:streak>=1},{icon:'👥',text:'Tail 2 picks',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',done:todayWins>=1}];
   const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-row"><span class="mission-icon">${m.icon}</span><span class="mission-text">${m.text}</span><span class="mission-badge ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</span></div>`).join('');
   if(window.Follows&&user&&user.id){window.Follows.getFollowerCount(user.id).then(count=>{const el=document.getElementById('idFollowers');if(el)el.textContent=count+(count===1?' follower':' followers');});}
+  // Show season info in sidebar card
+  loadSeasonInfo(rank);
 }
+
+async function loadSeasonInfo(myRank){
+  try{
+    const r=await fetch(API+'/seasons/active',{cache:'no-store'});
+    if(!r.ok)return;
+    const season=await r.json();
+    const card=document.getElementById('seasonInfoCard');
+    if(!card)return;
+    card.style.display='block';
+    document.getElementById('sidSeasonName').textContent=season.name;
+    const now=Date.now();
+    const end=new Date(season.endDate).getTime();
+    const start=new Date(season.startDate).getTime();
+    const daysLeft=Math.max(0,Math.ceil((end-now)/86400000));
+    const progress=Math.min(100,Math.max(0,Math.round(((now-start)/(end-start))*100)));
+    document.getElementById('sidSeasonDays').textContent=daysLeft>0?daysLeft+' days remaining':'Ending soon';
+    document.getElementById('sidSeasonRank').textContent=myRank>0?'#'+myRank+' this season':'—';
+    setTimeout(()=>{const bar=document.getElementById('sidSeasonBar');if(bar)bar.style.width=progress+'%';},600);
+  }catch(e){}
+}
+
 function renderStats(all){
   const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
   const wins=my.filter(p=>p.result==='win').length;const losses=my.filter(p=>p.result==='loss').length;
