@@ -15,6 +15,9 @@
     { "source": "/settings", "destination": "/settings/index.html" },
     { "source": "/feed", "destination": "/feed/index.html" },
     { "source": "/parlay", "destination": "/parlay/index.html" },
-    { "source": "/notifications", "destination": "/notifications/index.html" }
+    { "source": "/notifications", "destination": "/notifications/index.html" },
+    { "source": "/community", "destination": "/community/index.html" },
+    { "source": "/subscribe/success", "destination": "/subscribe/success/index.html" },
+    { "source": "/subscribe/cancel", "destination": "/subscribe/cancel/index.html" }
   ]
 }

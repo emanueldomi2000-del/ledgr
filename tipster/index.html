@@ -60,7 +60,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .share-btn{padding:11px 18px;border:1px solid var(--bd);color:var(--mu2);background:transparent;border-radius:8px;font-size:13px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
 .share-btn:hover{border-color:var(--bd2);color:var(--tx)}
 .sub-btn{padding:11px 26px;background:var(--ac);color:#07060d;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.sub-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
+.sub-btn:hover:not(:disabled){background:#cdb8ff;transform:translateY(-1px)}
+.sub-btn:disabled{opacity:.6;cursor:not-allowed}
+.sub-btn.subscribed{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--gr)}
+.sub-btn.subscribed:hover{background:rgba(52,211,153,0.2)}
+.sub-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:3px;letter-spacing:1px}
 
 /* BADGES */
 .badges-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -483,6 +487,71 @@ function getProfileConfig(uname){
   try{const s=localStorage.getItem('ledgr_profile_'+uname);return s?JSON.parse(s):{};}catch(e){return{};}
 }
 
+// ── SUBSCRIPTION UI ──────────────────────────────────────────
+async function initSubscriptionUI(tipsterUserId){
+  const loggedIn=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  const btn=document.getElementById('subBtn');
+  const cntEl=document.getElementById('subscriberCount');
+
+  // Load subscriber count (public)
+  try{
+    const r=await fetch(API+'/subscribers/'+tipsterUserId);
+    const d=await r.json();
+    if(cntEl&&d.count>0){
+      cntEl.textContent='· '+d.count+(d.count===1?' subscriber':' subscribers');
+      cntEl.style.display='block';
+    }
+  }catch(_){}
+
+  // Hide subscribe button on own profile or if not logged in
+  if(!loggedIn||!btn)return;
+  if(loggedIn.id===tipsterUserId){btn.style.display='none';return;}
+
+  // Check if already subscribed
+  if(!token)return;
+  try{
+    const r=await fetch(API+'/subscriptions/'+loggedIn.id,{headers:{Authorization:'Bearer '+token}});
+    const subs=await r.json();
+    const active=Array.isArray(subs)&&subs.find(s=>s.tipsterId===tipsterUserId&&s.status==='active');
+    if(active){
+      btn.textContent='Subscribed ✓';
+      btn.classList.add('subscribed');
+      btn.dataset.subId=active.id;
+    }
+  }catch(_){}
+}
+
+async function handleSubscribe(){
+  const btn=document.getElementById('subBtn');
+  const loggedIn=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!loggedIn||!token){window.location.href='/login';return;}
+
+  const tipsterId=btn?.dataset?.tipsterId;
+  const tipsterUsername=btn?.dataset?.tipsterUsername||username;
+
+  // If already subscribed → go to settings to manage
+  if(btn&&btn.classList.contains('subscribed')){
+    window.location.href='/settings';return;
+  }
+
+  btn&&(btn.disabled=true,btn.textContent='Opening Stripe…');
+  try{
+    const r=await fetch(API+'/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({tipsterId,tipsterUsername,priceAmount:parseInt(localStorage.getItem('ledgr_sub_price_'+tipsterUsername)||'1000')})
+    });
+    const d=await r.json();
+    if(d.url)window.location.href=d.url;
+    else{showToast(d.error||'Could not open checkout');btn&&(btn.disabled=false,btn.textContent='Subscribe €10/mo');}
+  }catch(e){
+    showToast('Connection error — try again');
+    btn&&(btn.disabled=false,btn.textContent='Subscribe €10/mo');
+  }
+}
+
 async function loadProfile(){
   if(!username){showNotFound();return;}
   try{
@@ -551,13 +620,16 @@ async function loadProfile(){
               ${archetypeHtml}
             </div>
             <div class="profile-username">@${username}</div>
-            <div id="followerCount" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:5px;letter-spacing:1px">— followers</div>
+            <div style="display:flex;gap:12px;margin-top:5px;flex-wrap:wrap">
+              <div id="followerCount" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px">— followers</div>
+              <div id="subscriberCount" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px;display:none">· — subscribers</div>
+            </div>
           </div>
           <div class="profile-actions">
             <a class="share-btn" href="/analytics?u=${username}" style="text-decoration:none;display:inline-flex;align-items:center;gap:5px" id="analyticsBtn">📊 Analytics</a>
             <button class="share-btn" onclick="shareProfile()">📤 Share</button>
             <button class="follow-btn" id="followBtn" data-user-id="${tipsterUserId||''}">Follow</button>
-            <button class="sub-btn" onclick="showToast('Subscriptions coming soon! 🚀')">Subscribe €10/mo</button>
+            <button class="sub-btn" id="subBtn" data-tipster-id="${tipsterUserId||''}" data-tipster-username="${username}" onclick="handleSubscribe()">Subscribe €10/mo</button>
           </div>
         </div>
         <div class="badges-row">${badgesHtml}</div>
@@ -624,6 +696,7 @@ async function loadProfile(){
           });
         }
       }
+      if(tipsterUserId)initSubscriptionUI(tipsterUserId);
     },80);
 
   }catch(e){

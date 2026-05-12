@@ -93,6 +93,28 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--tx);margin-bottom:4px}
 .section-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.5px;line-height:1.5}
 
+/* ── SUBSCRIPTION SECTIONS ── */
+.sub-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--bd)}
+.sub-row:last-child{border:none}
+.sub-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0}
+.sub-info{flex:1;min-width:0}
+.sub-name{font-weight:700;font-size:13px;color:var(--tx);cursor:pointer;transition:color .15s}.sub-name:hover{color:var(--ac)}
+.sub-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px}
+.sub-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px}
+.sub-badge.active{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--gr)}
+.sub-badge.cancelled{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--rd)}
+.sub-cancel-btn{background:transparent;border:1px solid rgba(248,113,113,.25);color:var(--rd);border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;white-space:nowrap}
+.sub-cancel-btn:hover{background:rgba(248,113,113,.08)}
+.sub-empty{text-align:center;padding:32px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);line-height:1.8}
+.earnings-card{background:linear-gradient(135deg,rgba(52,211,153,.06),rgba(184,159,255,.04));border:1px solid rgba(52,211,153,.2);border-radius:14px;padding:20px 24px;margin-bottom:16px;display:flex;align-items:center;gap:20px}
+.earnings-val{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--gr);line-height:1;letter-spacing:2px}
+.earnings-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+.price-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:12px}
+.price-input{background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:14px;padding:10px 14px;width:100px;outline:none;transition:border-color .2s}
+.price-input:focus{border-color:var(--bd2)}
+.price-save-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.price-save-btn:hover{background:#cdb8ff}
+
 /* ── ARCHETYPE GRID ── */
 .archetype-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
 .archetype-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:14px;padding:18px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
@@ -308,6 +330,43 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
           <div class="save-hint">Stored locally in your browser · Applies to your profile page instantly</div>
         </div>
 
+        <!-- 05 MY SUBSCRIPTIONS -->
+        <section class="settings-section" style="margin-top:52px">
+          <div class="section-header">
+            <div class="section-num">05</div>
+            <div>
+              <div class="section-title">MY SUBSCRIPTIONS</div>
+              <div class="section-sub">Tipsters you are currently subscribed to</div>
+            </div>
+          </div>
+          <div id="mySubscriptions"><div class="sub-empty">Loading…</div></div>
+        </section>
+
+        <!-- 06 MY SUBSCRIBERS -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">06</div>
+            <div>
+              <div class="section-title">MY SUBSCRIBERS</div>
+              <div class="section-sub">Users subscribed to your premium picks</div>
+            </div>
+          </div>
+          <div id="earningsCard" style="display:none" class="earnings-card">
+            <div>
+              <div class="earnings-val" id="earningsVal">€0</div>
+              <div class="earnings-lbl">Monthly earnings estimate</div>
+            </div>
+          </div>
+          <div id="mySubscribers"><div class="sub-empty">Loading…</div></div>
+          <div class="price-row" style="margin-top:20px">
+            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2)">Monthly price:</span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--mu)">€</span>
+            <input type="number" class="price-input" id="subPrice" min="1" max="500" value="10">
+            <button class="price-save-btn" onclick="saveSubPrice()">Save Price</button>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:8px;letter-spacing:.5px">Price is set per your profile · new subscribers see this amount at checkout</div>
+        </section>
+
       </div>
     </div>
   </div>
@@ -376,7 +435,97 @@ window.onload=()=>{
   renderBorders();
   renderSports();
   applyPreview();
+
+  // Load saved price
+  const savedPrice=localStorage.getItem('ledgr_my_sub_price');
+  if(savedPrice)document.getElementById('subPrice').value=savedPrice;
+
+  // Load subscription data
+  loadMySubscriptions();
+  loadMySubscribers();
 };
+
+const API='https://ledgr-backend-production-c132.up.railway.app';
+const AV_COLORS=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#0f766e,#14b8a6)'];
+function avC(u){let h=0;for(let i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))&0xffffffff;return AV_COLORS[Math.abs(h)%AV_COLORS.length];}
+
+async function loadMySubscriptions(){
+  const el=document.getElementById('mySubscriptions');
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!user||!token){el.innerHTML='<div class="sub-empty">Log in to see your subscriptions.</div>';return;}
+  try{
+    const r=await fetch(API+'/subscriptions/'+user.id,{headers:{Authorization:'Bearer '+token}});
+    const subs=await r.json();
+    if(!Array.isArray(subs)||!subs.length){
+      el.innerHTML='<div class="sub-empty">No active subscriptions.<br><a href="/leaderboard" style="color:var(--ac)">Browse tipsters →</a></div>';
+      return;
+    }
+    el.innerHTML=subs.map(s=>{
+      const uname=s.tipster?.username||'Unknown';
+      const end=s.currentPeriodEnd?new Date(s.currentPeriodEnd).toLocaleDateString('en-GB'):'—';
+      return`<div class="sub-row">
+        <div class="sub-av" style="background:${avC(uname)}">${uname.slice(0,2).toUpperCase()}</div>
+        <div class="sub-info">
+          <div class="sub-name" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</div>
+          <div class="sub-meta">€${(s.priceAmount/100).toFixed(0)}/mo · renews ${end}</div>
+        </div>
+        <span class="sub-badge active">● ACTIVE</span>
+        <button class="sub-cancel-btn" onclick="cancelSubscription('${s.id}',this)">Cancel</button>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscriptions.</div>';}
+}
+
+async function cancelSubscription(subId,btn){
+  if(!confirm('Cancel this subscription? It will remain active until the end of the billing period.'))return;
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  btn.disabled=true;btn.textContent='Cancelling…';
+  try{
+    const r=await fetch(API+'/subscriptions/'+subId,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
+    const d=await r.json();
+    if(d.success){showToast('Subscription cancelled');loadMySubscriptions();}
+    else{showToast(d.error||'Error cancelling');btn.disabled=false;btn.textContent='Cancel';}
+  }catch(e){showToast('Connection error');btn.disabled=false;btn.textContent='Cancel';}
+}
+
+async function loadMySubscribers(){
+  const el=document.getElementById('mySubscribers');
+  const cardEl=document.getElementById('earningsCard');
+  const earningsEl=document.getElementById('earningsVal');
+  if(!user){el.innerHTML='<div class="sub-empty">Log in to see your subscribers.</div>';return;}
+  try{
+    const r=await fetch(API+'/subscribers/'+user.id);
+    const d=await r.json();
+    if(!d.count){
+      el.innerHTML='<div class="sub-empty">No subscribers yet.<br>Share your profile to grow your following.</div>';
+      return;
+    }
+    // Earnings estimate
+    const price=parseInt(localStorage.getItem('ledgr_my_sub_price')||'10');
+    const monthly=d.count*price;
+    earningsEl.textContent='€'+monthly;
+    cardEl.style.display='flex';
+
+    el.innerHTML=d.subscribers.map(s=>{
+      const uname=s.username||'Unknown';
+      return`<div class="sub-row">
+        <div class="sub-av" style="background:${avC(uname)}">${uname.slice(0,2).toUpperCase()}</div>
+        <div class="sub-info">
+          <div class="sub-name" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</div>
+          <div class="sub-meta">Active subscriber</div>
+        </div>
+        <span class="sub-badge active">● ACTIVE</span>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscribers.</div>';}
+}
+
+function saveSubPrice(){
+  const price=parseInt(document.getElementById('subPrice').value)||10;
+  localStorage.setItem('ledgr_my_sub_price',price);
+  showToast('Price saved — €'+price+'/mo');
+  loadMySubscribers();
+}
 
 /* ── RENDER ARCHETYPES ── */
 function renderArchetypes(){

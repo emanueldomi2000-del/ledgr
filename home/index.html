@@ -590,6 +590,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
       <span class="id-rank-num" id="idRankNum">#—</span>
     </div>
     <div id="idFollowers" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);text-align:center;padding:4px 0 0;letter-spacing:1px">— followers</div>
+    <div id="idSubscriberCount" style="display:none;font-family:'DM Mono',monospace;font-size:10px;color:var(--gr);text-align:center;padding:2px 0 0;letter-spacing:1px"></div>
     <a href="#" onclick="goToProfile();return false" class="id-view-btn">VIEW MY PROFILE →</a>
   </div>
   <div class="missions-card">
@@ -1124,6 +1125,8 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const missions=[{icon:'🎯',text:'Post 1 pick today',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',done:streak>=1},{icon:'👥',text:'Tail 2 picks',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',done:todayWins>=1}];
   const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-row"><span class="mission-icon">${m.icon}</span><span class="mission-text">${m.text}</span><span class="mission-badge ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</span></div>`).join('');
   if(window.Follows&&user&&user.id){window.Follows.getFollowerCount(user.id).then(count=>{const el=document.getElementById('idFollowers');if(el)el.textContent=count+(count===1?' follower':' followers');});}
+  // Subscriber count for tipsters
+  if(user&&user.id){fetch(API+'/subscribers/'+user.id).then(r=>r.json()).then(d=>{if(d.count>0){const el=document.getElementById('idSubscriberCount');if(el){el.textContent=d.count+(d.count===1?' subscriber':' subscribers');el.style.display='block';}}}).catch(()=>{});}
   // Show season info in sidebar card
   loadSeasonInfo(rank);
 }
