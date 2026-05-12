@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Customize Profile</title>
+<meta name="description" content="Customize your LEDGR tipster profile — choose your archetype, banner, border style, and manage subscriptions.">
+<meta property="og:title" content="LEDGR — Profile Settings">
+<meta property="og:description" content="Customize your tipster profile, manage subscriptions, and configure your LEDGR presence.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/settings">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEDGR — Profile Settings">
+<meta name="twitter:description" content="Customize your tipster profile and manage subscriptions.">
+<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -417,9 +427,9 @@ let config={archetype:null,banner:'default',border:'clean',favSports:[]};
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!ud||!tk){document.getElementById('notLogged').style.display='flex';return;}
+  if(!ud||!tk){window.location.href='/login';return;}
   try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
-  if(!user||!user.username){document.getElementById('notLogged').style.display='flex';return;}
+  if(!user||!user.username){window.location.href='/login';return;}
 
   document.getElementById('app').style.display='block';
   document.getElementById('snAv').textContent=user.username.slice(0,2).toUpperCase();

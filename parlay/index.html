@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Parlay Builder</title>
+<meta name="description" content="Build parlays from top LEDGR tipster picks. Combine the sharpest picks and calculate potential returns automatically.">
+<meta property="og:title" content="LEDGR — Parlay Builder">
+<meta property="og:description" content="Combine picks from the sharpest verified tipsters into parlays. Calculate returns automatically.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/parlay">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEDGR — Parlay Builder">
+<meta name="twitter:description" content="Combine picks from the sharpest verified tipsters into parlays.">
+<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -229,7 +239,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!ud||!tk){window.location.href='/';return;}
+  if(!ud||!tk){window.location.href='/login';return;}
   try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
   if(!user||!user.username){window.location.href='/';return;}
   document.getElementById('userBadge').textContent='@'+user.username;

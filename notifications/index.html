@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Notifications</title>
+<meta name="description" content="Your LEDGR notifications — get alerted when tipsters you follow post new picks, hit streaks, or reach new divisions.">
+<meta property="og:title" content="LEDGR — Notifications">
+<meta property="og:description" content="Stay up to date — alerts when tipsters you follow post picks, hit streaks, or level up.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/notifications">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEDGR — Notifications">
+<meta name="twitter:description" content="Alerts when tipsters you follow post picks, hit streaks, or level up.">
+<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -157,7 +167,7 @@ function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!ud||!tk){window.location.href='/';return;}
+  if(!ud||!tk){window.location.href='/login';return;}
   try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
   if(!user||!user.username){window.location.href='/';return;}
   document.getElementById('userBadge').textContent='@'+user.username;

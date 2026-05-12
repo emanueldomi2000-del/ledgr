@@ -5,6 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Leaderboard</title>
+<meta name="description" content="See who's the sharpest tipster on LEDGR. Real picks, verified results, zero fake ROI. Full leaderboard ranked by performance.">
+<meta property="og:title" content="LEDGR Leaderboard — Top Verified Tipsters">
+<meta property="og:description" content="Real picks. Verified results. Zero fake ROI. See the sharpest sports tipsters ranked by ROI, win rate, and reliability.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/leaderboard">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEDGR Leaderboard — Top Verified Tipsters">
+<meta name="twitter:description" content="Real picks. Verified results. Zero fake ROI. See the sharpest sports tipsters ranked by performance.">
+<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -157,6 +167,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .empty-lb .icon{font-size:40px;margin-bottom:14px}
 .empty-lb h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--mu2);margin-bottom:8px}
 .empty-lb p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace;line-height:1.7}
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%);background-size:1200px 100%;animation:shimmer 1.6s infinite linear;display:inline-block}
+.skel-row{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--bd)}
+.skel-av{width:38px;height:38px;border-radius:10px;flex-shrink:0}
+.skel-lines{flex:1;display:flex;flex-direction:column;gap:6px}
+.skel-stat-group{display:flex;gap:28px;margin-left:auto}
 
 .division-badge-sm{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;margin-left:4px}
 .div-bronze{background:rgba(180,120,80,0.12);border:1px solid rgba(180,120,80,0.3);color:#b47850}
@@ -294,7 +310,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <span style="text-align:center">Sharp</span>
     <span></span>
   </div>
-  <div id="lbContainer"><div class="empty">Loading leaderboard...</div></div>
+  <div id="lbContainer"></div>
 </div>
 <script src="/archetypes.js"></script>
 <script src="/live.js"></script>
@@ -306,6 +322,23 @@ const API='https://ledgr-backend-production-c132.up.railway.app';
 let allPicks=[],currentFilter='all',allTipsters=[];
 const medals=['🥇','🥈','🥉'];
 const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#7c3aed,#ec4899)'];
+
+function showSkeletons(n=8){
+  document.getElementById('lbContainer').innerHTML=Array.from({length:n},()=>`
+    <div class="skel-row">
+      <span class="skel skel-av"></span>
+      <div class="skel-lines">
+        <span class="skel" style="width:120px;height:13px"></span>
+        <span class="skel" style="width:80px;height:10px;margin-top:2px"></span>
+      </div>
+      <div class="skel-stat-group">
+        <span class="skel" style="width:44px;height:20px"></span>
+        <span class="skel" style="width:44px;height:20px"></span>
+        <span class="skel" style="width:36px;height:20px"></span>
+      </div>
+    </div>`).join('');
+}
+showSkeletons();
 
 
 function getDivision(t){

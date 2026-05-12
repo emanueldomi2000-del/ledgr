@@ -5,6 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Post a Pick</title>
+<meta name="description" content="Post your sports picks on LEDGR. Select a match, set your market and odds, and build a verified public record automatically.">
+<meta property="og:title" content="LEDGR — Post a Pick">
+<meta property="og:description" content="Build your verified tipster record. Post picks, watch results auto-verified, climb the leaderboard.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/dashboard">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEDGR — Post a Pick">
+<meta name="twitter:description" content="Build your verified tipster record. Post picks, watch results auto-verified, climb the leaderboard.">
+<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -510,7 +520,7 @@ const GENERIC=[
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user');
   const tk=localStorage.getItem('ledgr_token');
-  if(!ud||!tk){document.getElementById('notLogged').style.display='flex';return;}
+  if(!ud||!tk){window.location.href='/login';return;}
   user=JSON.parse(ud);
   document.getElementById('app').style.display='block';
   document.getElementById('userBadge').textContent='@'+user.username;

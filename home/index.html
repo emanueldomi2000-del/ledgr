@@ -5,6 +5,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Home</title>
+<meta name="description" content="Your verified sports tipster dashboard. Post picks, track your record, and climb the leaderboard. Results verified automatically.">
+<meta property="og:title" content="LEDGR — Your Verified Pick Record">
+<meta property="og:description" content="Post picks, track your ROI, compete on the leaderboard. Every result verified automatically — no fake records.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/home">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LEDGR — Your Verified Pick Record">
+<meta name="twitter:description" content="Post picks, track your ROI, compete on the leaderboard. Every result verified automatically.">
+<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -79,6 +89,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 .ticker-text b{color:var(--mu2)}
 @keyframes atick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* ══ SKELETON ══ */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.skel{display:inline-block;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%);background-size:800px 100%;animation:shimmer 1.6s infinite linear}
 
 /* ══ STATS ══ */
 .stats-wrap{padding:48px 0 40px;border-bottom:1px solid var(--bd)}
@@ -632,10 +646,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 <div class="main">
   <div class="stats-wrap fade-in">
     <div class="stats-row">
-      <div class="stat"><div class="stat-label">Picks</div><div class="stat-val" id="statTotal">—</div><svg class="sparkline" id="sp0" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
-      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR">—</div><svg class="sparkline" id="sp1" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
-      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI">—</div><svg class="sparkline" id="sp2" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
-      <div class="stat"><div class="stat-label">P&amp;L</div><div class="stat-val" id="statPnL">—</div><svg class="sparkline" id="sp3" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">Picks</div><div class="stat-val" id="statTotal"><span class="skel" style="width:48px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp0" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR"><span class="skel" style="width:56px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp1" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI"><span class="skel" style="width:64px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp2" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">P&amp;L</div><div class="stat-val" id="statPnL"><span class="skel" style="width:72px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp3" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
     </div>
   </div>
 
@@ -771,7 +785,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
           </div>
           <div class="ls-days" id="loginStreakDays2"></div>
         </div>
-        <div id="miniLeaderboard"><div class="empty">Loading...</div></div>
+        <div id="miniLeaderboard">
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span class="skel" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px"><span class="skel" style="width:90px;height:11px"></span><span class="skel" style="width:55px;height:9px"></span></div><span class="skel" style="width:36px;height:14px"></span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span class="skel" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px"><span class="skel" style="width:110px;height:11px"></span><span class="skel" style="width:48px;height:9px"></span></div><span class="skel" style="width:36px;height:14px"></span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span class="skel" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px"><span class="skel" style="width:76px;height:11px"></span><span class="skel" style="width:62px;height:9px"></span></div><span class="skel" style="width:36px;height:14px"></span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span class="skel" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px"><span class="skel" style="width:96px;height:11px"></span><span class="skel" style="width:44px;height:9px"></span></div><span class="skel" style="width:36px;height:14px"></span></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 0"><span class="skel" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px"><span class="skel" style="width:84px;height:11px"></span><span class="skel" style="width:52px;height:9px"></span></div><span class="skel" style="width:36px;height:14px"></span></div>
+          </div>
+        </div>
         <a href="/leaderboard" class="view-all">View full leaderboard →</a>
       </div>
     </div>
@@ -1024,9 +1046,9 @@ function initScrollFade(){
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!ud||!tk){document.getElementById('notLogged').style.display='flex';return;}
+  if(!ud||!tk){window.location.href='/login';return;}
   try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
-  if(!user||!user.username){document.getElementById('notLogged').style.display='flex';return;}
+  if(!user||!user.username){window.location.href='/login';return;}
 
   document.getElementById('app').style.display='block';
   document.getElementById('userBadge').textContent='@'+user.username;
