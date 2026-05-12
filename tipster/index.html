@@ -274,6 +274,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:'DM Mono',monospace">Loading profile...</div>
 </div>
 <script src="/divisions.js"></script>
+<script src="/flow.js"></script>
 <script src="/archetypes.js"></script>
 <script src="/follows.js"></script>
 <script src="/tooltips.js"></script>
@@ -619,6 +620,8 @@ async function loadProfile(){
     const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
 
     const divObj=getDivision(allPicks);
+    const flowState=window.Flow?window.Flow.detect(allPicks):null;
+    const flowBadgeHTML=flowState?window.Flow.badgeHTML(flowState):'';
     const profileAvHTML=window.Divisions
       ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,#7c3aed,#a855f7)',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})
       :`<div class="avatar-big">${username.substring(0,2).toUpperCase()}</div>`;
@@ -637,6 +640,7 @@ async function loadProfile(){
               ${divBadgeHTML}
               ${streak>=3?`<div class="streak-tag">🔥 ${streak} WIN STREAK</div>`:''}
               ${archetypeHtml}
+              ${flowBadgeHTML}
             </div>
             <div class="profile-username">@${username}</div>
             <div style="display:flex;gap:12px;margin-top:5px;flex-wrap:wrap">

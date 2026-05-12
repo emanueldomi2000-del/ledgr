@@ -227,6 +227,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div class="feed-end" id="feedEnd" style="display:none">— END OF FEED —</div>
 </div>
 
+<script src="/flow.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const AV_COLORS=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#1d4ed8,#3b82f6)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#9d174d,#ec4899)','linear-gradient(135deg,#0e7490,#06b6d4)','linear-gradient(135deg,#7c2d12,#ea580c)','linear-gradient(135deg,#4c1d95,#8b5cf6)'];
@@ -297,6 +298,23 @@ function computeEvents(allPicks){
       }
     });
   });
+
+  // FLOW STATE events (per user, positive states only, active in last 7 days)
+  if(window.Flow){
+    const picksMap={};
+    Object.entries(tMap).forEach(([u,picks])=>{if(picks.length>=3)picksMap[u]=picks;});
+    const flowMap=window.Flow.detectAll(picksMap);
+    const cut7=Date.now()-7*86400000;
+    const POSITIVE=['on_fire','heating_up','sharp_mom','underdog','clv_leader','consistent','contender'];
+    Object.entries(flowMap).forEach(([username,state])=>{
+      if(!state||!POSITIVE.includes(state.id))return;
+      const picks=tMap[username]||[];
+      if(!picks.length)return;
+      const sorted=[...picks].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+      if(Date.now()-new Date(sorted[0].createdAt).getTime()>cut7)return;
+      events.push({type:'flow',user:username,ts:new Date(sorted[0].createdAt).getTime()+100,detail:{state}});
+    });
+  }
 
   return events.sort((a,b)=>b.ts-a.ts).slice(0,120);
 }
@@ -369,6 +387,11 @@ function renderEvents(events,delay=true){
       actionHtml=`hit <b style="color:var(--gold)">${d.count} PICKS</b>`;
       detailHtml=`${d.count}-pick milestone reached. Track record growing.`;
       badgeHtml=`<span class="ev-badge ev-badge-milestone">🎯 ${d.count} PICKS</span>`;
+    }else if(ev.type==='flow'){
+      const st=d.state;
+      actionHtml=`is <b style="color:${st.color}">${st.label}</b>`;
+      detailHtml=st.desc;
+      badgeHtml=`<span class="ev-badge ev-badge-flow flow-chip flow-${st.id}">${st.label}</span>`;
     }else{
       actionHtml=`posted a pick`;
       detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b> · ${d.stake}u`;

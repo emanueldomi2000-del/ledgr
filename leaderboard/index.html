@@ -313,6 +313,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div id="lbContainer"></div>
 </div>
 <script src="/divisions.js"></script>
+<script src="/flow.js"></script>
 <script src="/archetypes.js"></script>
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
@@ -537,6 +538,13 @@ async function loadLeaderboard(){
     window._eloMap=eloMap;
     buildTipsters();
     updateStats();
+    // Compute flow states for all tipsters (global comparison)
+    if(window.Flow){
+      const picksMap={};
+      allTipsters.forEach(t=>{picksMap[t.username]=allPicks.filter(p=>p.user&&p.user.username===t.username);});
+      const flowMap=window.Flow.detectAll(picksMap);
+      allTipsters.forEach(t=>{t.flowState=flowMap[t.username]||null;});
+    }
     renderLeaderboard();
   }catch(e){
     document.getElementById('lbContainer').innerHTML='<div class="empty">⚠️ Could not load data. Try again later.</div>';
@@ -682,6 +690,7 @@ function renderLeaderboard(){
           <div class="tip-picks-sub">${t.picks} picks</div>
           ${rowPill}
           ${t.archetype&&window.archetypeBadgeHTML?'<br>'+window.archetypeBadgeHTML(t.archetype,true):''}
+          ${t.flowState&&window.Flow?'<br>'+window.Flow.chipHTML(t.flowState):''}
         </div>
       </div>
       <div class="lb-stat"><div class="lsv ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div><div class="lsl">ROI</div></div>

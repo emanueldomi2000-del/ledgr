@@ -900,6 +900,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 </div><!-- /app -->
 
 <script src="/divisions.js"></script>
+<script src="/flow.js"></script>
 <script src="/animations.js"></script>
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
@@ -1274,19 +1275,87 @@ function renderMatchup(all){
 }
 
 function renderRising(all){
-  const tMap={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0,recent:[]};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;const sevenAgo=Date.now()-7*86400000;if(new Date(p.createdAt).getTime()>sevenAgo)tMap[u].recent.push(p);});
-  const allT=Object.values(tMap).filter(t=>t.picks.length>=3);
-  const fastestGrowing=[...allT].sort((a,b)=>b.recent.length-a.recent.length)[0];
-  const mostActive=[...allT].sort((a,b)=>b.recent.length-a.recent.length).slice(1,2)[0];
-  const roiKing=[...allT].filter(t=>t.recent.length>=2).sort((a,b)=>{const sa=a.recent.reduce((s,p)=>s+p.stake,0),pa=a.recent.reduce((s,p)=>s+p.pnl,0);const sb=b.recent.reduce((s,p)=>s+p.stake,0),pb=b.recent.reduce((s,p)=>s+p.pnl,0);const ra=sa>0?(pa/sa)*100:0,rb=sb>0?(pb/sb)*100:0;return rb-ra;})[0];
   const grid=document.getElementById('risingGrid');
-  const cards=[
-    fastestGrowing?{tag:'🔥 Fastest Growing',name:'@'+fastestGrowing.username,metric:fastestGrowing.recent.length,metricSuffix:' picks',sub:'in last 7 days',cls:'heat1',metricCls:'gold',u:fastestGrowing.username}:null,
-    mostActive?{tag:'📈 Most Active',name:'@'+mostActive.username,metric:mostActive.picks.length,metricSuffix:'',sub:'total picks',cls:'heat2',metricCls:'gr',u:mostActive.username}:null,
-    roiKing?{tag:'💰 7-Day ROI',name:'@'+roiKing.username,metric:(()=>{const s=roiKing.recent.reduce((a,p)=>a+p.stake,0),p=roiKing.recent.reduce((a,p)=>a+p.pnl,0);return s>0?((p/s)*100).toFixed(1):0;})(),metricSuffix:'%',sub:'this week',cls:'heat3',metricCls:'ac',u:roiKing.username}:null
-  ];
-  grid.innerHTML=cards.filter(Boolean).map(c=>`<div class="rising-card ${c.cls}" onclick="window.location.href='/tipster?u=${c.u}'"><div class="rc-tag">${c.tag}</div><div class="rc-name">${c.name}</div><div class="rc-metric ${c.metricCls}">${c.metric}${c.metricSuffix}</div><div class="rc-sub">${c.sub}</div><div class="rc-arrow">↗</div></div>`).join('')||'<div class="empty">Not enough data yet</div>';
+  const tMap={};
+  all.forEach(p=>{
+    if(!p.user)return;
+    const u=p.user.username;
+    if(!tMap[u])tMap[u]={username:u,picks:[]};
+    tMap[u].picks.push(p);
+  });
+
+  // Run flow detection across all tipsters if Flow is available
+  const POSITIVE_FLOWS=['on_fire','heating_up','sharp_mom','underdog','clv_leader','consistent','contender'];
+  let risingCards=[];
+
+  if(window.Flow){
+    const picksMap={};
+    Object.values(tMap).filter(t=>t.picks.length>=3).forEach(t=>{picksMap[t.username]=t.picks;});
+    const flowMap=window.Flow.detectAll(picksMap);
+
+    // Priority order for "heating up" section — exclude cold_streak
+    const stateOrder={on_fire:1,heating_up:2,sharp_mom:3,underdog:4,clv_leader:5,consistent:6,contender:7};
+    const flowEntries=Object.entries(flowMap)
+      .filter(([,s])=>s&&POSITIVE_FLOWS.includes(s.id))
+      .sort((a,b)=>(stateOrder[a[1].id]||99)-(stateOrder[b[1].id]||99));
+
+    const heat=['heat1','heat2','heat3'];
+    risingCards=flowEntries.slice(0,3).map(([username,state],i)=>{
+      const userPicks=tMap[username]?tMap[username].picks:[];
+      const settled=userPicks.filter(p=>p.result!=='pending');
+      const wins=settled.filter(p=>p.result==='win').length;
+      const stake=userPicks.reduce((s,p)=>s+p.stake,0);
+      const pnl=userPicks.reduce((s,p)=>s+p.pnl,0);
+      const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';
+      const roiPos=parseFloat(roi)>=0;
+
+      // Metric line: specific to the flow state
+      let metric='',metricCls='ac',sub='';
+      if(state.id==='on_fire'){
+        let str=0;const s=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+        for(const p of s){if(p.result==='win')str++;else break;}
+        metric=str+'W';metricCls='orange';sub='win streak';
+      }else if(state.id==='heating_up'){
+        metric=(roiPos?'+':'')+roi+'%';metricCls='gr';sub='recent ROI';
+      }else if(state.id==='sharp_mom'){
+        const c14=userPicks.filter(p=>p.clv!=null&&Date.now()-new Date(p.createdAt)<14*86400000);
+        const avg=c14.length?c14.reduce((s,p)=>s+p.clv,0)/c14.length:0;
+        metric=(avg>=0?'+':'')+avg.toFixed(1)+'%';metricCls='ac';sub='avg CLV 14d';
+      }else if(state.id==='underdog'){
+        const udW=settled.filter(p=>p.result==='win'&&p.odds>=2.5&&Date.now()-new Date(p.createdAt)<7*86400000);
+        metric=udW.length+'W';metricCls='gold';sub='underdog wins this week';
+      }else{
+        metric=(roiPos?'+':'')+roi+'%';metricCls='ac';sub='ROI';
+      }
+      return{state,username,metric,metricCls,sub,cls:heat[i]};
+    });
+  }
+
+  // Fallback to old logic if no Flow or not enough data
+  if(!risingCards.length){
+    const allT=Object.values(tMap).filter(t=>t.picks.length>=3);
+    const sevenAgo=Date.now()-7*86400000;
+    allT.forEach(t=>{t.recent=t.picks.filter(p=>new Date(p.createdAt).getTime()>sevenAgo);t.pnl=t.picks.reduce((s,p)=>s+p.pnl,0);t.stake=t.picks.reduce((s,p)=>s+p.stake,0);});
+    const fg=[...allT].sort((a,b)=>b.recent.length-a.recent.length)[0];
+    const ma=[...allT].sort((a,b)=>b.recent.length-a.recent.length)[1];
+    const rk=[...allT].filter(t=>t.recent.length>=2).sort((a,b)=>{const sa=a.recent.reduce((s,p)=>s+p.stake,0),pa=a.recent.reduce((s,p)=>s+p.pnl,0);const sb=b.recent.reduce((s,p)=>s+p.stake,0),pb=b.recent.reduce((s,p)=>s+p.pnl,0);const ra=sa>0?(pa/sa)*100:0,rb=sb>0?(pb/sb)*100:0;return rb-ra;})[0];
+    const cards=[
+      fg?{tag:'🔥 Fastest Growing',name:'@'+fg.username,metric:fg.recent.length,metricSuffix:' picks',sub:'in last 7 days',cls:'heat1',metricCls:'gold',u:fg.username}:null,
+      ma?{tag:'📈 Most Active',name:'@'+ma.username,metric:ma.picks.length,metricSuffix:'',sub:'total picks',cls:'heat2',metricCls:'gr',u:ma.username}:null,
+      rk?{tag:'💰 7-Day ROI',name:'@'+rk.username,metric:(()=>{const s=rk.recent.reduce((a,p)=>a+p.stake,0),p=rk.recent.reduce((a,p)=>a+p.pnl,0);return s>0?((p/s)*100).toFixed(1):0;})(),metricSuffix:'%',sub:'this week',cls:'heat3',metricCls:'ac',u:rk.username}:null
+    ];
+    grid.innerHTML=cards.filter(Boolean).map(c=>`<div class="rising-card ${c.cls}" onclick="window.location.href='/tipster?u=${c.u}'"><div class="rc-tag">${c.tag}</div><div class="rc-name">${c.name}</div><div class="rc-metric ${c.metricCls}">${c.metric}${c.metricSuffix||''}</div><div class="rc-sub">${c.sub}</div><div class="rc-arrow">↗</div></div>`).join('')||'<div class="empty">Not enough data yet</div>';
+    return;
+  }
+
+  grid.innerHTML=risingCards.map(c=>`
+    <div class="rising-card ${c.cls}" onclick="window.location.href='/tipster?u=${c.username}'">
+      <div class="rc-tag" style="color:${c.state.color}">${c.state.label}</div>
+      <div class="rc-name">@${c.username}</div>
+      <div class="rc-metric ${c.metricCls}">${c.metric}</div>
+      <div class="rc-sub">${c.sub}</div>
+      <div class="rc-arrow">↗</div>
+    </div>`).join('');
 }
 
 function renderTrending(all){
