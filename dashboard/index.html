@@ -468,6 +468,12 @@ select option{background:#15122a}
           <div class="pf-tab pending" onclick="filterPicks('pending',this)">⏳ Pending</div>
         </div>
 
+        <!-- Share actions row (hidden until data loads) -->
+        <div class="sh-action-row" id="shareActionRow" style="display:none">
+          <button class="sh-recap-btn" onclick="shareRecap()" title="Share your week as a graphic">📊 Weekly Recap</button>
+          <button class="sh-streak-btn" id="shareStreakBtn" style="display:none" onclick="shareStreak()">🔥 Share Streak</button>
+        </div>
+
         <!-- Mini ROI chart -->
         <div class="roi-mini-chart" id="roiMiniChart">
           <svg id="roiSvg" width="100%" height="28" viewBox="0 0 300 28" preserveAspectRatio="none"></svg>
@@ -479,6 +485,8 @@ select option{background:#15122a}
   </div>
 </div>
 
+<script src="/divisions.js"></script>
+<script src="/share.js"></script>
 <script src="/animations.js"></script>
 <script src="/push.js"></script>
 <script src="/tooltips.js"></script>
@@ -788,21 +796,26 @@ async function loadPicks(){
     document.getElementById('statPnL').className='stat-val '+(tp>=0?'pos':'neg');
     drawROIChart(allMyPicks);
     renderMyPicks();
+    _updateShareRow();
     if(window.checkRankUp)window.checkRankUp(allMyPicks);
     if(window.checkBadgeUnlock)window.checkBadgeUnlock(allMyPicks);
     if(window.checkStreak)window.checkStreak(allMyPicks);
   }catch(e){console.error(e);}
 }
 
+// Picks keyed by index for share access
+let _sharePicks=[];
+
 function renderMyPicks(){
   const filtered=currentPickFilter==='all'?allMyPicks:allMyPicks.filter(p=>p.result===currentPickFilter);
+  _sharePicks=filtered;
   const c=document.getElementById('myPicks');
   if(!filtered.length){
     c.innerHTML=`<div class="empty">${currentPickFilter==='all'?'No picks yet. Post your first pick!':'No '+currentPickFilter+' picks yet.'}</div>`;
     return;
   }
   const confLabels={low:'🔴 Low',medium:'🟡 Med',high:'🟢 High',max:'⚡ Max'};
-  c.innerHTML=filtered.slice(0,25).map(p=>{
+  c.innerHTML=filtered.slice(0,25).map((p,idx)=>{
     const rb=p.result==='win'?'<span class="badge badge-win">WIN</span>':p.result==='loss'?'<span class="badge badge-loss">LOSS</span>':'<span class="badge badge-pending">PENDING</span>';
     const cardCls=p.result==='win'?'win-card':p.result==='loss'?'loss-card':'pending-card';
     const confHtml=p.confidence?`<span class="conf-badge ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
@@ -815,6 +828,10 @@ function renderMyPicks(){
       :p.result!=='pending'
         ?`<span class="badge clv-null" title="${CLV_TIP}">CLV pending</span>`
         :'';
+    // Share button only for won picks
+    const shareBtn=p.result==='win'
+      ?`<button class="pick-share-btn" onclick="shareWinPick(${idx})" title="Share this win as a graphic">📤 Share</button>`
+      :'';
     return`<div class="pick-card ${cardCls}">
       <div class="pick-top">
         <div>
@@ -828,11 +845,71 @@ function renderMyPicks(){
         <span style="font-size:11px;color:var(--mu)">${p.stake}u</span>
         ${confHtml}${rb}${pnlHtml}${clvHtml}
         <span class="pick-time">${new Date(p.createdAt).toLocaleDateString('en-GB')}</span>
+        ${shareBtn}
       </div>
       ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
       <div class="locked-badge">🔒 Verified automatically</div>
     </div>`;
   }).join('');
+}
+
+// ── Share helpers ────────────────────────────────────────────────
+function _getDivObj(){
+  if(window.Divisions)return window.Divisions.get(allMyPicks);
+  return{name:'BRONZE',icon:'🥉',color:'#b47850'};
+}
+
+function _getStreak(){
+  const settled=[...allMyPicks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let s=0;for(const p of settled){if(p.result==='win')s++;else break;}
+  return s;
+}
+
+function _getWeekStats(){
+  const cutoff=Date.now()-7*86400000;
+  const week=allMyPicks.filter(p=>new Date(p.createdAt)>=cutoff);
+  const wins=week.filter(p=>p.result==='win').length;
+  const losses=week.filter(p=>p.result==='loss').length;
+  const stake=week.reduce((s,p)=>s+p.stake,0);
+  const pnl=week.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const bestPick=week.filter(p=>p.result==='win').sort((a,b)=>b.pnl-a.pnl)[0]||null;
+  return{picks:week.length,wins,losses,roi,pnl,bestPick};
+}
+
+function shareWinPick(idx){
+  const pick=_sharePicks[idx];
+  if(!pick||!window.Share)return;
+  window.Share.winCard(pick,user.username,_getDivObj());
+}
+
+function shareRecap(){
+  if(!window.Share)return;
+  window.Share.recapCard(_getWeekStats(),user.username,_getDivObj());
+}
+
+function shareStreak(){
+  if(!window.Share)return;
+  const streak=_getStreak();
+  const ts=allMyPicks.reduce((s,p)=>s+p.stake,0);
+  const tp=allMyPicks.reduce((s,p)=>s+p.pnl,0);
+  const wins=allMyPicks.filter(p=>p.result==='win').length;
+  const losses=allMyPicks.filter(p=>p.result==='loss').length;
+  const stats={roi:ts>0?(tp/ts)*100:0,wr:(wins+losses)>0?(wins/(wins+losses))*100:0,pnl:tp};
+  window.Share.streakCard(streak,user.username,_getDivObj(),stats);
+}
+
+function _updateShareRow(){
+  // Show share action row once picks are loaded
+  const row=document.getElementById('shareActionRow');
+  if(row&&allMyPicks.length)row.style.display='flex';
+  // Show streak button only when streak >= 3
+  const sBtn=document.getElementById('shareStreakBtn');
+  if(sBtn){
+    const streak=_getStreak();
+    sBtn.style.display=streak>=3?'inline-flex':'none';
+    if(streak>=3)sBtn.textContent='🔥 Share '+streak+'-Win Streak';
+  }
 }
 
 function showToast(msg){
