@@ -513,6 +513,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/community" class="snl"><span class="snl-icon">💬</span><div class="snl-text">Community Chat</div></a>
     <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
     <a href="/parlay" class="snl"><span class="snl-icon">🎰</span><div class="snl-text">Parlay Builder</div></a>
     <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
@@ -531,6 +532,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
     <a href="/badges" class="nav-link">🏅 Badges</a>
     <a href="/compare" class="nav-link">Compare</a>
     <a href="/simulator" class="nav-link">Simulator</a>
+    <a href="/community" class="nav-link">💬 Chat</a>
     <a href="/feed" class="nav-link">🔴 Live</a>
     <a href="/parlay" class="nav-link">🎰 Parlay</a>
     <a href="/settings" class="nav-link">⚙️ Profile</a>
@@ -724,8 +726,22 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
         <!-- QUICK ACTIONS -->
         <div class="qa-grid" style="margin-bottom:28px">
           <a href="/leaderboard" class="qa-btn"><div class="qa-icon">🏆</div><div class="qa-label">LEADERBOARD</div></a>
-          <a href="/compare" class="qa-btn"><div class="qa-icon">⚖️</div><div class="qa-label">COMPARE</div></a>
+          <a href="/community" class="qa-btn"><div class="qa-icon">💬</div><div class="qa-label">COMMUNITY</div></a>
           <a href="/simulator" class="qa-btn"><div class="qa-icon">📈</div><div class="qa-label">SIMULATOR</div></a>
+        </div>
+
+        <!-- COMMUNITY CHAT PREVIEW -->
+        <div class="fade-in" style="margin-bottom:28px">
+          <div class="section-head-row">
+            <div style="display:flex;align-items:center;gap:8px">
+              <h2>Community Chat</h2>
+              <span style="display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:8px;color:var(--gr);letter-spacing:1px"><span style="width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 1.5s infinite;display:inline-block"></span>LIVE</span>
+            </div>
+            <a href="/community" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--ac);text-decoration:none;letter-spacing:1px">OPEN CHAT →</a>
+          </div>
+          <div id="chatPreview" style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;overflow:hidden">
+            <div style="padding:20px;text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu)">Loading…</div>
+          </div>
         </div>
 
         <!-- TRENDING PICKS -->
@@ -1033,7 +1049,43 @@ window.onload=()=>{
   initScrollFade();
   updateNotifBadge();
   loadData();
+  loadChatPreview();
 };
+
+async function loadChatPreview(){
+  const el=document.getElementById('chatPreview');
+  if(!el)return;
+  try{
+    const rooms=await fetch(API+'/chat/rooms').then(r=>r.json());
+    const general=rooms.find(r=>r.name==='General')||rooms[0];
+    if(!general){el.innerHTML='<div style="padding:20px;text-align:center;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">No rooms yet</div>';return;}
+    const msgs=await fetch(API+'/chat/rooms/'+general.id+'/messages').then(r=>r.json());
+    const last3=msgs.slice(-3);
+    if(!last3.length){
+      el.innerHTML='<div style="padding:20px;text-align:center;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">No messages yet — <a href="/community" style="color:var(--ac)">be the first!</a></div>';
+      return;
+    }
+    const avColors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#0f766e,#14b8a6)'];
+    function avC(u){let h=0;for(let i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))&0xffffffff;return avColors[Math.abs(h)%avColors.length];}
+    el.innerHTML=last3.map(m=>{
+      const u=m.user?.username||'Unknown';
+      const t=new Date(m.createdAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+      const esc=s=>s.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return`<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid var(--bd)">
+        <div style="width:28px;height:28px;border-radius:7px;background:${avC(u)};display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:10px;color:#fff;flex-shrink:0">${u.slice(0,2).toUpperCase()}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+            <span style="font-weight:700;font-size:11px;cursor:pointer;color:var(--tx)" onclick="window.location.href='/tipster?u=${u}'">@${u}</span>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)">${t}</span>
+          </div>
+          <div style="font-size:12px;color:var(--mu2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(m.content)}</div>
+        </div>
+      </div>`;
+    }).join('')+`<a href="/community" style="display:block;text-align:center;padding:10px;font-family:'DM Mono',monospace;font-size:9px;color:var(--ac);text-decoration:none;letter-spacing:1px">JOIN THE CONVERSATION →</a>`;
+  }catch(e){
+    el.innerHTML='<div style="padding:20px;text-align:center;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">Chat unavailable</div>';
+  }
+}
 
 async function loadData(){
   try{

@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Community Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c;--cyan:#38bdf8}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+
+/* NAV */
+nav{position:relative;z-index:50;background:rgba(7,6,13,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:6px;color:var(--tx);text-decoration:none}.logo span{color:var(--ac)}
+.nav-r{display:flex;align-items:center;gap:8px}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:7px 11px;border-radius:6px;transition:all .2s}.nav-link:hover{color:var(--tx)}.nav-link.active{color:var(--ac)}
+.nav-user{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);cursor:pointer;padding:6px 12px;border:1px solid var(--bd);border-radius:8px;transition:all .2s}.nav-user:hover{color:var(--ac);border-color:var(--bd2)}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--mu2);font-size:20px;cursor:pointer}
+
+/* LAYOUT */
+.chat-layout{display:flex;flex:1;overflow:hidden;position:relative;z-index:1}
+
+/* SIDEBAR */
+.sidebar{width:230px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-head{padding:16px 16px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
+.sidebar-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--mu2);margin-bottom:2px}
+.sidebar-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px}
+.rooms-list{flex:1;overflow-y:auto;padding:8px}
+.room-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border:none;background:transparent;border-radius:10px;cursor:pointer;transition:all .15s;text-align:left;margin-bottom:2px}
+.room-btn:hover{background:rgba(255,255,255,0.04)}
+.room-btn.active{background:var(--acg);border:1px solid rgba(184,159,255,0.15)}
+.room-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.room-info{flex:1;min-width:0}
+.room-name{font-size:12px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room-btn.active .room-name{color:var(--ac)}
+.room-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:1px}
+.room-online{display:inline-flex;align-items:center;gap:3px;font-family:'DM Mono',monospace;font-size:8px;color:var(--gr)}
+.online-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* MAIN CHAT AREA */
+.chat-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.chat-header{padding:14px 20px;border-bottom:1px solid var(--bd);background:rgba(7,6,13,0.6);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.chat-room-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--tx)}
+.chat-room-sport{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;margin-top:2px}
+.chat-header-right{display:flex;align-items:center;gap:12px}
+.ws-status{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px}
+.ws-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ws-status.connected .ws-dot{background:var(--gr)}
+.ws-status.disconnected .ws-dot{background:var(--rd)}
+.ws-status.connecting .ws-dot{background:var(--gold);animation:blink 1s infinite}
+
+/* MESSAGES */
+.messages-wrap{flex:1;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:2px}
+.messages-wrap::-webkit-scrollbar{width:4px}.messages-wrap::-webkit-scrollbar-track{background:transparent}.messages-wrap::-webkit-scrollbar-thumb{background:rgba(184,159,255,0.12);border-radius:2px}
+.msg-group{display:flex;gap:10px;align-items:flex-start;padding:4px 0;border-radius:8px;transition:background .15s}
+.msg-group:hover{background:rgba(255,255,255,0.018)}
+.msg-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:12px;color:#fff;flex-shrink:0;margin-top:2px;cursor:pointer;transition:transform .15s}
+.msg-av:hover{transform:scale(1.08)}
+.msg-body{flex:1;min-width:0}
+.msg-meta{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+.msg-user{font-weight:700;font-size:12px;color:var(--tx);cursor:pointer;transition:color .15s}.msg-user:hover{color:var(--ac)}
+.msg-div{font-family:'DM Mono',monospace;font-size:8px;padding:1px 6px;border-radius:10px;font-weight:700;letter-spacing:1px}
+.msg-time{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
+.msg-text{font-size:13px;color:var(--tx);line-height:1.55;word-break:break-word}
+.msg-text a{color:var(--ac);text-decoration:none}.msg-text a:hover{text-decoration:underline}
+
+/* System messages */
+.msg-system{text-align:center;padding:8px 0;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
+.msg-day-divider{text-align:center;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;padding:12px 0 4px;position:relative}
+.msg-day-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--bd)}
+.msg-day-divider span{background:var(--bg);padding:0 12px;position:relative}
+.empty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;gap:8px;text-align:center}
+.empty-chat .icon{font-size:36px;opacity:.4}
+
+/* INPUT */
+.input-area{padding:14px 20px;border-top:1px solid var(--bd);background:rgba(7,6,13,0.6);display:flex;align-items:flex-end;gap:10px;flex-shrink:0}
+.msg-input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:10px 14px;outline:none;resize:none;min-height:42px;max-height:120px;transition:border-color .2s;line-height:1.45}
+.msg-input:focus{border-color:var(--bd2)}
+.msg-input::placeholder{color:var(--mu)}
+.send-btn{background:var(--ac);color:#07060d;border:none;border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .15s;flex-shrink:0}
+.send-btn:hover{background:#cdb8ff;transform:scale(1.05)}
+.send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* Not-logged-in */
+.not-logged-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;text-align:center;flex:1}
+.not-logged-chat h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--mu)}
+.not-logged-chat p{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);line-height:1.7}
+.login-cta{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:12px 28px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:all .2s}.login-cta:hover{background:#cdb8ff}
+
+/* Division badge colours */
+.div-legend{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:var(--gold)}
+.div-elite{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--rd)}
+.div-diamond{background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.3);color:var(--ac)}
+.div-platinum{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:var(--cyan)}
+.div-gold{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:var(--gold)}
+.div-silver{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8}
+.div-bronze{background:rgba(180,120,80,.1);border:1px solid rgba(180,120,80,.25);color:#b47850}
+
+/* Slide nav (mobile) */
+.slide-nav{position:fixed;top:0;right:-100%;width:260px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.slide-nav.open{right:0}
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}.slide-nav-overlay.open{display:block}
+.slide-nav-header{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px}.slide-nav-logo span{color:var(--ac)}
+.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer}
+.slide-nav-links{padding:8px}
+.snl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}.snl:hover{background:var(--acg)}
+.snl-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+
+@media(max-width:700px){
+  .sidebar{width:64px}
+  .room-info,.sidebar-sub,.sidebar-title{display:none}
+  .room-btn{justify-content:center;padding:10px 8px}
+  .nav-link{display:none}
+  .mobile-menu-btn{display:block}
+  .chat-header{padding:10px 14px}
+  .messages-wrap{padding:10px 12px}
+  .input-area{padding:10px 12px}
+}
+@media(max-width:480px){.sidebar{display:none}}
+</style>
+</head>
+<body>
+<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
+<div class="slide-nav" id="slideNav">
+  <div class="slide-nav-header">
+    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-links">
+    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
+    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/community" class="snl"><span class="snl-icon">💬</span><div class="snl-text">Community</div></a>
+    <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
+    <a href="/dashboard" class="snl"><span class="snl-icon">➕</span><div class="snl-text">Post a Pick</div></a>
+    <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Profile</div></a>
+  </div>
+</div>
+
+<nav>
+  <a href="/home" class="logo">LEDG<span>R</span></a>
+  <div class="nav-r">
+    <a href="/home" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link">Leaderboard</a>
+    <a href="/community" class="nav-link active">💬 Chat</a>
+    <a href="/feed" class="nav-link">🔴 Live</a>
+    <a href="/dashboard" class="nav-link">Post a Pick</a>
+    <div class="nav-user" id="navUser" onclick="goToProfile()">...</div>
+    <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+  </div>
+</nav>
+
+<div class="chat-layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-head">
+      <div class="sidebar-title">ROOMS</div>
+      <div class="sidebar-sub">Choose a channel</div>
+    </div>
+    <div class="rooms-list" id="roomsList">
+      <div style="padding:16px;text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)">Loading…</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="chat-main">
+    <div class="chat-header">
+      <div>
+        <div class="chat-room-name" id="chatRoomName">SELECT A ROOM</div>
+        <div class="chat-room-sport" id="chatRoomSport"></div>
+      </div>
+      <div class="chat-header-right">
+        <div class="ws-status connecting" id="wsStatus">
+          <div class="ws-dot"></div>
+          <span id="wsStatusText">Connecting…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="messages-wrap" id="messagesWrap">
+      <div class="empty-chat">
+        <div class="icon">💬</div>
+        <div>Select a room to start chatting</div>
+      </div>
+    </div>
+
+    <div class="input-area" id="inputArea">
+      <textarea class="msg-input" id="msgInput" placeholder="Select a room first…" rows="1" disabled></textarea>
+      <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">↑</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const WSS = 'wss://ledgr-backend-production-c132.up.railway.app';
+
+const AV_COLORS = [
+  'linear-gradient(135deg,#7c3aed,#a855f7)',
+  'linear-gradient(135deg,#059669,#10b981)',
+  'linear-gradient(135deg,#b45309,#f59e0b)',
+  'linear-gradient(135deg,#0369a1,#38bdf8)',
+  'linear-gradient(135deg,#dc2626,#ef4444)',
+  'linear-gradient(135deg,#0f766e,#14b8a6)',
+  'linear-gradient(135deg,#7c3aed,#ec4899)'
+];
+const ROOM_ICONS = {
+  'General':'💬','Soccer':'⚽','NBA':'🏀','Tennis':'🎾',
+  'NFL':'🏈','MMA':'🥊','Picks Discussion':'📌'
+};
+const SPORT_EMOJIS = {Soccer:'⚽',Basketball:'🏀',Tennis:'🎾',Football:'🏈','MMA/Boxing':'🥊'};
+
+let user = null, token = null;
+let ws = null, wsReady = false;
+let currentRoomId = null;
+let rooms = [];
+let onlineCounts = {};   // roomId → count (simulated from WS connections)
+
+// ── Auth ─────────────────────────────────────────────────────
+function init() {
+  const ud = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+  const tk = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+  if (ud && tk) {
+    try { user = JSON.parse(ud); token = tk; } catch(e) {}
+  }
+  const navUser = document.getElementById('navUser');
+  if (user) navUser.textContent = '@' + user.username;
+  else { navUser.textContent = 'Log in'; navUser.onclick = () => window.location.href = '/login'; }
+
+  loadRooms();
+  connectWS();
+}
+
+function goToProfile() {
+  if (user) window.location.href = '/tipster?u=' + user.username;
+  else window.location.href = '/login';
+}
+
+// ── WebSocket ─────────────────────────────────────────────────
+function connectWS() {
+  if (ws) { try { ws.close(); } catch(_){} }
+  setWsStatus('connecting');
+
+  ws = new WebSocket(WSS);
+
+  ws.onopen = () => {
+    wsReady = true;
+    setWsStatus('connected');
+    // Re-join current room if any
+    if (currentRoomId) joinWsRoom(currentRoomId);
+  };
+
+  ws.onmessage = (ev) => {
+    try {
+      const msg = JSON.parse(ev.data);
+      if (msg.type === 'message' && msg.message?.roomId === currentRoomId) {
+        appendMessage(msg.message);
+        scrollToBottom();
+      }
+    } catch(_) {}
+  };
+
+  ws.onclose = () => {
+    wsReady = false;
+    setWsStatus('disconnected');
+    // Reconnect after 3s
+    setTimeout(connectWS, 3000);
+  };
+
+  ws.onerror = () => {
+    wsReady = false;
+    setWsStatus('disconnected');
+  };
+}
+
+function joinWsRoom(roomId) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify({ type: 'join', roomId, token: token || '' }));
+  }
+}
+
+function setWsStatus(state) {
+  const el = document.getElementById('wsStatus');
+  const txt = document.getElementById('wsStatusText');
+  el.className = 'ws-status ' + state;
+  txt.textContent = state === 'connected' ? 'Live' : state === 'connecting' ? 'Connecting…' : 'Reconnecting…';
+}
+
+// ── Rooms ─────────────────────────────────────────────────────
+async function loadRooms() {
+  try {
+    const r = await fetch(API + '/chat/rooms');
+    rooms = await r.json();
+    renderRooms();
+    if (rooms.length) selectRoom(rooms[0]);
+  } catch(e) {
+    document.getElementById('roomsList').innerHTML =
+      '<div style="padding:16px;font-family:\'DM Mono\',monospace;font-size:10px;color:var(--rd)">Could not load rooms</div>';
+  }
+}
+
+function renderRooms() {
+  const list = document.getElementById('roomsList');
+  list.innerHTML = rooms.map(r => {
+    const icon = ROOM_ICONS[r.name] || '💬';
+    const count = r._count?.messages || 0;
+    const active = r.id === currentRoomId;
+    return `<button class="room-btn ${active ? 'active' : ''}" onclick="selectRoom(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+      <span class="room-icon">${icon}</span>
+      <div class="room-info">
+        <div class="room-name">${r.name}</div>
+        <div class="room-count">${count} messages</div>
+      </div>
+    </button>`;
+  }).join('');
+}
+
+async function selectRoom(room) {
+  currentRoomId = room.id;
+  renderRooms();
+
+  document.getElementById('chatRoomName').textContent = room.name.toUpperCase();
+  const sport = room.sport ? (SPORT_EMOJIS[room.sport] || '') + ' ' + room.sport : 'General discussion';
+  document.getElementById('chatRoomSport').textContent = sport;
+
+  // Enable input if logged in
+  const canType = !!user;
+  const input = document.getElementById('msgInput');
+  const btn = document.getElementById('sendBtn');
+  input.disabled = !canType;
+  btn.disabled = !canType;
+  input.placeholder = canType ? 'Message #' + room.name + '…' : 'Log in to chat';
+
+  // Join WS room
+  joinWsRoom(room.id);
+
+  // Load history
+  document.getElementById('messagesWrap').innerHTML =
+    '<div class="msg-system">Loading messages…</div>';
+  try {
+    const r = await fetch(API + '/chat/rooms/' + room.id + '/messages');
+    const msgs = await r.json();
+    renderMessages(msgs);
+    scrollToBottom(true);
+  } catch(e) {
+    document.getElementById('messagesWrap').innerHTML =
+      '<div class="empty-chat"><div class="icon">⚠️</div><div>Could not load messages</div></div>';
+  }
+}
+
+// ── Render messages ───────────────────────────────────────────
+function divisionBadge(username) {
+  // We don't have division info in chat messages — skip for performance
+  return '';
+}
+
+function avColor(username) {
+  let h = 0;
+  for (let i = 0; i < username.length; i++) h = (h * 31 + username.charCodeAt(i)) & 0xffffffff;
+  return AV_COLORS[Math.abs(h) % AV_COLORS.length];
+}
+
+function timeStr(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const same = d.toDateString() === now.toDateString();
+  if (same) return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' ' +
+         d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function linkify(text) {
+  // Bold @mentions and make them clickable
+  return escapeHtml(text).replace(/@(\w+)/g,
+    '<a href="/tipster?u=$1" onclick="event.stopPropagation()">@$1</a>');
+}
+
+function renderMessages(msgs) {
+  const wrap = document.getElementById('messagesWrap');
+  if (!msgs.length) {
+    wrap.innerHTML = '<div class="empty-chat"><div class="icon">💬</div><div>No messages yet.<br>Be the first to say something!</div></div>';
+    return;
+  }
+  let html = '';
+  let lastDay = '';
+  msgs.forEach(msg => {
+    const uname = msg.user?.username || 'Unknown';
+    const day = new Date(msg.createdAt).toDateString();
+    if (day !== lastDay) {
+      const isToday = day === new Date().toDateString();
+      const label = isToday ? 'Today' : new Date(msg.createdAt).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
+      html += `<div class="msg-day-divider"><span>${label}</span></div>`;
+      lastDay = day;
+    }
+    html += msgHTML(msg);
+  });
+  wrap.innerHTML = html;
+}
+
+function msgHTML(msg) {
+  const uname = msg.user?.username || 'Unknown';
+  const av = uname.slice(0, 2).toUpperCase();
+  const color = avColor(uname);
+  return `<div class="msg-group" id="msg-${msg.id}">
+    <div class="msg-av" style="background:${color}" onclick="window.location.href='/tipster?u=${uname}'">${av}</div>
+    <div class="msg-body">
+      <div class="msg-meta">
+        <span class="msg-user" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</span>
+        <span class="msg-time">${timeStr(msg.createdAt)}</span>
+      </div>
+      <div class="msg-text">${linkify(msg.content)}</div>
+    </div>
+  </div>`;
+}
+
+function appendMessage(msg) {
+  if (document.querySelector('.empty-chat')) {
+    document.getElementById('messagesWrap').innerHTML = '';
+  }
+  const wrap = document.getElementById('messagesWrap');
+  const div = document.createElement('div');
+  div.innerHTML = msgHTML(msg);
+  wrap.appendChild(div.firstElementChild);
+}
+
+function scrollToBottom(instant) {
+  const wrap = document.getElementById('messagesWrap');
+  if (instant) { wrap.scrollTop = wrap.scrollHeight; return; }
+  wrap.scrollTo({ top: wrap.scrollHeight, behavior: 'smooth' });
+}
+
+// ── Send ──────────────────────────────────────────────────────
+async function sendMessage() {
+  if (!user || !currentRoomId) return;
+  const input = document.getElementById('msgInput');
+  const content = input.value.trim();
+  if (!content) return;
+
+  input.value = '';
+  input.style.height = '';
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const r = await fetch(API + '/chat/rooms/' + currentRoomId + '/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ content })
+    });
+    const d = await r.json();
+    if (!r.ok) {
+      if (r.status === 429) showToast('Slow down — 30 messages per minute max');
+      else showToast(d.error || 'Could not send message');
+    }
+    // WS broadcast handles rendering — no need to append manually unless WS is down
+    if (!wsReady && d.id) {
+      appendMessage(d);
+      scrollToBottom();
+    }
+  } catch(e) {
+    showToast('Connection error — try again');
+  } finally {
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
+}
+
+// ── Input auto-resize + Enter to send ─────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('msgInput');
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+  input.addEventListener('input', () => {
+    input.style.height = '';
+    input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+  });
+  init();
+});
+
+// ── Misc ──────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0d0b18;border:1px solid rgba(184,159,255,0.2);color:#f0edff;padding:10px 20px;border-radius:10px;font-family:\'DM Mono\',monospace;font-size:11px;z-index:9000;animation:la-badge-anim 2.5s ease forwards';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');}
+function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');}
+</script>
+</body>
+</html>
