@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,6 +20,8 @@
 :root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c;--cyan:#38bdf8}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+
+/* ── NAV ── */
 nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
@@ -30,73 +31,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .nav-link.active{color:var(--ac);background:var(--acg)}
 .nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .nav-btn:hover{background:#cdb8ff}
-.main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:2}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
-.page-title span{color:var(--ac)}
-.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
-
-/* PROGRESS */
-.progress-bar{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px 28px;margin-bottom:32px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.pb-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--ac);margin-bottom:4px}
-.pb-sub{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace}
-.pb-track{flex:1;min-width:200px;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
-.pb-fill{height:100%;background:linear-gradient(90deg,var(--ac),rgba(184,159,255,0.6));border-radius:3px;transition:width 1.2s ease}
-.pb-count{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--tx);flex-shrink:0}
-
-/* RARITY TABS */
-.rarity-tabs{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
-.rt{padding:7px 16px;border-radius:20px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;border:1px solid var(--bd);color:var(--mu2)}
-.rt:hover{border-color:var(--bd2)}
-.rt.active.all{border-color:var(--bd2);color:var(--ac);background:var(--acg)}
-.rt.active.common{border-color:rgba(148,163,184,.4);color:#94a3b8;background:rgba(148,163,184,.08)}
-.rt.active.rare{border-color:rgba(56,189,248,.4);color:var(--cyan);background:rgba(56,189,248,.08)}
-.rt.active.epic{border-color:rgba(184,159,255,.5);color:var(--ac);background:var(--acg)}
-.rt.active.legendary{border-color:rgba(251,191,36,.5);color:var(--gold);background:rgba(251,191,36,.08)}
-.rt.active.elite{border-color:rgba(248,113,113,.5);color:var(--rd);background:rgba(248,113,113,.08)}
-
-/* BADGES GRID */
-.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.badge-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:all .3s;position:relative;overflow:hidden}
-.badge-card.unlocked{cursor:default}
-.badge-card.locked{opacity:.5;filter:grayscale(.6)}
-.badge-card.unlocked:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3)}
-.badge-card.common.unlocked{border-color:rgba(148,163,184,.3)}
-.badge-card.rare.unlocked{border-color:rgba(56,189,248,.35);box-shadow:0 0 20px rgba(56,189,248,.06)}
-.badge-card.epic.unlocked{border-color:rgba(184,159,255,.4);box-shadow:0 0 24px rgba(184,159,255,.08)}
-.badge-card.legendary.unlocked{border-color:rgba(251,191,36,.45);box-shadow:0 0 28px rgba(251,191,36,.1)}
-.badge-card.elite.unlocked{border-color:rgba(248,113,113,.5);box-shadow:0 0 32px rgba(248,113,113,.12)}
-
-.badge-glow{position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;opacity:.15;filter:blur(30px);pointer-events:none}
-.badge-card.common .badge-glow{background:#94a3b8}
-.badge-card.rare .badge-glow{background:var(--cyan)}
-.badge-card.epic .badge-glow{background:var(--ac)}
-.badge-card.legendary .badge-glow{background:var(--gold)}
-.badge-card.elite .badge-glow{background:var(--rd)}
-
-.badge-icon{font-size:40px;margin-bottom:12px;display:block;line-height:1}
-.badge-rarity{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;display:inline-block;padding:2px 10px;border-radius:20px}
-.badge-card.common .badge-rarity{color:#94a3b8;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.2)}
-.badge-card.rare .badge-rarity{color:var(--cyan);background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.2)}
-.badge-card.epic .badge-rarity{color:var(--ac);background:var(--acg);border:1px solid var(--bd2)}
-.badge-card.legendary .badge-rarity{color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2)}
-.badge-card.elite .badge-rarity{color:var(--rd);background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2)}
-
-.badge-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--tx);margin-bottom:6px}
-.badge-desc{font-size:12px;color:var(--mu2);line-height:1.6;margin-bottom:12px}
-.badge-req{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;font-style:italic}
-.badge-unlocked-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:var(--gr);font-family:'DM Mono',monospace;font-size:9px;padding:3px 10px;border-radius:20px;margin-top:8px}
-.badge-locked-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.04);border:1px solid var(--bd);color:var(--mu);font-family:'DM Mono',monospace;font-size:9px;padding:3px 10px;border-radius:20px;margin-top:8px}
-.badge-progress{margin-top:10px}
-.badge-prog-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;margin-top:4px}
-.badge-prog-fill{height:100%;border-radius:2px;transition:width 1s ease}
-.badge-prog-lbl{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;display:flex;justify-content:space-between}
-
-.empty{text-align:center;padding:60px;color:var(--mu);font-family:'DM Mono',monospace}
-
-@media(max-width:700px){.badges-grid{grid-template-columns:1fr 1fr}nav{padding:0 16px}.nav-link{display:none}}
-@media(max-width:480px){.badges-grid{grid-template-columns:1fr}}
-
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px}
 .slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
 .slide-nav.open{right:0}
 .slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
@@ -117,6 +52,54 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 @media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
+
+/* ── PAGE ── */
+.main{max-width:1060px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
+.page-title span{color:var(--ac)}
+.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:22px 28px;margin-bottom:28px}
+.prog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.prog-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--ac)}
+.prog-count{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--tx)}
+.prog-sub{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
+.prog-rarity-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.prog-r-item{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px}
+.prog-r-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.prog-bar-track{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;margin-top:12px}
+.prog-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ac),rgba(184,159,255,.5));transition:width 1.2s ease}
+
+/* ── FILTER TABS ── */
+.filter-row{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;align-items:center}
+.filter-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-right:4px}
+.rt{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;border:1px solid var(--bd);color:var(--mu2);background:transparent;letter-spacing:.5px}
+.rt:hover{border-color:var(--bd2);color:var(--tx)}
+.rt.active        {border-color:var(--bd2);color:var(--ac);background:var(--acg)}
+.rt.active.common {border-color:rgba(148,163,184,.4);color:#94a3b8;background:rgba(148,163,184,.08)}
+.rt.active.rare   {border-color:rgba(56,189,248,.4);color:var(--cyan);background:rgba(56,189,248,.08)}
+.rt.active.epic   {border-color:rgba(184,159,255,.5);color:var(--ac);background:var(--acg)}
+.rt.active.legendary{border-color:rgba(251,191,36,.5);color:var(--gold);background:rgba(251,191,36,.08)}
+
+/* ── GRID ── */
+.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:760px){.badges-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.badges-grid{grid-template-columns:1fr}}
+
+/* ── SECTION LABEL ── */
+.rarity-section-lbl{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:4px}
+.rarity-section-lbl span{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:3px}
+.rarity-section-lbl::after{content:'';flex:1;height:1px;background:var(--bd)}
+
+/* ── EMPTY ── */
+.empty-state{text-align:center;padding:60px 20px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;grid-column:1/-1}
+
+/* ── UNLOCK CTA ── */
+.unlock-cta{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.15);border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px}
+.unlock-cta-icon{font-size:20px;flex-shrink:0}
+.unlock-cta-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);line-height:1.6}
+.unlock-cta-count{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gr);flex-shrink:0}
 </style>
 </head>
 <body>
@@ -135,8 +118,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/notifications" class="nav-link">🔔 Alerts</a>
     <a href="/settings" class="nav-link">⚙️ Profile</a>
   </div>
-  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button><button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
+  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+  <button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
 </nav>
+
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <div class="slide-nav" id="slideNav">
   <div class="slide-nav-header">
@@ -167,118 +152,339 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 <div class="main">
   <div class="page-title">YOUR <span>BADGES</span></div>
   <div class="page-sub">EARN TROPHIES · BUILD YOUR LEGACY</div>
-  <div class="progress-bar">
-    <div><div class="pb-title">BADGE PROGRESS</div><div class="pb-sub" id="pbSub">Loading...</div></div>
-    <div class="pb-track"><div class="pb-fill" id="pbFill" style="width:0%"></div></div>
-    <div class="pb-count"><span id="pbUnlocked">0</span>/<span id="pbTotal">0</span></div>
+
+  <!-- OVERALL PROGRESS -->
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="prog-top">
+      <div>
+        <div class="prog-title">BADGE PROGRESS</div>
+        <div class="prog-sub" id="progSub">Loading…</div>
+      </div>
+      <div class="prog-count"><span id="progUnlocked">0</span>/<span id="progTotal">0</span></div>
+    </div>
+    <div class="prog-rarity-row" id="progRarityRow"></div>
+    <div class="prog-bar-track"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
   </div>
-  <div class="rarity-tabs">
-    <div class="rt active all" onclick="filterRarity('all',this)">All</div>
-    <div class="rt common" onclick="filterRarity('common',this)">⚪ Common</div>
-    <div class="rt rare" onclick="filterRarity('rare',this)">🔵 Rare</div>
-    <div class="rt epic" onclick="filterRarity('epic',this)">🟣 Epic</div>
-    <div class="rt legendary" onclick="filterRarity('legendary',this)">🟡 Legendary</div>
-    <div class="rt elite" onclick="filterRarity('elite',this)">🔴 Elite</div>
+
+  <!-- NEW UNLOCK CTA (shown if fresh badges earned) -->
+  <div class="unlock-cta" id="newUnlockCta" style="display:none">
+    <span class="unlock-cta-icon">🎉</span>
+    <div class="unlock-cta-text">You've earned new badges! Click any unlocked badge to view its animation.</div>
+    <span class="unlock-cta-count" id="newUnlockCount">0</span>
   </div>
-  <div class="badges-grid" id="badgesGrid"><div class="empty">Loading badges...</div></div>
+
+  <!-- FILTER TABS -->
+  <div class="filter-row">
+    <span class="filter-lbl">Filter</span>
+    <button class="rt active all"       onclick="setFilter('all',this)">All</button>
+    <button class="rt common"           onclick="setFilter('common',this)">⚪ Common</button>
+    <button class="rt rare"             onclick="setFilter('rare',this)">🔵 Rare</button>
+    <button class="rt epic"             onclick="setFilter('epic',this)">🟣 Epic</button>
+    <button class="rt legendary"        onclick="setFilter('legendary',this)">🟡 Legendary</button>
+  </div>
+
+  <!-- GRID -->
+  <div class="badges-grid" id="badgesGrid">
+    <div class="empty-state">Loading your badge collection…</div>
+  </div>
 </div>
+
+<script src="/badges-system.js"></script>
+<script src="/mobile.js"></script>
 <script>
-const API='https://ledgr-backend-production-c132.up.railway.app';
-let allBadges=[];let currentRarity='all';
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const BS   = window.BadgeSystem;
 
-const BADGE_DEFS=[
-  {id:'first_pick',icon:'🎯',name:'First Pick',rarity:'common',desc:'Posted your first verified pick.',req:'Post 1 pick',check:(s)=>s.picks>=1,prog:(s)=>({cur:s.picks,max:1})},
-  {id:'five_picks',icon:'📋',name:'Getting Started',rarity:'common',desc:'Posted 5 verified picks.',req:'Post 5 picks',check:(s)=>s.picks>=5,prog:(s)=>({cur:Math.min(s.picks,5),max:5})},
-  {id:'ten_picks',icon:'📊',name:'In The Zone',rarity:'common',desc:'Logged 10 verified picks.',req:'Post 10 picks',check:(s)=>s.picks>=10,prog:(s)=>({cur:Math.min(s.picks,10),max:10})},
-  {id:'first_win',icon:'✅',name:'Winner',rarity:'common',desc:'Won your first verified pick.',req:'Win 1 pick',check:(s)=>s.wins>=1,prog:(s)=>({cur:Math.min(s.wins,1),max:1})},
-  {id:'three_streak',icon:'🔥',name:'On Fire',rarity:'rare',desc:'3 consecutive wins in a row.',req:'3 win streak',check:(s)=>s.streak>=3,prog:(s)=>({cur:Math.min(s.streak,3),max:3})},
-  {id:'five_streak',icon:'💥',name:'Unstoppable',rarity:'rare',desc:'5 consecutive wins without a loss.',req:'5 win streak',check:(s)=>s.streak>=5,prog:(s)=>({cur:Math.min(s.streak,5),max:5})},
-  {id:'pos_roi',icon:'📈',name:'In Profit',rarity:'rare',desc:'Positive ROI with at least 10 picks.',req:'ROI > 0% with 10+ picks',check:(s)=>s.roi>0&&s.picks>=10,prog:(s)=>({cur:Math.min(s.picks,10),max:10})},
-  {id:'wr60',icon:'🎯',name:'Sharp',rarity:'rare',desc:'60%+ win rate with 20+ settled picks.',req:'60%+ WR with 20+ picks',check:(s)=>s.wr>=60&&s.settled>=20,prog:(s)=>({cur:Math.min(s.settled,20),max:20})},
-  {id:'fifty_picks',icon:'🚀',name:'Rising Star',rarity:'epic',desc:'Posted 50 verified picks.',req:'Post 50 picks',check:(s)=>s.picks>=50,prog:(s)=>({cur:Math.min(s.picks,50),max:50})},
-  {id:'roi15',icon:'💎',name:'Diamond Hands',rarity:'epic',desc:'15%+ ROI with 50+ picks.',req:'ROI 15%+ with 50+ picks',check:(s)=>s.roi>=15&&s.picks>=50,prog:(s)=>({cur:Math.min(s.picks,50),max:50})},
-  {id:'ten_streak',icon:'⚡',name:'Max Streak',rarity:'epic',desc:'10 wins in a row. Absolutely unreal.',req:'10 win streak',check:(s)=>s.streak>=10,prog:(s)=>({cur:Math.min(s.streak,10),max:10})},
-  {id:'wr70',icon:'🔬',name:'Surgeon',rarity:'epic',desc:'70%+ win rate with 30+ settled picks.',req:'70%+ WR with 30+ picks',check:(s)=>s.wr>=70&&s.settled>=30,prog:(s)=>({cur:Math.min(s.settled,30),max:30})},
-  {id:'hundred_picks',icon:'👑',name:'Veteran',rarity:'legendary',desc:'100 verified picks. This is dedication.',req:'Post 100 picks',check:(s)=>s.picks>=100,prog:(s)=>({cur:Math.min(s.picks,100),max:100})},
-  {id:'roi20',icon:'🏆',name:'Champion',rarity:'legendary',desc:'20%+ ROI with 100+ picks. Top 1%.',req:'ROI 20%+ with 100+ picks',check:(s)=>s.roi>=20&&s.picks>=100,prog:(s)=>({cur:Math.min(s.picks,100),max:100})},
-  {id:'value',icon:'⚡',name:'Value Hunter',rarity:'legendary',desc:'Avg odds 2.5+ with positive ROI over 20+ picks.',req:'Avg odds 2.5+ · ROI > 0 · 20+ picks',check:(s)=>s.avgOdds>=2.5&&s.roi>0&&s.picks>=20,prog:(s)=>({cur:Math.min(s.picks,20),max:20})},
-  {id:'sharp',icon:'🔱',name:'LEDGR Sharp',rarity:'elite',desc:'70%+ WR, 20%+ ROI and 100+ picks. You are verified elite.',req:'WR 70%+ · ROI 20%+ · 100+ picks',check:(s)=>s.wr>=70&&s.roi>=20&&s.picks>=100,prog:(s)=>({cur:Math.min(s.picks,100),max:100})},
-  {id:'goat',icon:'🐐',name:'G.O.A.T.',rarity:'elite',desc:'The greatest of all time on LEDGR. 200+ picks, 20%+ ROI.',req:'200+ picks · ROI 20%+',check:(s)=>s.picks>=200&&s.roi>=20,prog:(s)=>({cur:Math.min(s.picks,200),max:200})},
-];
+let currentFilter = 'all';
+let statsObj      = null;
+let extraObj      = null;
+let unlockedMap   = {};
+let freshIds      = [];
 
-const rarityColors={common:'#94a3b8',rare:'#38bdf8',epic:'#b89fff',legendary:'#fbbf24',elite:'#f87171'};
+// ── Rarity colours (used in JS) ──────────────────────────────────
+const RC = {
+  common:    { color:'#94a3b8', label:'COMMON'    },
+  rare:      { color:'#38bdf8', label:'RARE'       },
+  epic:      { color:'#b89fff', label:'EPIC'       },
+  legendary: { color:'#fbbf24', label:'LEGENDARY'  },
+};
 
-function calcStats(picks){
-  const settled=picks.filter(p=>p.result==='win'||p.result==='loss');
-  const wins=settled.filter(p=>p.result==='win').length;
-  const stake=picks.reduce((s,p)=>s+p.stake,0);
-  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
-  const roi=stake>0?((pnl/stake)*100):0;
-  const wr=settled.length>0?((wins/settled.length)*100):0;
-  const avgOdds=picks.length>0?(picks.reduce((s,p)=>s+p.odds,0)/picks.length):0;
-  const sorted=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  let streak=0;for(const p of sorted){if(p.result==='win')streak++;else break;}
-  return{picks:picks.length,wins,settled:settled.length,roi,wr,avgOdds,streak};
-}
-
-function filterRarity(r,el){
-  currentRarity=r;
-  document.querySelectorAll('.rt').forEach(t=>t.classList.remove('active'));
+// ── Filter ───────────────────────────────────────────────────────
+function setFilter(r, el) {
+  currentFilter = r;
+  document.querySelectorAll('.rt').forEach(function(b){ b.classList.remove('active'); });
   el.classList.add('active');
-  renderBadges(allBadges);
+  renderGrid();
 }
 
-function renderBadges(stats){
-  const grid=document.getElementById('badgesGrid');
-  const filtered=currentRarity==='all'?BADGE_DEFS:BADGE_DEFS.filter(b=>b.rarity===currentRarity);
-  if(!filtered.length){grid.innerHTML='<div class="empty">No badges in this category yet.</div>';return;}
-  grid.innerHTML=filtered.map(b=>{
-    const unlocked=b.check(stats);
-    const prog=b.prog(stats);
-    const pct=Math.round((prog.cur/prog.max)*100);
-    const color=rarityColors[b.rarity];
-    return`<div class="badge-card ${b.rarity} ${unlocked?'unlocked':'locked'}">
-      <div class="badge-glow"></div>
-      <span class="badge-icon">${b.icon}</span>
-      <div class="badge-rarity">${b.rarity.toUpperCase()}</div>
-      <div class="badge-name">${b.name}</div>
-      <div class="badge-desc">${b.desc}</div>
-      <div class="badge-req">${b.req}</div>
-      ${unlocked
-        ?`<div class="badge-unlocked-tag">✅ UNLOCKED</div>`
-        :`<div class="badge-locked-tag">🔒 LOCKED</div>
-         <div class="badge-progress">
-           <div class="badge-prog-lbl"><span>Progress</span><span>${prog.cur}/${prog.max}</span></div>
-           <div class="badge-prog-bar"><div class="badge-prog-fill" style="width:${pct}%;background:${color}"></div></div>
-         </div>`}
-    </div>`;
+// ── Progress summary ──────────────────────────────────────────────
+function updateProgress() {
+  if (!statsObj) return;
+  const total    = BS.BADGES.length;
+  const unlocked = BS.BADGES.filter(function(b){ return unlockedMap[b.id]; }).length;
+  const pct      = total ? ((unlocked/total)*100).toFixed(0) : 0;
+
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('progUnlocked').textContent = unlocked;
+  document.getElementById('progTotal').textContent     = total;
+  document.getElementById('progFill').style.width      = pct + '%';
+  document.getElementById('progSub').textContent =
+    unlocked + ' unlocked · ' + (total - unlocked) + ' remaining';
+
+  // Per-rarity breakdown
+  const rarityRow = document.getElementById('progRarityRow');
+  rarityRow.innerHTML = Object.keys(RC).map(function(r) {
+    const rBadges    = BS.BADGES.filter(function(b){ return b.rarity === r; });
+    const rUnlocked  = rBadges.filter(function(b){ return unlockedMap[b.id]; }).length;
+    return '<div class="prog-r-item">' +
+      '<span class="prog-r-dot" style="background:'+RC[r].color+'"></span>' +
+      '<span style="color:'+RC[r].color+';font-weight:700">'+rUnlocked+'/'+rBadges.length+'</span>' +
+      '<span style="color:var(--mu)">'+RC[r].label+'</span>' +
+    '</div>';
   }).join('');
 }
 
-async function loadBadges(){
-  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
-  if(!ud){document.getElementById('badgesGrid').innerHTML='<div class="empty">Please log in to see your badges.</div>';return;}
-  const user=JSON.parse(ud);
-  try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    const all=await r.json();
-    const myPicks=all.filter(p=>p.userId===user.id);
-    allBadges=calcStats(myPicks);
-    const unlocked=BADGE_DEFS.filter(b=>b.check(allBadges)).length;
-    document.getElementById('pbUnlocked').textContent=unlocked;
-    document.getElementById('pbTotal').textContent=BADGE_DEFS.length;
-    document.getElementById('pbFill').style.width=(unlocked/BADGE_DEFS.length*100)+'%';
-    document.getElementById('pbSub').textContent=`${unlocked} unlocked · ${BADGE_DEFS.length-unlocked} remaining`;
-    renderBadges(allBadges);
-  }catch(e){
-    document.getElementById('badgesGrid').innerHTML='<div class="empty">We\'re syncing your badge data. Try again shortly.</div>';
-  }
-}
-loadBadges();
+// ── Render badge grid ─────────────────────────────────────────────
+function renderGrid() {
+  if (!statsObj) return;
+  const grid = document.getElementById('badgesGrid');
 
-function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+  const RARITIES_ORDER = ['common','rare','epic','legendary'];
+  let badges = currentFilter === 'all'
+    ? BS.BADGES
+    : BS.BADGES.filter(function(b){ return b.rarity === currentFilter; });
+
+  if (!badges.length) {
+    grid.innerHTML = '<div class="empty-state">No badges in this category.</div>';
+    return;
+  }
+
+  let html = '';
+
+  if (currentFilter === 'all') {
+    RARITIES_ORDER.forEach(function(r) {
+      const rBadges = badges.filter(function(b){ return b.rarity === r; });
+      if (!rBadges.length) return;
+      const rc = RC[r];
+      html += '<div class="rarity-section-lbl">' +
+        '<span style="color:' + rc.color + '">' + rc.label + '</span>' +
+      '</div>';
+      rBadges.forEach(function(b){ html += cardHTML(b); });
+    });
+  } else {
+    badges.forEach(function(b){ html += cardHTML(b); });
+  }
+
+  grid.innerHTML = html;
+
+  // Animate progress bars after render
+  setTimeout(function() {
+    grid.querySelectorAll('.bg-prog-fill[data-pct]').forEach(function(el) {
+      el.style.width = el.getAttribute('data-pct') + '%';
+    });
+  }, 60);
+}
+
+function cardHTML(b) {
+  const unlocked = !!unlockedMap[b.id];
+  const isFresh  = freshIds.indexOf(b.id) !== -1;
+  const rc       = RC[b.rarity] || RC.common;
+  const prog     = b.prog(statsObj, extraObj);
+  const pct      = prog.max > 0 ? Math.min(100, Math.round((prog.cur / prog.max) * 100)) : 0;
+
+  const cardCls = 'bg-card r-' + b.rarity + (unlocked ? ' bg-unlocked' : ' bg-locked');
+  const tipText = b.tip || b.req;
+
+  let footer = '';
+  if (unlocked) {
+    footer = '<span class="bg-earned-tag">✅ EARNED' + (isFresh ? ' — NEW!' : '') + '</span>';
+  } else {
+    footer =
+      '<span class="bg-locked-tag">🔒 LOCKED</span>' +
+      '<div class="bg-prog">' +
+        '<div class="bg-prog-row"><span>Progress</span><span>' + prog.cur + ' / ' + prog.max + '</span></div>' +
+        '<div class="bg-prog-track">' +
+          '<div class="bg-prog-fill" data-pct="' + pct + '" style="width:0%;background:' + rc.color + '"></div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // Click handler: replay unlock anim for unlocked, otherwise noop
+  const clickAttr = unlocked
+    ? 'onclick="replayAnim(\'' + b.id + '\')"'
+    : '';
+
+  return '<div class="' + cardCls + '" data-bs-tip="' + tipText + '" ' + clickAttr + '>' +
+    '<div class="bg-corner-glow"></div>' +
+    '<div class="bg-icon-wrap">' +
+      '<span class="bg-icon">' + b.icon + '</span>' +
+      (!unlocked ? '<span class="bg-lock-icon">🔒</span>' : '') +
+    '</div>' +
+    '<span class="bg-rarity-pill">' + RC[b.rarity].label + '</span>' +
+    '<div class="bg-name">' + b.name + '</div>' +
+    '<div class="bg-desc">' + b.desc + '</div>' +
+    '<div class="bg-req">' + b.req + '</div>' +
+    footer +
+  '</div>';
+}
+
+// Replay animation when user clicks an earned badge
+function replayAnim(id) {
+  const badge = BS.BADGES.find(function(b){ return b.id === id; });
+  if (badge) BS.playUnlockAnim(badge);
+}
+
+// ── Load data ─────────────────────────────────────────────────────
+async function loadBadges() {
+  const ud = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+  if (!ud) {
+    document.getElementById('badgesGrid').innerHTML =
+      '<div class="empty-state">Log in to see your badge collection.<br><br>' +
+      '<a href="/login" style="color:var(--ac)">Log in →</a></div>';
+    return;
+  }
+
+  let user;
+  try { user = JSON.parse(ud); } catch(e) { return; }
+
+  let picks = [], followers = 0, divisionName = 'BRONZE';
+  let isSeasonChampion = false, seasonBestFinish = 999;
+  let leaderboardRank  = 999;
+
+  try {
+    // Fetch picks + leaderboard data in parallel
+    const [picksRes, followRes] = await Promise.all([
+      fetch(API + '/picks', { cache:'no-store' }),
+      fetch(API + '/followers/' + user.id, { cache:'no-store' }).catch(function(){ return null; })
+    ]);
+
+    const allPicks = await picksRes.json();
+    picks = Array.isArray(allPicks) ? allPicks.filter(function(p){ return p.userId === user.id; }) : [];
+
+    if (followRes && followRes.ok) {
+      const fd = await followRes.json();
+      followers = fd.count || 0;
+    }
+
+    // Compute leaderboard rank from all picks
+    if (Array.isArray(allPicks)) {
+      const tmap = {};
+      allPicks.forEach(function(p) {
+        if (!p.user) return;
+        const u = p.user.username;
+        if (!tmap[u]) tmap[u] = { pnl:0, stake:0 };
+        tmap[u].pnl   += p.pnl;
+        tmap[u].stake += p.stake;
+      });
+      const sorted = Object.entries(tmap).sort(function(a,b) {
+        const ra = a[1].stake > 0 ? (a[1].pnl/a[1].stake)*100 : 0;
+        const rb = b[1].stake > 0 ? (b[1].pnl/b[1].stake)*100 : 0;
+        return rb - ra;
+      });
+      const rank = sorted.findIndex(function([u]){ return u === user.username; });
+      leaderboardRank = rank >= 0 ? rank + 1 : 999;
+    }
+
+    // Try season data for champion/top3
+    try {
+      const seasonsRes = await fetch(API + '/seasons', { cache:'no-store' });
+      if (seasonsRes.ok) {
+        const seasons = await seasonsRes.json();
+        for (const s of seasons) {
+          if (s.champion && s.champion === user.username) {
+            isSeasonChampion = true;
+            seasonBestFinish = 1;
+          }
+        }
+        // Check per-season leaderboards for top3 finishes
+        for (const s of seasons) {
+          if (s.id && !s.isActive) {
+            try {
+              const lbRes = await fetch(API + '/seasons/' + s.id + '/leaderboard');
+              if (lbRes.ok) {
+                const results = await lbRes.json();
+                const myEntry = results.find(function(r){ return r.user && r.user.username === user.username; });
+                if (myEntry && myEntry.rank <= 3 && myEntry.rank < seasonBestFinish) {
+                  seasonBestFinish = myEntry.rank;
+                }
+              }
+            } catch(e) {}
+          }
+        }
+      }
+    } catch(e) {}
+
+  } catch(e) {
+    document.getElementById('badgesGrid').innerHTML =
+      '<div class="empty-state">Could not load badge data — try again shortly.</div>';
+    return;
+  }
+
+  // Compute stats
+  statsObj = BS.calcStats(picks);
+
+  // Division name using Divisions module if available
+  if (window.Divisions) {
+    const divObj = window.Divisions.get(picks);
+    divisionName  = divObj.name;
+    statsObj.divScore = divObj.score;
+  }
+
+  extraObj = {
+    emailVerified   : !!(user.emailVerified || user.verified),
+    followers       : followers,
+    divisionName    : divisionName,
+    leaderboardRank : leaderboardRank,
+    accountAgeDays  : statsObj.accountAgeDays,
+    isSeasonChampion: isSeasonChampion,
+    seasonBestFinish: seasonBestFinish,
+  };
+
+  unlockedMap = BS.checkAll(statsObj, extraObj);
+
+  // Detect fresh unlocks (not yet stored in v2 key)
+  const STORE_KEY = 'ledgr_earned_badges_v2';
+  let stored = [];
+  try { stored = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) {}
+  freshIds = BS.BADGES.filter(function(b){
+    return unlockedMap[b.id] && stored.indexOf(b.id) === -1;
+  }).map(function(b){ return b.id; });
+
+  // Save all currently earned badges
+  const newStored = Array.from(new Set(
+    stored.concat(BS.BADGES.filter(function(b){ return unlockedMap[b.id]; }).map(function(b){ return b.id; }))
+  ));
+  localStorage.setItem(STORE_KEY, JSON.stringify(newStored));
+
+  // Show new-unlock CTA if applicable
+  if (freshIds.length) {
+    document.getElementById('newUnlockCta').style.display = 'flex';
+    document.getElementById('newUnlockCount').textContent = freshIds.length;
+    // Trigger animations with stagger
+    const order = { legendary:0, epic:1, rare:2, common:3 };
+    const freshBadges = BS.BADGES.filter(function(b){ return freshIds.indexOf(b.id) !== -1; });
+    freshBadges.sort(function(a,b){ return (order[a.rarity]||4) - (order[b.rarity]||4); });
+    let idx = 0;
+    function nextAnim() {
+      if (idx >= freshBadges.length) return;
+      BS.playUnlockAnim(freshBadges[idx++], nextAnim);
+    }
+    setTimeout(nextAnim, 1200);
+  }
+
+  updateProgress();
+  renderGrid();
+}
+
+// ── Nav helpers ───────────────────────────────────────────────────
+function logout() {
+  ['ledgr_token','ledgr_user','token','user','username'].forEach(function(k){ localStorage.removeItem(k); });
+  window.location.href = '/';
+}
+function openSlideNav()  { document.getElementById('slideNav').classList.add('open'); document.getElementById('slideOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeSlideNav() { document.getElementById('slideNav').classList.remove('open'); document.getElementById('slideOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+loadBadges();
 </script>
 </body>
 </html>
