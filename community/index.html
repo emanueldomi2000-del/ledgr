@@ -307,10 +307,10 @@ async function loadRooms() {
 function renderRooms() {
   const list = document.getElementById('roomsList');
   list.innerHTML = rooms.map(r => {
-    const icon = ROOM_ICONS[r.name] || '💬';
+    const icon  = ROOM_ICONS[r.name] || '💬';
     const count = r._count?.messages || 0;
     const active = r.id === currentRoomId;
-    return `<button class="room-btn ${active ? 'active' : ''}" onclick="selectRoom(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+    return `<button class="room-btn ${active ? 'active' : ''}" data-room-id="${r.id}">
       <span class="room-icon">${icon}</span>
       <div class="room-info">
         <div class="room-name">${r.name}</div>
@@ -318,6 +318,14 @@ function renderRooms() {
       </div>
     </button>`;
   }).join('');
+
+  // Attach click handlers after rendering (avoids JSON-in-onclick fragility)
+  list.querySelectorAll('.room-btn[data-room-id]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const room = rooms.find(r => r.id === btn.getAttribute('data-room-id'));
+      if (room) selectRoom(room);
+    });
+  });
 }
 
 async function selectRoom(room) {

@@ -256,7 +256,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
   </div>
   <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="window.location.href='/'">Log Out</button>
+    <button class="snl-logout" onclick="logout()">Log Out</button>
   </div>
 </div>
 
@@ -714,6 +714,7 @@ function shareProfile(){
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 loadProfile();
 
+function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>

@@ -68,6 +68,8 @@ async function handleRegister(){
     const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username,password})});
     const d=await r.json();
     if(d.message){
+      // Re-enable button before handing off so "Back" restores it correctly
+      btn.disabled=false;btn.textContent='Create Account →';
       window.VerifyEmail.show({
         email,
         box:document.querySelector('.box'),

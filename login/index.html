@@ -199,6 +199,7 @@ async function handleRegister(){
     hideWakeBar();clearInterval(wakeIv);
     const d=await r.json();
     if(d.message){
+      btn.disabled=false;btn.textContent='Create Account →';
       window.VerifyEmail.show({
         email,
         box:document.querySelector('.box'),
