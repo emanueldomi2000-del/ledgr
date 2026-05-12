@@ -557,7 +557,9 @@ function filterBy(sport,btn){
 function renderLeaderboard(){
   const search=document.getElementById('searchInput').value.toLowerCase().trim();
   const sort=document.getElementById('sortSelect').value;
+  const minPicks=parseInt(document.getElementById('minPicksSelect').value)||1;
   let list=[...allTipsters];
+  list=list.filter(t=>t.picks>=minPicks);
   if(search)list=list.filter(t=>t.username.toLowerCase().includes(search));
   list.sort((a,b)=>{
     const roiA=a.stake>0?(a.pnl/a.stake)*100:0,roiB=b.stake>0?(b.pnl/b.stake)*100:0;
