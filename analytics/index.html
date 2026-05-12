@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Analytics</title>
-<meta name="description" content="Deep analytics on your LEDGR pick history — P&L chart, win rate trend, CLV, heatmap, monthly performance, and streak analysis.">
+<meta name="description" content="Deep analytics on your LEDGR pick history — ROI curve, CLV, markets, streaks, variance, sharp score and more.">
 <meta property="og:title" content="LEDGR — Pick Analytics">
-<meta property="og:description" content="Deep analytics on pick history — P&L chart, CLV, win rate trend, and more. Understand your edge.">
+<meta property="og:description" content="Deep analytics on pick history — ROI curve, CLV, win rate trend, and more. Understand your edge.">
 <meta property="og:image" content="https://getledgr.bet/og-image.png">
 <meta property="og:url" content="https://getledgr.bet/analytics">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Pick Analytics">
-<meta name="twitter:description" content="Deep analytics on pick history — P&L chart, CLV, win rate trend, and more.">
+<meta name="twitter:description" content="Deep analytics on pick history — ROI curve, CLV, win rate trend, and more.">
 <meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -23,6 +23,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-heig
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
 
+/* NAV */
 nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
@@ -33,7 +34,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center}
 .nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
 .mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px}
-
 .slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
 .slide-nav.open{right:0}
 .slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
@@ -50,118 +50,134 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .slide-nav-logout{padding:0 16px 16px}
 .snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
+@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
 
-.main{max-width:1100px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
+/* LAYOUT */
+.main{max-width:1120px;margin:0 auto;padding:48px 24px 96px;position:relative;z-index:2}
 .not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
 .not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--mu)}
 
-/* ── PAGE HEADER ── */
-.page-header{margin-bottom:40px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.page-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+/* PAGE HEADER */
+.page-header{margin-bottom:32px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.page-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
 .page-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--mu)}
 .page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,80px);letter-spacing:1px;line-height:.9;color:var(--tx)}
 .page-title span{color:var(--ac)}
 .view-profile-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border:1px solid var(--bd2);border-radius:8px;color:var(--ac);font-size:12px;font-weight:600;text-decoration:none;transition:all .2s;font-family:'Syne',sans-serif;white-space:nowrap;background:var(--acg)}
 .view-profile-btn:hover{background:var(--ac);color:#07060d}
 
-/* ── HERO STATS ── */
-.hero-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:32px}
-.hstat{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:18px 14px;text-align:center;transition:all .2s;position:relative;overflow:hidden}
-.hstat::before{content:'';display:block;width:32px;height:2px;background:var(--ac);margin:0 auto 12px;opacity:.3;border-radius:1px}
-.hstat:hover{border-color:var(--bd2);transform:translateY(-2px)}
-.hstat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;margin-bottom:4px}
-.hstat-val.pos{color:var(--gr)}.hstat-val.neg{color:var(--rd)}.hstat-val.neu{color:var(--tx)}.hstat-val.gold{color:var(--gold)}
-.hstat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+/* STATS ROW (8 boxes) */
+.stats-row{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-bottom:20px}
+.sbox{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 10px;text-align:center;transition:all .2s;position:relative;overflow:hidden}
+.sbox::before{content:'';display:block;width:28px;height:2px;background:var(--ac);margin:0 auto 10px;opacity:.25;border-radius:1px}
+.sbox:hover{border-color:var(--bd2);transform:translateY(-2px)}
+.sbox-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;line-height:1;margin-bottom:3px}
+.sbox-val.pos{color:var(--gr)}.sbox-val.neg{color:var(--rd)}.sbox-val.neu{color:var(--tx)}.sbox-val.ac{color:var(--ac)}.sbox-val.gold{color:var(--gold)}
+.sbox-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase}
 
-/* ── CARDS ── */
-.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:20px}
-.card-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--ac);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:22px;margin-bottom:18px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;color:var(--ac);margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .card-title::after{content:'';flex:1;height:1px;background:var(--bd)}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+.card-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-left:auto}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
 
-/* ── P&L CHART ── */
-.pnl-chart-wrap{width:100%;overflow:hidden}
-.chart-loading{text-align:center;padding:60px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px}
+/* CHART TOOLTIP */
+#chart-tip{position:fixed;z-index:9000;pointer-events:none;background:#0c0a1a;border:1px solid rgba(184,159,255,.2);border-radius:10px;padding:9px 13px;font-family:'DM Mono',monospace;font-size:10px;color:var(--tx);line-height:1.6;display:none;max-width:240px;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+#chart-tip.show{display:block}
+.tip-event{font-size:11px;color:var(--tx);font-family:'Syne',sans-serif;font-weight:600;margin-bottom:3px}
+.tip-detail{color:var(--mu2)}
+.tip-pnl{font-weight:700}
+.tip-pnl.pos{color:var(--gr)}.tip-pnl.neg{color:var(--rd)}
 
-/* ── HEATMAP ── */
-.heatmap-wrap{overflow-x:auto;padding-bottom:4px}
-.heatmap-labels{display:flex;gap:0;margin-bottom:6px;padding-left:28px}
-.hm-month-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px;min-width:0;flex:1;text-align:center}
-.heatmap-body{display:flex;gap:6px}
-.hm-day-labels{display:flex;flex-direction:column;gap:3px;width:24px;flex-shrink:0;padding-top:0}
-.hm-day-label{height:13px;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);justify-content:flex-end;padding-right:4px}
-.heatmap-grid{display:grid;grid-template-rows:repeat(7,13px);grid-auto-flow:column;gap:3px}
-.hm-cell{width:13px;height:13px;border-radius:2px;cursor:default;transition:opacity .15s}
-.hm-cell:hover{opacity:.7;outline:1px solid rgba(255,255,255,0.2)}
-.hm-legend{display:flex;align-items:center;gap:8px;margin-top:12px;justify-content:flex-end}
-.hm-legend-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
-.hm-legend-dots{display:flex;gap:2px}
-.hm-legend-dot{width:12px;height:12px;border-radius:2px}
+/* CHART COMMON */
+.chart-wrap{width:100%;overflow:hidden;position:relative}
+.chart-empty{text-align:center;padding:48px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px}
 
-/* ── SPORT/MARKET BARS ── */
-.breakdown-row{margin-bottom:12px}
-.breakdown-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
-.breakdown-name{font-size:12px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:6px}
-.breakdown-stats{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);display:flex;gap:10px}
-.breakdown-bar-track{height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;margin-bottom:3px}
-.breakdown-bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
-.breakdown-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
+/* PROFIT BARS */
+.profit-bar-win{fill:#34d399;opacity:.85}
+.profit-bar-win:hover{opacity:1}
+.profit-bar-loss{fill:#f87171;opacity:.85}
+.profit-bar-loss:hover{opacity:1}
 
-/* ── MONTHLY ── */
-.monthly-grid{display:flex;gap:8px;align-items:flex-end;overflow-x:auto;padding-bottom:8px;min-height:120px}
-.month-col{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:52px;flex:1}
-.month-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%;min-height:80px}
-.month-bar{width:100%;border-radius:4px 4px 0 0;min-height:4px;transition:height .6s ease}
-.month-bar.pos{background:linear-gradient(180deg,var(--gr),rgba(52,211,153,0.4))}
-.month-bar.neg{background:linear-gradient(180deg,var(--rd),rgba(248,113,113,0.4))}
-.month-pnl{font-family:'DM Mono',monospace;font-size:9px;text-align:center;letter-spacing:.5px}
-.month-pnl.pos{color:var(--gr)}.month-pnl.neg{color:var(--rd)}
-.month-name{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px}
+/* MARKET / LEAGUE TABLE */
+.mkt-table{width:100%;border-collapse:collapse;font-size:11px}
+.mkt-table th{text-align:left;padding:6px 8px;font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--bd);font-weight:500}
+.mkt-table td{padding:9px 8px;border-bottom:1px solid rgba(255,255,255,.03)}
+.mkt-table tr:last-child td{border:none}
+.mkt-table tr:hover td{background:rgba(255,255,255,.018)}
+.mkt-name{font-weight:600;color:var(--tx);max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mkt-roi-bar{height:3px;background:rgba(255,255,255,.05);border-radius:2px;margin-top:3px;overflow:hidden}
+.mkt-roi-fill{height:100%;border-radius:2px}
 
-/* ── STREAK ── */
-.streak-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.streak-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:16px;text-align:center}
-.streak-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;line-height:1;margin-bottom:4px}
-.streak-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
-.form-strip{display:flex;gap:4px;flex-wrap:wrap}
-.form-dot{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'DM Mono',monospace;transition:transform .2s}
-.form-dot:hover{transform:scale(1.1)}
-.form-dot.w{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);color:var(--gr)}
-.form-dot.l{background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:var(--rd)}
-.form-dot.p{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);color:#f59e0b}
+/* STREAK SECTION */
+.streak-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.sk-card{background:var(--s2);border:1px solid var(--bd);border-radius:12px;padding:14px;text-align:center}
+.sk-num{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;line-height:1;margin-bottom:3px}
+.sk-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.form-strip{display:flex;gap:3px;flex-wrap:wrap}
+.fd{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;cursor:default;transition:transform .15s}
+.fd:hover{transform:scale(1.15)}
+.fd.w{background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:var(--gr)}
+.fd.l{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:var(--rd)}
+.fd.p{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#f59e0b}
 
-/* ── ROLLING CHART ── */
-.rolling-chart-wrap{width:100%;overflow:hidden}
+/* VARIANCE SECTION */
+.var-profile{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:20px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;margin-top:10px}
+.var-low   {background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);color:var(--gr)}
+.var-medium{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--gold)}
+.var-high  {background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--rd)}
+.var-stat{margin-bottom:14px}
+.var-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-bottom:3px}
+.var-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px}
 
-/* ── CLV SECTION ── */
-.clv-top{display:grid;grid-template-columns:180px 1fr;gap:24px;margin-bottom:20px;align-items:start}
-.clv-avg-val{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:2px;line-height:1;margin-bottom:4px}
-.clv-avg-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.clv-note{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace;line-height:1.6}
-.sharp-signal-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.25);color:var(--gr);font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;margin-left:10px}
-.clv-sport-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+/* SHARP SCORE BREAKDOWN */
+.ss-component{margin-bottom:14px}
+.ss-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.ss-name{font-size:11px;font-weight:600;color:var(--tx)}
+.ss-val{font-family:'DM Mono',monospace;font-size:10px}
+.ss-track{height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
+.ss-fill{height:100%;border-radius:2px;transition:width 1s ease}
+.ss-total{text-align:center;margin-bottom:18px}
+.ss-total-num{font-family:'Bebas Neue',sans-serif;font-size:64px;letter-spacing:2px}
+.ss-total-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+
+/* CALENDAR */
+.cal-wrap{overflow-x:auto}
+.cal-body{display:flex;gap:6px}
+.cal-labels{display:flex;flex-direction:column;gap:3px;width:22px;flex-shrink:0;padding-top:0}
+.cal-day-lbl{height:11px;display:flex;align-items:center;font-family:'DM Mono',monospace;font-size:7px;color:var(--mu);justify-content:flex-end;padding-right:3px}
+.cal-grid{display:grid;grid-template-rows:repeat(7,11px);grid-auto-flow:column;gap:3px}
+.cal-cell{width:11px;height:11px;border-radius:2px;cursor:default;transition:opacity .15s}
+.cal-cell:hover{opacity:.7;outline:1px solid rgba(255,255,255,.2)}
+.cal-month-labels{display:flex;margin-bottom:4px;padding-left:28px}
+.cal-month-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
+.cal-legend{display:flex;align-items:center;gap:8px;margin-top:10px;justify-content:flex-end;flex-wrap:wrap}
+.cal-legend-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
+.cal-legend-dots{display:flex;gap:2px}
+.cal-legend-dot{width:10px;height:10px;border-radius:2px}
+
+/* CLV */
+.clv-top{display:grid;grid-template-columns:160px 1fr;gap:20px;margin-bottom:18px;align-items:start}
+.clv-avg-val{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;line-height:1;margin-bottom:3px}
+.clv-avg-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.clv-note{font-size:10px;color:var(--mu2);font-family:'DM Mono',monospace;line-height:1.6}
+.sharp-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--gr);font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:20px;margin-left:8px}
+.clv-sport-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)}
 .clv-sport-row:last-child{border:none}
-.clv-sport-name{font-size:12px;color:var(--tx);flex:1}
-.clv-sport-avg{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;min-width:56px;text-align:right}
-.clv-sport-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);min-width:48px;text-align:right}
-.clv-chart-labels{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:5px}
+.clv-sport-name{font-size:11px;color:var(--tx);flex:1}
+.clv-sport-avg{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;min-width:52px;text-align:right}
+.clv-sport-count{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);min-width:40px;text-align:right}
 @media(max-width:600px){.clv-top{grid-template-columns:1fr}}
 
-/* ── EMPTY ── */
-.empty-card{text-align:center;padding:48px 24px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;line-height:1.8}
-.empty-card .empty-icon{font-size:32px;margin-bottom:12px;display:block;opacity:.5}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--ac);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
-.toast.show{transform:translateY(0);opacity:1}
-
-@media(max-width:900px){.hero-stats{grid-template-columns:repeat(3,1fr)}.two-col{grid-template-columns:1fr}.streak-cards{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:600px){.hero-stats{grid-template-columns:repeat(2,1fr)}.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.streak-cards{grid-template-columns:1fr}}
+/* RESPONSIVE */
+@media(max-width:900px){.stats-row{grid-template-columns:repeat(4,1fr)}.two-col{grid-template-columns:1fr}.streak-cards{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.streak-cards{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
-<div class="toast" id="toast"></div>
+<div id="chart-tip"></div>
 
 <nav>
   <a href="/home" class="logo">LEDG<span>R</span></a>
@@ -184,36 +200,30 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <div class="slide-nav" id="slideNav">
-  <div class="slide-nav-header">
-    <div class="slide-nav-logo">LEDG<span>R</span></div>
-    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
-  </div>
+  <div class="slide-nav-header"><div class="slide-nav-logo">LEDG<span>R</span></div><button class="slide-nav-close" onclick="closeSlideNav()">✕</button></div>
   <div class="slide-nav-links">
     <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
     <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
-    <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
     <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
     <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
-    <a href="/parlay" class="snl"><span class="snl-icon">🎰</span><div class="snl-text">Parlay Builder</div></a>
     <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
-    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Profile</div></a>
   </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="logout()">Log Out</button>
-  </div>
+  <div class="slide-nav-logout"><button class="snl-logout" onclick="logout()">Log Out</button></div>
 </div>
 
 <div class="main">
   <div class="not-logged" id="notLogged" style="display:none">
     <h2>NOT LOGGED IN</h2>
     <p style="color:var(--mu2)">Log in to see your analytics.</p>
-    <a href="/login" class="nav-btn" style="text-decoration:none;margin-top:8px">Log In</a>
+    <a href="/login" class="nav-btn" style="text-decoration:none;margin-top:8px">Log In →</a>
   </div>
 
   <div id="app" style="display:none">
+    <!-- PAGE HEADER -->
     <div class="page-header">
       <div>
         <div class="page-eyebrow">Performance Analytics</div>
@@ -222,143 +232,174 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
       <a href="#" class="view-profile-btn" id="profileLink">View Profile →</a>
     </div>
 
-    <div class="hero-stats" id="heroStats">
-      <div class="hstat"><div class="hstat-val neu" id="hs0">—</div><div class="hstat-lbl">Total Picks</div></div>
-      <div class="hstat"><div class="hstat-val neu" id="hs1">—</div><div class="hstat-lbl">Win Rate</div></div>
-      <div class="hstat"><div class="hstat-val neu" id="hs2">—</div><div class="hstat-lbl">ROI</div></div>
-      <div class="hstat"><div class="hstat-val neu" id="hs3">—</div><div class="hstat-lbl">Total P&L</div></div>
-      <div class="hstat"><div class="hstat-val gold" id="hs4">—</div><div class="hstat-lbl">Best Streak</div></div>
-      <div class="hstat"><div class="hstat-val neu" id="hs5">—</div><div class="hstat-lbl">Division</div></div>
+    <!-- 1. OVERVIEW STATS ROW (8 boxes) -->
+    <div class="stats-row" id="statsRow">
+      <div class="sbox"><div class="sbox-val neu" id="s0">—</div><div class="sbox-lbl">Picks</div></div>
+      <div class="sbox"><div class="sbox-val neu" id="s1">—</div><div class="sbox-lbl">ROI</div></div>
+      <div class="sbox"><div class="sbox-val neu" id="s2">—</div><div class="sbox-lbl">Win Rate</div></div>
+      <div class="sbox"><div class="sbox-val neu" id="s3">—</div><div class="sbox-lbl">P&amp;L</div></div>
+      <div class="sbox"><div class="sbox-val ac"  id="s4">—</div><div class="sbox-lbl">Sharp Score</div></div>
+      <div class="sbox"><div class="sbox-val neu" id="s5">—</div><div class="sbox-lbl">Avg Odds</div></div>
+      <div class="sbox"><div class="sbox-val neu" id="s6">—</div><div class="sbox-lbl">Avg CLV</div></div>
+      <div class="sbox"><div class="sbox-val gold" id="s7">—</div><div class="sbox-lbl">Streak</div></div>
     </div>
 
-    <!-- P&L EVOLUTION -->
+    <!-- 2. ROI CURVE GRAPH -->
     <div class="card">
-      <div class="card-title">P&L EVOLUTION</div>
-      <div class="pnl-chart-wrap" id="pnlChartWrap"><div class="chart-loading">Loading chart...</div></div>
+      <div class="card-title">ROI CURVE <span class="card-sub">Cumulative ROI % over time</span></div>
+      <div class="chart-wrap" id="roiCurveWrap"><div class="chart-empty">Loading…</div></div>
     </div>
 
-    <!-- ROLLING WR + SPORT DISTRIBUTION -->
+    <!-- 3. PROFIT GRAPH -->
+    <div class="card">
+      <div class="card-title">PROFIT PER PICK <span class="card-sub">P&amp;L bars + running total line</span></div>
+      <div class="chart-wrap" id="profitWrap"><div class="chart-empty">Loading…</div></div>
+    </div>
+
+    <!-- 4 + 5: Win Rate History + CLV Analysis -->
     <div class="two-col">
       <div class="card" style="margin-bottom:0">
-        <div class="card-title">WIN RATE TREND</div>
-        <div class="rolling-chart-wrap" id="rollingWRWrap"><div class="chart-loading">Loading...</div></div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:10px">Rolling average over last 10 picks</div>
+        <div class="card-title">WIN RATE TREND <span class="card-sub">30-pick rolling average</span></div>
+        <div class="chart-wrap" id="wrTrendWrap"><div class="chart-empty">Loading…</div></div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:8px">Rolling average over last 30 settled picks</div>
       </div>
-      <div class="card" style="margin-bottom:0">
-        <div class="card-title">SPORT DISTRIBUTION</div>
-        <div id="sportDistWrap"><div class="chart-loading">Loading...</div></div>
-      </div>
-    </div>
-    <div style="height:20px"></div>
-
-    <!-- ACTIVITY HEATMAP -->
-    <div class="card">
-      <div class="card-title">ACTIVITY MAP</div>
-      <div class="heatmap-wrap">
-        <div class="heatmap-body">
-          <div class="hm-day-labels">
-            <div class="hm-day-label">Mon</div>
-            <div class="hm-day-label">Tue</div>
-            <div class="hm-day-label">Wed</div>
-            <div class="hm-day-label">Thu</div>
-            <div class="hm-day-label">Fri</div>
-            <div class="hm-day-label">Sat</div>
-            <div class="hm-day-label">Sun</div>
-          </div>
+      <div class="card" style="margin-bottom:0" id="clvCard">
+        <div class="card-title">CLV ANALYSIS <span id="sharpBadge" style="margin-left:8px;display:none"><span class="sharp-badge">🎯 SHARP BETTOR</span></span></div>
+        <div class="clv-top">
           <div>
-            <div class="heatmap-labels" id="hmMonthLabels"></div>
-            <div class="heatmap-grid" id="hmGrid"></div>
+            <div class="clv-avg-val" id="clvAvg" style="color:var(--mu)">—</div>
+            <div class="clv-avg-lbl">Avg CLV</div>
+            <div class="clv-note" id="clvNote">CLV data loads as picks settle.</div>
           </div>
+          <div id="clvBySport"></div>
         </div>
-        <div class="hm-legend">
-          <span class="hm-legend-label">Less</span>
-          <div class="hm-legend-dots">
-            <div class="hm-legend-dot" style="background:rgba(255,255,255,0.04)"></div>
-            <div class="hm-legend-dot" style="background:rgba(52,211,153,0.2)"></div>
-            <div class="hm-legend-dot" style="background:rgba(52,211,153,0.5)"></div>
-            <div class="hm-legend-dot" style="background:rgba(52,211,153,0.85)"></div>
-          </div>
-          <span class="hm-legend-label">Wins · More</span>
-          <div class="hm-legend-dots" style="margin-left:8px">
-            <div class="hm-legend-dot" style="background:rgba(248,113,113,0.2)"></div>
-            <div class="hm-legend-dot" style="background:rgba(248,113,113,0.5)"></div>
-            <div class="hm-legend-dot" style="background:rgba(248,113,113,0.85)"></div>
-          </div>
-          <span class="hm-legend-label">Losses</span>
-        </div>
+        <div class="chart-wrap" id="clvChartWrap"><div class="chart-empty" style="padding:24px">No CLV data yet</div></div>
       </div>
     </div>
 
-    <!-- BY SPORT + BY MARKET -->
-    <div class="two-col">
+    <!-- 6 + 7: Best Markets + Best Leagues -->
+    <div class="two-col" style="margin-top:18px">
       <div class="card" style="margin-bottom:0">
-        <div class="card-title">BY SPORT</div>
-        <div id="bySportWrap"><div class="chart-loading">Loading...</div></div>
+        <div class="card-title">BEST MARKETS <span class="card-sub">By ROI</span></div>
+        <div id="marketsWrap"><div class="chart-empty" style="padding:24px">Loading…</div></div>
       </div>
       <div class="card" style="margin-bottom:0">
-        <div class="card-title">BY MARKET</div>
-        <div id="byMarketWrap"><div class="chart-loading">Loading...</div></div>
+        <div class="card-title">BEST LEAGUES <span class="card-sub">By sport &amp; ROI</span></div>
+        <div id="leaguesWrap"><div class="chart-empty" style="padding:24px">Loading…</div></div>
       </div>
     </div>
-    <div style="height:20px"></div>
 
-    <!-- MONTHLY PERFORMANCE -->
-    <div class="card">
-      <div class="card-title">MONTHLY PERFORMANCE</div>
-      <div class="monthly-grid" id="monthlyGrid"><div class="chart-loading">Loading...</div></div>
-    </div>
-
-    <!-- STREAK ANALYSIS -->
-    <div class="card">
+    <!-- 8. STREAK ANALYSIS -->
+    <div class="card" style="margin-top:18px">
       <div class="card-title">STREAK ANALYSIS</div>
-      <div class="streak-cards">
-        <div class="streak-card">
-          <div class="streak-num" style="color:var(--orange)" id="bestStreakNum">0</div>
-          <div class="streak-lbl">Best Win Streak</div>
-        </div>
-        <div class="streak-card">
-          <div class="streak-num" id="curStreakNum" style="color:var(--gr)">0</div>
-          <div class="streak-lbl" id="curStreakLbl">Current Streak</div>
-        </div>
-        <div class="streak-card">
-          <div class="streak-num" style="color:var(--rd)" id="coldStreakNum">0</div>
-          <div class="streak-lbl">Worst Losing Run</div>
-        </div>
+      <div class="streak-cards" id="streakCards">
+        <div class="sk-card"><div class="sk-num" id="skBest" style="color:var(--orange)">—</div><div class="sk-lbl">Best Win Streak</div></div>
+        <div class="sk-card"><div class="sk-num" id="skCur" style="color:var(--gr)">—</div><div class="sk-lbl" id="skCurLbl">Current Streak</div></div>
+        <div class="sk-card"><div class="sk-num" id="skWorst" style="color:var(--rd)">—</div><div class="sk-lbl">Worst Losing Run</div></div>
+        <div class="sk-card"><div class="sk-num" id="skAvg" style="color:var(--ac)">—</div><div class="sk-lbl">Avg Win Streak</div></div>
       </div>
-      <div class="card-title" style="font-size:13px;margin-bottom:12px">RECENT FORM — LAST 20 PICKS</div>
+      <div class="card-title" style="font-size:13px;margin-bottom:10px">FORM — LAST 40 PICKS</div>
       <div class="form-strip" id="formStrip"></div>
     </div>
 
-    <!-- CLV ANALYSIS -->
-    <div class="card" id="clvCard">
-      <div class="card-title">CLOSING LINE VALUE <span class="sharp-signal-badge" id="sharpSignalBadge" style="display:none">🎯 SHARP BETTOR</span></div>
-      <div class="clv-top">
-        <div>
-          <div class="clv-avg-val" id="clvAvgVal" style="color:var(--mu)">—</div>
-          <div class="clv-avg-lbl">Avg CLV</div>
-          <div class="clv-note" id="clvNote">CLV data accumulates as picks settle and closing odds are fetched.</div>
+    <!-- 9 + 11: Variance + Sharp Score Breakdown -->
+    <div class="two-col" style="margin-top:18px">
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">VARIANCE ANALYSIS</div>
+        <div id="varianceWrap">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+            <div class="var-stat">
+              <div class="var-stat-lbl">Return Std Dev</div>
+              <div class="var-stat-val" id="varStdDev" style="color:var(--ac)">—</div>
+            </div>
+            <div class="var-stat">
+              <div class="var-stat-lbl">Consistency Score</div>
+              <div class="var-stat-val" id="varConsistency" style="color:var(--gr)">—</div>
+            </div>
+          </div>
+          <div class="var-stat">
+            <div class="var-stat-lbl">Return Distribution</div>
+            <div class="chart-wrap" id="varChartWrap" style="margin-top:8px"><div class="chart-empty" style="padding:16px">Loading…</div></div>
+          </div>
+          <div id="varProfile"></div>
         </div>
-        <div id="clvBySport"></div>
       </div>
-      <div class="card-title" style="font-size:13px;margin-bottom:12px">CLV TREND — LAST 20 SETTLED PICKS</div>
-      <div id="clvChartWrap"><div class="chart-loading">No CLV data yet</div></div>
-      <div class="clv-chart-labels" id="clvChartLabels" style="display:none">
-        <span id="clvLabelLeft"></span>
-        <span style="color:var(--mu)">← Older · Newer →</span>
-        <span id="clvLabelRight"></span>
+      <div class="card" style="margin-bottom:0">
+        <div class="card-title">SHARP SCORE BREAKDOWN</div>
+        <div id="sharpWrap">
+          <div class="ss-total">
+            <div class="ss-total-num" id="ssTotalNum" style="color:var(--ac)">—</div>
+            <div class="ss-total-lbl">/ 100 Sharp Score</div>
+          </div>
+          <div id="ssComponents"></div>
+        </div>
       </div>
     </div>
 
-  </div>
+    <!-- 10. PERFORMANCE CALENDAR -->
+    <div class="card" style="margin-top:18px">
+      <div class="card-title">PERFORMANCE CALENDAR <span class="card-sub">Last 26 weeks</span></div>
+      <div class="cal-wrap">
+        <div style="display:flex;gap:6px">
+          <div class="cal-labels">
+            <div class="cal-day-lbl">Mon</div><div class="cal-day-lbl">Tue</div>
+            <div class="cal-day-lbl">Wed</div><div class="cal-day-lbl">Thu</div>
+            <div class="cal-day-lbl">Fri</div><div class="cal-day-lbl">Sat</div>
+            <div class="cal-day-lbl">Sun</div>
+          </div>
+          <div>
+            <div class="cal-month-labels" id="calMonthLabels"></div>
+            <div class="cal-grid" id="calGrid"></div>
+          </div>
+        </div>
+        <div class="cal-legend">
+          <span class="cal-legend-lbl">No picks</span>
+          <div class="cal-legend-dots">
+            <div class="cal-legend-dot" style="background:rgba(255,255,255,.04)"></div>
+            <div class="cal-legend-dot" style="background:rgba(52,211,153,.25)"></div>
+            <div class="cal-legend-dot" style="background:rgba(52,211,153,.6)"></div>
+            <div class="cal-legend-dot" style="background:rgba(52,211,153,.9)"></div>
+          </div>
+          <span class="cal-legend-lbl">Wins</span>
+          <div class="cal-legend-dots" style="margin-left:8px">
+            <div class="cal-legend-dot" style="background:rgba(248,113,113,.3)"></div>
+            <div class="cal-legend-dot" style="background:rgba(248,113,113,.7)"></div>
+            <div class="cal-legend-dot" style="background:rgba(248,113,113,.95)"></div>
+          </div>
+          <span class="cal-legend-lbl">Losses</span>
+          <div class="cal-legend-dot" style="background:rgba(251,191,36,.5);width:10px;height:10px;border-radius:2px;margin-left:8px"></div>
+          <span class="cal-legend-lbl">Mixed</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
 </div>
 
+<script src="/divisions.js"></script>
+<script src="/flow.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const SPORT_ICON={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
-let user=null,allPicks=[];
-
+let user=null,allPicks=[],targetUser=null;
 const urlUser=new URLSearchParams(window.location.search).get('u');
 
+// Stored ROI points for hover
+let _roiPts=[];
+
+// ── TOOLTIP ──────────────────────────────────────────────────────
+const TIP=document.getElementById('chart-tip');
+function showTip(x,y,html){
+  TIP.innerHTML=html;TIP.classList.add('show');
+  const tw=TIP.offsetWidth,th=TIP.offsetHeight;
+  let lx=x+14,ly=y-th/2;
+  if(lx+tw>window.innerWidth-8)lx=x-tw-14;
+  if(ly<8)ly=8;if(ly+th>window.innerHeight-8)ly=window.innerHeight-th-8;
+  TIP.style.left=lx+'px';TIP.style.top=ly+'px';
+}
+function hideTip(){TIP.classList.remove('show');}
+
+// ── ENTRY ────────────────────────────────────────────────────────
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
@@ -372,127 +413,399 @@ async function loadData(){
   try{
     const r=await fetch(API+'/picks',{cache:'no-store'});
     const all=await r.json();
-    const targetUser=urlUser||(user?user.username:null);
+    targetUser=urlUser||(user?user.username:null);
     if(!targetUser){document.getElementById('notLogged').style.display='flex';document.getElementById('app').style.display='none';return;}
-
     allPicks=all.filter(p=>p.user&&p.user.username===targetUser).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
-
     document.getElementById('pageTitle').innerHTML=`<span style="color:var(--ac)">@${targetUser}</span> ANALYTICS`;
     document.getElementById('profileLink').href='/tipster?u='+targetUser;
     document.title='LEDGR — @'+targetUser+' Analytics';
-
-    renderHeroStats(all,targetUser);
-    renderPnLChart();
-    renderRollingWR();
-    renderSportDist();
-    renderHeatmap();
-    renderBySport();
-    renderByMarket();
-    renderMonthly();
-    renderStreaks();
+    renderStats(all);
+    renderROICurve();
+    renderProfitGraph();
+    renderWRTrend();
     renderCLV();
+    renderMarkets();
+    renderLeagues();
+    renderStreaks();
+    renderVariance();
+    renderSharpScore();
+    renderCalendar();
   }catch(e){
-    document.getElementById('app').innerHTML='<div class="empty-card"><span class="empty-icon">⚠️</span>Could not load data. Try again.</div>';
+    document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:DM Mono,monospace">⚠️ Could not load data. Try again.</div>';
   }
 }
 
-function renderHeroStats(all,targetUser){
-  const picks=allPicks;
-  const wins=picks.filter(p=>p.result==='win').length;
-  const losses=picks.filter(p=>p.result==='loss').length;
+// ── HELPERS ───────────────────────────────────────────────────────
+function niceRange(min,max,steps){
+  const range=max-min||1;const step=Math.pow(10,Math.floor(Math.log10(range/steps)));
+  const niceStep=step*Math.ceil((range/steps)/step);
+  const niceMin=Math.floor(min/niceStep)*niceStep;
+  const niceMax=Math.ceil(max/niceStep)*niceStep;
+  return{min:niceMin,max:niceMax,step:niceStep};
+}
+
+function svgGridY(mn,mx,steps,W,H,PL,PT,PB){
+  const range=mx-mn||1;const out=[];
+  for(let i=0;i<=steps;i++){
+    const v=mn+(mx-mn)/steps*i;
+    const y=PT+(H-PT-PB)*(1-(v-mn)/range);
+    const lbl=v.toFixed(v===Math.round(v)?0:1);
+    out.push(`<line x1="${PL}" y1="${y.toFixed(1)}" x2="${W-10}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,.04)" stroke-width="1"/>`);
+    out.push(`<text x="${PL-6}" y="${y+4}" text-anchor="end" fill="#6a6690" font-size="10" font-family="DM Mono,monospace">${lbl}</text>`);
+  }
+  return out.join('');
+}
+
+function computeSharpScore(picks){
+  const settled=picks.filter(p=>p.result!=='pending');
+  const wins=settled.filter(p=>p.result==='win').length;
   const stake=picks.reduce((s,p)=>s+p.stake,0);
   const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const wr=settled.length>0?(wins/settled.length)*100:0;
+  const avgOdds=picks.length>0?picks.reduce((s,p)=>s+p.odds,0)/picks.length:0;
+  const clvP=settled.filter(p=>p.clv!=null);
+  const avgCLV=clvP.length?clvP.reduce((s,p)=>s+p.clv,0)/clvP.length:0;
+  const srtd=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let streak=0;for(const p of srtd){if(p.result==='win')streak++;else break;}
+
+  const roiF  =Math.min(40,Math.max(0,roi*2));
+  const sampF =Math.min(25,Math.sqrt(picks.length)*2.5);
+  const oddsF =Math.min(15,Math.max(0,(avgOdds-1.5)*7.5));
+  const clvF  =Math.min(10,Math.max(0,avgCLV*2));
+  const strF  =Math.min(10,streak*2);
+  const total =Math.round(roiF+sampF+oddsF+clvF+strF);
+  return{total,roiF:Math.round(roiF),sampF:Math.round(sampF),oddsF:Math.round(oddsF),clvF:Math.round(clvF),strF:Math.round(strF),maxTotal:100};
+}
+
+// ── 1. STATS ROW ─────────────────────────────────────────────────
+function renderStats(all){
+  const p=allPicks;
+  const settled=p.filter(x=>x.result!=='pending');
+  const wins=settled.filter(x=>x.result==='win').length;
+  const losses=settled.filter(x=>x.result==='loss').length;
+  const stake=p.reduce((s,x)=>s+x.stake,0);
+  const pnl=p.reduce((s,x)=>s+x.pnl,0);
   const roi=stake>0?((pnl/stake)*100).toFixed(1):0;
   const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):0;
-  const settled=picks.filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  let cur=0,best=0,curRun=0;for(const p of settled){if(p.result==='win'){cur++;best=Math.max(best,cur);}else cur=0;}
-  cur=0;for(const p of settled){if(p.result==='win')cur++;else break;}
+  const clvP=settled.filter(x=>x.clv!=null);
+  const avgCLV=clvP.length?(clvP.reduce((s,x)=>s+x.clv,0)/clvP.length).toFixed(2):null;
+  const avgOdds=p.length?(p.reduce((s,x)=>s+x.odds,0)/p.length).toFixed(2):0;
+  const srtd=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let streak=0,streakType='W';for(const x of srtd){if(x.result==='win')streak++;else break;}
+  if(streak===0){let ls=0;for(const x of srtd){if(x.result==='loss')ls++;else break;}streak=ls;streakType='L';}
+  const ss=computeSharpScore(p);
+  const roiPos=parseFloat(roi)>=0,pPos=pnl>=0,wrPos=parseFloat(wr)>=50,clvPos=avgCLV!=null&&parseFloat(avgCLV)>=0;
 
-  // global rank
-  const tmap={};all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tmap[u])tmap[u]={pnl:0,stake:0};tmap[u].pnl+=p.pnl;tmap[u].stake+=p.stake;});
-  const sorted=Object.entries(tmap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
-  const rank=sorted.findIndex(([u])=>u===targetUser)+1;
-
-  const divScore=Math.round(Math.min(40,Math.max(0,(parseFloat(roi)/20)*40))+Math.min(30,Math.max(0,(parseFloat(wr)/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
-  const divName=divScore>=90?'LEGEND':divScore>=75?'ELITE':divScore>=60?'DIAMOND':divScore>=45?'PLATINUM':divScore>=30?'GOLD':divScore>=15?'SILVER':'BRONZE';
-  const rPos=parseFloat(roi)>=0,pPos=pnl>=0;
-
-  document.getElementById('hs0').textContent=picks.length;
-  const hs1=document.getElementById('hs1');hs1.textContent=wr+'%';hs1.className='hstat-val '+(parseFloat(wr)>=50?'pos':'neg');
-  const hs2=document.getElementById('hs2');hs2.textContent=(rPos?'+':'')+roi+'%';hs2.className='hstat-val '+(rPos?'pos':'neg');
-  const hs3=document.getElementById('hs3');hs3.textContent=(pPos?'+€':'-€')+Math.abs(pnl).toFixed(1);hs3.className='hstat-val '+(pPos?'pos':'neg');
-  document.getElementById('hs4').textContent=best+'W';
-  document.getElementById('hs5').textContent=divName;
+  document.getElementById('s0').textContent=p.length;
+  const s1=document.getElementById('s1');s1.textContent=(roiPos?'+':'')+roi+'%';s1.className='sbox-val '+(roiPos?'pos':'neg');
+  const s2=document.getElementById('s2');s2.textContent=wr+'%';s2.className='sbox-val '+(wrPos?'pos':'neg');
+  const s3=document.getElementById('s3');s3.textContent=(pPos?'+€':'-€')+Math.abs(pnl).toFixed(1);s3.className='sbox-val '+(pPos?'pos':'neg');
+  const s4=document.getElementById('s4');s4.textContent=ss.total+'/100';s4.className='sbox-val '+(ss.total>=70?'pos':ss.total>=40?'gold':'neg');
+  document.getElementById('s5').textContent=avgOdds;
+  const s6=document.getElementById('s6');
+  if(avgCLV!=null){s6.textContent=(clvPos?'+':'')+avgCLV+'%';s6.className='sbox-val '+(clvPos?'pos':'neg');}else{s6.textContent='—';s6.className='sbox-val neu';}
+  const s7=document.getElementById('s7');
+  s7.textContent=streak>0?streak+streakType:'—';
+  s7.className='sbox-val '+(streakType==='W'?'gold':'neg');
 }
 
-function renderPnLChart(){
-  const el=document.getElementById('pnlChartWrap');
-  const picks=allPicks;
-  if(picks.length<2){el.innerHTML='<div class="empty-card"><span class="empty-icon">📈</span>Post at least 2 picks to see your P&L chart.</div>';return;}
-  let cum=0;const points=[{i:0,pnl:0,date:picks[0].createdAt}];
-  picks.forEach((p,i)=>{cum+=p.pnl;points.push({i:i+1,pnl:cum,date:p.createdAt});});
-  const W=800,H=200,PT=16,PR=16,PB=36,PL=52,CW=W-PL-PR,CH=H-PT-PB;
-  const allPnl=points.map(p=>p.pnl);
-  const mn=Math.min(0,...allPnl),mx=Math.max(0,...allPnl),range=mx-mn||1;
-  const toX=i=>PL+(i/(points.length-1))*CW;
-  const toY=v=>PT+CH-((v-mn)/range)*CH;
-  const pathPts=points.map((p,i)=>`${toX(i)},${toY(p.pnl)}`).join(' ');
+// ── 2. ROI CURVE ─────────────────────────────────────────────────
+function renderROICurve(){
+  const el=document.getElementById('roiCurveWrap');
+  const p=allPicks;
+  if(p.length<2){el.innerHTML='<div class="chart-empty">Need 2+ picks to show ROI curve.</div>';return;}
+  const W=900,H=220,PL=58,PR=16,PT=16,PB=36,CW=W-PL-PR,CH=H-PT-PB;
+  let cumStake=0,cumPnl=0;
+  _roiPts=[{i:0,roi:0,pnl:0,cumPnl:0,date:p[0].createdAt,event:'Start',market:'',odds:0,result:''}];
+  p.forEach((pick,i)=>{
+    cumStake+=pick.stake;cumPnl+=pick.pnl;
+    _roiPts.push({i:i+1,roi:cumStake>0?(cumPnl/cumStake)*100:0,pnl:pick.pnl,cumPnl,date:pick.createdAt,event:pick.event,market:pick.market,odds:pick.odds,result:pick.result});
+  });
+
+  const allROI=_roiPts.map(x=>x.roi);
+  const mn=Math.min(...allROI,0),mx=Math.max(...allROI,0);
+  const pad=(mx-mn)*0.08||2;
+  const yMin=mn-pad,yMax=mx+pad,yRange=yMax-yMin;
+  const toX=i=>PL+(i/(_roiPts.length-1||1))*CW;
+  const toY=v=>PT+CH-((v-yMin)/yRange)*CH;
   const zeroY=toY(0);
-  const last=points[points.length-1];
-  const isPos=last.pnl>=0;const color=isPos?'#34d399':'#f87171';
-  const ySteps=4;const yLabels=[];
-  for(let i=0;i<=ySteps;i++){const v=mn+(range/ySteps)*i;const y=toY(v);yLabels.push(`<text x="${PL-8}" y="${y+4}" text-anchor="end" fill="#6a6690" font-size="10" font-family="DM Mono,monospace">${v>=0?'+':''}${v.toFixed(1)}u</text><line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>`);}
-  const seen=new Set();const monthLines=[];
-  points.forEach((p,i)=>{const d=new Date(p.date);const mk=d.getFullYear()+'-'+d.getMonth();if(!seen.has(mk)){seen.add(mk);const x=toX(i);const lbl=d.toLocaleDateString('en-GB',{month:'short'});if(i>0)monthLines.push(`<line x1="${x}" y1="${PT}" x2="${x}" y2="${PT+CH}" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>`);monthLines.push(`<text x="${x}" y="${H-6}" text-anchor="middle" fill="#6a6690" font-size="10" font-family="DM Mono,monospace">${lbl}</text>`);}});
-  const finalX=toX(points.length-1),finalY=toY(last.pnl);
-  const lbW=70,lbH=18;const lbX=Math.min(finalX-lbW/2,W-PR-lbW);
-  el.innerHTML=`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible">
-    <defs><linearGradient id="pg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.25"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
-    ${yLabels.join('')}${monthLines.join('')}
-    <line x1="${PL}" y1="${zeroY}" x2="${W-PR}" y2="${zeroY}" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
-    <polygon points="${PL},${zeroY} ${pathPts} ${W-PR},${zeroY}" fill="url(#pg2)"/>
-    <polyline points="${pathPts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${finalX}" cy="${finalY}" r="5" fill="${color}" stroke="#07060d" stroke-width="2"/>
-    <rect x="${lbX}" y="${finalY-24}" width="${lbW}" height="${lbH}" rx="4" fill="${color}"/>
-    <text x="${lbX+lbW/2}" y="${finalY-24+13}" text-anchor="middle" fill="#07060d" font-size="11" font-weight="700" font-family="DM Mono,monospace">${last.pnl>=0?'+':''}${last.pnl.toFixed(2)}u</text>
+  const last=_roiPts[_roiPts.length-1];
+  const isPos=last.roi>=0;const color=isPos?'#34d399':'#f87171';
+
+  const pathPts=_roiPts.map((pt,i)=>`${toX(i).toFixed(1)},${toY(pt.roi).toFixed(1)}`).join(' ');
+
+  // Y grid
+  const yGrid=svgGridY(yMin,yMax,4,W,H,PL,PT,PB);
+
+  // Zero line
+  const zeroLine=`<line x1="${PL}" y1="${zeroY.toFixed(1)}" x2="${W-PR}" y2="${zeroY.toFixed(1)}" stroke="rgba(255,255,255,0.1)" stroke-width="1" stroke-dasharray="4,4"/>`;
+
+  // Month labels on X axis
+  const seen=new Set();const xLabels=[];
+  _roiPts.forEach((pt,i)=>{if(!pt.date)return;const d=new Date(pt.date);const mk=d.getFullYear()+'-'+d.getMonth();if(!seen.has(mk)){seen.add(mk);const x=toX(i);xLabels.push(`<text x="${x.toFixed(1)}" y="${H-6}" text-anchor="middle" fill="#6a6690" font-size="9" font-family="DM Mono,monospace">${d.toLocaleDateString('en-GB',{month:'short',year:'2-digit'})}</text>`);}});
+
+  // Hover dots (invisible, for mouse tracking)
+  const maxDots=Math.min(_roiPts.length-1,200);
+  const step=Math.max(1,Math.floor((_roiPts.length-1)/maxDots));
+  const dots=[];
+  for(let i=0;i<_roiPts.length;i+=step){
+    const pt=_roiPts[i];const x=toX(i).toFixed(1),y=toY(pt.roi).toFixed(1);
+    const r=pt.result==='win'?'#34d399':pt.result==='loss'?'#f87171':'#9590b8';
+    dots.push(`<circle cx="${x}" cy="${y}" r="8" fill="transparent" data-i="${i}" class="roi-dot"/>`);
+    if(i===_roiPts.length-1||step>5){
+      dots.push(`<circle cx="${x}" cy="${y}" r="3" fill="${r}" stroke="#07060d" stroke-width="1.5" pointer-events="none"/>`);
+    }
+  }
+  // Always show last point prominently
+  const fi=_roiPts.length-1;
+  const fx=toX(fi).toFixed(1),fy=toY(last.roi).toFixed(1);
+  dots.push(`<circle cx="${fx}" cy="${fy}" r="5" fill="${color}" stroke="#07060d" stroke-width="2" pointer-events="none"/>`);
+  const lbW=72,lbH=18;const lbX=Math.min(parseFloat(fx)-lbW/2,W-PR-lbW);
+  const roiLabel=`<rect x="${lbX}" y="${parseFloat(fy)-26}" width="${lbW}" height="${lbH}" rx="4" fill="${color}"/><text x="${lbX+lbW/2}" y="${parseFloat(fy)-26+13}" text-anchor="middle" fill="#07060d" font-size="11" font-weight="700" font-family="DM Mono,monospace">${last.roi>=0?'+':''}${last.roi.toFixed(1)}%</text>`;
+
+  el.innerHTML=`<svg id="roiSvg" width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible;cursor:crosshair">
+    <defs>
+      <linearGradient id="roiGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.22"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient>
+      <clipPath id="roiClip"><rect x="${PL}" y="${PT}" width="${CW}" height="${CH}"/></clipPath>
+    </defs>
+    ${yGrid}${xLabels.join('')}${zeroLine}
+    <polygon points="${PL},${zeroY} ${pathPts} ${W-PR},${zeroY}" fill="url(#roiGrad)" clip-path="url(#roiClip)"/>
+    <polyline points="${pathPts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#roiClip)"/>
+    ${dots.join('')}${roiLabel}
+    <rect x="${PL}" y="${PT}" width="${CW}" height="${CH}" fill="transparent" id="roiHoverRect"/>
   </svg>`;
+
+  const svg=document.getElementById('roiSvg');
+  const hoverRect=document.getElementById('roiHoverRect');
+  let _hairline=null;
+  hoverRect.addEventListener('mousemove',e=>{
+    const r=svg.getBoundingClientRect();
+    const scaleX=W/r.width;
+    const svgX=(e.clientX-r.left)*scaleX;
+    const idx=Math.round((svgX-PL)/CW*(_roiPts.length-1));
+    const ci=Math.max(0,Math.min(_roiPts.length-1,idx));
+    const pt=_roiPts[ci];
+    if(!_hairline){_hairline=document.createElementNS('http://www.w3.org/2000/svg','line');_hairline.setAttribute('stroke','rgba(184,159,255,0.3)');_hairline.setAttribute('stroke-width','1');_hairline.setAttribute('stroke-dasharray','3,3');svg.appendChild(_hairline);}
+    const hx=toX(ci).toFixed(1);
+    _hairline.setAttribute('x1',hx);_hairline.setAttribute('y1',PT);_hairline.setAttribute('x2',hx);_hairline.setAttribute('y2',PT+CH);
+    const rc=pt.result==='win'?'var(--gr)':pt.result==='loss'?'var(--rd)':'var(--mu2)';
+    const tipHtml=pt.i===0?`<div class="tip-detail">Starting point</div>`
+      :`<div class="tip-event">${pt.event||''}</div><div class="tip-detail">${pt.market} @ ${parseFloat(pt.odds||0).toFixed(2)}</div><div class="tip-pnl ${pt.pnl>=0?'pos':'neg'}" style="color:${rc}">${pt.result.toUpperCase()} · ${pt.pnl>=0?'+':''}${(pt.pnl||0).toFixed(2)}u</div><div class="tip-detail">Cumulative ROI: ${pt.roi>=0?'+':''}${pt.roi.toFixed(1)}%</div><div class="tip-detail">${new Date(pt.date||'').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>`;
+    showTip(e.clientX,e.clientY,tipHtml);
+  });
+  hoverRect.addEventListener('mouseleave',()=>{hideTip();if(_hairline){_hairline.remove();_hairline=null;}});
 }
 
-function renderRollingWR(){
-  const el=document.getElementById('rollingWRWrap');
+// ── 3. PROFIT GRAPH ───────────────────────────────────────────────
+function renderProfitGraph(){
+  const el=document.getElementById('profitWrap');
   const settled=allPicks.filter(p=>p.result!=='pending');
-  if(settled.length<3){el.innerHTML='<div class="empty-card" style="padding:24px"><span class="empty-icon" style="font-size:20px">📊</span>Need 3+ settled picks.</div>';return;}
-  const WIN=10;const pts=[];
+  if(settled.length<2){el.innerHTML='<div class="chart-empty">Need 2+ settled picks.</div>';return;}
+  const W=900,H=180,PL=52,PR=16,PT=14,PB=8,CW=W-PL-PR,CH=H-PT-PB;
+
+  // Sample if too many picks
+  const MAX=200;const pts=settled.length>MAX?settled.filter((_,i)=>i%(Math.ceil(settled.length/MAX))===0):settled;
+  const bw=Math.max(1.5,CW/pts.length-1.5);
+  const allPnl=pts.map(p=>p.pnl);
+  const mn=Math.min(...allPnl,0),mx=Math.max(...allPnl,0);
+  const yRange=mx-mn||1;
+  const toX=i=>PL+i*(CW/pts.length)+CW/(pts.length*2);
+  const toY=v=>PT+CH-((v-mn)/yRange)*CH;
+  const zeroY=toY(0);
+
+  // Running total line
+  let cum=0;const lineCoords=[];
+  pts.forEach((p,i)=>{cum+=p.pnl;lineCoords.push(`${toX(i).toFixed(1)},${toY(cum).toFixed(1)}`);});
+
+  // Y grid
+  const yGrid=svgGridY(mn,mx,3,W,H,PL,PT,PB);
+
+  const bars=pts.map((p,i)=>{
+    const h=Math.abs(toY(p.pnl)-toY(0));const isWin=p.result==='win';
+    const barY=isWin?toY(p.pnl):zeroY;
+    const barH=Math.max(1.5,h);
+    const clr=isWin?'#34d399':'#f87171';
+    const x=(toX(i)-bw/2).toFixed(1);
+    return`<rect x="${x}" y="${barY.toFixed(1)}" width="${bw.toFixed(1)}" height="${barH.toFixed(1)}" fill="${clr}" opacity="0.85" rx="1"><title>${isWin?'+':''}${p.pnl.toFixed(2)}u — ${p.event}</title></rect>`;
+  }).join('');
+
+  // Cumulative line color
+  const lastCum=parseFloat(lineCoords[lineCoords.length-1].split(',')[1]);
+  const lineColor=cum>=0?'#b89fff':'#f87171';
+
+  el.innerHTML=`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible">
+    <defs><linearGradient id="cumGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="${lineColor}" stop-opacity=".3"/><stop offset="100%" stop-color="${lineColor}" stop-opacity=".9"/></linearGradient></defs>
+    ${yGrid}
+    <line x1="${PL}" y1="${zeroY.toFixed(1)}" x2="${W-PR}" y2="${zeroY.toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,3"/>
+    ${bars}
+    <polyline points="${lineCoords.join(' ')}" fill="none" stroke="url(#cumGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="${lineCoords[lineCoords.length-1].split(',')[0]}" cy="${lineCoords[lineCoords.length-1].split(',')[1]}" r="4" fill="${lineColor}" stroke="#07060d" stroke-width="2"/>
+  </svg><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:4px">Bars = individual pick P&amp;L · Purple line = running total${settled.length>MAX?' (sampled to '+MAX+'pts)':''}</div>`;
+}
+
+// ── 4. WIN RATE TREND ─────────────────────────────────────────────
+function renderWRTrend(){
+  const el=document.getElementById('wrTrendWrap');
+  const settled=allPicks.filter(p=>p.result!=='pending');
+  if(settled.length<5){el.innerHTML='<div class="chart-empty" style="padding:24px">Need 5+ settled picks.</div>';return;}
+  const WIN=30;const pts=[];
   settled.forEach((p,i)=>{const sl=settled.slice(Math.max(0,i-WIN+1),i+1);const w=sl.filter(x=>x.result==='win').length;pts.push((w/sl.length)*100);});
-  const W=400,H=120,PT=8,PR=8,PB=8,PL=8,CW=W-PL-PR,CH=H-PT-PB;
-  const toX=i=>PL+(i/(pts.length-1||1))*CW;const toY=v=>PT+CH-((v)/100)*CH;
-  const pathPts=pts.map((v,i)=>`${toX(i)},${toY(v)}`).join(' ');
+  const W=400,H=130,PT=8,PR=10,PB=8,PL=8,CW=W-PL-PR,CH=H-PT-PB;
+  const toX=i=>PL+(i/(pts.length-1||1))*CW;const toY=v=>PT+CH-(v/100)*CH;
+  const pathPts=pts.map((v,i)=>`${toX(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
   const cur=pts[pts.length-1];const color=cur>=50?'#34d399':'#f87171';
   const halfY=toY(50);
   el.innerHTML=`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" style="overflow:visible">
-    <defs><linearGradient id="wrG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.2"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
-    <line x1="${PL}" y1="${halfY}" x2="${W-PR}" y2="${halfY}" stroke="rgba(255,255,255,0.08)" stroke-width="1" stroke-dasharray="4,4"/>
-    <text x="${PL}" y="${halfY-4}" fill="#6a6690" font-size="9" font-family="DM Mono,monospace">50%</text>
-    <polygon points="${PL},${PT+CH} ${pathPts} ${W-PR},${PT+CH}" fill="url(#wrG)"/>
+    <defs><linearGradient id="wrGr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity=".25"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${PL}" y1="${halfY.toFixed(1)}" x2="${W-PR}" y2="${halfY.toFixed(1)}" stroke="rgba(255,255,255,.09)" stroke-width="1" stroke-dasharray="4,3"/>
+    <text x="${PL+2}" y="${halfY-4}" fill="#6a6690" font-size="9" font-family="DM Mono,monospace">50%</text>
+    <text x="${W-PR}" y="${halfY-4}" text-anchor="end" fill="#6a6690" font-size="9" font-family="DM Mono,monospace">${cur.toFixed(0)}%</text>
+    <polygon points="${PL},${PT+CH} ${pathPts} ${W-PR},${PT+CH}" fill="url(#wrGr)"/>
     <polyline points="${pathPts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-    <circle cx="${toX(pts.length-1)}" cy="${toY(cur)}" r="4" fill="${color}" stroke="#07060d" stroke-width="2"/>
-    <text x="${toX(pts.length-1)+8}" y="${toY(cur)+4}" fill="${color}" font-size="10" font-weight="700" font-family="DM Mono,monospace">${cur.toFixed(0)}%</text>
+    <circle cx="${toX(pts.length-1).toFixed(1)}" cy="${toY(cur).toFixed(1)}" r="4" fill="${color}" stroke="#07060d" stroke-width="2"/>
   </svg>`;
 }
 
-function renderSportDist(){
-  const el=document.getElementById('sportDistWrap');
-  const map={};allPicks.forEach(p=>{if(!map[p.sport])map[p.sport]={picks:0,wins:0,losses:0,pnl:0,stake:0};map[p.sport].picks++;map[p.sport].pnl+=p.pnl;map[p.sport].stake+=p.stake;if(p.result==='win')map[p.sport].wins++;if(p.result==='loss')map[p.sport].losses++;});
-  const list=Object.entries(map).sort((a,b)=>b[1].picks-a[1].picks);
-  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
-  const maxPicks=list[0][1].picks;
-  el.innerHTML=list.map(([sport,d])=>{const roi=d.stake>0?((d.pnl/d.stake)*100).toFixed(1):'0';const wr=(d.wins+d.losses)>0?((d.wins/(d.wins+d.losses))*100).toFixed(0):'0';const rPos=parseFloat(roi)>=0;const barW=Math.max(6,(d.picks/maxPicks)*100).toFixed(0);const barColor=rPos?'var(--gr)':'var(--rd)';return`<div class="breakdown-row"><div class="breakdown-header"><div class="breakdown-name">${SPORT_ICON[sport]||'🎯'} ${sport}</div><div class="breakdown-stats"><span style="color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</span><span>${d.picks}p</span></div></div><div class="breakdown-bar-track"><div class="breakdown-bar-fill" style="width:${barW}%;background:${barColor}"></div></div><div class="breakdown-sub">${d.wins}W ${d.losses}L · ${wr}% WR</div></div>`;}).join('');
+// ── 5. CLV ANALYSIS ───────────────────────────────────────────────
+function renderCLV(){
+  const settled=allPicks.filter(p=>p.result!=='pending');
+  const withCLV=settled.filter(p=>p.clv!=null);
+  const avgEl=document.getElementById('clvAvg');
+  const noteEl=document.getElementById('clvNote');
+  const badgeEl=document.getElementById('sharpBadge');
+  if(!withCLV.length){noteEl.textContent='CLV data accumulates as picks settle and closing odds are fetched.';return;}
+  const avgCLV=withCLV.reduce((s,p)=>s+p.clv,0)/withCLV.length;
+  avgEl.textContent=(avgCLV>=0?'+':'')+avgCLV.toFixed(2)+'%';
+  avgEl.style.color=avgCLV>2?'var(--gr)':avgCLV>=0?'var(--gold)':'var(--rd)';
+  if(avgCLV>2)badgeEl.style.display='inline';
+  if(avgCLV>5)noteEl.textContent='Elite — significantly beating the market.';
+  else if(avgCLV>2)noteEl.textContent='Sharp signal — consistently beating the closing line.';
+  else if(avgCLV>0)noteEl.textContent='Marginal positive CLV — slight edge.';
+  else noteEl.textContent='Below or at closing line — recreational range.';
+  const bySport={};withCLV.forEach(p=>{if(!bySport[p.sport])bySport[p.sport]={total:0,count:0};bySport[p.sport].total+=p.clv;bySport[p.sport].count++;});
+  document.getElementById('clvBySport').innerHTML=Object.entries(bySport).sort((a,b)=>(b[1].total/b[1].count)-(a[1].total/a[1].count)).map(([sport,d])=>{const avg=d.total/d.count;const pos=avg>=0;return`<div class="clv-sport-row"><div class="clv-sport-name">${SPORT_ICON[sport]||'🎯'} ${sport}</div><div class="clv-sport-avg" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${avg.toFixed(1)}%</div><div class="clv-sport-count">${d.count}p</div></div>`;}).join('');
+  // CLV bar chart
+  const last20=withCLV.slice(-20);const W=360,H=80,midY=H/2;const maxAbs=Math.max(...last20.map(p=>Math.abs(p.clv)),3);const gap=2;const bw=Math.max(4,Math.floor((W-16)/last20.length)-gap);
+  const bars=last20.map((p,i)=>{const bh=Math.max(2,(Math.abs(p.clv)/maxAbs)*(midY-8));const x=8+i*(bw+gap);const y=p.clv>=0?midY-bh:midY;const clr=p.clv>=0?'#34d399':'#f87171';const op=0.5+0.5*(Math.abs(p.clv)/maxAbs);return`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="1" fill="${clr}" fill-opacity="${op}"><title>${p.clv>=0?'+':''}${p.clv.toFixed(1)}% CLV | ${p.event}</title></rect>`;}).join('');
+  document.getElementById('clvChartWrap').innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" style="display:block"><line x1="8" y1="${midY}" x2="${W-8}" y2="${midY}" stroke="rgba(255,255,255,.07)" stroke-width="1" stroke-dasharray="3,3"/>${bars}</svg><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);margin-top:4px">Last ${last20.length} settled picks with CLV data — hover for details</div>`;
 }
 
-function renderHeatmap(){
-  const grid=document.getElementById('hmGrid');
-  const monthLabels=document.getElementById('hmMonthLabels');
-  const DAYS=91;const today=new Date();
+// ── 6. BEST MARKETS ───────────────────────────────────────────────
+function renderMarkets(){
+  const el=document.getElementById('marketsWrap');
+  const map={};
+  allPicks.forEach(p=>{
+    const m=p.market.split(' ').slice(0,3).join(' ');
+    if(!map[m])map[m]={picks:0,wins:0,losses:0,pnl:0,stake:0,odds:[]};
+    map[m].picks++;map[m].pnl+=p.pnl;map[m].stake+=p.stake;map[m].odds.push(p.odds);
+    if(p.result==='win')map[m].wins++;if(p.result==='loss')map[m].losses++;
+  });
+  const list=Object.entries(map).filter(([,d])=>d.picks>=2).map(([name,d])=>{
+    const roi=d.stake>0?((d.pnl/d.stake)*100):0;
+    const wr=(d.wins+d.losses)>0?((d.wins/(d.wins+d.losses))*100):0;
+    const avgOdds=d.odds.reduce((s,v)=>s+v,0)/d.odds.length;
+    return{name,roi,wr,picks:d.picks,wins:d.wins,losses:d.losses,pnl:d.pnl,avgOdds};
+  }).sort((a,b)=>b.roi-a.roi).slice(0,12);
+  if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No data yet</div>';return;}
+  const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
+  el.innerHTML=`<table class="mkt-table"><thead><tr><th>Market</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">W-L</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
+    list.map(d=>{const rPos=d.roi>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:'DM Mono',monospace;color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:'DM Mono',monospace;color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:'DM Mono',monospace;color:var(--mu2)">${d.wins}–${d.losses}</td><td style="text-align:right;font-family:'DM Mono',monospace;color:var(--mu)">${d.picks}</td></tr>`;}).join('')
+  }</tbody></table>`;
+}
+
+// ── 7. BEST LEAGUES ───────────────────────────────────────────────
+function renderLeagues(){
+  const el=document.getElementById('leaguesWrap');
+  const map={};
+  allPicks.forEach(p=>{
+    const key=(SPORT_ICON[p.sport]||'🎯')+' '+p.sport;
+    if(!map[key])map[key]={picks:0,wins:0,losses:0,pnl:0,stake:0};
+    map[key].picks++;map[key].pnl+=p.pnl;map[key].stake+=p.stake;
+    if(p.result==='win')map[key].wins++;if(p.result==='loss')map[key].losses++;
+  });
+  const list=Object.entries(map).map(([name,d])=>{
+    const roi=d.stake>0?((d.pnl/d.stake)*100):0;
+    const wr=(d.wins+d.losses)>0?((d.wins/(d.wins+d.losses))*100):0;
+    return{name,roi,wr,picks:d.picks,wins:d.wins,losses:d.losses,pnl:d.pnl};
+  }).sort((a,b)=>b.roi-a.roi);
+  if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No data yet</div>';return;}
+  const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
+  el.innerHTML=`<table class="mkt-table"><thead><tr><th>Sport</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">P&amp;L</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
+    list.map(d=>{const rPos=d.roi>=0;const pPos=d.pnl>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:'DM Mono',monospace;color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:'DM Mono',monospace;color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:'DM Mono',monospace;color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td><td style="text-align:right;font-family:'DM Mono',monospace;color:var(--mu)">${d.picks}</td></tr>`;}).join('')
+  }</tbody></table>`;
+}
+
+// ── 8. STREAK ANALYSIS ────────────────────────────────────────────
+function renderStreaks(){
+  const settled=allPicks.filter(p=>p.result!=='pending').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  let bestW=0,bestL=0,curW=0,curL=0;
+  const streakLengths=[];let runLen=0,runType=null;
+  settled.forEach(p=>{
+    if(runType===null){runType=p.result;runLen=1;}
+    else if(p.result===runType){runLen++;}
+    else{if(runType==='win')streakLengths.push(runLen);runType=p.result;runLen=1;}
+    if(p.result==='win'){curW++;curL=0;bestW=Math.max(bestW,curW);}else{curL++;curW=0;bestL=Math.max(bestL,curL);}
+  });
+  if(runType==='win')streakLengths.push(runLen);
+  const avgStreak=streakLengths.length?Math.round(streakLengths.reduce((s,v)=>s+v,0)/streakLengths.length):0;
+
+  // Current streak from end
+  let cur=0,curType='';
+  const rev=[...settled].reverse();
+  for(const p of rev){if(!curType)curType=p.result;if(p.result===curType)cur++;else break;}
+
+  document.getElementById('skBest').textContent=bestW+'W';
+  const ce=document.getElementById('skCur'),cl=document.getElementById('skCurLbl');
+  if(curType==='win'){ce.style.color='var(--gr)';ce.textContent=cur+'W';}
+  else if(curType==='loss'){ce.style.color='var(--rd)';ce.textContent=cur+'L';}
+  else{ce.textContent='—';}
+  cl.textContent=curType==='win'?'Current Win Streak':curType==='loss'?'Current Losing Run':'Current Streak';
+  document.getElementById('skWorst').textContent=bestL+'L';
+  document.getElementById('skAvg').textContent=avgStreak?avgStreak+'W':'—';
+
+  // Form strip (last 40 picks)
+  const recent=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,40).reverse();
+  document.getElementById('formStrip').innerHTML=recent.map(p=>{
+    const cls=p.result==='win'?'w':p.result==='loss'?'l':'p';
+    const lbl=p.result==='win'?'W':p.result==='loss'?'L':'—';
+    return`<div class="fd ${cls}" title="${p.event} @ ${p.odds} · ${new Date(p.createdAt).toLocaleDateString('en-GB')}">${lbl}</div>`;
+  }).join('');
+}
+
+// ── 9. VARIANCE ANALYSIS ─────────────────────────────────────────
+function renderVariance(){
+  const settled=allPicks.filter(p=>p.result!=='pending');
+  if(settled.length<5){document.getElementById('varChartWrap').innerHTML='<div class="chart-empty" style="padding:16px">Need 5+ settled picks.</div>';return;}
+  const returns=settled.map(p=>p.stake>0?p.pnl/p.stake:0);
+  const mean=returns.reduce((s,v)=>s+v,0)/returns.length;
+  const variance=returns.reduce((s,v)=>s+Math.pow(v-mean,2),0)/returns.length;
+  const stdev=Math.sqrt(variance);
+  const consistency=Math.max(0,Math.round(100-stdev*100));
+  const profile=stdev<0.25?'low':stdev<0.6?'medium':'high';
+  const profileLabel=profile==='low'?'🟢 Low Variance':profile==='medium'?'🟡 Medium Variance':'🔴 High Variance';
+
+  document.getElementById('varStdDev').textContent=stdev.toFixed(3);
+  document.getElementById('varStdDev').style.color=profile==='low'?'var(--gr)':profile==='medium'?'var(--gold)':'var(--rd)';
+  document.getElementById('varConsistency').textContent=consistency+'/100';
+  document.getElementById('varConsistency').style.color=consistency>=70?'var(--gr)':consistency>=40?'var(--gold)':'var(--rd)';
+  document.getElementById('varProfile').innerHTML=`<div class="var-profile var-${profile}">${profileLabel}</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:8px;line-height:1.6">${profile==='low'?'Very consistent — low pick-to-pick variance. Strong signal.':profile==='medium'?'Moderate variance — normal for active tipsters.':'High variance — results are volatile. High-risk profile.'}</div>`;
+
+  // Distribution histogram
+  const min=Math.min(...returns),max=Math.max(...returns);
+  const bins=12,binW=(max-min)/bins||0.1;
+  const hist=Array(bins).fill(0);
+  returns.forEach(v=>{const b=Math.min(Math.floor((v-min)/binW),bins-1);hist[b]++;});
+  const maxH=Math.max(...hist);
+  const W=360,H=80,barW=W/bins-1;
+  const bars=hist.map((h,i)=>{const bh=(h/maxH)*(H-10);const x=i*W/bins;const v=min+i*binW+binW/2;const clr=v>=0?'var(--gr)':'var(--rd)';return`<rect x="${x}" y="${H-bh}" width="${barW}" height="${bh}" fill="${clr}" opacity="0.7" rx="1"><title>${(v*100).toFixed(1)}% return · ${h} picks</title></rect>`;}).join('');
+  const zeroX=(-min/((max-min)||1))*W;
+  document.getElementById('varChartWrap').innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" style="display:block"><line x1="${zeroX.toFixed(0)}" y1="0" x2="${zeroX.toFixed(0)}" y2="${H}" stroke="rgba(255,255,255,.12)" stroke-width="1" stroke-dasharray="2,2"/>${bars}</svg><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);margin-top:3px">Return distribution across ${returns.length} settled picks</div>`;
+}
+
+// ── 10. PERFORMANCE CALENDAR ─────────────────────────────────────
+function renderCalendar(){
+  const DAYS=182;const today=new Date();
   const dayMap={};
   allPicks.forEach(p=>{const d=new Date(p.createdAt);const key=d.toISOString().split('T')[0];if(!dayMap[key])dayMap[key]={picks:0,pnl:0,wins:0,losses:0};dayMap[key].picks++;dayMap[key].pnl+=p.pnl;if(p.result==='win')dayMap[key].wins++;if(p.result==='loss')dayMap[key].losses++;});
   const startDate=new Date(today);startDate.setDate(startDate.getDate()-(DAYS-1));
@@ -503,187 +816,41 @@ function renderHeatmap(){
     const data=dayMap[key];
     let bg;
     if(!data||data.picks===0){bg='rgba(255,255,255,0.04)';}
-    else{const intensity=Math.min(0.9,0.25+data.picks*0.2);bg=data.pnl>0?`rgba(52,211,153,${intensity})`:data.pnl<0?`rgba(248,113,113,${intensity})`:`rgba(251,191,36,0.5)`;}
-    const tip=data?`${key}: ${data.picks} pick${data.picks>1?'s':''} · ${data.pnl>=0?'+':''}${data.pnl.toFixed(2)}u`:key;
-    html+=`<div class="hm-cell" style="background:${bg}" title="${tip}"></div>`;
+    else if(data.wins>0&&data.losses===0){const intensity=Math.min(0.9,0.3+data.wins*0.25);bg=`rgba(52,211,153,${intensity})`;}
+    else if(data.losses>0&&data.wins===0){const intensity=Math.min(0.9,0.3+data.losses*0.25);bg=`rgba(248,113,113,${intensity})`;}
+    else{bg='rgba(251,191,36,0.55)';}
+    const pnlStr=data?`${data.pnl>=0?'+':''}${data.pnl.toFixed(2)}u`:'';
+    const tip=data?`${key}: ${data.picks} pick${data.picks>1?'s':''} · ${data.wins}W ${data.losses}L ${pnlStr}`:key;
+    html+=`<div class="cal-cell" style="background:${bg}" title="${tip}"></div>`;
     if(i%7===0){const mo=d.toLocaleDateString('en-GB',{month:'short'});if(mo!==curMonth){weekMonths.push({mo,col:weekCount});curMonth=mo;}weekCount++;}
   }
-  grid.innerHTML=html;
-  monthLabels.innerHTML=weekMonths.map(w=>`<div class="hm-month-label" style="margin-left:${w.col*16}px">${w.mo}</div>`).join('');
+  document.getElementById('calGrid').innerHTML=html;
+  document.getElementById('calMonthLabels').innerHTML=weekMonths.map(w=>{const leftPx=28+w.col*14;return`<div class="cal-month-lbl" style="margin-left:${leftPx}px;min-width:0">${w.mo}</div>`;}).join('');
 }
 
-function renderBySport(){
-  const el=document.getElementById('bySportWrap');
-  const map={};allPicks.forEach(p=>{if(!map[p.sport])map[p.sport]={picks:0,wins:0,losses:0,pnl:0,stake:0};map[p.sport].picks++;map[p.sport].pnl+=p.pnl;map[p.sport].stake+=p.stake;if(p.result==='win')map[p.sport].wins++;if(p.result==='loss')map[p.sport].losses++;});
-  const list=Object.entries(map).sort((a,b)=>b[1].pnl-a[1].pnl);
-  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
-  const maxAbs=Math.max(...list.map(([,d])=>Math.abs(d.pnl)));
-  el.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12px">
-    <thead><tr style="border-bottom:1px solid var(--bd)">
-      <th style="text-align:left;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">SPORT</th>
-      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">ROI</th>
-      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">W-L</th>
-      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">P&L</th>
-    </tr></thead><tbody>
-    ${list.map(([sport,d])=>{const roi=d.stake>0?((d.pnl/d.stake)*100).toFixed(1):'0';const rPos=parseFloat(roi)>=0;const pPos=d.pnl>=0;return`<tr style="border-bottom:1px solid var(--bd)"><td style="padding:8px 4px;font-weight:600">${SPORT_ICON[sport]||'🎯'} ${sport}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:var(--mu2)">${d.wins}–${d.losses}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td></tr>`;}).join('')}
-    </tbody></table>`;
-}
-
-function renderByMarket(){
-  const el=document.getElementById('byMarketWrap');
-  const map={};allPicks.forEach(p=>{const m=p.market.split(' ').slice(0,2).join(' ');if(!map[m])map[m]={picks:0,wins:0,losses:0,pnl:0,stake:0};map[m].picks++;map[m].pnl+=p.pnl;map[m].stake+=p.stake;if(p.result==='win')map[m].wins++;if(p.result==='loss')map[m].losses++;});
-  const list=Object.entries(map).sort((a,b)=>b[1].picks-a[1].picks).slice(0,8);
-  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
-  el.innerHTML=`<table style="width:100%;border-collapse:collapse;font-size:12px">
-    <thead><tr style="border-bottom:1px solid var(--bd)">
-      <th style="text-align:left;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">MARKET</th>
-      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">ROI</th>
-      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">PICKS</th>
-      <th style="text-align:right;padding:6px 4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;font-weight:500">P&L</th>
-    </tr></thead><tbody>
-    ${list.map(([market,d])=>{const roi=d.stake>0?((d.pnl/d.stake)*100).toFixed(1):'0';const rPos=parseFloat(roi)>=0;const pPos=d.pnl>=0;return`<tr style="border-bottom:1px solid var(--bd)"><td style="padding:8px 4px;font-weight:600;font-size:11px;max-width:120px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${market}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:var(--mu2)">${d.picks}</td><td style="text-align:right;padding:8px 4px;font-family:'DM Mono',monospace;color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td></tr>`;}).join('')}
-    </tbody></table>`;
-}
-
-function renderMonthly(){
-  const el=document.getElementById('monthlyGrid');
-  const map={};allPicks.forEach(p=>{const d=new Date(p.createdAt);const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(!map[key])map[key]={pnl:0,picks:0,wins:0,losses:0};map[key].pnl+=p.pnl;map[key].picks++;if(p.result==='win')map[key].wins++;if(p.result==='loss')map[key].losses++;});
-  const list=Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0]));
-  if(!list.length){el.innerHTML='<div class="chart-loading">No data</div>';return;}
-  const maxAbs=Math.max(...list.map(([,d])=>Math.abs(d.pnl)))||1;
-  const MAXH=100;
-  el.innerHTML=list.map(([key,d])=>{
-    const [yr,mo]=key.split('-');const mName=new Date(parseInt(yr),parseInt(mo)-1,1).toLocaleDateString('en-GB',{month:'short'});
-    const h=Math.max(4,Math.round((Math.abs(d.pnl)/maxAbs)*MAXH));const pos=d.pnl>=0;
-    return`<div class="month-col">
-      <div class="month-bar-wrap"><div class="month-bar ${pos?'pos':'neg'}" style="height:${h}px"></div></div>
-      <div class="month-pnl ${pos?'pos':'neg'}">${pos?'+':''}${d.pnl.toFixed(1)}u</div>
-      <div class="month-name">${mName}</div>
-    </div>`;
+// ── 11. SHARP SCORE BREAKDOWN ────────────────────────────────────
+function renderSharpScore(){
+  const ss=computeSharpScore(allPicks);
+  const color=ss.total>=70?'var(--gr)':ss.total>=40?'var(--gold)':'var(--rd)';
+  document.getElementById('ssTotalNum').textContent=ss.total;
+  document.getElementById('ssTotalNum').style.color=color;
+  const components=[
+    {name:'ROI Factor',val:ss.roiF,max:40,desc:'Measures ROI quality (max at 20% ROI)',color:'#34d399'},
+    {name:'Sample Factor',val:ss.sampF,max:25,desc:'Rewards larger sample sizes (max at 100+ picks)',color:'#38bdf8'},
+    {name:'Odds Factor',val:ss.oddsF,max:15,desc:'Rewards betting at harder odds (avg 1.5–3.0+)',color:'#b89fff'},
+    {name:'CLV Factor',val:ss.clvF,max:10,desc:'Rewards positive Closing Line Value',color:'#fbbf24'},
+    {name:'Streak Factor',val:ss.strF,max:10,desc:'Current win streak bonus (max at 5+)',color:'#fb923c'},
+  ];
+  document.getElementById('ssComponents').innerHTML=components.map(c=>{
+    const pct=c.max>0?Math.round((c.val/c.max)*100):0;
+    return`<div class="ss-component"><div class="ss-header"><span class="ss-name">${c.name}</span><span class="ss-val" style="color:${c.color}">${c.val}<span style="color:var(--mu)">/${c.max}</span></span></div><div class="ss-track"><div class="ss-fill" style="width:${pct}%;background:${c.color}"></div></div><div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);margin-top:2px">${c.desc}</div></div>`;
   }).join('');
 }
 
-function renderStreaks(){
-  const settled=allPicks.filter(p=>p.result!=='pending').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
-  let bestW=0,bestL=0,curW=0,curL=0;
-  settled.forEach(p=>{if(p.result==='win'){curW++;curL=0;bestW=Math.max(bestW,curW);}else{curL++;curW=0;bestL=Math.max(bestL,curL);}});
-  // current streak from end
-  let curStreak=0,curType=null;
-  for(let i=settled.length-1;i>=0;i--){
-    if(curType===null){curType=settled[i].result;curStreak=1;}
-    else if(settled[i].result===curType)curStreak++;
-    else break;
-  }
-  document.getElementById('bestStreakNum').textContent=bestW+'W';
-  const csEl=document.getElementById('curStreakNum');
-  const csLbl=document.getElementById('curStreakLbl');
-  if(curType==='win'){csEl.style.color='var(--gr)';csEl.textContent=curStreak+'W';}
-  else if(curType==='loss'){csEl.style.color='var(--rd)';csEl.textContent=curStreak+'L';}
-  else{csEl.textContent='—';}
-  csLbl.textContent=curType==='win'?'Current Win Streak':curType==='loss'?'Current Losing Run':'Current Streak';
-  document.getElementById('coldStreakNum').textContent=bestL+'L';
-
-  // recent form
-  const recent=allPicks.slice(-20);
-  document.getElementById('formStrip').innerHTML=recent.map(p=>{
-    const cls=p.result==='win'?'w':p.result==='loss'?'l':'p';
-    const lbl=p.result==='win'?'W':p.result==='loss'?'L':'—';
-    const tip=p.event+' @ '+p.odds;
-    return`<div class="form-dot ${cls}" title="${tip}">${lbl}</div>`;
-  }).join('');
-}
-
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function logout(){localStorage.removeItem('ledgr_user');localStorage.removeItem('ledgr_token');localStorage.removeItem('user');localStorage.removeItem('token');window.location.href='/';}
+// ── NAV HELPERS ───────────────────────────────────────────────────
+function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
-
-// ── CLV ANALYSIS ───────────────────────────────────────────────
-function renderCLV(){
-  const settled=allPicks.filter(p=>p.result!=='pending');
-  const withCLV=settled.filter(p=>p.clv!=null);
-
-  const avgEl=document.getElementById('clvAvgVal');
-  const noteEl=document.getElementById('clvNote');
-  const badgeEl=document.getElementById('sharpSignalBadge');
-
-  if(!withCLV.length){
-    noteEl.textContent='CLV data accumulates as picks settle and closing odds are fetched from The Odds API.';
-    return;
-  }
-
-  const avgCLV=withCLV.reduce((s,p)=>s+p.clv,0)/withCLV.length;
-  avgEl.textContent=(avgCLV>=0?'+':'')+avgCLV.toFixed(2)+'%';
-  avgEl.style.color=avgCLV>2?'var(--gr)':avgCLV>=0?'var(--gold)':'var(--rd)';
-
-  // Sharp Signal badge
-  if(avgCLV>2){badgeEl.style.display='inline-flex';}
-
-  // Interpretation
-  if(avgCLV>5)noteEl.textContent='Elite — significantly beating the market on closing odds.';
-  else if(avgCLV>2)noteEl.textContent='Sharp signal — consistently getting better prices than the closing line.';
-  else if(avgCLV>0)noteEl.textContent='Marginal positive CLV — slight edge over closing prices.';
-  else if(avgCLV>-3)noteEl.textContent='Near closing line — recreational betting range.';
-  else noteEl.textContent='Negative CLV — typically placed at worse prices than the closing market.';
-
-  // CLV by sport
-  const bySport={};
-  withCLV.forEach(p=>{
-    if(!bySport[p.sport])bySport[p.sport]={total:0,count:0};
-    bySport[p.sport].total+=p.clv;
-    bySport[p.sport].count++;
-  });
-  document.getElementById('clvBySport').innerHTML=Object.entries(bySport)
-    .sort((a,b)=>(b[1].total/b[1].count)-(a[1].total/a[1].count))
-    .map(([sport,d])=>{
-      const avg=d.total/d.count;const pos=avg>=0;
-      return`<div class="clv-sport-row">
-        <div class="clv-sport-name">${SPORT_ICON[sport]||'🎯'} ${sport}</div>
-        <div class="clv-sport-avg" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${avg.toFixed(1)}%</div>
-        <div class="clv-sport-count">${d.count} pick${d.count!==1?'s':''}</div>
-      </div>`;
-    }).join('');
-
-  // Trend chart — last 20 picks with CLV
-  renderCLVChart(withCLV.slice(-20));
-}
-
-function renderCLVChart(picks){
-  const el=document.getElementById('clvChartWrap');
-  const labelsEl=document.getElementById('clvChartLabels');
-  if(!picks.length){el.innerHTML='<div class="chart-loading">No CLV data yet</div>';return;}
-
-  const W=800,H=110,midY=H/2;
-  const maxAbs=Math.max(...picks.map(p=>Math.abs(p.clv)),3);
-  const gap=2;
-  const barW=Math.max(6,Math.floor((W-20)/picks.length)-gap);
-
-  const bars=picks.map((p,i)=>{
-    const barH=Math.max(3,(Math.abs(p.clv)/maxAbs)*(midY-10));
-    const x=10+i*(barW+gap);
-    const y=p.clv>=0?midY-barH:midY;
-    const color=p.clv>=0?'#34d399':'#f87171';
-    const opacity=0.55+0.45*(Math.abs(p.clv)/maxAbs);
-    const label=`${p.clv>=0?'+':''}${p.clv.toFixed(1)}% CLV | ${p.event.length>40?p.event.slice(0,38)+'…':p.event}`;
-    return`<rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="2" fill="${color}" fill-opacity="${opacity}"><title>${label}</title></rect>`;
-  }).join('');
-
-  // Zero line + scale labels
-  const posLabel='+'+maxAbs.toFixed(0)+'%';
-  const negLabel='-'+maxAbs.toFixed(0)+'%';
-
-  el.innerHTML=`<svg width="100%" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="display:block;overflow:visible">
-    <text x="6" y="12" font-family="'DM Mono',monospace" font-size="9" fill="rgba(106,102,144,0.6)">${posLabel}</text>
-    <text x="6" y="${H-4}" font-family="'DM Mono',monospace" font-size="9" fill="rgba(106,102,144,0.6)">${negLabel}</text>
-    <line x1="10" y1="${midY}" x2="${W-10}" y2="${midY}" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="4,4"/>
-    ${bars}
-  </svg>`;
-
-  // Date labels
-  labelsEl.style.display='flex';
-  document.getElementById('clvLabelLeft').textContent=new Date(picks[0].createdAt).toLocaleDateString('en-GB');
-  document.getElementById('clvLabelRight').textContent=new Date(picks[picks.length-1].createdAt).toLocaleDateString('en-GB');
-}
 </script>
 </body>
 </html>
