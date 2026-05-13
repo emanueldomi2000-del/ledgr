@@ -675,9 +675,12 @@ function renderLeaderboard(){
     const {score,color}=getReliability(t);
     const badgeHtml=icons.slice(0,2).map(ic=>`<span style="font-size:11px">${ic}</span>`).join('');
     const rowDiv=getDivision(t);
-    const rowAv=window.Divisions
-      ?window.Divisions.avHTML(t.username.substring(0,2).toUpperCase(),colors[i%colors.length],rowDiv,{width:38,height:38,borderRadius:10,noParticles:true})
-      :`<div class="av" style="background:${colors[i%colors.length]}">${t.username.substring(0,2).toUpperCase()}</div>`;
+    const storedAv=t.userId?localStorage.getItem('ledgr_avatar_'+t.userId):null;
+    const rowAv=storedAv
+      ?`<div class="av" style="background:${colors[i%colors.length]};overflow:hidden;padding:0"><img src="${storedAv}" style="width:100%;height:100%;object-fit:cover;display:block" alt="${t.username}"></div>`
+      :(window.Divisions
+        ?window.Divisions.avHTML(t.username.substring(0,2).toUpperCase(),colors[i%colors.length],rowDiv,{width:38,height:38,borderRadius:10,noParticles:true})
+        :`<div class="av" style="background:${colors[i%colors.length]}">${t.username.substring(0,2).toUpperCase()}</div>`);
     const rowPill=window.Divisions
       ?window.Divisions.pillHTML(rowDiv,'sm')
       :`<span class="division-badge-sm ${rowDiv.cls}">${rowDiv.icon} ${rowDiv.name}</span>`;

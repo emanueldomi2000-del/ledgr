@@ -75,6 +75,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .sub-btn.subscribed{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--gr)}
 .sub-btn.subscribed:hover{background:rgba(52,211,153,0.2)}
 .sub-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:3px;letter-spacing:1px}
+/* PROFILE BIO + SOCIAL */
+.profile-bio{font-size:13px;color:var(--mu2);line-height:1.65;margin-bottom:10px;max-width:480px;font-family:'Syne',sans-serif}
+.profile-social{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.social-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-family:'DM Mono',monospace;font-size:10px;font-weight:600;text-decoration:none;transition:all .18s;border:1px solid var(--bd)}
+.social-link:hover{border-color:var(--bd2);transform:translateY(-1px)}
+.social-link-x{color:#94a3b8;background:rgba(148,163,184,.07)}
+.social-link-x:hover{color:#f0edff;background:rgba(148,163,184,.12)}
+.social-link-ig{color:#fb923c;background:rgba(251,146,60,.08)}
+.social-link-ig:hover{color:#f0edff;background:rgba(251,146,60,.14)}
 
 /* BADGES */
 .badges-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
@@ -622,14 +631,43 @@ async function loadProfile(){
     const divObj=getDivision(allPicks);
     const flowState=window.Flow?window.Flow.detect(allPicks):null;
     const flowBadgeHTML=flowState?window.Flow.badgeHTML(flowState):'';
-    const profileAvHTML=window.Divisions
-      ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,#7c3aed,#a855f7)',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})
-      :`<div class="avatar-big">${username.substring(0,2).toUpperCase()}</div>`;
+
+    // Custom avatar / banner image from localStorage
+    const avKey=tipsterUserId||username;
+    const customAv=localStorage.getItem('ledgr_avatar_'+avKey);
+    const customBannerImg=localStorage.getItem('ledgr_banner_img_'+avKey);
+
+    // Build avatar HTML — use custom image if available, otherwise initials + division glow
+    let profileAvHTML;
+    if(customAv){
+      const wrapCls=window.Divisions?divObj.wrapCls:'';
+      const orbit=Math.round(96/2+10);
+      profileAvHTML=window.Divisions
+        ?`<div class="div-av-wrap ${wrapCls}" style="width:96px;height:96px;border-radius:50%;--dv-orbit:-${orbit}px"><div class="div-av-aura" aria-hidden="true"></div><div class="div-av-inner" style="width:96px;height:96px;border-radius:50%;border:4px solid var(--bg);overflow:hidden"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div></div>`
+        :`<div class="avatar-big" style="overflow:hidden;padding:0"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div>`;
+    }else{
+      profileAvHTML=window.Divisions
+        ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,#7c3aed,#a855f7)',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})
+        :`<div class="avatar-big">${username.substring(0,2).toUpperCase()}</div>`;
+    }
+
     const divBadgeHTML=window.Divisions
       ?window.Divisions.pillHTML(divObj,'md')
       :`<div class="division-badge ${divObj.cls}">${divObj.icon} ${divObj.name}</div>`;
+
+    // Bio and social from profile config
+    const bio=profileCfg.bio?profileCfg.bio.replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';
+    const social=profileCfg.social||{};
+    const bioHtml=bio?`<div class="profile-bio">${bio}</div>`:'';
+    const socialHtml=(social.twitter||social.instagram)?`<div class="profile-social">${social.twitter?`<a href="https://x.com/${social.twitter}" target="_blank" rel="noopener" class="social-link social-link-x">𝕏 @${social.twitter}</a>`:''} ${social.instagram?`<a href="https://instagram.com/${social.instagram}" target="_blank" rel="noopener" class="social-link social-link-ig">📸 @${social.instagram}</a>`:''}</div>`:'';
+
+    // Banner: custom image overrides gradient
+    const bannerStyle=customBannerImg
+      ?`background-image:url(${customBannerImg});background-size:cover;background-position:center`
+      :`background:${bannerGradient}`;
+
     document.getElementById('mainContent').innerHTML=`
-      <div class="cover-banner" style="background:${bannerGradient}"><div class="cover-grid"></div></div>
+      <div class="cover-banner" style="${bannerStyle}"><div class="cover-grid"></div></div>
       <div class="profile-hero">
         <div class="profile-top">
           <div class="avatar-wrap"><div class="avatar-ring ${borderRingCls}"></div>${profileAvHTML}</div>
@@ -643,6 +681,8 @@ async function loadProfile(){
               ${flowBadgeHTML}
             </div>
             <div class="profile-username">@${username}</div>
+            ${bioHtml}
+            ${socialHtml}
             <div style="display:flex;gap:12px;margin-top:5px;flex-wrap:wrap">
               <div id="followerCount" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px">— followers</div>
               <div id="subscriberCount" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px;display:none">· — subscribers</div>

@@ -1126,7 +1126,12 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   if(!user)return;
   const av=document.getElementById('idAv');
   if(av){
-    av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+    const customAv=localStorage.getItem('ledgr_avatar_'+(user.id||user.username));
+    if(customAv){
+      av.innerHTML=`<img src="${customAv}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block"><div class="id-verified">✓</div>`;
+    }else{
+      av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+    }
     if(window.Divisions){
       const avDiv=getDivision(myPicks);
       window.Divisions.applyGlow(av,avDiv);

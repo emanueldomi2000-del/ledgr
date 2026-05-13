@@ -191,9 +191,38 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .toast{position:fixed;bottom:24px;right:24px;background:var(--gr);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:320px}
 .toast.show{transform:translateY(0);opacity:1}
 
+/* ── IDENTITY SECTION ── */
+.upload-row{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:24px}
+.upload-zone{border:2px dashed rgba(184,159,255,.2);border-radius:12px;cursor:pointer;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
+.upload-zone:hover{border-color:rgba(184,159,255,.5);background:rgba(184,159,255,.03)}
+.upload-zone-av{width:96px;height:96px;border-radius:50%}
+.upload-zone-banner{width:100%;height:80px}
+.upload-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--mu);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;pointer-events:none;padding:8px;text-align:center}
+.upload-placeholder-icon{font-size:22px;line-height:1}
+.upload-img-av{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
+.upload-img-banner{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.upload-remove{position:absolute;top:5px;right:5px;z-index:3;background:rgba(0,0,0,.72);border:none;border-radius:50%;width:22px;height:22px;display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;cursor:pointer;transition:background .2s}
+.upload-remove:hover{background:var(--rd)}
+.theme-grid{display:flex;gap:14px;flex-wrap:wrap;padding-bottom:18px}
+.theme-dot{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .18s;position:relative;flex-shrink:0}
+.theme-dot:hover{transform:scale(1.1)}
+.theme-dot.active{border-color:rgba(255,255,255,.8);box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+.theme-dot-name{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--mu);white-space:nowrap;font-family:'DM Mono',monospace;letter-spacing:.3px;pointer-events:none}
+.bio-wrap{position:relative;margin-bottom:18px}
+.bio-textarea{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:12px 14px 28px;resize:none;height:88px;outline:none;transition:border-color .2s;line-height:1.6}
+.bio-textarea:focus{border-color:var(--bd2)}
+.bio-counter{position:absolute;right:11px;bottom:9px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);pointer-events:none}
+.social-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.social-icon-wrap{width:36px;height:36px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.social-prefix{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);flex-shrink:0}
+.social-input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s}
+.social-input:focus{border-color:var(--bd2)}
+.social-input::placeholder{color:var(--mu)}
+.id-section-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px}
+
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{grid-template-columns:1fr}.preview-panel{position:relative;top:0}}
-@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.archetype-grid{grid-template-columns:repeat(2,1fr)}.banner-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.archetype-grid{grid-template-columns:repeat(2,1fr)}.banner-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -285,6 +314,75 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 
       <!-- SETTINGS -->
       <div class="settings-sections">
+
+        <!-- 00 PROFILE IDENTITY -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">00</div>
+            <div>
+              <div class="section-title">PROFILE IDENTITY</div>
+              <div class="section-sub">Avatar photo, banner image, theme color, bio and social links.</div>
+            </div>
+          </div>
+
+          <!-- Avatar + Banner uploads -->
+          <div class="upload-row">
+            <div>
+              <span class="id-section-lbl">Avatar Photo</span>
+              <div class="upload-zone upload-zone-av" id="avZone">
+                <input type="file" id="avInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2" onchange="handleAvUpload(this)">
+                <div class="upload-placeholder" id="avPlaceholder">
+                  <span class="upload-placeholder-icon">📷</span>
+                  <span>Upload</span>
+                </div>
+                <img class="upload-img-av" id="avPreviewImg" style="display:none" alt="">
+                <button class="upload-remove" id="avRemove" onclick="removeAvatar(event)">✕</button>
+              </div>
+            </div>
+            <div>
+              <span class="id-section-lbl">Banner Image <span style="color:var(--mu);font-size:8px">— recommended 1200×300px</span></span>
+              <div class="upload-zone upload-zone-banner" id="bannerImgZone" style="width:100%">
+                <input type="file" id="bannerImgInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2" onchange="handleBannerImgUpload(this)">
+                <div class="upload-placeholder" id="bannerImgPlaceholder">
+                  <span class="upload-placeholder-icon">🖼️</span>
+                  <span>Upload banner image</span>
+                </div>
+                <img class="upload-img-banner" id="bannerImgPreview" style="display:none" alt="">
+                <button class="upload-remove" id="bannerImgRemove" onclick="removeBannerImg(event)">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Theme color -->
+          <div style="margin-bottom:32px">
+            <span class="id-section-lbl">Profile Theme Color</span>
+            <div class="theme-grid" id="themeGrid"></div>
+          </div>
+
+          <!-- Bio -->
+          <div>
+            <span class="id-section-lbl">Bio <span style="color:var(--mu);font-size:8px">— max 160 chars</span></span>
+            <div class="bio-wrap">
+              <textarea class="bio-textarea" id="bioInput" maxlength="160" placeholder="Tell the leaderboard who you are…" oninput="updateBioCounter()"></textarea>
+              <span class="bio-counter" id="bioCounter">0/160</span>
+            </div>
+          </div>
+
+          <!-- Social links -->
+          <div>
+            <span class="id-section-lbl">Social Links</span>
+            <div class="social-row">
+              <div class="social-icon-wrap">𝕏</div>
+              <span class="social-prefix">x.com/</span>
+              <input type="text" class="social-input" id="twitterInput" placeholder="yourhandle" maxlength="50">
+            </div>
+            <div class="social-row">
+              <div class="social-icon-wrap">📸</div>
+              <span class="social-prefix">instagram.com/</span>
+              <input type="text" class="social-input" id="instagramInput" placeholder="yourhandle" maxlength="50">
+            </div>
+          </div>
+        </section>
 
         <!-- 01 ARCHETYPE -->
         <section class="settings-section">
@@ -397,6 +495,17 @@ const ARCHETYPES=[
   {id:'momentum-monster',icon:'🔥',name:'The Momentum Monster',desc:'Rides hot streaks. Doubles down when running hot.',color:'#fb923c'},
 ];
 
+const THEMES=[
+  {id:'default', name:'Purple', color:'#b89fff'},
+  {id:'gold',    name:'Gold',   color:'#fbbf24'},
+  {id:'cyan',    name:'Cyan',   color:'#38bdf8'},
+  {id:'red',     name:'Red',    color:'#f87171'},
+  {id:'green',   name:'Green',  color:'#34d399'},
+  {id:'orange',  name:'Orange', color:'#fb923c'},
+  {id:'pink',    name:'Pink',   color:'#f472b6'},
+  {id:'white',   name:'White',  color:'#f0edff'},
+];
+
 const BANNERS=[
   {id:'default',name:'VOID GRID',gradient:'linear-gradient(135deg,#0c0a1a,#15122a,#1a1040)',tier:'Free',grid:true},
   {id:'purple-haze',name:'PURPLE HAZE',gradient:'linear-gradient(135deg,#1a0530,#2d1060,#0a0720)',tier:'Free',grid:false},
@@ -444,6 +553,8 @@ window.onload=()=>{
   renderBanners();
   renderBorders();
   renderSports();
+  renderThemes();
+  loadIdentitySettings();
   applyPreview();
 
   // Load saved price
@@ -648,10 +759,128 @@ function applyPreview(){
   sportsEl.innerHTML=config.favSports.map(s=>`<span class="sport-chip">${SPORT_ICONS[s]} ${s}</span>`).join('');
 }
 
+/* ── IDENTITY FUNCTIONS ── */
+function renderThemes(){
+  const grid=document.getElementById('themeGrid');
+  if(!grid)return;
+  grid.innerHTML=THEMES.map(t=>`<div class="theme-dot${(config.theme||'default')===t.id?' active':''}" id="theme_${t.id}" style="background:${t.color}" onclick="selectTheme('${t.id}')" title="${t.name}"><span class="theme-dot-name">${t.name}</span></div>`).join('');
+}
+
+function selectTheme(id){
+  config.theme=id;
+  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.id==='theme_'+id));
+}
+
+function handleAvUpload(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>2*1024*1024){showToast('IMAGE TOO LARGE — max 2MB',true);return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    localStorage.setItem('ledgr_avatar_'+(user.id||user.username),b64);
+    document.getElementById('avPreviewImg').src=b64;
+    document.getElementById('avPreviewImg').style.display='block';
+    document.getElementById('avPlaceholder').style.display='none';
+    document.getElementById('avRemove').style.display='flex';
+    const prev=document.getElementById('previewAv');
+    prev.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    showToast('AVATAR UPDATED ✓');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeAvatar(e){
+  e.stopPropagation();if(!user)return;
+  localStorage.removeItem('ledgr_avatar_'+(user.id||user.username));
+  document.getElementById('avPreviewImg').style.display='none';
+  document.getElementById('avPreviewImg').src='';
+  document.getElementById('avPlaceholder').style.display='flex';
+  document.getElementById('avRemove').style.display='none';
+  document.getElementById('previewAv').textContent=user.username.slice(0,2).toUpperCase();
+  showToast('AVATAR REMOVED');
+}
+
+function handleBannerImgUpload(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>4*1024*1024){showToast('IMAGE TOO LARGE — max 4MB',true);return;}
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const b64=e.target.result;
+    localStorage.setItem('ledgr_banner_img_'+(user.id||user.username),b64);
+    document.getElementById('bannerImgPreview').src=b64;
+    document.getElementById('bannerImgPreview').style.display='block';
+    document.getElementById('bannerImgPlaceholder').style.display='none';
+    document.getElementById('bannerImgRemove').style.display='flex';
+    const prev=document.getElementById('previewBanner');
+    prev.style.backgroundImage=`url(${b64})`;
+    prev.style.backgroundSize='cover';
+    prev.style.backgroundPosition='center';
+    showToast('BANNER UPDATED ✓');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeBannerImg(e){
+  e.stopPropagation();if(!user)return;
+  localStorage.removeItem('ledgr_banner_img_'+(user.id||user.username));
+  document.getElementById('bannerImgPreview').style.display='none';
+  document.getElementById('bannerImgPreview').src='';
+  document.getElementById('bannerImgPlaceholder').style.display='flex';
+  document.getElementById('bannerImgRemove').style.display='none';
+  const prev=document.getElementById('previewBanner');
+  prev.style.backgroundImage='';prev.style.backgroundSize='';prev.style.backgroundPosition='';
+  applyPreview();showToast('BANNER REMOVED');
+}
+
+function updateBioCounter(){
+  const len=document.getElementById('bioInput').value.length;
+  const el=document.getElementById('bioCounter');
+  el.textContent=len+'/160';
+  el.style.color=len>140?'var(--gold)':'var(--mu)';
+}
+
+function loadIdentitySettings(){
+  const key=user.id||user.username;
+  const av=localStorage.getItem('ledgr_avatar_'+key);
+  if(av){
+    document.getElementById('avPreviewImg').src=av;
+    document.getElementById('avPreviewImg').style.display='block';
+    document.getElementById('avPlaceholder').style.display='none';
+    document.getElementById('avRemove').style.display='flex';
+    const prev=document.getElementById('previewAv');
+    prev.innerHTML=`<img src="${av}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  }
+  const ban=localStorage.getItem('ledgr_banner_img_'+key);
+  if(ban){
+    document.getElementById('bannerImgPreview').src=ban;
+    document.getElementById('bannerImgPreview').style.display='block';
+    document.getElementById('bannerImgPlaceholder').style.display='none';
+    document.getElementById('bannerImgRemove').style.display='flex';
+  }
+  if(config.bio){
+    document.getElementById('bioInput').value=config.bio;
+    updateBioCounter();
+  }
+  if(config.social){
+    if(config.social.twitter)document.getElementById('twitterInput').value=config.social.twitter;
+    if(config.social.instagram)document.getElementById('instagramInput').value=config.social.instagram;
+  }
+}
+
 /* ── SAVE ── */
 function saveProfile(){
   if(!user)return;
+  config.bio=document.getElementById('bioInput').value.trim();
+  config.social={
+    twitter:document.getElementById('twitterInput').value.trim().replace(/^@/,''),
+    instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
+  };
   localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
+  // Try to save bio to backend (silent fail)
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(config.bio&&token&&user.id){
+    fetch(API+'/users/'+user.id,{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({bio:config.bio})}).catch(()=>{});
+  }
   const btn=document.querySelector('.save-btn');
   const orig=btn.textContent;
   btn.textContent='✓ SAVED!';
