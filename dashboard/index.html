@@ -272,6 +272,53 @@ select option{background:#15122a}
   .roi-mini-chart{height:32px}
 }
 
+/* ── PARLAY MODE TOGGLE ── */
+.mode-toggle{display:flex;gap:5px;background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:4px;margin-bottom:16px}
+.mode-btn{flex:1;padding:9px 8px;border:none;border-radius:7px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;color:var(--mu2);background:transparent}
+.mode-btn.active{background:var(--acg);border:1px solid var(--bd2);color:var(--ac)}
+.mode-btn.parlay-active{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);color:var(--gold)}
+.chip.in-parlay{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.45);color:var(--gold)}
+
+/* ── PARLAY PANEL (fixed right) ── */
+.parlay-panel{position:fixed;top:62px;right:-380px;width:360px;height:calc(100vh - 62px);background:#0b0917;border-left:1px solid rgba(251,191,36,.18);z-index:40;transition:right .35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 48px rgba(0,0,0,.55)}
+.parlay-panel.open{right:0}
+.pp-hd{padding:18px 20px 14px;border-bottom:1px solid rgba(251,191,36,.12);display:flex;align-items:center;gap:10px}
+.pp-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--gold);flex:1}
+.pp-badge{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);border-radius:20px;padding:3px 10px;font-family:'DM Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:1.5px}
+.pp-close{background:none;border:none;color:var(--mu2);font-size:18px;cursor:pointer;padding:0;line-height:1;transition:color .2s}
+.pp-close:hover{color:var(--tx)}
+.pp-legs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:7px;scrollbar-width:thin;scrollbar-color:rgba(251,191,36,.15) transparent}
+.pp-empty{text-align:center;padding:40px 16px;color:var(--mu);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;line-height:1.8}
+.pp-leg{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:11px 13px;display:flex;align-items:flex-start;gap:10px;transition:border-color .2s}
+.pp-leg:hover{border-color:rgba(251,191,36,.2)}
+.pp-ln{font-family:'Bebas Neue',sans-serif;font-size:20px;color:rgba(251,191,36,.35);line-height:1;width:18px;flex-shrink:0}
+.pp-lb{flex:1;min-width:0}
+.pp-le{font-size:11px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.pp-lm{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu2);margin-bottom:3px}
+.pp-lo{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);line-height:1}
+.pp-lx{background:none;border:none;color:var(--mu);font-size:14px;cursor:pointer;padding:2px;line-height:1;transition:color .2s;flex-shrink:0}
+.pp-lx:hover{color:var(--rd)}
+.pp-ft{padding:14px 16px;border-top:1px solid rgba(251,191,36,.12);display:flex;flex-direction:column;gap:9px}
+.pp-or{display:flex;justify-content:space-between;align-items:baseline}
+.pp-ol{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.pp-on{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);line-height:1}
+.pp-si{width:100%;background:var(--s2);border:1px solid rgba(251,191,36,.22);border-radius:8px;color:var(--tx);font-family:'Bebas Neue',sans-serif;font-size:18px;padding:10px 14px;outline:none;letter-spacing:1px;transition:border-color .2s}
+.pp-si:focus{border-color:rgba(251,191,36,.5)}
+.pp-si::placeholder{color:var(--mu);font-size:13px}
+.pp-pr{display:flex;justify-content:space-between;align-items:baseline}
+.pp-pl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
+.pp-pn{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gr);line-height:1}
+.pp-pb{width:100%;padding:14px;background:linear-gradient(135deg,rgba(251,191,36,.9),rgba(245,158,11,.8));color:#07060d;border:none;border-radius:9px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:3px;cursor:pointer;transition:all .2s}
+.pp-pb:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 6px 20px rgba(251,191,36,.3)}
+.pp-pb:disabled{opacity:.35;cursor:not-allowed}
+.pp-cb{width:100%;padding:8px;background:transparent;border:1px solid rgba(255,255,255,.07);border-radius:7px;color:var(--mu);font-family:'DM Mono',monospace;font-size:9px;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.pp-cb:hover{color:var(--rd);border-color:rgba(248,113,113,.3)}
+.pp-mn{font-family:'DM Mono',monospace;font-size:8px;color:rgba(251,191,36,.5);text-align:center;letter-spacing:1px}
+/* Floating trigger */
+.pp-fab{position:fixed;bottom:24px;right:24px;z-index:39;display:none;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),#f59e0b);color:#07060d;border:none;border-radius:50px;padding:13px 22px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer;box-shadow:0 8px 24px rgba(251,191,36,.35);transition:all .2s}
+.pp-fab:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(251,191,36,.45)}
+@media(max-width:900px){.parlay-panel{width:100%;right:-100%;top:52px;height:calc(100vh - 52px)}}
+
 /* MOBILE SLIDE NAV */
 .mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
 .slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
@@ -317,6 +364,28 @@ select option{background:#15122a}
   <a href="/" class="go-home">Back to LEDGR</a>
 </div>
 <div id="app" style="display:none">
+
+<!-- ═══ PARLAY SLIP PANEL ═══ -->
+<div class="parlay-panel" id="parlayPanel">
+  <div class="pp-hd">
+    <div class="pp-title">🎰 PARLAY SLIP</div>
+    <div class="pp-badge" id="ppBadge">0 LEGS</div>
+    <button class="pp-close" onclick="closeParlayPanel()">✕</button>
+  </div>
+  <div class="pp-legs" id="ppLegs">
+    <div class="pp-empty">Select a match, enter odds,<br>then click a market chip to add a leg.<br><br>Min 2 legs · Max 8 legs</div>
+  </div>
+  <div class="pp-ft">
+    <div class="pp-or"><span class="pp-ol">Combined Odds</span><span class="pp-on" id="ppOdds">—</span></div>
+    <input type="number" class="pp-si" id="ppStake" placeholder="Stake (units)" min="0.01" step="0.5" oninput="updateParlayPayout()">
+    <div class="pp-pr"><span class="pp-pl">Potential Payout</span><span class="pp-pn" id="ppPayout">—</span></div>
+    <div class="pp-mn" id="ppNotice">Add at least 2 legs to post</div>
+    <button class="pp-pb" id="ppPostBtn" onclick="postParlay()" disabled>POST PARLAY →</button>
+    <button class="pp-cb" onclick="clearParlay()">✕ Clear All Legs</button>
+  </div>
+</div>
+<button class="pp-fab" id="ppFab" onclick="openParlayPanel()">🎰 <span id="ppFabCount">0</span>-LEG PARLAY ▸</button>
+
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <div class="slide-nav" id="slideNav">
   <div class="slide-nav-header">
@@ -366,6 +435,15 @@ select option{background:#15122a}
       <!-- LEFT: POST A PICK -->
       <div class="panel">
         <div class="panel-title">POST A PICK</div>
+
+        <!-- Mode toggle -->
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="modeSingle" onclick="setPickMode('single',this)">⚡ SINGLE PICK</button>
+          <button class="mode-btn" id="modeParlay" onclick="setPickMode('parlay',this)">🎰 BUILD PARLAY</button>
+        </div>
+        <div id="parlayHint" style="display:none;font-family:'DM Mono',monospace;font-size:9px;color:rgba(251,191,36,.6);letter-spacing:1px;margin:-8px 0 14px;padding:7px 12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:7px">
+          🎰 PARLAY MODE — Select match → Enter odds → Click market chip to add leg
+        </div>
 
         <div class="form-group">
           <label>Sport</label>
@@ -650,6 +728,28 @@ function selectMarket(m,sid,el){
   let fm=m;
   if(team==='home'&&selectedFixture)fm=selectedFixture.home+' — '+m;
   else if(team==='away'&&selectedFixture)fm=selectedFixture.away+' — '+m;
+
+  if(pickMode==='parlay'){
+    if(el.classList.contains('in-parlay')){
+      // Remove this leg
+      const evt=selectedFixture?selectedFixture.home+' vs '+selectedFixture.away:'';
+      const idx=parlayLegs.findIndex(l=>l.market===fm&&l.event===evt);
+      if(idx>=0){parlayLegs.splice(idx,1);el.classList.remove('in-parlay');updateParlayPanel();}
+    }else{
+      if(!selectedFixture){showToast('⚠️ Select a match first!');return;}
+      const odds=parseFloat(document.getElementById('pickOdds').value);
+      if(!odds||odds<1.01){showToast('⚠️ Enter odds before adding to parlay');document.getElementById('pickOdds').focus();return;}
+      if(parlayLegs.length>=8){showToast('⚠️ Max 8 legs per parlay');return;}
+      if(selectedFixture&&parlayLegs.some(l=>l.fixtureId===selectedFixture.id)){showToast('⚠️ Already have a leg from this match');return;}
+      el.classList.add('in-parlay');
+      parlayLegs.push({market:fm,event:selectedFixture.home+' vs '+selectedFixture.away,odds,sport:currentSport,fixtureId:selectedFixture?.id,homeTeam:selectedFixture?.home,awayTeam:selectedFixture?.away});
+      updateParlayPanel();
+      if(parlayLegs.length===1)openParlayPanel();
+      showToast(`✅ Leg ${parlayLegs.length} added`);
+    }
+    return;
+  }
+
   document.getElementById('pickMarket').value=fm;
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
@@ -977,6 +1077,121 @@ function endTutorial(){
 
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+
+// ── PARLAY ENGINE ─────────────────────────────────────────────
+let pickMode='single';
+let parlayLegs=[];
+
+function setPickMode(mode,el){
+  pickMode=mode;
+  document.querySelectorAll('.mode-btn').forEach(b=>{b.classList.remove('active','parlay-active');});
+  el.classList.add('active');
+  const hint=document.getElementById('parlayHint');
+  if(mode==='parlay'){
+    el.classList.add('parlay-active');
+    hint.style.display='block';
+    if(parlayLegs.length>0)openParlayPanel();
+  }else{
+    hint.style.display='none';
+    closeParlayPanel();
+    // deselect parlay chips
+    document.querySelectorAll('.chip.in-parlay').forEach(c=>c.classList.remove('in-parlay'));
+  }
+}
+
+function openParlayPanel(){document.getElementById('parlayPanel').classList.add('open');}
+function closeParlayPanel(){document.getElementById('parlayPanel').classList.remove('open');}
+
+function updateParlayPanel(){
+  const n=parlayLegs.length;
+  document.getElementById('ppBadge').textContent=n+(n===1?' LEG':' LEGS');
+  const fab=document.getElementById('ppFab');
+  if(pickMode==='parlay'&&n>0){fab.style.display='inline-flex';document.getElementById('ppFabCount').textContent=n;}
+  else{fab.style.display='none';}
+  if(!n){
+    document.getElementById('ppLegs').innerHTML='<div class="pp-empty">Select a match, enter odds,<br>then click a market chip to add a leg.<br><br>Min 2 legs · Max 8 legs</div>';
+    document.getElementById('ppOdds').textContent='—';
+    document.getElementById('ppPayout').textContent='—';
+    document.getElementById('ppPostBtn').disabled=true;
+    document.getElementById('ppNotice').style.display='block';
+    return;
+  }
+  document.getElementById('ppLegs').innerHTML=parlayLegs.map((l,i)=>`
+    <div class="pp-leg">
+      <div class="pp-ln">${i+1}</div>
+      <div class="pp-lb">
+        <div class="pp-le">${l.event}</div>
+        <div class="pp-lm">${l.market}</div>
+        <div class="pp-lo">${l.odds.toFixed(2)}</div>
+      </div>
+      <button class="pp-lx" onclick="removeParlayLeg(${i})">✕</button>
+    </div>`).join('');
+  const combined=parlayLegs.reduce((acc,l)=>acc*l.odds,1);
+  document.getElementById('ppOdds').textContent=combined.toFixed(2);
+  const canPost=n>=2;
+  document.getElementById('ppPostBtn').disabled=!canPost;
+  document.getElementById('ppNotice').style.display=canPost?'none':'block';
+  updateParlayPayout();
+}
+
+function updateParlayPayout(){
+  const stake=parseFloat(document.getElementById('ppStake').value)||0;
+  const combined=parlayLegs.reduce((acc,l)=>acc*l.odds,1);
+  document.getElementById('ppPayout').textContent=stake>0?(stake*combined).toFixed(2)+'u':'—';
+}
+
+function removeParlayLeg(idx){
+  parlayLegs.splice(idx,1);
+  // Deselect the chip if still visible
+  document.querySelectorAll('.chip.in-parlay').forEach(c=>{
+    const mktVal=document.getElementById('pickMarket').value;
+    // Best-effort deselect all gold chips and re-highlight only current parlay legs
+    c.classList.remove('in-parlay');
+  });
+  updateParlayPanel();
+  if(parlayLegs.length===0)closeParlayPanel();
+}
+
+function clearParlay(){
+  parlayLegs=[];
+  document.querySelectorAll('.chip.in-parlay').forEach(c=>c.classList.remove('in-parlay'));
+  updateParlayPanel();
+  closeParlayPanel();
+}
+
+async function postParlay(){
+  if(parlayLegs.length<2){showToast('⚠️ Add at least 2 legs!');return;}
+  const stake=parseFloat(document.getElementById('ppStake').value);
+  if(!stake||stake<=0){showToast('⚠️ Enter stake in parlay slip');document.getElementById('ppStake').focus();return;}
+  const combined=parseFloat(parlayLegs.reduce((acc,l)=>acc*l.odds,1).toFixed(2));
+  const legs=parlayLegs.length;
+  const btn=document.getElementById('ppPostBtn');
+  btn.textContent='Posting...';btn.disabled=true;
+  try{
+    const r=await fetch(API+'/picks',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        userId:user.id,
+        sport:parlayLegs[0].sport||currentSport,
+        event:parlayLegs.map(l=>l.event).join(' · ').slice(0,200),
+        homeTeam:parlayLegs[0].homeTeam||null,
+        awayTeam:parlayLegs[0].awayTeam||null,
+        market:('Parlay ('+legs+' legs): '+parlayLegs.map(l=>l.market).join(' + ')).slice(0,200),
+        odds:combined,stake,result:'pending',pnl:0,
+        stakeType:'units',confidence:'high',
+        reasoning:legs+'-leg parlay @ '+combined+' combined odds'
+      })
+    });
+    const d=await r.json();
+    if(d.id){
+      showToast('🎰 PARLAY POSTED! '+legs+' legs @ '+combined);
+      clearParlay();
+      setPickMode('single',document.getElementById('modeSingle'));
+      loadPicks();
+    }else{showToast('Error: '+(d.error||'Unknown'));}
+  }catch(e){showToast('Connection error');}
+  finally{btn.textContent='POST PARLAY →';btn.disabled=parlayLegs.length<2;}
 </script>
 </body>
 </html>

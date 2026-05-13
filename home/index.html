@@ -440,6 +440,34 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 .mission-badge.done{background:rgba(52,211,153,0.12);color:var(--gr);border:1px solid rgba(52,211,153,0.15)}
 .mission-badge.todo{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
 .lb-row.top1{background:linear-gradient(135deg,rgba(251,191,36,0.04),transparent);border-left:2px solid rgba(251,191,36,0.25)}
+/* ── RECORDS OF THE DAY ── */
+.records-wrap{padding:36px 0 0}
+.records-eyebrow{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.records-eyebrow::before,.records-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
+.records-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rec-day{border-radius:14px;padding:20px 16px;cursor:pointer;transition:transform .25s,box-shadow .25s;position:relative;overflow:hidden;text-decoration:none;color:inherit;display:block;animation:fadeSlideUp .5s ease both}
+.rec-day:hover{transform:translateY(-5px)}
+.rec-day::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,rgba(255,255,255,.04),transparent 60%);pointer-events:none}
+.rd-icon{font-size:20px;margin-bottom:8px;display:block}
+.rd-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px;opacity:.8}
+.rd-value{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,40px);line-height:1;letter-spacing:1px;margin-bottom:4px}
+.rd-who{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;margin-bottom:2px}
+.rd-sub{font-size:9px;font-family:'DM Mono',monospace;opacity:.55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rd-empty{opacity:.28}
+/* card themes */
+.rc-win{background:linear-gradient(135deg,rgba(52,211,153,.1),rgba(52,211,153,.03));border:1px solid rgba(52,211,153,.18)}
+.rc-win:hover{border-color:rgba(52,211,153,.38);box-shadow:0 8px 28px rgba(52,211,153,.1)}
+.rc-win .rd-label{color:var(--gr)}.rc-win .rd-value{color:var(--gr);text-shadow:0 0 20px rgba(52,211,153,.3)}.rc-win .rd-who{color:var(--gr)}
+.rc-streak{background:linear-gradient(135deg,rgba(251,146,60,.1),rgba(251,146,60,.03));border:1px solid rgba(251,146,60,.18)}
+.rc-streak:hover{border-color:rgba(251,146,60,.38);box-shadow:0 8px 28px rgba(251,146,60,.1)}
+.rc-streak .rd-label{color:var(--orange)}.rc-streak .rd-value{color:var(--orange);text-shadow:0 0 20px rgba(251,146,60,.3)}.rc-streak .rd-who{color:var(--orange)}
+.rc-odds{background:linear-gradient(135deg,rgba(184,159,255,.1),rgba(184,159,255,.03));border:1px solid rgba(184,159,255,.18)}
+.rc-odds:hover{border-color:rgba(184,159,255,.38);box-shadow:0 8px 28px rgba(184,159,255,.1)}
+.rc-odds .rd-label{color:var(--ac)}.rc-odds .rd-value{color:var(--ac);text-shadow:0 0 20px rgba(184,159,255,.3)}.rc-odds .rd-who{color:var(--ac)}
+.rc-roi{background:linear-gradient(135deg,rgba(251,191,36,.1),rgba(251,191,36,.03));border:1px solid rgba(251,191,36,.18)}
+.rc-roi:hover{border-color:rgba(251,191,36,.38);box-shadow:0 8px 28px rgba(251,191,36,.1)}
+.rc-roi .rd-label{color:var(--gold)}.rc-roi .rd-value{color:var(--gold);text-shadow:0 0 20px rgba(251,191,36,.3)}.rc-roi .rd-who{color:var(--gold)}
+@media(max-width:700px){.records-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:960px){.hero-layout{grid-template-columns:1fr;padding:40px 0 0}.hero-identity{display:none}}
 /* RESPONSIVE */
 @media(max-width:960px){.main-grid{grid-template-columns:1fr}nav{padding:0 16px}.nav-link{display:none}.matchup-grid{gap:12px}}
@@ -653,6 +681,17 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
       <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR"><span class="skel" style="width:56px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp1" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
       <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI"><span class="skel" style="width:64px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp2" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
       <div class="stat"><div class="stat-label">P&amp;L</div><div class="stat-val" id="statPnL"><span class="skel" style="width:72px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp3" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ RECORDS OF THE DAY ══════════════ -->
+  <div class="records-wrap fade-in" id="recordsWrap">
+    <div class="records-eyebrow">RECORDS OF THE DAY</div>
+    <div class="records-grid">
+      <div class="rec-day rc-win"><span class="rd-icon rd-empty">⚡</span><div class="rd-label">BIGGEST WIN TODAY</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
+      <div class="rec-day rc-streak"><span class="rd-icon rd-empty">🔥</span><div class="rd-label">HOTTEST STREAK</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
+      <div class="rec-day rc-odds"><span class="rd-icon rd-empty">💎</span><div class="rd-label">HIGHEST ODDS WIN</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
+      <div class="rec-day rc-roi"><span class="rd-icon rd-empty">📈</span><div class="rd-label">BEST ROI TODAY</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
     </div>
   </div>
 
@@ -1122,7 +1161,7 @@ async function loadData(){
     if(!r.ok)throw new Error('err');
     const all=await r.json();
     if(!Array.isArray(all))throw new Error('invalid');
-    renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);
+    renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderRecords(all);
   }catch(e){document.getElementById('communityFeed').innerHTML='<div class="empty">Syncing feed...</div>';}
 }
 function renderIdentityPanel(myPicks,rank,totalTipsters){
@@ -1280,6 +1319,70 @@ function renderMatchup(all){
   setTimeout(()=>{const f=document.getElementById('momentumFill');if(f)f.style.height=Math.max(15,Math.min(85,pct))+'%';},300);
   function mkDots(picks,elId){const el=document.getElementById(elId);if(!el)return;const last5=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);el.innerHTML=last5.map(p=>`<div class="sdot ${p.result}"></div>`).join('');}
   mkDots(t1.picks,'dotsL');mkDots(t2.picks,'dotsR');
+}
+
+function renderRecords(all){
+  const wrap=document.getElementById('recordsWrap');
+  if(!wrap)return;
+  const yesterday=Date.now()-86400000;
+  const todayAll=all.filter(p=>new Date(p.createdAt).getTime()>=yesterday);
+  const todayWins=todayAll.filter(p=>p.result==='win');
+
+  // 1. Biggest win today
+  const bigWin=todayWins.length?[...todayWins].sort((a,b)=>b.pnl-a.pnl)[0]:null;
+
+  // 2. Hottest active streak (across all picks)
+  const tipMap={};
+  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipMap[u])tipMap[u]=[];tipMap[u].push(p);});
+  let streakUser=null,streakLen=0;
+  Object.entries(tipMap).forEach(([u,picks])=>{
+    const settled=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    let s=0;for(const p of settled){if(p.result==='win')s++;else break;}
+    if(s>streakLen){streakLen=s;streakUser=u;}
+  });
+
+  // 3. Highest odds win today
+  const bigOdds=todayWins.length?[...todayWins].sort((a,b)=>b.odds-a.odds)[0]:null;
+
+  // 4. Best ROI today (min 2 picks)
+  const dayMap={};
+  todayAll.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!dayMap[u])dayMap[u]={pnl:0,stake:0,n:0};dayMap[u].pnl+=p.pnl||0;dayMap[u].stake+=p.stake||0;dayMap[u].n++;});
+  let roiUser=null,roiVal=-Infinity;
+  Object.entries(dayMap).forEach(([u,d])=>{if(d.n<2)return;const roi=d.stake>0?(d.pnl/d.stake)*100:0;if(roi>roiVal){roiVal=roi;roiUser=u;}});
+
+  function makeCard(cls,icon,label,value,who,sub,link){
+    const empty=!who&&!value;
+    return`<a class="rec-day ${cls}${empty?' rd-empty':''}" ${link?'href="'+link+'"':''}>
+      <span class="rd-icon">${icon}</span>
+      <div class="rd-label">${label}</div>
+      <div class="rd-value">${value||'—'}</div>
+      ${who?`<div class="rd-who">@${who}</div>`:''}
+      <div class="rd-sub">${sub||'No data yet today'}</div>
+    </a>`;
+  }
+
+  const grid=wrap.querySelector('.records-grid');
+  grid.innerHTML=
+    makeCard('rc-win','⚡','BIGGEST WIN TODAY',
+      bigWin?(bigWin.pnl>=0?'+':'')+bigWin.pnl.toFixed(1)+'u':null,
+      bigWin?.user?.username,
+      bigWin?((bigWin.event||'').slice(0,38)+' @ '+parseFloat(bigWin.odds).toFixed(2)):null,
+      bigWin?'/tipster?u='+bigWin.user?.username:null)+
+    makeCard('rc-streak','🔥','HOTTEST STREAK',
+      streakUser&&streakLen>=2?'W'+streakLen:null,
+      streakUser&&streakLen>=2?streakUser:null,
+      streakLen>=2?streakLen+' consecutive wins':'No active streak',
+      streakUser&&streakLen>=2?'/tipster?u='+streakUser:null)+
+    makeCard('rc-odds','💎','HIGHEST ODDS WIN',
+      bigOdds?parseFloat(bigOdds.odds).toFixed(2):null,
+      bigOdds?.user?.username,
+      bigOdds?(bigOdds.event||'').slice(0,40):null,
+      bigOdds?'/tipster?u='+bigOdds.user?.username:null)+
+    makeCard('rc-roi','📈','BEST ROI TODAY',
+      roiUser?(roiVal>=0?'+':'')+roiVal.toFixed(1)+'%':null,
+      roiUser,
+      roiUser?(dayMap[roiUser]?.n||0)+' picks today':null,
+      roiUser?'/tipster?u='+roiUser:null);
 }
 
 function renderRising(all){
