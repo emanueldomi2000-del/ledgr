@@ -1,4 +1,3 @@
-﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,310 +9,483 @@
 <meta property="og:description" content="Real picks. Verified results. Zero fake ROI. See the sharpest sports tipsters ranked by ROI, win rate, and reliability.">
 <meta property="og:image" content="https://getledgr.bet/og-image.png">
 <meta property="og:url" content="https://getledgr.bet/leaderboard">
-<meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LEDGR Leaderboard — Top Verified Tipsters">
-<meta name="twitter:description" content="Real picks. Verified results. Zero fake ROI. See the sharpest sports tipsters ranked by performance.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+:root{
+  --bg:#07060d;--s1:#0c0a1a;--s2:#15122a;
+  --bd:rgba(184,159,255,.1);--bd2:rgba(184,159,255,.2);
+  --ac:#b89fff;--acg:rgba(184,159,255,.08);
+  --tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;
+  --gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c;
+  --silver:#94a3b8;--bronze:#b47850;--cyan:#38bdf8;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1;opacity:.4}
+.bg-glow{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;
+  background:radial-gradient(ellipse,rgba(100,60,200,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.9);backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--bd);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
-.nav-links{display:flex;gap:4px}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
-.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.nav-link.active{color:var(--ac);background:var(--acg)}
-.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.main{max-width:1100px;margin:0 auto;padding:48px 24px;position:relative;z-index:2}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px;color:var(--tx)}
-.page-title span{color:var(--ac)}
-.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px}
+.nav-links{display:flex;gap:2px;align-items:center}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:7px 12px;border-radius:6px;transition:all .2s}
+.nav-link:hover{color:var(--tx)}
+.nav-link.active{color:var(--ac)}
+.user-badge{background:transparent;border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:pointer;transition:all .2s}
+.user-badge:hover{color:var(--ac);border-color:var(--bd2)}
+.logout-btn{background:transparent;border:none;color:var(--mu);padding:7px 10px;font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;transition:color .2s}
+.logout-btn:hover{color:var(--rd)}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--mu2);font-size:20px;cursor:pointer}
 
-/* STATS BAR */
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}
-.sb{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px;text-align:center;transition:border-color .2s}
-.sb:hover{border-color:var(--bd2)}
-.sb-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--ac);line-height:1}
-.sb-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+/* ── SLIDE NAV ── */
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s}
+.slide-nav-overlay.open{opacity:1;pointer-events:all}
+.slide-nav{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:91;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+.slide-nav.open{right:0}
+.slide-nav-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--bd)}
+.slide-nav-close{background:none;border:none;color:var(--mu2);font-size:18px;cursor:pointer}
+.slide-nav-profile{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;border-bottom:1px solid var(--bd)}
+.snp-av{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#6d28d9,#b89fff);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:14px;color:#fff;flex-shrink:0}
+.snp-name{font-weight:700;font-size:13px;color:var(--tx)}
+.snp-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
+.slide-nav-links{padding:12px 8px;flex:1;overflow-y:auto}
+.snl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:1px;color:var(--mu2);font-size:13px}
+.snl:hover{background:rgba(255,255,255,.04);color:var(--tx)}
+.snl-icon{font-size:16px;width:20px;text-align:center}
+.slide-nav-post{padding:12px 20px;border-top:1px solid var(--bd)}
+.snp-post-btn{display:block;text-align:center;background:var(--ac);color:#060508;text-decoration:none;border-radius:10px;padding:11px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px}
+.slide-nav-logout{padding:12px 20px}
+.snl-logout{background:none;border:none;color:var(--mu);font-size:12px;cursor:pointer;font-family:'Syne';padding:4px 0;transition:color .2s}
+.snl-logout:hover{color:var(--rd)}
 
-/* SEARCH + SORT */
-.search-bar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.search-input{flex:1;min-width:200px;background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:12px 16px;outline:none;transition:border-color .2s}
-.search-input:focus{border-color:var(--bd2)}
+/* ── MAIN ── */
+.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
+
+/* ── PAGE HEADER ── */
+.lb-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.lb-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,72px);letter-spacing:4px;line-height:.92;color:var(--tx)}
+.lb-title span{color:var(--ac)}
+.lb-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-top:6px}
+.lb-live-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:20px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:9px;color:var(--gr);letter-spacing:2px}
+.lb-live-dot{width:6px;height:6px;background:var(--gr);border-radius:50%;animation:live-pulse 1.6s ease-in-out infinite}
+@keyframes live-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(52,211,153,0)}}
+
+/* ── LIVE STATS BAR ── */
+.live-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-radius:14px;overflow:hidden;margin-bottom:28px;border:1px solid var(--bd)}
+.lb-stat-box{background:var(--s1);padding:16px 18px;position:relative;transition:background .2s}
+.lb-stat-box:hover{background:var(--s2)}
+.lsb-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.lsb-live-dot{width:4px;height:4px;background:var(--gr);border-radius:50%;animation:live-pulse 1.6s ease-in-out infinite}
+.lsb-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;line-height:1;color:var(--tx)}
+.lsb-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:3px}
+
+/* ── GAMING CONTROL BAR ── */
+.control-bar{display:flex;gap:12px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:200px;max-width:340px}
+.search-wrap::before{content:'⌕';position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--mu);font-size:16px;pointer-events:none;line-height:1}
+.search-input{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:11px 14px 11px 38px;outline:none;transition:border-color .2s,box-shadow .2s}
+.search-input:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(184,159,255,.1)}
 .search-input::placeholder{color:var(--mu)}
-.sort-select{background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:12px 16px;outline:none;cursor:pointer;transition:border-color .2s}
+.sort-select{background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:11px;padding:11px 14px;outline:none;cursor:pointer;letter-spacing:1px;transition:border-color .2s}
 .sort-select:focus{border-color:var(--bd2)}
-.sort-select option{background:#0c0a1a}
+.sort-select option{background:var(--s1)}
+.min-picks-select{background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--mu2);font-family:'DM Mono',monospace;font-size:11px;padding:11px 12px;outline:none;cursor:pointer;transition:border-color .2s}
 
-/* FILTERS */
-.filters{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap}
-.filter-btn{background:var(--s1);border:1px solid var(--bd);color:var(--mu2);padding:7px 16px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
-.filter-btn:hover{color:var(--tx);border-color:var(--bd2)}
-.filter-btn.active{background:var(--acg);border-color:var(--bd2);color:var(--ac)}
+/* ── PERIOD TABS (FACEIT-style) ── */
+.period-tabs{display:flex;align-items:center;gap:2px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:16px}
+.pt-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--mu2);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 16px;cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
+.pt-tab:hover{color:var(--tx)}
+.pt-tab.active{color:var(--ac);border-bottom-color:var(--ac)}
+.pt-tab.season{color:#b89464}
+.pt-tab.season.active{color:var(--gold);border-bottom-color:var(--gold)}
+.pt-divider{width:1px;height:20px;background:rgba(255,255,255,.08);margin:0 6px;flex-shrink:0}
+.pt-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;padding:0 8px;white-space:nowrap}
 
-/* TOP 3 PODIUM */
-.podium{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px}
-.podium-card{border-radius:16px;padding:24px;text-align:center;position:relative;overflow:hidden;cursor:pointer;transition:all .25s}
-.podium-card:hover{transform:translateY(-4px)}
-.podium-card.p1{background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(251,191,36,0.04),var(--s1));border:1px solid rgba(251,191,36,0.4);box-shadow:0 0 40px rgba(251,191,36,0.08)}
-.podium-card.p2{background:linear-gradient(135deg,rgba(156,163,175,0.1),var(--s1));border:1px solid rgba(156,163,175,0.3)}
-.podium-card.p3{background:linear-gradient(135deg,rgba(180,120,80,0.1),var(--s1));border:1px solid rgba(180,120,80,0.3)}
-.podium-medal{font-size:32px;margin-bottom:12px;display:block}
-.podium-av{width:56px;height:56px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff}
-.podium-card.p1 .podium-av{border:3px solid #fbbf24}
-.podium-card.p2 .podium-av{border:3px solid #9ca3af}
-.podium-card.p3 .podium-av{border:3px solid #b47850}
-.podium-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:4px}
-.podium-card.p1 .podium-name{color:#fbbf24}
-.podium-card.p2 .podium-name{color:#9ca3af}
-.podium-card.p3 .podium-name{color:#b47850}
-.podium-roi{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gr);margin-bottom:4px}
-.podium-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
-.podium-badges{display:flex;justify-content:center;gap:4px;margin-top:8px;min-height:18px}
-.podium-rel{font-size:10px;font-family:'DM Mono',monospace;margin-top:6px}
-.podium-streak{font-size:11px;color:var(--orange);margin-top:4px}
+/* ── SPORT FILTERS (gaming pill tabs) ── */
+.sport-filters{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;
+  color:var(--mu2);padding:7px 14px;font-size:11px;cursor:pointer;transition:all .2s;
+  font-family:'DM Mono',monospace;letter-spacing:.5px;white-space:nowrap}
+.filter-btn:hover{color:var(--tx);border-color:rgba(255,255,255,.15);background:rgba(255,255,255,.06)}
+.filter-btn.active{background:rgba(184,159,255,.14);border-color:var(--ac);color:var(--ac);box-shadow:0 0 12px rgba(184,159,255,.15)}
 
-/* LB TABLE */
-.lb-head{display:grid;grid-template-columns:56px 1fr 80px 80px 80px 90px 80px 100px 110px;gap:8px;padding:0 20px 12px;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;border-bottom:1px solid var(--bd);margin-bottom:8px}
-.lb-row{display:grid;grid-template-columns:56px 1fr 80px 80px 80px 90px 80px 100px 110px;gap:8px;padding:14px 20px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;align-items:center;transition:all .2s;cursor:pointer}
-.lb-row:hover{border-color:var(--bd2);background:var(--s2);transform:translateX(3px)}
-.rank-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--mu);text-align:center;line-height:1}
-.tipster-col{display:flex;align-items:center;gap:10px}
-.av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;flex-shrink:0;color:#fff}
-.tip-name{font-weight:700;font-size:13px;margin-bottom:2px;display:flex;align-items:center;gap:5px}
-.tip-picks-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
-.lb-stat{text-align:center}
-.lsv{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
+/* ── SEASON BANNER ── */
+.season-banner{background:linear-gradient(135deg,rgba(251,191,36,.06),rgba(184,159,255,.04));
+  border:1px solid rgba(251,191,36,.18);border-radius:12px;padding:14px 18px;margin-bottom:20px;
+  display:none;align-items:center;gap:14px}
+.season-banner.show{display:flex}
+.season-banner-icon{font-size:22px}
+.season-banner-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gold);line-height:1}
+.season-banner-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:2px}
+.season-winner-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:8px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:700;margin-left:auto;white-space:nowrap}
+
+/* ── PODIUM ── */
+.podium-section{display:grid;grid-template-columns:1fr 1.18fr 1fr;gap:14px;align-items:end;margin-bottom:28px}
+/* confetti */
+.conf-wrap{position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:inherit}
+.conf-p{position:absolute;bottom:-6px;border-radius:50%;animation:conf-rise var(--cd,6s) ease-in var(--cdl,0s) infinite}
+@keyframes conf-rise{0%{transform:translateY(0) scale(1) rotate(0);opacity:0}8%{opacity:1}85%{opacity:.7}100%{transform:translateY(-260px) scale(.3) rotate(360deg);opacity:0}}
+/* spring entrance */
+@keyframes pod-in{0%{opacity:0;transform:translateY(48px) scale(.78)}65%{transform:translateY(-8px) scale(1.02)}82%{transform:translateY(3px) scale(.99)}100%{opacity:1;transform:none}}
+.podium-card{position:relative;border-radius:18px;padding:28px 20px 20px;text-align:center;cursor:pointer;overflow:hidden;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s;
+  animation:pod-in .75s cubic-bezier(.34,1.56,.64,1) both}
+.podium-card.p2{animation-delay:.18s}
+.podium-card.p1{animation-delay:.06s}
+.podium-card.p3{animation-delay:.3s}
+.podium-card::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(160deg,rgba(255,255,255,.04),transparent 55%);pointer-events:none}
+.podium-card:hover{transform:translateY(-6px)}
+
+/* P1 Gold */
+.podium-card.p1{
+  background:linear-gradient(#0c0a1a,#0c0a1a) padding-box,
+             linear-gradient(160deg,rgba(251,191,36,.7),rgba(251,191,36,.25),rgba(251,191,36,.5)) border-box;
+  border:1.5px solid transparent;
+  box-shadow:0 0 60px rgba(251,191,36,.14),0 20px 48px rgba(0,0,0,.4)}
+.podium-card.p1:hover{box-shadow:0 0 80px rgba(251,191,36,.22),0 24px 56px rgba(0,0,0,.5)}
+/* P2 Silver */
+.podium-card.p2{
+  background:linear-gradient(#0c0a1a,#0c0a1a) padding-box,
+             linear-gradient(160deg,rgba(148,163,184,.5),rgba(148,163,184,.15),rgba(148,163,184,.4)) border-box;
+  border:1.5px solid transparent;
+  box-shadow:0 0 32px rgba(148,163,184,.08),0 14px 36px rgba(0,0,0,.35)}
+/* P3 Bronze */
+.podium-card.p3{
+  background:linear-gradient(#0c0a1a,#0c0a1a) padding-box,
+             linear-gradient(160deg,rgba(180,120,80,.5),rgba(180,120,80,.15),rgba(180,120,80,.4)) border-box;
+  border:1.5px solid transparent;
+  box-shadow:0 0 28px rgba(180,120,80,.08),0 14px 36px rgba(0,0,0,.35)}
+
+/* Podium platform base */
+.podium-base{height:32px;display:flex;align-items:center;justify-content:center;border-radius:0 0 10px 10px;margin-top:0}
+.p1 .podium-base{background:linear-gradient(rgba(251,191,36,.18),rgba(251,191,36,.08));border:1px solid rgba(251,191,36,.25);border-top:none}
+.p2 .podium-base{background:linear-gradient(rgba(148,163,184,.12),rgba(148,163,184,.05));border:1px solid rgba(148,163,184,.2);border-top:none}
+.p3 .podium-base{background:linear-gradient(rgba(180,120,80,.12),rgba(180,120,80,.05));border:1px solid rgba(180,120,80,.2);border-top:none}
+.podium-base-num{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px}
+.p1 .podium-base-num{color:rgba(251,191,36,.7)}
+.p2 .podium-base-num{color:rgba(148,163,184,.7)}
+.p3 .podium-base-num{color:rgba(180,120,80,.7)}
+
+/* Crown animation (P1 only) */
+.podium-crown{font-size:28px;margin-bottom:8px;display:block;filter:drop-shadow(0 0 14px rgba(251,191,36,.8));animation:crown-bob 2.8s ease-in-out infinite}
+@keyframes crown-bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
+.podium-medal-emoji{font-size:24px;margin-bottom:8px;display:block}
+.podium-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:2px}
+.p1 .podium-name{color:var(--gold);text-shadow:0 0 20px rgba(251,191,36,.4)}
+.p2 .podium-name{color:var(--silver)}
+.p3 .podium-name{color:var(--bronze)}
+.podium-roi{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gr);line-height:1;margin-bottom:4px;text-shadow:0 0 20px rgba(52,211,153,.3)}
+.podium-picks-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-bottom:10px}
+.podium-stats{display:flex;justify-content:center;gap:14px;margin-bottom:10px}
+.ps-i{text-align:center}
+.ps-v{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--tx);line-height:1}
+.ps-l{font-family:'DM Mono',monospace;font-size:7px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.podium-badges{display:flex;justify-content:center;gap:5px;margin-bottom:8px;min-height:20px}
+.podium-streak{font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);margin-top:4px}
+.podium-elo{display:inline-flex;align-items:center;gap:4px;margin-top:8px;background:rgba(184,159,255,.08);border:1px solid rgba(184,159,255,.2);border-radius:6px;padding:3px 9px;font-family:'DM Mono',monospace;font-size:10px;color:var(--ac)}
+.p1 .podium-elo{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25);color:var(--gold)}
+
+/* ── LEADERBOARD TABLE ── */
+.lb-table-wrap{border-radius:14px;overflow:hidden;border:1px solid var(--bd)}
+.lb-head{display:grid;grid-template-columns:60px 1fr 88px 88px 72px 80px 80px 88px 100px;
+  gap:0;padding:10px 20px;background:rgba(255,255,255,.025);
+  font-size:8px;color:var(--mu);letter-spacing:2.5px;text-transform:uppercase;font-family:'DM Mono',monospace;
+  border-bottom:1px solid var(--bd)}
+.lb-row{display:grid;grid-template-columns:60px 1fr 88px 88px 72px 80px 80px 88px 100px;
+  gap:0;padding:14px 20px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.04);
+  align-items:center;cursor:pointer;
+  transition:background .18s,transform .18s;
+  animation:row-slide-in .4s cubic-bezier(.34,1.1,.64,1) both;
+  animation-delay:calc(var(--ri,0) * .04s)}
+.lb-row:last-child{border-bottom:none}
+.lb-row:hover{background:var(--s2);transform:translateX(4px)}
+.lb-row:hover .rank-glow{opacity:1}
+@keyframes row-slide-in{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+
+/* Rank cell */
+.rank-cell{display:flex;flex-direction:column;align-items:center;gap:3px}
+.rank-num{font-family:'Bebas Neue',sans-serif;font-size:22px;line-height:1;text-align:center}
+.rn-1{color:var(--gold);text-shadow:0 0 12px rgba(251,191,36,.4)}
+.rn-2{color:var(--silver)}
+.rn-3{color:var(--bronze)}
+.rn-top{color:var(--ac)}
+.rn-rest{color:var(--mu)}
+.rank-move{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;line-height:1;white-space:nowrap}
+.rank-move.up{color:var(--gr)}
+.rank-move.down{color:var(--rd)}
+.rank-move.same{color:var(--mu);opacity:.5}
+@keyframes rank-change-pulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.rank-move.changed{animation:rank-change-pulse .5s ease}
+
+/* Tipster cell */
+.tipster-col{display:flex;align-items:center;gap:10px;min-width:0}
+.av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;flex-shrink:0;color:#fff;position:relative}
+.live-dot{position:absolute;top:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:var(--gr);border:2px solid var(--s1);animation:live-pulse 1.6s ease-in-out infinite}
+.tip-info{min-width:0}
+.tip-name{font-weight:700;font-size:13px;margin-bottom:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tip-sub{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace}
+.tip-badges{display:flex;align-items:center;gap:3px;margin-top:3px;flex-wrap:wrap}
+
+/* Stat cells */
+.lb-stat{text-align:center;padding:0 4px}
+.lsv{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;line-height:1}
 .lsv.pos{color:var(--gr)}.lsv.neg{color:var(--rd)}.lsv.neu{color:var(--tx)}
-.lsl{font-size:8px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px;margin-top:2px}
-.streak-col{text-align:center;font-size:13px;color:var(--orange);font-family:'DM Mono',monospace}
+.lsl{font-size:7px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.streak-col{text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--orange)}
 .rel-col{text-align:center}
-.rel-score{font-family:'Bebas Neue',sans-serif;font-size:16px}
-.rel-bar-wrap{width:48px;height:3px;background:rgba(255,255,255,0.06);border-radius:2px;margin:3px auto}
+.rel-score{font-family:'Bebas Neue',sans-serif;font-size:16px;line-height:1}
+.rel-bar-wrap{width:44px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;margin:3px auto}
 .rel-bar-fill{height:100%;border-radius:2px}
-.follow-btn{padding:7px 14px;border:1px solid var(--bd2);color:var(--ac);background:var(--acg);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif;white-space:nowrap}
+
+/* ELO cell */
+.elo-cell{text-align:center}
+.elo-val{font-family:'Bebas Neue',sans-serif;font-size:18px;line-height:1;letter-spacing:1px}
+.elo-lbl{font-size:7px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1.5px;margin-top:2px}
+
+/* Follow btn */
+.follow-btn{padding:7px 14px;border:1px solid var(--bd2);color:var(--ac);background:var(--acg);border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'DM Mono',monospace;letter-spacing:.5px;white-space:nowrap}
 .follow-btn:hover,.follow-btn.following{background:var(--ac);color:#07060d;border-color:var(--ac)}
-.empty{text-align:center;padding:60px;color:var(--mu);font-family:'DM Mono',monospace;font-size:13px}
-/* FROZEN SEASON */
-.frozen-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:16px 20px;margin-bottom:20px}
-.frozen-banner-icon{font-size:28px;flex-shrink:0}
+
+/* Empty states */
+.empty-lb{text-align:center;padding:64px 20px;color:var(--mu)}
+.empty-lb .icon{font-size:40px;margin-bottom:14px;display:block;opacity:.5}
+.empty-lb h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--mu2);margin-bottom:8px}
+.empty-lb p{font-size:11px;font-family:'DM Mono',monospace;line-height:1.7;max-width:340px;margin:0 auto}
+
+/* Skeleton */
+@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:1200px 100%;animation:shimmer 1.6s linear infinite;display:inline-block}
+
+/* Division badges */
+.dv-pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;font-family:'DM Mono',monospace;font-weight:700;letter-spacing:1px;white-space:nowrap;font-size:8px;padding:2px 7px}
+.div-bronze{background:rgba(180,120,80,.12);border:1px solid rgba(180,120,80,.3);color:#b47850}
+.div-silver{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8}
+.div-gold{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:var(--gold)}
+.div-platinum{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#38bdf8}
+.div-diamond{background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.3);color:var(--ac)}
+.div-elite{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--rd)}
+.div-legend{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(184,159,255,.1));border:1px solid rgba(251,191,36,.4);color:var(--gold)}
+.elo-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(184,159,255,.08);border:1px solid rgba(184,159,255,.2);border-radius:6px;padding:2px 7px;font-family:'DM Mono',monospace;font-size:9px;color:var(--ac)}
+.elo-badge.top{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.25);color:var(--gold)}
+.elo-badge.low{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.2);color:var(--rd)}
+
+/* Frozen season results */
+.frozen-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.25);border-radius:14px;padding:16px 20px;margin-bottom:16px}
+.frozen-banner-icon{font-size:28px}
 .frozen-banner-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--gold);line-height:1;margin-bottom:3px}
-.frozen-banner-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2);letter-spacing:.5px}
+.frozen-banner-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2)}
 .frozen-champion-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:8px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:700;margin-left:auto;white-space:nowrap}
-.frozen-row{display:grid;grid-template-columns:56px 1fr 90px 90px 80px 90px 110px;gap:8px;padding:14px 20px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-bottom:8px;align-items:center;cursor:pointer;transition:all .2s}
-.frozen-row:hover{border-color:var(--bd2);background:var(--s2)}
+.frozen-row{display:grid;grid-template-columns:56px 1fr 90px 90px 80px 90px 110px;gap:0;padding:14px 20px;background:var(--s1);border-bottom:1px solid rgba(255,255,255,.04);align-items:center;cursor:pointer;transition:background .18s}
+.frozen-row:hover{background:var(--s2)}
 .frozen-row.champion-row{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,191,36,.02));border-color:rgba(251,191,36,.35);box-shadow:0 0 28px rgba(251,191,36,.07)}
 .fr-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--mu);text-align:center}
 .fr-rank.gold{color:var(--gold)}.fr-rank.silver{color:#94a3b8}.fr-rank.bronze{color:#b47850}
 .fr-tipster{display:flex;align-items:center;gap:10px}
-.fr-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;flex-shrink:0}
-.fr-name{font-weight:700;font-size:13px;margin-bottom:1px;display:flex;align-items:center;gap:5px}
+.fr-av{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff}
+.fr-name{font-weight:700;font-size:13px;margin-bottom:1px}
 .fr-div{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--mu);margin-top:2px}
 .fr-stat{text-align:center}
 .fr-sv{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
 .fr-sv.pos{color:var(--gr)}.fr-sv.neg{color:var(--rd)}.fr-sv.neu{color:var(--tx)}
 .fr-sl{font-size:8px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px;margin-top:2px}
-@media(max-width:700px){.frozen-row{grid-template-columns:36px 1fr 60px 60px}.frozen-row>*:nth-child(5),.frozen-row>*:nth-child(6),.frozen-row>*:nth-child(7){display:none}}
-@media(max-width:1000px){.lb-head,.lb-row{grid-template-columns:44px 1fr 70px 70px 70px 80px}.lb-head>*:nth-child(7),.lb-row>*:nth-child(7),.lb-head>*:nth-child(8),.lb-row>*:nth-child(8){display:none}.stats-bar{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.lb-head,.lb-row{grid-template-columns:36px 1fr 60px 60px}.lb-head>*:nth-child(5),.lb-row>*:nth-child(5),.lb-head>*:nth-child(6),.lb-row>*:nth-child(6),.lb-head>*:nth-child(7),.lb-row>*:nth-child(7),.lb-head>*:nth-child(8),.lb-row>*:nth-child(8){display:none}.podium{grid-template-columns:1fr}nav{padding:0 16px}.nav-link{display:none}}
 
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
-.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
-.slide-nav.open{right:0}
-.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
-.slide-nav-overlay.open{display:block}
-.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
-.slide-nav-logo span{color:var(--ac)}
-.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
-.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
-.snl:hover{background:var(--acg)}
-.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
-.slide-nav-links{padding:12px 8px}
-.slide-nav-post{padding:0 16px 12px}
-.snp-post-btn{display:block;width:100%;background:var(--ac);color:#07060d;border:none;border-radius:10px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;text-align:center;text-decoration:none;cursor:pointer;transition:background .2s}
-.snp-post-btn:hover{background:#cdb8ff}
-.slide-nav-logout{padding:0 16px 16px}
-.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
-@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
-
-.time-filters{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.tf-btn{padding:7px 16px;border:1px solid var(--bd);border-radius:20px;font-size:11px;cursor:pointer;transition:all .2s;color:var(--mu2);font-family:'DM Mono',monospace;font-weight:600;background:none}
-.tf-btn:hover{border-color:var(--bd2);color:var(--tx)}
-.tf-btn.active{background:var(--acg);border-color:var(--bd2);color:var(--ac)}
-.tf-btn.season{border-color:rgba(251,191,36,0.2);color:#b89464}
-.tf-btn.season.active{background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.4);color:var(--gold)}
-.tf-divider{width:1px;height:20px;background:var(--bd);flex-shrink:0}
-.tf-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase}
-.season-banner{background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(184,159,255,0.04));border:1px solid rgba(251,191,36,0.15);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;gap:12px}
-.season-banner.show{display:flex}
-.season-banner-icon{font-size:20px}
-.season-banner-info{flex:1}
-.season-banner-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--gold);line-height:1}
-.season-banner-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px;margin-top:2px}
-.season-winner-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:8px;padding:6px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);font-weight:700}
-.min-picks-wrap{display:flex;align-items:center;gap:8px;margin-bottom:20px}
-.min-picks-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
-.min-picks-select{background:var(--s2);border:1px solid var(--bd);border-radius:6px;color:var(--mu2);font-family:'DM Mono',monospace;font-size:11px;padding:5px 10px;outline:none;cursor:pointer}
-.empty-lb{text-align:center;padding:60px 20px;color:var(--mu)}
-.empty-lb .icon{font-size:40px;margin-bottom:14px}
-.empty-lb h3{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--mu2);margin-bottom:8px}
-.empty-lb p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace;line-height:1.7}
-@keyframes shimmer{0%{background-position:-600px 0}100%{background-position:600px 0}}
-.skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.09) 50%,rgba(255,255,255,0.04) 75%);background-size:1200px 100%;animation:shimmer 1.6s infinite linear;display:inline-block}
-.skel-row{display:flex;align-items:center;gap:14px;padding:16px;border-bottom:1px solid var(--bd)}
-.skel-av{width:38px;height:38px;border-radius:10px;flex-shrink:0}
-.skel-lines{flex:1;display:flex;flex-direction:column;gap:6px}
-.skel-stat-group{display:flex;gap:28px;margin-left:auto}
-
-.division-badge-sm{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;margin-left:4px}
-.div-bronze{background:rgba(180,120,80,0.12);border:1px solid rgba(180,120,80,0.3);color:#b47850}
-.div-silver{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.25);color:#94a3b8}
-.div-gold{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);color:var(--gold)}
-.div-platinum{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8}
-.div-diamond{background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.3);color:var(--ac)}
-.div-elite{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:var(--rd)}
-.div-legend{background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(184,159,255,0.1));border:1px solid rgba(251,191,36,0.4);color:var(--gold)}
-.rank-move{font-size:10px;font-family:'DM Mono',monospace;font-weight:700}
-.rank-move.up{color:var(--gr)}
-.rank-move.down{color:var(--rd)}
-.rank-move.same{color:var(--mu)}
-.podium-div{font-size:10px;font-family:'DM Mono',monospace;margin-top:6px;font-weight:700}
-
-.elo-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(184,159,255,0.08);border:1px solid rgba(184,159,255,0.2);border-radius:6px;padding:3px 8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);font-weight:700}
-.elo-badge.top{background:rgba(251,191,36,0.1);border-color:rgba(251,191,36,0.25);color:var(--gold)}
-.elo-badge.low{background:rgba(248,113,113,0.08);border-color:rgba(248,113,113,0.2);color:var(--rd)}
-.elo-change-pos{color:var(--gr);font-size:9px;font-family:'DM Mono',monospace}
-.elo-change-neg{color:var(--rd);font-size:9px;font-family:'DM Mono',monospace}
+/* Responsive */
+@media(max-width:1060px){
+  .lb-head,.lb-row{grid-template-columns:52px 1fr 80px 80px 68px 76px 76px}
+  .lb-head>*:nth-child(8),.lb-row>*:nth-child(8),
+  .lb-head>*:nth-child(9),.lb-row>*:nth-child(9){display:none}
+  .live-bar{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){
+  nav{padding:0 16px}
+  .nav-link{display:none}
+  .mobile-menu-btn{display:block}
+  .lb-head,.lb-row{grid-template-columns:40px 1fr 68px 68px}
+  .lb-head>*:nth-child(5),.lb-row>*:nth-child(5),
+  .lb-head>*:nth-child(6),.lb-row>*:nth-child(6),
+  .lb-head>*:nth-child(7),.lb-row>*:nth-child(7),
+  .lb-head>*:nth-child(8),.lb-row>*:nth-child(8),
+  .lb-head>*:nth-child(9),.lb-row>*:nth-child(9){display:none}
+  .podium-section{grid-template-columns:1fr;align-items:stretch}
+  .podium-card.p1,.podium-card.p2,.podium-card.p3{animation-delay:0s}
+  .live-bar{grid-template-columns:1fr 1fr}
+  .control-bar{flex-wrap:wrap}
+  .search-wrap{max-width:100%;width:100%}
+  .frozen-row{grid-template-columns:40px 1fr 68px 68px}
+  .frozen-row>*:nth-child(5),.frozen-row>*:nth-child(6),.frozen-row>*:nth-child(7){display:none}
+}
 </style>
 </head>
 <body>
-<nav>
-  <a href="/home" class="logo">LEDG<span>R</span></a>
-  <div class="nav-links">
-    <a href="/home" class="nav-link">Home</a>
-    <a href="/leaderboard" class="nav-link active">Leaderboard</a>
-    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
-    <a href="/compare" class="nav-link">Compare</a>
-    <a href="/simulator" class="nav-link">Simulator</a>
-    <a href="/badges" class="nav-link">🏅 Badges</a>
-    <a href="/progress" class="nav-link">🎮 Progress</a>
-    <a href="/analytics" class="nav-link">📊 Analytics</a>
-    <a href="/community" class="nav-link">💬 Chat</a>
-    <a href="/feed" class="nav-link">🔴 Live</a>
-    <a href="/parlay" class="nav-link">🎰 Parlay</a>
-    <a href="/notifications" class="nav-link">🔔 Alerts</a>
-    <a href="/settings" class="nav-link">⚙️ Profile</a>
-  </div>
-  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button><button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
-</nav>
+<div class="bg-glow"></div>
+
+<!-- ═══ SLIDE NAV ═══ -->
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <div class="slide-nav" id="slideNav">
   <div class="slide-nav-header">
-    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <span style="font-family:'Bebas Neue';font-size:20px;letter-spacing:4px">LEDG<span style="color:#b89fff">R</span></span>
     <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-profile" onclick="goToProfile();closeSlideNav()">
+    <div class="snp-av" id="slideAvatar">?</div>
+    <div><div class="snp-name" id="slideName">@—</div><div class="snp-sub">View your profile →</div></div>
   </div>
   <div class="slide-nav-links">
     <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
-    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/leaderboard" class="snl" style="color:var(--ac)"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
     <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
     <a href="/progress" class="snl"><span class="snl-icon">🎮</span><div class="snl-text">Progression</div></a>
-    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
     <a href="/community" class="snl"><span class="snl-icon">💬</span><div class="snl-text">Community Chat</div></a>
     <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
     <a href="/parlay" class="snl"><span class="snl-icon">🎰</span><div class="snl-text">Parlay Builder</div></a>
     <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
     <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
   </div>
-  <div class="slide-nav-post">
-    <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
-  </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="logout()">Log Out</button>
-  </div>
+  <div class="slide-nav-post"><a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a></div>
+  <div class="slide-nav-logout"><button class="snl-logout" onclick="logout()">Log Out</button></div>
 </div>
 
-<div class="main">
-  <div class="page-title">LEADER<span>BOARD</span></div>
-  <div class="page-sub">REAL PICKS · VERIFIED RECORDS · UPDATED LIVE</div>
-  <div class="stats-bar">
-    <div class="sb"><div class="sb-val" id="sbTipsters">—</div><div class="sb-lbl">Active Tipsters</div></div>
-    <div class="sb"><div class="sb-val" id="sbPicks">—</div><div class="sb-lbl">Total Picks</div></div>
-    <div class="sb"><div class="sb-val" id="sbWinRate">—</div><div class="sb-lbl">Avg Win Rate</div></div>
-    <div class="sb"><div class="sb-val" id="sbROI">—</div><div class="sb-lbl">Avg ROI</div></div>
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="/home" class="logo">LEDG<span>R</span></a>
+  <div class="nav-links">
+    <a href="/home" class="nav-link">Home</a>
+    <a href="/leaderboard" class="nav-link active">Leaderboard</a>
+    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
+    <a href="/badges" class="nav-link">🏅 Badges</a>
+    <a href="/progress" class="nav-link">🎮 Progress</a>
+    <a href="/compare" class="nav-link">Compare</a>
+    <a href="/simulator" class="nav-link">Simulator</a>
+    <a href="/community" class="nav-link">💬 Chat</a>
+    <a href="/feed" class="nav-link">🔴 Live</a>
+    <a href="/parlay" class="nav-link">🎰 Parlay</a>
+    <a href="/settings" class="nav-link">⚙️ Profile</a>
+    <div class="user-badge" id="userBadge" onclick="goToProfile()">...</div>
+    <button class="logout-btn" onclick="logout()">Log Out</button>
+    <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
   </div>
-  <div class="search-bar">
-    <input type="text" class="search-input" id="searchInput" placeholder="🔍  Search tipster..." oninput="renderLeaderboard()">
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+
+  <!-- Header -->
+  <div class="lb-header">
+    <div>
+      <div class="lb-title">LEADER<span>BOARD</span></div>
+      <div class="lb-sub">Real picks · Verified records · Zero fake ROI</div>
+    </div>
+    <div class="lb-live-chip"><div class="lb-live-dot"></div>LIVE RANKINGS</div>
+  </div>
+
+  <!-- Live stats bar -->
+  <div class="live-bar">
+    <div class="lb-stat-box">
+      <div class="lsb-label"><div class="lsb-live-dot"></div>PICKS TODAY</div>
+      <div class="lsb-val" id="sbToday">—</div>
+      <div class="lsb-sub" id="sbTodaySub">Last 24 hours</div>
+    </div>
+    <div class="lb-stat-box">
+      <div class="lsb-label">BIGGEST WIN TODAY</div>
+      <div class="lsb-val" id="sbBigWin">—</div>
+      <div class="lsb-sub" id="sbBigWinSub">Best P&L in 24h</div>
+    </div>
+    <div class="lb-stat-box">
+      <div class="lsb-label">MOST ACTIVE TODAY</div>
+      <div class="lsb-val" id="sbActive" style="font-size:18px">—</div>
+      <div class="lsb-sub" id="sbActiveSub">—</div>
+    </div>
+    <div class="lb-stat-box">
+      <div class="lsb-label">#1 ALL-TIME ROI</div>
+      <div class="lsb-val" id="sbTopROI" style="color:var(--gr)">—</div>
+      <div class="lsb-sub" id="sbTopSub">—</div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="control-bar">
+    <div class="search-wrap">
+      <input type="text" class="search-input" id="searchInput" placeholder="Search tipster..." oninput="renderLeaderboard()">
+    </div>
     <select class="sort-select" id="sortSelect" onchange="renderLeaderboard()">
-      <option value="roi">Sort by ROI</option>
-      <option value="wr">Sort by Win Rate</option>
-      <option value="picks">Sort by Picks</option>
-      <option value="pnl">Sort by P&L</option>
-      <option value="rel">Sort by Reliability</option>
+      <option value="roi">SORT: ROI</option>
+      <option value="wr">SORT: WIN RATE</option>
+      <option value="picks">SORT: PICKS</option>
+      <option value="pnl">SORT: P&L</option>
+      <option value="rel">SORT: RELIABILITY</option>
+    </select>
+    <select class="min-picks-select" id="minPicksSelect" onchange="renderLeaderboard()">
+      <option value="1">MIN 1 PICK</option>
+      <option value="5" selected>MIN 5 PICKS</option>
+      <option value="10">MIN 10 PICKS</option>
+      <option value="20">MIN 20 PICKS</option>
     </select>
   </div>
-  <div class="time-filters">
-    <span class="tf-label">Period</span>
-    <button class="tf-btn active" onclick="setTimeFilter('all',this)">All Time</button>
-    <button class="tf-btn" onclick="setTimeFilter('30d',this)">30 Days</button>
-    <button class="tf-btn" onclick="setTimeFilter('7d',this)">7 Days</button>
-    <div class="tf-divider"></div>
-    <span class="tf-label">🏆 Seasons</span>
-    <button class="tf-btn season" onclick="setTimeFilter('s3',this)">Season 3</button>
-    <button class="tf-btn season" onclick="setTimeFilter('s2',this)">Season 2</button>
-    <button class="tf-btn season" onclick="setTimeFilter('s1',this)">Season 1</button>
+
+  <!-- Period tabs (FACEIT-style) -->
+  <div class="period-tabs">
+    <button class="pt-tab active" onclick="setTimeFilter('all',this)">ALL TIME</button>
+    <button class="pt-tab" onclick="setTimeFilter('30d',this)">30D</button>
+    <button class="pt-tab" onclick="setTimeFilter('7d',this)">7D</button>
+    <div class="pt-divider"></div>
+    <span class="pt-label">SEASONS</span>
+    <button class="pt-tab season" onclick="setTimeFilter('s3',this)">S3</button>
+    <button class="pt-tab season" onclick="setTimeFilter('s2',this)">S2</button>
+    <button class="pt-tab season" onclick="setTimeFilter('s1',this)">S1</button>
   </div>
+
+  <!-- Season banner -->
   <div class="season-banner" id="seasonBanner">
     <div class="season-banner-icon">🏆</div>
-    <div class="season-banner-info">
-      <div class="season-banner-title" id="seasonBannerTitle">SEASON 3</div>
-      <div class="season-banner-sub" id="seasonBannerSub">Current season · Last 90 days</div>
+    <div>
+      <div class="season-banner-title" id="seasonBannerTitle">SEASON</div>
+      <div class="season-banner-sub" id="seasonBannerSub"></div>
     </div>
     <div class="season-winner-badge" id="seasonWinnerBadge" style="display:none">👑 Champion: —</div>
   </div>
-  <div class="min-picks-wrap">
-    <span class="min-picks-label">Min picks:</span>
-    <select class="min-picks-select" id="minPicksSelect" onchange="renderLeaderboard()">
-      <option value="1">1+</option>
-      <option value="5" selected>5+</option>
-      <option value="10">10+</option>
-      <option value="20">20+</option>
-    </select>
-  </div>
-  <div class="filters">
-    <button class="filter-btn active" onclick="filterBy('all',this)">All Sports</button>
-    <button class="filter-btn" onclick="filterBy('Soccer',this)">⚽ Soccer</button>
-    <button class="filter-btn" onclick="filterBy('Basketball',this)">🏀 Basketball</button>
-    <button class="filter-btn" onclick="filterBy('Tennis',this)">🎾 Tennis</button>
-    <button class="filter-btn" onclick="filterBy('Football',this)">🏈 Football</button>
+
+  <!-- Sport filters -->
+  <div class="sport-filters">
+    <button class="filter-btn active" onclick="filterBy('all',this)">ALL SPORTS</button>
+    <button class="filter-btn" onclick="filterBy('Soccer',this)">⚽ SOCCER</button>
+    <button class="filter-btn" onclick="filterBy('Basketball',this)">🏀 BASKETBALL</button>
+    <button class="filter-btn" onclick="filterBy('Tennis',this)">🎾 TENNIS</button>
+    <button class="filter-btn" onclick="filterBy('Football',this)">🏈 FOOTBALL</button>
     <button class="filter-btn" onclick="filterBy('MMA/Boxing',this)">🥊 MMA</button>
   </div>
-  <!-- TOP 3 PODIUM -->
-  <div class="podium" id="podium" style="display:none"></div>
-  <!-- TABLE -->
-  <div class="lb-head" id="lbHead" style="display:none">
-    <span></span><span>Tipster</span>
-    <span style="text-align:center">ROI</span>
-    <span style="text-align:center">Win Rate</span>
-    <span style="text-align:center">Picks</span>
-    <span style="text-align:center">Streak</span>
-    <span style="text-align:center">Reliability</span>
-    <span style="text-align:center">Sharp</span>
-    <span></span>
+
+  <!-- Podium -->
+  <div class="podium-section" id="podium" style="display:none"></div>
+
+  <!-- Table -->
+  <div class="lb-table-wrap" id="lbTableWrap" style="display:none">
+    <div class="lb-head" id="lbHead">
+      <span></span>
+      <span>TIPSTER</span>
+      <span style="text-align:center">ROI</span>
+      <span style="text-align:center">WIN RATE</span>
+      <span style="text-align:center">PICKS</span>
+      <span style="text-align:center">STREAK</span>
+      <span style="text-align:center">SCORE</span>
+      <span style="text-align:center">ELO</span>
+      <span></span>
+    </div>
+    <div id="lbContainer"></div>
   </div>
-  <div id="lbContainer"></div>
-</div>
+  <div id="lbEmpty" style="display:none"></div>
+
+</div><!-- /main -->
+
 <script src="/divisions.js"></script>
 <script src="/flow.js"></script>
 <script src="/archetypes.js"></script>
@@ -322,402 +494,510 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
-const API='https://ledgr-backend-production-c132.up.railway.app';
-let allPicks=[],currentFilter='all',allTipsters=[];
-const medals=['🥇','🥈','🥉'];
-const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#7c3aed,#ec4899)'];
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+let allPicks = [], currentFilter = 'all', allTipsters = [], allSeasons = [];
+const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#7c3aed,#ec4899)'];
 
-function showSkeletons(n=8){
-  document.getElementById('lbContainer').innerHTML=Array.from({length:n},()=>`
-    <div class="skel-row">
-      <span class="skel skel-av"></span>
-      <div class="skel-lines">
-        <span class="skel" style="width:120px;height:13px"></span>
-        <span class="skel" style="width:80px;height:10px;margin-top:2px"></span>
+// ── Nav helpers ────────────────────────────────────────────
+function logout() { localStorage.clear(); window.location.href = '/login'; }
+function goToProfile() { const u = localStorage.getItem('username'); if (u) window.location.href = '/tipster?u=' + u; }
+function openSlideNav() { document.getElementById('slideNav').classList.add('open'); document.getElementById('slideOverlay').classList.add('open'); }
+function closeSlideNav() { document.getElementById('slideNav').classList.remove('open'); document.getElementById('slideOverlay').classList.remove('open'); }
+
+(function initNav() {
+  const u = localStorage.getItem('username');
+  const ub = document.getElementById('userBadge');
+  const sn = document.getElementById('slideName');
+  const sa = document.getElementById('slideAvatar');
+  if (u) { if (ub) ub.textContent = '@' + u; if (sn) sn.textContent = '@' + u; if (sa) sa.textContent = u[0].toUpperCase(); }
+})();
+
+// ── Skeleton on load ────────────────────────────────────────
+(function() {
+  document.getElementById('lbTableWrap').style.display = 'block';
+  document.getElementById('lbContainer').innerHTML = Array.from({length:7}, (_, i) => `
+    <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.04)">
+      <span class="skel" style="width:40px;height:40px;border-radius:10px;flex-shrink:0"></span>
+      <span class="skel" style="width:38px;height:38px;border-radius:50%;flex-shrink:0"></span>
+      <div style="flex:1;display:flex;flex-direction:column;gap:5px">
+        <span class="skel" style="width:${100+Math.random()*60|0}px;height:12px"></span>
+        <span class="skel" style="width:60px;height:9px"></span>
       </div>
-      <div class="skel-stat-group">
-        <span class="skel" style="width:44px;height:20px"></span>
-        <span class="skel" style="width:44px;height:20px"></span>
-        <span class="skel" style="width:36px;height:20px"></span>
-      </div>
+      <span class="skel" style="width:52px;height:20px;margin-left:auto"></span>
+      <span class="skel" style="width:52px;height:20px"></span>
+      <span class="skel" style="width:40px;height:20px"></span>
     </div>`).join('');
-}
-showSkeletons();
+})();
 
-
-function getDivision(t){
-  const roi=t.stake>0?(t.pnl/t.stake)*100:0;
-  const wr=(t.wins+t.losses)>0?(t.wins/(t.wins+t.losses))*100:0;
-  if(window.Divisions)return window.Divisions.getFromStats(roi,wr,t.picks);
-  const score=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(t.picks/100)*20))+Math.min(10,t.picks));
-  if(score>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'🐐'};
-  if(score>=80)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
-  if(score>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
-  if(score>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
-  if(score>=35)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
-  if(score>=20)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
-  return{name:'BRONZE',cls:'div-bronze',icon:'🥉'};
+// ── Helpers ─────────────────────────────────────────────────
+function getDivision(t) {
+  const roi = t.stake > 0 ? (t.pnl / t.stake) * 100 : 0;
+  const wr  = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses)) * 100 : 0;
+  if (window.Divisions) return window.Divisions.getFromStats(roi, wr, t.picks);
+  const score = Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(t.picks/100)*20))+Math.min(10,t.picks));
+  if (score>=92) return {name:'LEGENDARY',cls:'div-legend',icon:'🐐',score};
+  if (score>=80) return {name:'ELITE',cls:'div-elite',icon:'🔱',score};
+  if (score>=65) return {name:'DIAMOND',cls:'div-diamond',icon:'💎',score};
+  if (score>=50) return {name:'PLATINUM',cls:'div-platinum',icon:'⚡',score};
+  if (score>=35) return {name:'GOLD',cls:'div-gold',icon:'🏆',score};
+  if (score>=20) return {name:'SILVER',cls:'div-silver',icon:'🥈',score};
+  return {name:'BRONZE',cls:'div-bronze',icon:'🥉',score};
 }
 
-function getRankMove(username,currentRank){
-  const stored=JSON.parse(localStorage.getItem('ledgr_ranks')||'{}');
-  const prev=stored[username];
-  stored[username]=currentRank;
-  localStorage.setItem('ledgr_ranks',JSON.stringify(stored));
-  if(!prev||prev===currentRank)return'<span class="rank-move same">—</span>';
-  if(prev>currentRank)return`<span class="rank-move up">↑${prev-currentRank}</span>`;
-  return`<span class="rank-move down">↓${currentRank-prev}</span>`;
+function getRankMove(username, currentRank) {
+  const stored = JSON.parse(localStorage.getItem('ledgr_ranks') || '{}');
+  const prev = stored[username];
+  stored[username] = currentRank;
+  localStorage.setItem('ledgr_ranks', JSON.stringify(stored));
+  if (!prev || prev === currentRank) return '<span class="rank-move same">—</span>';
+  if (prev > currentRank) return `<span class="rank-move up changed">▲${prev - currentRank}</span>`;
+  return `<span class="rank-move down changed">▼${currentRank - prev}</span>`;
 }
-function getBadgeIcons(t){
-  const icons=[];
-  const wr=(t.wins+t.losses)>0?(t.wins/(t.wins+t.losses))*100:0;
-  const roi=t.stake>0?(t.pnl/t.stake)*100:0;
-  if(t.streak>=5)icons.push('🔥');
-  if(roi>=20&&t.picks>=50)icons.push('💎');
-  if(wr>=60&&(t.wins+t.losses)>=30)icons.push('🎯');
-  if(roi>=15&&t.picks>=10&&t.picks<50)icons.push('🚀');
-  if(t.picks>=100)icons.push('👑');
+
+function getBadgeIcons(t) {
+  const icons = [];
+  const wr = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses)) * 100 : 0;
+  const roi = t.stake > 0 ? (t.pnl / t.stake) * 100 : 0;
+  if (t.streak >= 5) icons.push('🔥');
+  if (roi >= 20 && t.picks >= 50) icons.push('💎');
+  if (wr >= 60 && (t.wins + t.losses) >= 30) icons.push('🎯');
+  if (t.picks >= 100) icons.push('👑');
+  if (roi >= 15 && t.picks >= 10 && t.picks < 50) icons.push('🚀');
   return icons;
 }
 
-function getReliability(t){
-  if(t.picks<3)return{score:0,color:'var(--mu)',label:'—'};
-  const roi=t.stake>0?(t.pnl/t.stake)*100:0;
-  const wr=(t.wins+t.losses)>0?(t.wins/(t.wins+t.losses))*100:0;
-  const score=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(t.picks/100)*20))+Math.min(10,t.picks));
-  const color=score>=70?'var(--gr)':score>=40?'var(--gold)':'var(--rd)';
-  return{score,color,label:score+'/100'};
+function getReliability(t) {
+  if (t.picks < 3) return {score:0,color:'var(--mu)',label:'—'};
+  const roi = t.stake > 0 ? (t.pnl / t.stake) * 100 : 0;
+  const wr  = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses)) * 100 : 0;
+  const score = Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(t.picks/100)*20))+Math.min(10,t.picks));
+  const color = score >= 70 ? 'var(--gr)' : score >= 40 ? 'var(--gold)' : 'var(--rd)';
+  return {score, color, label: score + '/100'};
 }
 
-let currentTimeFilter='all';
-let allSeasons=[];
-
-// Match tf-btn key (s1/s2/s3) to a Season object by number
-function seasonForKey(key){
-  const num=parseInt(key.replace('s',''));
-  return allSeasons.find(s=>s.number===num)||null;
-}
-
-async function setTimeFilter(t,el){
-  currentTimeFilter=t;
-  document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-
-  // For past seasons with frozen results, load from API
-  if(t.startsWith('s')){
-    const season=seasonForKey(t);
-    if(season&&!season.isActive&&season.champion){
-      await renderFrozenSeason(season);
-      return;
-    }
+// ELO counter animation
+function animateElo(el, target) {
+  if (!el) return;
+  const start = Math.max(800, target - 200);
+  const duration = 1000;
+  const t0 = performance.now();
+  function tick(now) {
+    const p = Math.min(1, (now - t0) / duration);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(start + (target - start) * e);
+    if (p < 1) requestAnimationFrame(tick);
   }
-
-  // Live path
-  document.getElementById('podium').style.display='none';
-  document.getElementById('lbHead').style.display='none';
-  document.getElementById('lbContainer').innerHTML='';
-  buildTipsters();
-  updateSeasonBanner(t,allTipsters);
-  renderLeaderboard();
+  requestAnimationFrame(tick);
 }
 
-const SEASON_CONFIG={
+// Confetti spawn for #1 podium
+function spawnConfetti(container) {
+  const CONF_COLORS = ['#fbbf24','#f59e0b','#b89fff','#34d399','#f43f5e','#38bdf8'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'conf-p';
+    const size = 3 + Math.random() * 4;
+    p.style.cssText = `left:${Math.random()*100}%;width:${size}px;height:${size}px;
+      --cd:${4+Math.random()*5}s;--cdl:${-Math.random()*8}s;
+      background:${CONF_COLORS[Math.random()*CONF_COLORS.length|0]};
+      box-shadow:0 0 ${size}px currentColor;border-radius:${Math.random()>.5?'50%':'2px'}`;
+    container.appendChild(p);
+  }
+}
+
+// Season config
+const SEASON_CONFIG = {
   s3:{title:'SEASON 3',sub:'Current season',start:new Date('2025-07-01').getTime(),end:new Date('2026-08-31').getTime()},
   s2:{title:'SEASON 2',sub:'Jan 2025 – Jun 2025',start:new Date('2025-01-01').getTime(),end:new Date('2025-06-30').getTime()},
   s1:{title:'SEASON 1',sub:'Sep 2024 – Dec 2024',start:new Date('2024-09-01').getTime(),end:new Date('2024-12-31').getTime()},
 };
+let currentTimeFilter = 'all';
 
-async function renderFrozenSeason(season){
-  document.getElementById('podium').style.display='none';
-  document.getElementById('lbHead').style.display='none';
-  const c=document.getElementById('lbContainer');
-  c.innerHTML='<div class="empty">Loading season results…</div>';
-  const banner=document.getElementById('seasonBanner');banner.classList.remove('show');
+function seasonForKey(key) {
+  const num = parseInt(key.replace('s', ''));
+  return allSeasons.find(s => s.number === num) || null;
+}
 
-  try{
-    const r=await fetch(API+'/seasons/'+season.id+'/leaderboard');
-    const results=await r.json();
-
-    const fmt=d=>new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
-    const dateRange=fmt(season.startDate)+' – '+fmt(season.endDate);
-    const champHtml=season.champion?`<div class="frozen-champion-badge">👑 Champion: @${season.champion}</div>`:'';
-
-    if(!results.length){
-      c.innerHTML=`<div class="frozen-banner"><div class="frozen-banner-icon">🏆</div><div><div class="frozen-banner-title">${season.name}</div><div class="frozen-banner-sub">${dateRange}</div></div>${champHtml}</div><div class="empty">No results recorded for this season.</div>`;
+async function setTimeFilter(t, el) {
+  currentTimeFilter = t;
+  document.querySelectorAll('.pt-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (t.startsWith('s')) {
+    const season = seasonForKey(t);
+    if (season && !season.isActive && season.champion) {
+      await renderFrozenSeason(season);
       return;
     }
+  }
+  document.getElementById('podium').style.display = 'none';
+  document.getElementById('lbTableWrap').style.display = 'block';
+  document.getElementById('lbContainer').innerHTML = '';
+  buildTipsters();
+  updateSeasonBanner(t, allTipsters);
+  renderLeaderboard();
+}
 
-    const colorsArr=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)'];
-    const rankCls=i=>i===0?'gold':i===1?'silver':i===2?'bronze':'';
-    const medals=['🥇','🥈','🥉'];
-
-    c.innerHTML=`<div class="frozen-banner">
-      <div class="frozen-banner-icon">🏆</div>
-      <div><div class="frozen-banner-title">${season.name} — FINAL STANDINGS</div><div class="frozen-banner-sub">🔒 Frozen · ${dateRange}</div></div>
-      ${champHtml}
-    </div>`+results.map((r,i)=>{
-      const isChamp=r.user?.username===season.champion;
-      const uname=r.user?.username||'Unknown';
-      const roiPos=r.roi>=0;
-      return`<div class="frozen-row ${isChamp?'champion-row':''}" onclick="window.location.href='/tipster?u=${uname}'">
-        <div class="fr-rank ${rankCls(i)}">${i<3?medals[i]:r.rank}</div>
-        <div class="fr-tipster">
-          <div class="fr-av" style="background:${colorsArr[i%colorsArr.length]}">${uname.substring(0,2).toUpperCase()}</div>
-          <div>
-            <div class="fr-name">${isChamp?'👑 ':''}<span style="${isChamp?'color:var(--gold)':''}" >@${uname}</span></div>
-            <div class="fr-div">${r.division}</div>
+async function renderFrozenSeason(season) {
+  document.getElementById('podium').style.display = 'none';
+  document.getElementById('lbTableWrap').style.display = 'block';
+  document.getElementById('lbHead').style.display = 'none';
+  document.getElementById('seasonBanner').classList.remove('show');
+  const c = document.getElementById('lbContainer');
+  c.innerHTML = '<div style="padding:24px;text-align:center;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:11px">Loading season results…</div>';
+  try {
+    const r = await fetch(API + '/seasons/' + season.id + '/leaderboard');
+    const results = await r.json();
+    const fmt = d => new Date(d).toLocaleDateString('en-GB', {month:'short', year:'numeric'});
+    const dateRange = fmt(season.startDate) + ' – ' + fmt(season.endDate);
+    const champHtml = season.champion ? `<div class="frozen-champion-badge">👑 Champion: @${season.champion}</div>` : '';
+    if (!results.length) {
+      c.innerHTML = `<div class="frozen-banner"><div class="frozen-banner-icon">🏆</div><div><div class="frozen-banner-title">${season.name}</div><div class="frozen-banner-sub">${dateRange}</div></div>${champHtml}</div><div class="empty-lb"><span class="icon">📊</span><h3>NO RESULTS</h3><p>No results recorded for this season.</p></div>`;
+      return;
+    }
+    const rankCls = i => i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    const medals = ['🥇','🥈','🥉'];
+    c.innerHTML = `<div class="frozen-banner"><div class="frozen-banner-icon">🏆</div><div><div class="frozen-banner-title">${season.name} — FINAL STANDINGS</div><div class="frozen-banner-sub">🔒 Frozen · ${dateRange}</div></div>${champHtml}</div>` +
+      results.map((r, i) => {
+        const isChamp = r.user?.username === season.champion;
+        const uname = r.user?.username || 'Unknown';
+        return `<div class="frozen-row ${isChamp?'champion-row':''}" onclick="window.location.href='/tipster?u=${uname}'">
+          <div class="fr-rank ${rankCls(i)}">${i<3?medals[i]:r.rank}</div>
+          <div class="fr-tipster">
+            <div class="fr-av" style="background:${COLORS[i%COLORS.length]}">${uname.slice(0,2).toUpperCase()}</div>
+            <div><div class="fr-name">${isChamp?'👑 ':''}<span style="${isChamp?'color:var(--gold)':''}">@${uname}</span></div><div class="fr-div">${r.division}</div></div>
           </div>
-        </div>
-        <div class="fr-stat"><div class="fr-sv ${roiPos?'pos':'neg'}">${roiPos?'+':''}${r.roi.toFixed(1)}%</div><div class="fr-sl">ROI</div></div>
-        <div class="fr-stat"><div class="fr-sv neu">${r.winRate.toFixed(0)}%</div><div class="fr-sl">WIN RATE</div></div>
-        <div class="fr-stat"><div class="fr-sv neu">${r.totalPicks}</div><div class="fr-sl">PICKS</div></div>
-        <div class="fr-stat"><div class="fr-sv ${r.totalPnL>=0?'pos':'neg'}">${r.totalPnL>=0?'+€':'-€'}${Math.abs(r.totalPnL).toFixed(1)}</div><div class="fr-sl">P&L</div></div>
-        <div class="fr-stat"><div class="fr-sv" style="color:${r.sharpScore>=70?'var(--gr)':r.sharpScore>=40?'var(--gold)':'var(--rd)'}">${r.sharpScore.toFixed(0)}</div><div class="fr-sl">SHARP</div></div>
-      </div>`;
-    }).join('');
-  }catch(e){
-    c.innerHTML='<div class="empty">⚠️ Could not load season results.</div>';
+          <div class="fr-stat"><div class="fr-sv ${r.roi>=0?'pos':'neg'}">${r.roi>=0?'+':''}${r.roi.toFixed(1)}%</div><div class="fr-sl">ROI</div></div>
+          <div class="fr-stat"><div class="fr-sv neu">${r.winRate.toFixed(0)}%</div><div class="fr-sl">WR</div></div>
+          <div class="fr-stat"><div class="fr-sv neu">${r.totalPicks}</div><div class="fr-sl">PICKS</div></div>
+          <div class="fr-stat"><div class="fr-sv ${r.totalPnL>=0?'pos':'neg'}">${r.totalPnL>=0?'+':''}${Math.abs(r.totalPnL).toFixed(1)}u</div><div class="fr-sl">P&L</div></div>
+          <div class="fr-stat"><div class="fr-sv" style="color:${r.sharpScore>=70?'var(--gr)':r.sharpScore>=40?'var(--gold)':'var(--rd)'}">${r.sharpScore.toFixed(0)}</div><div class="fr-sl">SHARP</div></div>
+        </div>`;
+      }).join('');
+  } catch (e) {
+    c.innerHTML = '<div class="empty-lb"><span class="icon">⚠️</span><h3>LOAD ERROR</h3><p>Could not load season results.</p></div>';
   }
 }
 
-function filterPicksByTime(picks){
-  if(currentTimeFilter==='all')return picks;
-  if(currentTimeFilter==='7d'){const c=Date.now()-7*86400000;return picks.filter(p=>new Date(p.createdAt)>=c);}
-  if(currentTimeFilter==='30d'){const c=Date.now()-30*86400000;return picks.filter(p=>new Date(p.createdAt)>=c);}
-  if(SEASON_CONFIG[currentTimeFilter]){const{start,end}=SEASON_CONFIG[currentTimeFilter];return picks.filter(p=>{const t=new Date(p.createdAt).getTime();return t>=start&&t<=end;});}
+function filterPicksByTime(picks) {
+  if (currentTimeFilter === 'all') return picks;
+  if (currentTimeFilter === '7d')  { const c = Date.now()-7*86400000;  return picks.filter(p => new Date(p.createdAt) >= c); }
+  if (currentTimeFilter === '30d') { const c = Date.now()-30*86400000; return picks.filter(p => new Date(p.createdAt) >= c); }
+  if (SEASON_CONFIG[currentTimeFilter]) { const {start,end} = SEASON_CONFIG[currentTimeFilter]; return picks.filter(p => { const t = new Date(p.createdAt).getTime(); return t >= start && t <= end; }); }
   return picks;
 }
 
-function updateSeasonBanner(filter,tipsters){
-  const banner=document.getElementById('seasonBanner');
-  const cfg=SEASON_CONFIG[filter];
-  if(!cfg){banner.classList.remove('show');return;}
+function updateSeasonBanner(filter, tipsters) {
+  const banner = document.getElementById('seasonBanner');
+  const cfg = SEASON_CONFIG[filter];
+  if (!cfg) { banner.classList.remove('show'); return; }
   banner.classList.add('show');
-
-  // Use real API season data if available
-  const apiSeason=filter.startsWith('s')?seasonForKey(filter):null;
-  const title=apiSeason?apiSeason.name:cfg.title;
-  const fmt=d=>new Date(d).toLocaleDateString('en-GB',{month:'short',year:'numeric'});
-  const sub=apiSeason?(fmt(apiSeason.startDate)+' – '+fmt(apiSeason.endDate)+(apiSeason.isActive?' · ACTIVE':' · Ended')):cfg.sub;
-  document.getElementById('seasonBannerTitle').textContent=title;
-  document.getElementById('seasonBannerSub').textContent=sub;
-
-  const wb=document.getElementById('seasonWinnerBadge');
-  const champ=apiSeason?.champion;
-  if(champ){wb.style.display='inline-flex';wb.textContent='👑 Champion: @'+champ;}
-  else if(!apiSeason&&tipsters&&tipsters.length&&filter!=='s3'){wb.style.display='inline-flex';wb.textContent='👑 Leader: @'+tipsters[0].username;}
-  else{wb.style.display='none';}
+  const apiSeason = filter.startsWith('s') ? seasonForKey(filter) : null;
+  const title = apiSeason ? apiSeason.name : cfg.title;
+  const fmt = d => new Date(d).toLocaleDateString('en-GB', {month:'short', year:'numeric'});
+  const sub = apiSeason ? (fmt(apiSeason.startDate)+' – '+fmt(apiSeason.endDate)+(apiSeason.isActive?' · ACTIVE':' · Ended')) : cfg.sub;
+  document.getElementById('seasonBannerTitle').textContent = title;
+  document.getElementById('seasonBannerSub').textContent = sub;
+  const wb = document.getElementById('seasonWinnerBadge');
+  const champ = apiSeason?.champion;
+  if (champ) { wb.style.display='inline-flex'; wb.textContent='👑 Champion: @'+champ; }
+  else if (!apiSeason && tipsters?.length && filter !== 's3') { wb.style.display='inline-flex'; wb.textContent='👑 Leader: @'+tipsters[0].username; }
+  else { wb.style.display='none'; }
 }
 
-async function loadLeaderboard(){
-  try{
-    // Fetch seasons and picks in parallel
-    const [picksRes,seasonsRes]=await Promise.all([
-      fetch(API+'/picks',{cache:'no-store'}),
-      fetch(API+'/seasons',{cache:'no-store'}).catch(()=>null)
+async function loadLeaderboard() {
+  try {
+    const [picksRes, seasonsRes] = await Promise.all([
+      fetch(API + '/picks', {cache:'no-store'}),
+      fetch(API + '/seasons', {cache:'no-store'}).catch(() => null)
     ]);
-    if(!picksRes.ok)throw new Error('Server error');
-    allPicks=await picksRes.json();
-    if(!Array.isArray(allPicks))allPicks=[];
+    if (!picksRes.ok) throw new Error('Server error');
+    allPicks = await picksRes.json();
+    if (!Array.isArray(allPicks)) allPicks = [];
 
-    if(seasonsRes&&seasonsRes.ok){
-      allSeasons=await seasonsRes.json();
-      // Update season button labels with real data
-      allSeasons.forEach(s=>{
-        const key='s'+s.number;
-        const btn=document.querySelector(`.tf-btn.season[onclick*="'${key}'"]`);
-        if(btn){
-          const isActive=s.isActive;
-          const isFrozen=!isActive&&s.champion;
-          btn.innerHTML=s.name+(isActive?' <span style="color:var(--gr);font-size:8px">● LIVE</span>':isFrozen?` 🔒`:'');
-          if(isFrozen)btn.title='Champion: @'+s.champion;
+    if (seasonsRes && seasonsRes.ok) {
+      allSeasons = await seasonsRes.json();
+      allSeasons.forEach(s => {
+        const key = 's' + s.number;
+        const btn = document.querySelector(`.pt-tab.season[onclick*="'${key}'"]`);
+        if (btn) {
+          const active = s.isActive, frozen = !active && s.champion;
+          btn.innerHTML = s.name.replace('Season ','S') + (active?' <span style="color:var(--gr);font-size:7px">●</span>' : frozen?' 🔒':'');
+          if (frozen) btn.title = 'Champion: @' + s.champion;
         }
       });
     }
 
-    const eloMap={};
-    allPicks.forEach(p=>{if(p.user&&p.eloAfter)eloMap[p.user.username]=p.eloAfter;});
-    window._eloMap=eloMap;
+    const eloMap = {};
+    allPicks.forEach(p => { if (p.user && p.eloAfter) eloMap[p.user.username] = p.eloAfter; });
+    window._eloMap = eloMap;
+
     buildTipsters();
     updateStats();
-    // Compute flow states for all tipsters (global comparison)
-    if(window.Flow){
-      const picksMap={};
-      allTipsters.forEach(t=>{picksMap[t.username]=allPicks.filter(p=>p.user&&p.user.username===t.username);});
-      const flowMap=window.Flow.detectAll(picksMap);
-      allTipsters.forEach(t=>{t.flowState=flowMap[t.username]||null;});
+
+    if (window.Flow) {
+      const picksMap = {};
+      allTipsters.forEach(t => { picksMap[t.username] = allPicks.filter(p => p.user?.username === t.username); });
+      const flowMap = window.Flow.detectAll(picksMap);
+      allTipsters.forEach(t => { t.flowState = flowMap[t.username] || null; });
     }
     renderLeaderboard();
-  }catch(e){
-    document.getElementById('lbContainer').innerHTML='<div class="empty">⚠️ Could not load data. Try again later.</div>';
+  } catch (e) {
+    document.getElementById('lbTableWrap').style.display = 'none';
+    document.getElementById('lbEmpty').style.display = 'block';
+    document.getElementById('lbEmpty').innerHTML = '<div class="empty-lb"><span class="icon">⚠️</span><h3>SYNC IN PROGRESS</h3><p>Could not load data. Try again in a moment.</p></div>';
   }
 }
 
-function buildTipsters(){
-  const map={};
-  const filtered=(currentFilter==='all'?allPicks:allPicks.filter(p=>p.sport===currentFilter));const timePicks=filterPicksByTime(filtered);const finalPicks=timePicks;
-  finalPicks.forEach(p=>{
-    if(!p.user)return;
-    const u=p.user.username;
-    if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0,streak:0,userId:null};
-    map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;
-    if(!map[u].userId)map[u].userId=p.userId||null;
-    if(p.result==='win')map[u].wins++;
-    if(p.result==='loss')map[u].losses++;
+function buildTipsters() {
+  const map = {};
+  const now = Date.now();
+  const yesterday = now - 86400000;
+  const filtered = currentFilter === 'all' ? allPicks : allPicks.filter(p => p.sport === currentFilter);
+  const timePicks = filterPicksByTime(filtered);
+
+  timePicks.forEach(p => {
+    if (!p.user) return;
+    const u = p.user.username;
+    if (!map[u]) map[u] = {username:u, picks:0, wins:0, losses:0, stake:0, pnl:0, streak:0, userId:null, lastPickAt:0};
+    map[u].picks++;
+    map[u].stake += p.stake;
+    map[u].pnl += p.pnl;
+    if (!map[u].userId) map[u].userId = p.userId || null;
+    if (p.result === 'win') map[u].wins++;
+    if (p.result === 'loss') map[u].losses++;
+    const pt = new Date(p.createdAt).getTime();
+    if (pt > map[u].lastPickAt) map[u].lastPickAt = pt;
   });
-  // calc streaks + sharp score + archetype (use all-time picks for skill metrics)
-  Object.keys(map).forEach(u=>{
-    const userPicks=filtered.filter(p=>p.user&&p.user.username===u).filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-    let streak=0;for(const p of userPicks){if(p.result==='win')streak++;else break;}
-    map[u].streak=streak;
-    map[u].elo=window._eloMap&&window._eloMap[u]?window._eloMap[u]:1000;
-    const allTimePicks=allPicks.filter(p=>p.user&&p.user.username===u);
-    map[u].sharpScore=window.getSharpScore?window.getSharpScore(allTimePicks):0;
-    map[u].archetype=window.getArchetype?window.getArchetype(allTimePicks):null;
+
+  Object.keys(map).forEach(u => {
+    const userPicks = filtered.filter(p => p.user?.username === u && p.result !== 'pending')
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    let streak = 0;
+    for (const p of userPicks) { if (p.result === 'win') streak++; else break; }
+    map[u].streak = streak;
+    map[u].isLive = map[u].lastPickAt >= yesterday;
+    map[u].elo = (window._eloMap && window._eloMap[u]) ? window._eloMap[u] : 1000;
+    const allTimePicks = allPicks.filter(p => p.user?.username === u);
+    map[u].sharpScore = window.getSharpScore ? window.getSharpScore(allTimePicks) : 0;
+    map[u].archetype  = window.getArchetype  ? window.getArchetype(allTimePicks)  : null;
   });
-  allTipsters=Object.values(map);
+  allTipsters = Object.values(map);
 }
 
-function updateStats(){
-  const wins=allPicks.filter(p=>p.result==='win').length;
-  const settled=allPicks.filter(p=>p.result!=='pending').length;
-  const avgWR=settled>0?((wins/settled)*100).toFixed(0):0;
-  const totalStake=allPicks.reduce((s,p)=>s+p.stake,0);
-  const totalPnL=allPicks.reduce((s,p)=>s+p.pnl,0);
-  const avgROI=totalStake>0?((totalPnL/totalStake)*100).toFixed(1):0;
-  document.getElementById('sbTipsters').textContent=allTipsters.length||0;
-  document.getElementById('sbPicks').textContent=allPicks.length;
-  document.getElementById('sbWinRate').textContent=avgWR+'%';
-  document.getElementById('sbROI').textContent=(parseFloat(avgROI)>=0?'+':'')+avgROI+'%';
+function updateStats() {
+  const now = Date.now();
+  const yesterday = now - 86400000;
+
+  // Today's picks
+  const todayPicks = allPicks.filter(p => new Date(p.createdAt).getTime() >= yesterday);
+  document.getElementById('sbToday').textContent = todayPicks.length || '—';
+  document.getElementById('sbTodaySub').textContent = todayPicks.length ? `across ${new Set(todayPicks.map(p=>p.user?.username)).size} tipsters` : 'No picks yet today';
+
+  // Biggest win today
+  const todayWins = todayPicks.filter(p => p.result === 'win' && p.pnl > 0).sort((a,b) => b.pnl - a.pnl);
+  const bigW = todayWins[0];
+  document.getElementById('sbBigWin').textContent = bigW ? (bigW.pnl >= 0 ? '+' : '') + bigW.pnl.toFixed(1) + 'u' : '—';
+  document.getElementById('sbBigWinSub').textContent = bigW ? '@' + (bigW.user?.username || '?') : 'No wins yet today';
+
+  // Most active today
+  const actMap = {};
+  todayPicks.forEach(p => { if (!p.user) return; actMap[p.user.username] = (actMap[p.user.username] || 0) + 1; });
+  const mostActive = Object.entries(actMap).sort((a, b) => b[1] - a[1])[0];
+  document.getElementById('sbActive').textContent = mostActive ? '@' + mostActive[0] : '—';
+  document.getElementById('sbActiveSub').textContent = mostActive ? mostActive[1] + ' picks today' : 'No activity yet';
+
+  // #1 ROI all time
+  const sorted = [...allTipsters].filter(t => t.picks >= 5).sort((a,b) => {
+    const roiA = a.stake > 0 ? (a.pnl/a.stake)*100 : 0;
+    const roiB = b.stake > 0 ? (b.pnl/b.stake)*100 : 0;
+    return roiB - roiA;
+  });
+  if (sorted[0]) {
+    const roi = sorted[0].stake > 0 ? (sorted[0].pnl/sorted[0].stake)*100 : 0;
+    document.getElementById('sbTopROI').textContent = (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%';
+    document.getElementById('sbTopSub').textContent = '@' + sorted[0].username;
+  }
 }
 
-function filterBy(sport,btn){
-  currentFilter=sport;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+function filterBy(sport, btn) {
+  currentFilter = sport;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   buildTipsters();
   renderLeaderboard();
 }
 
-function renderLeaderboard(){
-  const search=document.getElementById('searchInput').value.toLowerCase().trim();
-  const sort=document.getElementById('sortSelect').value;
-  const minPicks=parseInt(document.getElementById('minPicksSelect').value)||1;
-  let list=[...allTipsters];
-  list=list.filter(t=>t.picks>=minPicks);
-  if(search)list=list.filter(t=>t.username.toLowerCase().includes(search));
-  list.sort((a,b)=>{
-    const roiA=a.stake>0?(a.pnl/a.stake)*100:0,roiB=b.stake>0?(b.pnl/b.stake)*100:0;
-    const wrA=(a.wins+a.losses)>0?(a.wins/(a.wins+a.losses))*100:0,wrB=(b.wins+b.losses)>0?(b.wins/(b.wins+b.losses))*100:0;
-    const relA=getReliability(a).score,relB=getReliability(b).score;
-    if(sort==='roi')return roiB-roiA;
-    if(sort==='wr')return wrB-wrA;
-    if(sort==='picks')return b.picks-a.picks;
-    if(sort==='pnl')return b.pnl-a.pnl;
-    if(sort==='rel')return relB-relA;
+function renderLeaderboard() {
+  const search   = document.getElementById('searchInput').value.toLowerCase().trim();
+  const sort     = document.getElementById('sortSelect').value;
+  const minPicks = parseInt(document.getElementById('minPicksSelect').value) || 1;
+  let list = [...allTipsters].filter(t => t.picks >= minPicks);
+  if (search) list = list.filter(t => t.username.toLowerCase().includes(search));
+
+  list.sort((a, b) => {
+    const roiA = a.stake>0?(a.pnl/a.stake)*100:0, roiB = b.stake>0?(b.pnl/b.stake)*100:0;
+    const wrA  = (a.wins+a.losses)>0?(a.wins/(a.wins+a.losses))*100:0, wrB = (b.wins+b.losses)>0?(b.wins/(b.wins+b.losses))*100:0;
+    if (sort==='roi')   return roiB-roiA;
+    if (sort==='wr')    return wrB-wrA;
+    if (sort==='picks') return b.picks-a.picks;
+    if (sort==='pnl')   return b.pnl-a.pnl;
+    if (sort==='rel')   return getReliability(b).score - getReliability(a).score;
     return roiB-roiA;
   });
 
-  const c=document.getElementById('lbContainer');
-  const podiumEl=document.getElementById('podium');
-  const headEl=document.getElementById('lbHead');
+  const podiumEl  = document.getElementById('podium');
+  const tableWrap = document.getElementById('lbTableWrap');
+  const lbCont    = document.getElementById('lbContainer');
+  const lbHead    = document.getElementById('lbHead');
+  const emptyEl   = document.getElementById('lbEmpty');
 
-  if(!list.length){
-    podiumEl.style.display='none';headEl.style.display='none';
-    c.innerHTML=search
-      ?`<div class="empty-lb"><div class="icon">🔍</div><h3>NO RESULTS</h3><p>No tipsters found for "@${search}".<br>Try a different name.</p></div>`
-      :`<div class="empty-lb"><div class="icon">📊</div><h3>NO DATA YET</h3><p>No tipsters with picks in this time period.<br>Try "All Time" or post your first pick.</p></div>`;
+  if (!list.length) {
+    podiumEl.style.display = 'none';
+    tableWrap.style.display = 'none';
+    emptyEl.style.display = 'block';
+    emptyEl.innerHTML = search
+      ? `<div class="empty-lb"><span class="icon">🔍</span><h3>NO RESULTS</h3><p>No tipsters found for "@${search}".</p></div>`
+      : `<div class="empty-lb"><span class="icon">📊</span><h3>NO DATA YET</h3><p>No tipsters with picks in this time period.<br>Try "ALL TIME" or post your first pick.</p></div>`;
     return;
   }
 
-  // PODIUM — top 3
-  if(!search&&list.length>=3){
-    podiumEl.style.display='grid';
-    const top3=[list[0],list[1],list[2]];
-    const podiumOrder=[1,0,2]; // silver, gold, bronze layout
-    podiumEl.innerHTML=podiumOrder.map(i=>{
-      const t=top3[i];
-      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-      const icons=getBadgeIcons(t);
-      const {score,color}=getReliability(t);
-      const cls=['p1','p2','p3'][i];
-      const div=getDivision(t);
-      const podiumAv=window.Divisions
-        ?window.Divisions.avHTML(t.username.substring(0,2).toUpperCase(),colors[i],div,{width:56,height:56,borderRadius:'50%',classes:'podium-av'})
-        :`<div class="podium-av" style="background:${colors[i]}">${t.username.substring(0,2).toUpperCase()}</div>`;
-      return`<div class="podium-card ${cls}" onclick="window.location.href='/tipster?u=${t.username}'">
-        <span class="podium-medal">${medals[i]}</span>
-        ${podiumAv}
+  emptyEl.style.display = 'none';
+
+  // ── PODIUM ─────────────────────────────────────────────────
+  if (!search && list.length >= 3) {
+    podiumEl.style.display = 'grid';
+    const top3 = list.slice(0, 3);
+    const ORDER = [1, 0, 2]; // silver-center-gold, gold-center position
+    podiumEl.innerHTML = ORDER.map(i => {
+      const t    = top3[i];
+      const roi  = t.stake > 0 ? (t.pnl / t.stake * 100) : 0;
+      const wr   = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0;
+      const div  = getDivision(t);
+      const icons= getBadgeIcons(t).slice(0, 3);
+      const cls  = ['p1','p2','p3'][i];
+      const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
+      const podAv = window.Divisions
+        ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:52,height:52,borderRadius:'50%',classes:'podium-av-inner'})
+        : `<div style="width:52px;height:52px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:18px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`;
+      const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
+
+      return `<div class="podium-card ${cls}" onclick="window.location.href='/tipster?u=${t.username}'">
+        ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div>' : ''}
+        ${i===0 ? '<span class="podium-crown">👑</span>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
+        <div style="margin:0 auto 10px;width:52px">${podAv}</div>
         <div class="podium-name">@${t.username}</div>
-        <div class="podium-roi">${parseFloat(roi)>=0?'+':''}${roi}%</div>
-        <div class="podium-sub">${t.picks} picks · ${((t.wins/(t.wins+t.losses||1))*100).toFixed(0)}% WR</div>
-        <div class="podium-badges">${icons.slice(0,3).map(ic=>`<span style="font-size:16px">${ic}</span>`).join('')}</div>
-        ${score>0?`<div class="podium-rel" style="color:${color}">${score}/100 reliability</div>`:''}
-        ${window.Divisions?window.Divisions.pillHTML(div,'md'):`<div class="podium-div ${div.cls}">${div.icon} ${div.name}</div>`}
-        ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak} win streak</div>`:''}
-        <div style="margin-top:8px"><span class="elo-badge ${(t.elo||1000)>=1200?'top':(t.elo||1000)<900?'low':''}" style="font-size:11px">⚡ ELO ${t.elo||1000}</span></div>
-        ${t.sharpScore>0&&window.sharpGaugeHTML?`<div class="at-podium-gauge"><div class="at-tip" data-tip="Sharp Score: a true measure of skill, not luck.">${window.sharpGaugeHTML(t.sharpScore,{size:48,strokeWidth:4})}</div><div class="at-podium-lbl">SHARP</div></div>`:''}
-        ${t.archetype&&window.archetypeBadgeHTML?window.archetypeBadgeHTML(t.archetype,false):''}
+        ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.6s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
+        <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+        <div class="podium-picks-sub">${t.picks} picks · ${wr.toFixed(0)}% WR</div>
+        <div class="podium-stats">
+          <div class="ps-i"><div class="ps-v">${t.picks}</div><div class="ps-l">Picks</div></div>
+          <div class="ps-i"><div class="ps-v">${wr.toFixed(0)}%</div><div class="ps-l">Win Rate</div></div>
+          <div class="ps-i"><div class="ps-v">${t.streak>0?'W'+t.streak:'—'}</div><div class="ps-l">Streak</div></div>
+        </div>
+        <div class="podium-badges">${icons.map(ic=>`<span style="font-size:15px">${ic}</span>`).join('')}</div>
+        <div style="margin-bottom:6px">${divPill}</div>
+        ${archHtml}
+        ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak}-win streak</div>`:''}
+        <div class="podium-elo">⚡ ELO <span data-elo="${t.elo||1000}">${t.elo||1000}</span></div>
+        <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
       </div>`;
     }).join('');
-  }else{
-    podiumEl.style.display='none';
+
+    // Spawn confetti on #1
+    const cw = document.getElementById('confWrap1');
+    if (cw) spawnConfetti(cw);
+
+    // Animate ELO counters in podium
+    podiumEl.querySelectorAll('[data-elo]').forEach(el => {
+      animateElo(el, parseInt(el.dataset.elo));
+    });
+  } else {
+    podiumEl.style.display = 'none';
   }
 
-  // TABLE — remaining (or all if search)
-  const tableList=search?list:list.slice(3);
-  headEl.style.display=tableList.length?'grid':'none';
+  // ── TABLE ───────────────────────────────────────────────────
+  tableWrap.style.display = 'block';
+  const tableList = search ? list : list.slice(3);
+  lbHead.style.display = tableList.length ? 'grid' : 'none';
 
-  c.innerHTML=tableList.map((t,idx)=>{
-    const i=search?idx:idx+3;
-    const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-    const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
-    const roiPos=parseFloat(roi)>=0;const pnlPos=t.pnl>=0;
-    const icons=getBadgeIcons(t);
-    const {score,color}=getReliability(t);
-    const badgeHtml=icons.slice(0,2).map(ic=>`<span style="font-size:11px">${ic}</span>`).join('');
-    const rowDiv=getDivision(t);
-    const storedAv=t.userId?localStorage.getItem('ledgr_avatar_'+t.userId):null;
-    const rowAv=storedAv
-      ?`<div class="av" style="background:${colors[i%colors.length]};overflow:hidden;padding:0"><img src="${storedAv}" style="width:100%;height:100%;object-fit:cover;display:block" alt="${t.username}"></div>`
-      :(window.Divisions
-        ?window.Divisions.avHTML(t.username.substring(0,2).toUpperCase(),colors[i%colors.length],rowDiv,{width:38,height:38,borderRadius:10,noParticles:true})
-        :`<div class="av" style="background:${colors[i%colors.length]}">${t.username.substring(0,2).toUpperCase()}</div>`);
-    const rowPill=window.Divisions
-      ?window.Divisions.pillHTML(rowDiv,'sm')
-      :`<span class="division-badge-sm ${rowDiv.cls}">${rowDiv.icon} ${rowDiv.name}</span>`;
-    return`<div class="lb-row" onclick="window.location.href='/tipster?u=${t.username}'">
-      <div class="rank-num">${i+1}</div>
+  lbCont.innerHTML = tableList.map((t, idx) => {
+    const globalRank = search ? idx + 1 : idx + 4;
+    const roi  = t.stake > 0 ? (t.pnl / t.stake * 100) : 0;
+    const wr   = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0;
+    const {score, color} = getReliability(t);
+    const div  = getDivision(t);
+    const icons= getBadgeIcons(t).slice(0, 2);
+    const move = getRankMove(t.username, globalRank);
+
+    const rankCls = globalRank === 1 ? 'rn-1' : globalRank === 2 ? 'rn-2' : globalRank === 3 ? 'rn-3' : globalRank <= 10 ? 'rn-top' : 'rn-rest';
+
+    const storedAv = t.userId ? localStorage.getItem('ledgr_avatar_' + t.userId) : null;
+    const avHTML = storedAv
+      ? `<div class="av" style="background:${COLORS[idx%COLORS.length]};overflow:hidden;padding:0">${t.isLive?'<div class="live-dot"></div>':''}<img src="${storedAv}" style="width:100%;height:100%;object-fit:cover" alt="${t.username}"></div>`
+      : (window.Divisions
+          ? `<div style="position:relative">${window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(),COLORS[idx%COLORS.length],div,{width:38,height:38,borderRadius:10,noParticles:true})}${t.isLive?'<div class="live-dot"></div>':''}</div>`
+          : `<div class="av" style="background:${COLORS[idx%COLORS.length]}">${t.isLive?'<div class="live-dot"></div>':''}${t.username.slice(0,2).toUpperCase()}</div>`);
+
+    const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
+    const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, true) : '';
+    const flowHtml = t.flowState && window.Flow ? window.Flow.chipHTML(t.flowState) : '';
+    const ss = t.sharpScore || 0;
+    const ssColor = ss >= 70 ? 'var(--gr)' : ss >= 40 ? 'var(--gold)' : 'var(--rd)';
+    const eloClass = (t.elo||1000) >= 1200 ? 'top' : (t.elo||1000) < 900 ? 'low' : '';
+
+    return `<div class="lb-row" style="--ri:${idx}" onclick="window.location.href='/tipster?u=${t.username}'">
+      <div class="rank-cell">
+        <div class="rank-num ${rankCls}">${globalRank}</div>
+        ${move}
+      </div>
       <div class="tipster-col">
-        ${rowAv}
-        <div>
-          <div class="tip-name">@${t.username} ${badgeHtml}</div>
-          <div class="tip-picks-sub">${t.picks} picks</div>
-          ${rowPill}
-          ${t.archetype&&window.archetypeBadgeHTML?'<br>'+window.archetypeBadgeHTML(t.archetype,true):''}
-          ${t.flowState&&window.Flow?'<br>'+window.Flow.chipHTML(t.flowState):''}
+        ${avHTML}
+        <div class="tip-info">
+          <div class="tip-name">@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}</div>
+          <div class="tip-sub">${t.picks} picks</div>
+          <div class="tip-badges">${divPill}${archHtml}${flowHtml}</div>
         </div>
       </div>
-      <div class="lb-stat"><div class="lsv ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div><div class="lsl">ROI</div></div>
-      <div class="lb-stat"><div class="lsv neu">${wr}%</div><div class="lsl">WIN RATE</div></div>
-      <div class="lb-stat"><div class="lsv neu">${t.picks}</div><div class="lsl">PICKS</div></div>
+      <div class="lb-stat">
+        <div class="lsv ${roi>=0?'pos':'neg'}">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+        <div class="lsl">ROI</div>
+      </div>
+      <div class="lb-stat">
+        <div class="lsv neu">${wr.toFixed(0)}%</div>
+        <div class="lsl">WIN RATE</div>
+      </div>
+      <div class="lb-stat">
+        <div class="lsv neu">${t.picks}</div>
+        <div class="lsl">PICKS</div>
+      </div>
       <div class="streak-col">${t.streak>=3?'🔥 W'+t.streak:'—'}</div>
       <div class="rel-col">
-        ${score>0?`<div class="rel-score" style="color:${color}">${score}</div><div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace">/100</div>`:'<span style="color:var(--mu);font-size:11px">—</span>'}
+        ${score>0
+          ? `<div class="rel-score" style="color:${color}">${score}</div>
+             <div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div>
+             <div style="font-size:7px;color:var(--mu);font-family:'DM Mono',monospace">/100</div>`
+          : '<span style="color:var(--mu);font-size:12px">—</span>'}
       </div>
-      <div class="lb-stat">${(()=>{const ss=t.sharpScore||0;const sc=ss>=70?'var(--gr)':ss>=40?'var(--gold)':'var(--rd)';return ss>0?`<div class="at-ss-val" style="color:${sc}">${Math.round(ss)}</div><div class="at-ss-lbl">SHARP</div>`:`<div class="elo-badge ${t.elo>=1200?'top':t.elo<900?'low':''}">${t.elo||1000}</div>`;})()}</div>
+      <div class="elo-cell">
+        ${ss > 0
+          ? `<div class="elo-val" style="color:${ssColor}" data-elo="${Math.round(ss)}">${Math.round(ss)}</div><div class="elo-lbl">SHARP</div>`
+          : `<div class="elo-badge ${eloClass}" data-elo="${t.elo||1000}">${t.elo||1000}</div><div class="elo-lbl">ELO</div>`}
+      </div>
       <button class="follow-btn" data-user-id="${t.userId||''}" onclick="event.stopPropagation()">Follow</button>
     </div>`;
   }).join('');
-  if(window.animateSharpGauges)setTimeout(window.animateSharpGauges,60);
-  if(window.Follows)setTimeout(window.Follows.initFollowButtons,80);
+
+  // Animate ELO/score counters in table
+  setTimeout(() => {
+    lbCont.querySelectorAll('[data-elo]').forEach((el, idx) => {
+      setTimeout(() => animateElo(el, parseInt(el.dataset.elo)), idx * 30);
+    });
+    if (window.animateSharpGauges) window.animateSharpGauges();
+    if (window.Follows) window.Follows.initFollowButtons();
+  }, 60);
 }
 
 loadLeaderboard();
-
-function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>
