@@ -1377,7 +1377,7 @@ function renderTrending(all){
 }
 
 function renderTrendingPicks(all){
-  const tails=getTails();
+  const localTails=getTails();
   const tpMap={};all.forEach(p=>{if(!p.user)return;if(!tpMap[p.user.username])tpMap[p.user.username]=[];tpMap[p.user.username].push(p);});
   const hot=all.filter(p=>p.user&&p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
@@ -1386,6 +1386,7 @@ function renderTrendingPicks(all){
     const tipsterPicks=tpMap[p.user.username]||[];
     const badges=getPickBadges(p,tipsterPicks);
     const badgeHtml=renderStatusBadges(badges);
+    const isTailed=!!localTails[p.id];
     return`<div class="pick-card ${i===0?'hot':''}">
       <div class="pc-top">
         <div>
@@ -1402,18 +1403,43 @@ function renderTrendingPicks(all){
           ${p.confidence?`<div class="conf-badge-mini">${p.confidence} conf</div>`:''}
         </div>
         <div class="pc-actions">
-          <button class="tail-btn-sm ${tails[p.id]?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${p.event}','${p.market}',${p.odds},'${p.user.username}',this)">${tails[p.id]?'Tailed ✓':'Tail'}</button>
+          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${p.event}','${p.market}',${p.odds},'${p.user.username}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
           <button class="view-btn-sm" onclick="window.location.href='/tipster?u=${p.user.username}'">View</button>
         </div>
       </div>
+      <div id="ptc_${p.id}" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:6px;min-height:14px"></div>
     </div>`;
   }).join('');
+  // Load real tail counts from backend
+  hot.forEach(p=>loadHomeTailCount(p.id));
 }
 
-function tailTP(id,event,market,odds,username,btn){
+async function loadHomeTailCount(pickId){
+  try{
+    let uid=null;try{const u=localStorage.getItem('ledgr_user')||localStorage.getItem('user');if(u)uid=JSON.parse(u).id;}catch(e){}
+    const uq=uid?'?userId='+uid:'';
+    const d=await fetch(API+'/picks/'+pickId+'/tails'+uq).then(r=>r.json());
+    const el=document.getElementById('ptc_'+pickId);
+    if(el&&d.count>0)el.textContent=d.count+' user'+(d.count===1?'':' s')+' tailed this pick';
+    const btn=document.getElementById('pcTail_'+pickId);
+    if(btn&&d.tailed){btn.textContent='Tailed ✓';btn.classList.add('tailed');}
+  }catch(e){}
+}
+
+async function tailTP(id,event,market,odds,username,btn){
   const tails=getTails();
-  if(tails[id]){delete tails[id];saveTails(tails);btn.textContent='Tail';btn.classList.remove('tailed');}
+  const wasTailed=!!tails[id];
+  if(wasTailed){delete tails[id];saveTails(tails);btn.textContent='Tail';btn.classList.remove('tailed');}
   else{tails[id]={event,market,odds,username,ts:Date.now()};saveTails(tails);btn.textContent='Tailed ✓';btn.classList.add('tailed');showToast('Tailing @'+username+' — '+market+' @ '+odds);}
+  // Also hit backend
+  try{
+    let uid=null;try{const u=localStorage.getItem('ledgr_user')||localStorage.getItem('user');if(u)uid=JSON.parse(u).id;}catch(e){}
+    if(uid){
+      const d=await fetch(API+'/picks/'+id+'/tail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid})}).then(r=>r.json());
+      const el=document.getElementById('ptc_'+id);
+      if(el)el.textContent=d.count>0?d.count+' user'+(d.count===1?'':'s')+' tailed this pick':'';
+    }
+  }catch(e){}
 }
 
 function renderFeed(all){

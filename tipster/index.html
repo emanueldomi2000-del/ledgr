@@ -75,6 +75,18 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .sub-btn.subscribed{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--gr)}
 .sub-btn.subscribed:hover{background:rgba(52,211,153,0.2)}
 .sub-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:3px;letter-spacing:1px}
+/* REACTION BAR */
+.react-bar{display:flex;align-items:center;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap}
+.react-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);color:var(--mu2);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .14s;user-select:none;line-height:1}
+.react-btn:hover:not(:disabled){border-color:rgba(255,255,255,.18);color:var(--tx);transform:scale(1.06)}
+.react-btn:disabled{opacity:.6;cursor:default}
+.react-btn.reacted{border-color:rgba(184,159,255,.5);background:rgba(184,159,255,.14);color:var(--ac)}
+.react-count{font-size:9px;min-width:6px}
+.tail-btn-react{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;border:1px solid rgba(56,189,248,.22);background:rgba(56,189,248,.05);color:var(--cyan);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .14s;user-select:none;margin-left:auto}
+.tail-btn-react:hover:not(:disabled){background:rgba(56,189,248,.12)}
+.tail-btn-react:disabled{opacity:.6;cursor:default}
+.tail-btn-react.tailed{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.08);color:var(--gr)}
+.tail-count-react{font-size:9px;min-width:6px}
 /* PROFILE BIO + SOCIAL */
 .profile-bio{font-size:13px;color:var(--mu2);line-height:1.65;margin-bottom:10px;max-width:480px;font-family:'Syne',sans-serif}
 .profile-social{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
@@ -383,8 +395,17 @@ function renderPicks(){
         </div>
       </div>
       ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
+      <div class="react-bar" data-pick="${p.id}">
+        <button class="react-btn" id="rf_${p.id}" onclick="tipsterReact('${p.id}','fire',this,event)" title="Fire">🔥 <span class="react-count"></span></button>
+        <button class="react-btn" id="rr_${p.id}" onclick="tipsterReact('${p.id}','rocket',this,event)" title="Rocket">🚀 <span class="react-count"></span></button>
+        <button class="react-btn" id="rd_${p.id}" onclick="tipsterReact('${p.id}','diamond',this,event)" title="Diamond">💎 <span class="react-count"></span></button>
+        <button class="react-btn" id="rc_${p.id}" onclick="tipsterReact('${p.id}','clap',this,event)" title="Clap">👏 <span class="react-count"></span></button>
+        <button class="tail-btn-react" id="tf_${p.id}" onclick="tipsterTail('${p.id}',this,event)">✈️ Tail <span class="tail-count-react"></span></button>
+      </div>
     </div>`;
   }).join('');
+  // Load interaction counts after render
+  setTimeout(tipsterLoadInteractions, 80);
 }
 
 function filterPicks(filter,el){
@@ -775,6 +796,61 @@ function shareProfile(){
   });
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ── PICK INTERACTIONS ─────────────────────────────────────────
+function _getUid(){try{const u=localStorage.getItem('ledgr_user')||localStorage.getItem('user');return u?JSON.parse(u).id:null;}catch(e){return null;}}
+function _updateReactUI(pid,reactions,tails){
+  const map={fire:'rf',rocket:'rr',diamond:'rd',clap:'rc'};
+  Object.entries(map).forEach(([emoji,prefix])=>{
+    const btn=document.getElementById(prefix+'_'+pid);if(!btn)return;
+    btn.querySelector('.react-count').textContent=reactions[emoji]||'';
+    btn.classList.toggle('reacted',!!(reactions.userReactions&&reactions.userReactions.includes(emoji)));
+  });
+  const tb=document.getElementById('tf_'+pid);
+  if(tb){tb.querySelector('.tail-count-react').textContent=tails.count?tails.count+'':'';tb.classList.toggle('tailed',!!tails.tailed);}
+}
+async function tipsterLoadInteractions(){
+  const pids=[...new Set([...document.querySelectorAll('[data-pick]')].map(el=>el.dataset.pick))];
+  if(!pids.length)return;
+  const uid=_getUid();const uq=uid?'?userId='+uid:'';
+  pids.slice(0,25).forEach(async pid=>{
+    try{
+      const[rr,tr]=await Promise.all([
+        fetch(API+'/picks/'+pid+'/reactions'+uq).then(r=>r.json()),
+        fetch(API+'/picks/'+pid+'/tails'+uq).then(r=>r.json()),
+      ]);
+      _updateReactUI(pid,rr,tr);
+    }catch(e){}
+  });
+}
+async function tipsterReact(pickId,emoji,btn,ev){
+  if(ev)ev.stopPropagation();
+  const uid=_getUid();if(!uid){showToast('Log in to react');return;}
+  btn.disabled=true;
+  try{
+    const d=await fetch(API+'/picks/'+pickId+'/react',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid,emoji})}).then(r=>r.json());
+    const map={fire:'rf',rocket:'rr',diamond:'rd',clap:'rc'};
+    ['fire','rocket','diamond','clap'].forEach(e=>{
+      const b=document.getElementById(map[e]+'_'+pickId);if(!b)return;
+      b.querySelector('.react-count').textContent=d[e]||'';
+      b.classList.toggle('reacted',!!(d.userReactions&&d.userReactions.includes(e)));
+    });
+  }catch(e){showToast('Could not react');}
+  btn.disabled=false;
+}
+async function tipsterTail(pickId,btn,ev){
+  if(ev)ev.stopPropagation();
+  const uid=_getUid();if(!uid){showToast('Log in to tail this pick');return;}
+  btn.disabled=true;
+  try{
+    const d=await fetch(API+'/picks/'+pickId+'/tail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid})}).then(r=>r.json());
+    btn.querySelector('.tail-count-react').textContent=d.count?d.count+'':'';
+    btn.classList.toggle('tailed',d.tailed);
+    if(d.tailed)showToast('Tailing this pick ✈️');
+  }catch(e){showToast('Could not tail pick');}
+  btn.disabled=false;
+}
+
 loadProfile();
 
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
