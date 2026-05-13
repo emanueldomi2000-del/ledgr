@@ -621,7 +621,7 @@ window.onload=()=>{
   setTimeout(startTutorial,800);
 };
 
-function logout(){['ledgr_token','ledgr_user','token','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+function logout(){localStorage.clear();window.location.href='/login';}
 function goToProfile(){if(user)window.location.href='/tipster?u='+user.username;}
 
 // ── SPORT / DATE / LEAGUE ──
@@ -1192,6 +1192,7 @@ async function postParlay(){
     }else{showToast('Error: '+(d.error||'Unknown'));}
   }catch(e){showToast('Connection error');}
   finally{btn.textContent='POST PARLAY →';btn.disabled=parlayLegs.length<2;}
+}
 </script>
 </body>
 </html>
