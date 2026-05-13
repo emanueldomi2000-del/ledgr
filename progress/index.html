@@ -503,9 +503,12 @@ function closeSlideNav() {
   document.getElementById('slideOverlay').classList.remove('open');
 }
 
-const TOKEN    = localStorage.getItem('token');
-const USER_ID  = localStorage.getItem('userId');
-const USERNAME = localStorage.getItem('username');
+// Auth — parse from ledgr_user (same pattern as all other pages)
+const _userRaw = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+const _userObj = _userRaw ? JSON.parse(_userRaw) : null;
+const TOKEN    = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+const USER_ID  = _userObj?.id || null;
+const USERNAME = _userObj?.username || localStorage.getItem('username') || null;
 
 if (!TOKEN || !USER_ID) { window.location.href = '/login'; }
 
@@ -516,7 +519,7 @@ if (!TOKEN || !USER_ID) { window.location.href = '/login'; }
   const sn = document.getElementById('slideName');
   if (sn && USERNAME) sn.textContent = '@' + USERNAME;
   const sa = document.getElementById('slideAvatar');
-  if (sa && USERNAME) sa.textContent = USERNAME[0].toUpperCase();
+  if (sa && USERNAME) sa.textContent = USERNAME ? USERNAME[0].toUpperCase() : '?';
 })();
 
 // ── Division config ──────────────────────────────────────────
