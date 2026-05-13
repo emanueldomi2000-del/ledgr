@@ -14,7 +14,7 @@
     { "source": "/analytics", "destination": "/analytics/index.html" },
     { "source": "/settings", "destination": "/settings/index.html" },
     { "source": "/feed", "destination": "/feed/index.html" },
-    { "source": "/parlay", "destination": "/parlay/index.html" },
+    { "source": "/parlay", "destination": "/dashboard/index.html" },
     { "source": "/notifications", "destination": "/notifications/index.html" },
     { "source": "/news", "destination": "/news/index.html" },
     { "source": "/progress", "destination": "/progress/index.html" },
