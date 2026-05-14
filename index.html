@@ -1,356 +1,302 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEDGR — Real Picks. Verified Records.</title>
-<meta name="description" content="The only platform where tipster performance is 100% verified. No fake ROI. No deleted losses. Real records only.">
-<meta property="og:title" content="LEDGR — Real Picks. Verified Records.">
-<meta property="og:description" content="The only platform where tipster performance is 100% verified. No fake ROI. No deleted losses. Real records only.">
+<title>LEDGR — The Verified Record for Serious Bettors</title>
+<meta name="description" content="Every pick locked on post. No edits. No deletions. LEDGR is the only platform where tipster performance is 100% verified — real records only.">
+<meta property="og:title" content="LEDGR — The Verified Record for Serious Bettors">
+<meta property="og:description" content="Every pick locked on post. No edits. No deletions. Real records only.">
 <meta property="og:image" content="https://getledgr.bet/og-image.png">
 <meta property="og:url" content="https://getledgr.bet">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LEDGR — Real Picks. Verified Records.">
-<meta name="twitter:description" content="The only platform where tipster performance is 100% verified. No fake ROI. No deleted losses.">
+<meta name="twitter:title" content="LEDGR — The Verified Record for Serious Bettors">
+<meta name="twitter:description" content="Every pick locked on post. No edits. No deletions. Real records only.">
 <meta name="twitter:image" content="https://getledgr.bet/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/brand.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+body{background:var(--color-bg);color:var(--color-text);font-family:'Barlow',sans-serif;overflow-x:hidden;line-height:1.5}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:62px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd)}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
-.logo span{color:var(--ac)}
-.nav-r{display:flex;gap:4px;align-items:center}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:color .2s}
-.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.btn-nav{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.btn-nav:hover{background:#cdb8ff;transform:translateY(-1px)}
+/* GRID NOISE */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.35}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:100px 24px 60px;text-align:center;position:relative;overflow:hidden}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.04) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 75% 55% at 50% 50%,black,transparent)}
-.hero-orb{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(124,95,230,0.07),transparent 70%);top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none}
-.badge-hero{display:inline-flex;align-items:center;gap:8px;background:rgba(184,159,255,0.07);border:1px solid rgba(184,159,255,0.18);color:var(--ac);padding:7px 18px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:44px;position:relative;z-index:2}
-.dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 2s infinite}
+.hero{min-height:calc(100vh - 60px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 60px;text-align:center;position:relative;overflow:hidden;z-index:1}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(123,44,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(123,44,255,0.04) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black,transparent);pointer-events:none}
+.hero-orb{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(123,44,255,0.08),transparent 68%);top:50%;left:50%;transform:translate(-50%,-52%);pointer-events:none}
+
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(123,44,255,0.08);border:1px solid rgba(123,44,255,0.25);color:var(--color-purple-light);padding:7px 18px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:40px;position:relative;z-index:2}
+.hero-dot{width:5px;height:5px;background:#34d399;border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,13vw,160px);letter-spacing:-1px;line-height:.86;margin-bottom:36px;position:relative;z-index:2}
-.l1{display:block;color:var(--tx)}
-.l2{display:block;color:var(--ac)}
-.hero-p{font-size:18px;color:var(--mu2);line-height:1.85;max-width:440px;margin:0 auto 48px;position:relative;z-index:2;font-weight:500}
-.hero-p strong{color:var(--tx)}
-.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:72px;position:relative;z-index:2}
-.btn-a{background:var(--ac);color:#07060d;padding:16px 36px;border-radius:6px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s}
-.btn-a:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 12px 40px rgba(184,159,255,0.2)}
-.btn-b{color:var(--mu2);padding:16px 36px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;transition:all .25s;border:1px solid var(--bd2)}
-.btn-b:hover{border-color:rgba(184,159,255,.35);color:var(--ac)}
-.proof{display:flex;justify-content:center;gap:56px;flex-wrap:wrap;position:relative;z-index:2}
-.pn{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;color:var(--tx);line-height:1}
-.pl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:5px}
+
+h1{font-family:'Rajdhani',sans-serif;font-size:clamp(56px,11vw,140px);font-weight:700;letter-spacing:-1px;line-height:.88;margin-bottom:32px;position:relative;z-index:2}
+.h1-line1{display:block;color:var(--color-text)}
+.h1-line2{display:block;color:var(--color-purple)}
+.h1-line3{display:block;color:var(--color-text)}
+
+.hero-sub{font-size:17px;color:var(--color-muted);line-height:1.75;max-width:420px;margin:0 auto 48px;position:relative;z-index:2;font-weight:400}
+.hero-sub strong{color:var(--color-text);font-weight:500}
+
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:72px;position:relative;z-index:2}
+.btn-primary{background:var(--color-purple);color:#fff;padding:15px 34px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;transition:background .2s,transform .2s;font-family:'Barlow',sans-serif;letter-spacing:.2px}
+.btn-primary:hover{background:var(--color-purple-light);transform:translateY(-2px)}
+.btn-secondary{color:var(--color-purple-light);padding:14px 34px;border-radius:8px;font-size:14px;font-weight:500;text-decoration:none;transition:all .2s;border:1px solid var(--color-purple);font-family:'Barlow',sans-serif}
+.btn-secondary:hover{background:rgba(123,44,255,0.1);transform:translateY(-2px)}
+
+.hero-stats{display:flex;justify-content:center;gap:60px;flex-wrap:wrap;position:relative;z-index:2}
+.hs{text-align:center}
+.hs-val{font-family:'Rajdhani',sans-serif;font-size:38px;font-weight:700;color:var(--color-text);line-height:1;letter-spacing:1px}
+.hs-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--color-muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:6px}
 
 /* TICKER */
-.ticker-wrap{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);overflow:hidden;padding:11px 0;background:rgba(184,159,255,0.03)}
-.ticker{display:flex;white-space:nowrap;animation:tick 28s linear infinite}
-.ti{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);letter-spacing:.8px;padding:0 36px}
-.ti b{color:var(--ac)}
+.ticker-wrap{border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);overflow:hidden;padding:10px 0;background:rgba(123,44,255,0.02);position:relative;z-index:1}
+.ticker{display:flex;white-space:nowrap;animation:tick 32s linear infinite}
+.ti{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:.8px;padding:0 32px}
+.ti b{color:var(--color-purple-light)}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* TRUST STRIP */
-.trust-strip{display:flex;justify-content:center;gap:0;max-width:900px;margin:0 auto;padding:0 24px}
-.ts-item{flex:1;text-align:center;padding:32px 20px;border-right:1px solid var(--bd);position:relative}
-.ts-item:last-child{border:none}
-.ts-icon{font-size:24px;margin-bottom:10px;display:block}
-.ts-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:6px}
-.ts-desc{font-size:11px;color:var(--mu2);line-height:1.7}
+/* TRUST SECTION */
+.trust{padding:80px 24px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-purple-light);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:14px}
+.sec-h{font-family:'Rajdhani',sans-serif;font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:1px;line-height:1;margin-bottom:48px;color:var(--color-text)}
+.sec-h em{color:var(--color-purple);font-style:normal}
 
-/* FEATURES */
-.features{padding:96px 24px;max-width:1080px;margin:0 auto}
-.sec-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);letter-spacing:3px;text-transform:uppercase;display:block;margin-bottom:12px}
-.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);letter-spacing:2px;line-height:1;margin-bottom:48px;color:var(--tx)}
-.sec-h em{color:var(--ac);font-style:normal}
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
-.fc{background:var(--bg);padding:32px 28px;transition:background .25s}
-.fc:hover{background:var(--s1)}
-.fi{font-size:20px;margin-bottom:12px;display:block}
-.fh{font-size:13px;font-weight:700;margin-bottom:6px;color:var(--tx)}
-.fp{font-size:12px;color:var(--mu2);line-height:1.7}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--color-border);border-radius:12px;overflow:hidden}
+.trust-item{padding:32px 24px;border-right:1px solid var(--color-border);transition:background .2s}
+.trust-item:last-child{border-right:none}
+.trust-item:hover{background:var(--color-surface)}
+.ti-icon{font-size:22px;margin-bottom:14px;display:block}
+.ti-title{font-family:'Barlow',sans-serif;font-size:13px;font-weight:500;color:var(--color-text);margin-bottom:8px;letter-spacing:.2px}
+.ti-desc{font-size:12px;color:var(--color-muted);line-height:1.7}
 
-/* LEADERBOARD */
-.lb-section{padding:96px 24px;max-width:1080px;margin:0 auto}
-.lb-preview{background:var(--s1);border:1px solid var(--bd);border-radius:16px;overflow:hidden}
-.lb-head-row{display:grid;grid-template-columns:52px 1fr 88px 88px 88px 110px;gap:12px;padding:14px 22px;border-bottom:1px solid var(--bd);font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase}
-.lb-item{display:grid;grid-template-columns:52px 1fr 88px 88px 88px 110px;gap:12px;padding:18px 22px;border-bottom:1px solid rgba(184,159,255,0.05);align-items:center;transition:background .15s;cursor:pointer}
-.lb-item:last-child{border:none}
-.lb-item:hover{background:rgba(184,159,255,0.04)}
-.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--mu);text-align:center}
-.lb-rank.g{color:#fbbf24}.lb-rank.s{color:#9ca3af}.lb-rank.b{color:#b45309}
-.lb-tipster{display:flex;align-items:center;gap:12px}
-.lb-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;flex-shrink:0;color:#fff}
-.lb-name{font-weight:700;font-size:14px}
-.lb-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.lb-stat{text-align:center}
-.lb-sv{font-family:'Bebas Neue',sans-serif;font-size:19px}
-.lb-sv.pos{color:var(--gr)}.lb-sv.neg{color:var(--rd)}.lb-sv.neu{color:var(--tx)}
-.lb-sl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;margin-top:3px}
-.follow{padding:7px 14px;border:1px solid var(--bd2);color:var(--ac);background:var(--acg);border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
-.follow:hover,.follow.following{background:var(--ac);color:#07060d}
-.lb-cta{text-align:center;padding:22px;border-top:1px solid var(--bd)}
-.lb-cta a{color:var(--ac);font-size:12px;font-weight:600;text-decoration:none;font-family:'DM Mono',monospace}
+/* TIPSTERS SECTION */
+.tipsters-section{padding:0 24px 80px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.tipsters-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tipster-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:12px;padding:24px;transition:border-color .2s,box-shadow .2s;cursor:pointer;position:relative;overflow:hidden}
+.tipster-card::before{content:'';position:absolute;inset:0;border-radius:12px;opacity:0;transition:opacity .2s}
+.tipster-card:hover{box-shadow:0 0 20px rgba(123,44,255,0.25)}
+/* Division glow tiers */
+.tipster-card.div-elite{border-color:rgba(248,113,113,0.3)}
+.tipster-card.div-elite:hover{border-color:rgba(248,113,113,0.6);box-shadow:0 0 24px rgba(248,113,113,0.2)}
+.tipster-card.div-diamond{border-color:rgba(177,76,255,0.3)}
+.tipster-card.div-diamond:hover{border-color:rgba(177,76,255,0.6);box-shadow:0 0 24px rgba(177,76,255,0.2)}
+.tipster-card.div-platinum{border-color:rgba(56,189,248,0.3)}
+.tipster-card.div-platinum:hover{border-color:rgba(56,189,248,0.6);box-shadow:0 0 24px rgba(56,189,248,0.2)}
+.tipster-card.div-gold{border-color:rgba(251,191,36,0.25)}
+.tipster-card.div-gold:hover{border-color:rgba(251,191,36,0.5);box-shadow:0 0 24px rgba(251,191,36,0.15)}
 
-/* PRICING */
-.pricing{padding:96px 24px;max-width:920px;margin:0 auto;text-align:center}
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px;text-align:left}
-.pc{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:28px;position:relative;transition:all .3s}
-.pc:hover{border-color:var(--bd2);transform:translateY(-4px)}
-.pc.featured{border-color:rgba(184,159,255,0.3);background:linear-gradient(145deg,rgba(184,159,255,0.05),var(--s1))}
-.pc-tag{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--ac);color:#07060d;padding:3px 14px;border-radius:20px;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;letter-spacing:1px;white-space:nowrap}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--mu2);margin-bottom:6px}
-.pc-price{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--tx);line-height:1;margin-bottom:4px}
-.pc-price span{font-size:14px;color:var(--mu);font-family:'Syne',sans-serif;font-weight:400}
-.pc-per{font-size:11px;color:var(--mu);margin-bottom:24px;font-family:'DM Mono',monospace}
-.pc-tagline{font-size:12px;color:var(--ac);font-weight:700;margin-bottom:16px;font-family:'DM Mono',monospace;letter-spacing:1px}
-.pc-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
-.pc-feats li{font-size:12px;color:var(--mu2);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
-.pc-feats li::before{content:'→';color:var(--ac);flex-shrink:0;font-size:11px;margin-top:1px}
-.pc-btn{width:100%;padding:12px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;font-family:'Syne',sans-serif}
-.pc-btn-main{background:var(--ac);border:none;color:#07060d}
-.pc-btn-main:hover{background:#cdb8ff}
-.pc-btn-out{background:transparent;border:1px solid var(--bd);color:var(--mu2)}
-.pc-btn-out:hover{border-color:var(--bd2);color:var(--ac)}
+.tc-rank{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.tc-rank-num{color:var(--color-text);font-weight:500}
+.tc-av{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:12px;flex-shrink:0}
+.tc-name{font-family:'Barlow',sans-serif;font-size:15px;font-weight:500;color:var(--color-text);margin-bottom:4px}
+.tc-picks{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:1px;margin-bottom:18px}
+.tc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--color-border);padding-top:16px}
+.tc-stat-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;line-height:1}
+.tc-stat-val.pos{color:#34d399}
+.tc-stat-val.neg{color:#f87171}
+.tc-stat-val.neu{color:var(--color-text)}
+.tc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--color-muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+.tc-loading{text-align:center;padding:40px;color:var(--color-muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;grid-column:1/-1}
 
-/* SOCIAL PROOF */
-.social-proof{padding:0 24px 96px;max-width:900px;margin:0 auto;text-align:center}
-.sp-numbers{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin-bottom:40px}
-.sp-num{text-align:center}
-.sp-val{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--ac);line-height:1}
-.sp-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+/* STATS ROW */
+.stats-row{padding:0 24px 80px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
+.stats-inner{display:flex;justify-content:center;gap:64px;flex-wrap:wrap}
+.stat-item{text-align:center}
+.stat-val{font-family:'Rajdhani',sans-serif;font-size:52px;font-weight:700;color:var(--color-purple);line-height:1;letter-spacing:1px}
+.stat-lbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:6px}
 
-/* WAITLIST */
-.waitlist{padding:0 24px 96px;max-width:540px;margin:0 auto;text-align:center}
-.wl-urgency{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:var(--gold);padding:7px 18px;border-radius:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
-.wl-input{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:14px;padding:14px 18px;outline:none;margin-bottom:10px;display:block;font-family:'Syne',sans-serif;transition:border-color .2s}
-.wl-input:focus{border-color:var(--bd2)}
-.wl-input::placeholder{color:var(--mu)}
-.wl-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.wl-btn:hover{background:#cdb8ff}
-.wl-proof{font-size:11px;color:var(--mu);margin-top:12px;font-family:'DM Mono',monospace}
+/* CTA BOTTOM */
+.cta-section{padding:0 24px 96px;max-width:960px;margin:0 auto;position:relative;z-index:1}
+.cta-box{background:var(--color-surface);border:1px solid rgba(123,44,255,0.3);border-radius:16px;padding:72px 48px;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 100%,rgba(123,44,255,0.08),transparent);pointer-events:none}
+.cta-box h2{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,6vw,72px);font-weight:700;letter-spacing:1px;color:var(--color-text);line-height:.95;margin-bottom:16px;position:relative;z-index:1}
+.cta-box h2 span{color:var(--color-purple)}
+.cta-box p{font-size:15px;color:var(--color-muted);margin-bottom:36px;position:relative;z-index:1;line-height:1.7;max-width:480px;margin-left:auto;margin-right:auto;margin-bottom:36px}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
 
-/* CTA */
-.cta-bottom{margin:0 24px 96px;max-width:1080px;margin-left:auto;margin-right:auto}
-.cta-box{background:var(--s1);border:1px solid var(--bd2);border-radius:20px;padding:72px 48px;text-align:center;position:relative;overflow:hidden}
-.cta-box::before{content:'';position:absolute;inset:-1px;border-radius:20px;background:linear-gradient(135deg,rgba(184,159,255,0.25),rgba(52,211,153,0.1),rgba(124,95,230,0.2));z-index:-1}
-.cta-box::after{content:'';position:absolute;inset:1px;border-radius:19px;background:var(--s1);z-index:-1}
-.cta-box h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,7vw,80px);letter-spacing:2px;color:var(--tx);line-height:.95;margin-bottom:16px;position:relative;z-index:1}
-.cta-box h2 span{color:var(--ac)}
-.cta-box p{font-size:14px;color:var(--mu2);margin-bottom:32px;position:relative;z-index:1;line-height:1.7}
-.btn-glow{background:var(--ac);color:#07060d;padding:16px 40px;border-radius:7px;font-size:14px;font-weight:700;text-decoration:none;transition:all .25s;display:inline-block;position:relative;z-index:1}
-.btn-glow:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 16px 50px rgba(184,159,255,0.2)}
-
-footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.foot-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--mu)}
-.foot-logo span{color:var(--ac)}
+/* FOOTER */
+footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
+.foot-logo{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:5px;color:var(--color-muted)}
+.foot-logo span{color:var(--color-purple)}
+.foot-copy{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:1px}
 .foot-links{display:flex;gap:24px}
-.foot-links a{font-size:11px;color:var(--mu);text-decoration:none;font-family:'DM Mono',monospace}
-.foot-links a:hover{color:var(--tx)}
-.div{border:none;border-top:1px solid var(--bd);margin:0}
+.foot-links a{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);text-decoration:none;transition:color .2s}
+.foot-links a:hover{color:var(--color-text)}
 
 /* AUTH MODAL */
-.modal{display:none;position:fixed;inset:0;background:rgba(7,6,13,0.92);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(16px)}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:300;align-items:center;justify-content:center;backdrop-filter:blur(16px)}
 .modal.open{display:flex}
-.modal-box{background:#0c0a1a;border:1px solid rgba(184,159,255,0.15);border-radius:20px;padding:36px;width:100%;max-width:400px;margin:0 20px;position:relative}
-.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
-.modal-close:hover{color:var(--tx)}
-.modal-tabs{display:flex;gap:6px;background:var(--s2);border-radius:10px;padding:4px;margin-bottom:24px}
-.modal-tab{flex:1;padding:9px;border-radius:7px;border:none;background:transparent;color:var(--mu2);font-family:'Syne',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
-.modal-tab.active{background:var(--ac);color:#07060d;font-weight:700}
-.modal-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;padding:12px 14px;outline:none;font-family:'Syne',sans-serif;margin-bottom:10px;transition:border-color .2s}
-.modal-input:focus{border-color:var(--bd2)}
-.modal-input::placeholder{color:var(--mu)}
-.modal-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;margin-top:4px}
-.modal-btn:hover{background:#cdb8ff}
-.modal-msg{margin-top:12px;text-align:center;font-size:12px;font-family:'DM Mono',monospace;min-height:16px}
-.wake-bar{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:none}
-.wake-bar-text{font-size:11px;color:#f59e0b;font-family:'DM Mono',monospace;text-align:center}
-.wake-progress{height:2px;background:rgba(251,191,36,0.15);border-radius:1px;margin-top:6px;overflow:hidden}
+.modal-box{background:var(--color-surface);border:1px solid rgba(123,44,255,0.2);border-radius:16px;padding:32px;width:100%;max-width:400px;margin:0 20px;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;color:var(--color-muted);font-size:18px;cursor:pointer;padding:4px;transition:color .2s}
+.modal-close:hover{color:var(--color-text)}
+.modal-tabs{display:flex;gap:4px;background:var(--color-surface-2);border-radius:8px;padding:3px;margin-bottom:24px}
+.modal-tab{flex:1;padding:9px;border-radius:6px;border:none;background:transparent;color:var(--color-muted);font-family:'Barlow',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.modal-tab.active{background:var(--color-purple);color:#fff;font-weight:500}
+.modal-input{width:100%;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:8px;color:var(--color-text);font-size:13px;padding:12px 14px;outline:none;font-family:'Barlow',sans-serif;margin-bottom:10px;transition:border-color .2s}
+.modal-input:focus{border-color:var(--color-purple)}
+.modal-input::placeholder{color:var(--color-muted)}
+.modal-btn{width:100%;background:var(--color-purple);color:#fff;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:500;cursor:pointer;font-family:'Barlow',sans-serif;transition:background .2s;margin-top:4px}
+.modal-btn:hover{background:var(--color-purple-light)}
+.modal-msg{margin-top:12px;text-align:center;font-size:12px;font-family:'JetBrains Mono',monospace;min-height:16px}
+.wake-bar{background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:none}
+.wake-bar-text{font-size:11px;color:#f59e0b;font-family:'JetBrains Mono',monospace;text-align:center;letter-spacing:.5px}
+.wake-progress{height:2px;background:rgba(251,191,36,0.12);border-radius:1px;margin-top:6px;overflow:hidden}
 .wake-fill{height:100%;background:#f59e0b;border-radius:1px;width:0%;transition:width .3s}
 
-@media(max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}.price-grid{grid-template-columns:1fr}.lb-head-row,.lb-item{grid-template-columns:40px 1fr 72px 72px}.lb-head-row>*:nth-child(5),.lb-item>*:nth-child(5),.lb-head-row>*:nth-child(6),.lb-item>*:nth-child(6){display:none}nav{padding:0 20px}.nav-link{display:none}.trust-strip{flex-direction:column}}
-@media(max-width:600px){.feat-grid{grid-template-columns:1fr}.proof{gap:32px}.cta-box{padding:48px 24px}footer{flex-direction:column;padding:28px 20px}h1{font-size:clamp(56px,15vw,120px)}.btns{flex-direction:column;align-items:center}.btn-a,.btn-b{width:100%;max-width:300px;text-align:center}.sp-numbers{gap:28px}}
+@media(max-width:900px){.trust-grid{grid-template-columns:repeat(2,1fr)}.tipsters-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.hero-stats{gap:32px}.cta-box{padding:48px 24px}footer{flex-direction:column;padding:28px 20px;text-align:center}.h1-line1,.h1-line2,.h1-line3{font-size:clamp(52px,14vw,100px)}}
 </style>
 </head>
 <body>
-<nav>
-  <a href="/" class="logo">LEDG<span>R</span></a>
-  <div class="nav-r">
-    <a href="#features" class="nav-link">Features</a>
-    <a href="#leaderboard" class="nav-link">Leaderboard</a>
-    <a href="#pricing" class="nav-link">Pricing</a>
-    <button class="btn-nav" id="navBtn" onclick="openAuth()">Log In / Sign Up</button>
-  </div>
-</nav>
 
+<nav class="brand-nav">
+  <a href="/" class="logo">LEDG<span>R</span></a>
+  <div class="brand-nav-links">
+    <a href="/" class="brand-nav-link active">Home</a>
+    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+    <a href="/feed" class="brand-nav-link">Feed</a>
+    <a href="/analytics" class="brand-nav-link">Analytics</a>
+    <a href="/community" class="brand-nav-link">Community</a>
+    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
+  </div>
+  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
+</nav>
+<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+<div class="brand-slide-menu" id="brandSlideMenu">
+  <div class="brand-slide-header">
+    <span class="brand-slide-logo">LEDG<span>R</span></span>
+    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+  </div>
+  <div class="brand-slide-links">
+    <a href="/dashboard" class="brand-snl">Post a Pick</a>
+    <a href="/simulator" class="brand-snl">Simulator</a>
+    <a href="/compare" class="brand-snl">Compare Tipsters</a>
+    <a href="/badges" class="brand-snl">Badges</a>
+    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
+    <a href="/progress" class="brand-snl">Progress</a>
+    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
+    <a href="/settings" class="brand-snl">Settings</a>
+    <a href="/notifications" class="brand-snl">Notifications</a>
+    <a href="/news" class="brand-snl">News</a>
+  </div>
+  <div id="brandSlideAuth"></div>
+</div>
+
+<!-- HERO -->
 <section class="hero">
   <div class="hero-grid"></div>
   <div class="hero-orb"></div>
-  <div class="badge-hero"><div class="dot"></div> No fake ROI. No deleted losses.</div>
-  <h1><span class="l1">REAL PICKS.</span><span class="l2">VERIFIED.</span></h1>
-  <p class="hero-p">The only platform where <strong>every pick is locked</strong> the moment it's posted. No edits. No deletes. Just your real record.</p>
-  <div class="btns">
-    <a href="#" class="btn-a" onclick="openAuth();return false">Start Tracking Free →</a>
-    <a href="#" class="btn-b" onclick="openAuth();return false">Browse Tipsters →</a>
+  <div class="hero-badge"><div class="hero-dot"></div> Picks Locked Forever</div>
+  <h1>
+    <span class="h1-line1">THE VERIFIED</span>
+    <span class="h1-line2">RECORD</span>
+    <span class="h1-line3">FOR SERIOUS BETTORS</span>
+  </h1>
+  <p class="hero-sub">Every pick is <strong>locked the moment it posts</strong>. No edits. No deletions. Your real record, permanently on the ledger.</p>
+  <div class="hero-btns">
+    <a href="/leaderboard" class="btn-primary">View Leaderboard</a>
+    <a href="/become-a-tipster" class="btn-secondary">Become a Tipster</a>
   </div>
-  <div class="proof">
-    <div><div class="pn" id="proofTipsters">—</div><div class="pl">Active Tipsters</div></div>
-    <div><div class="pn" id="proofPicks">—</div><div class="pl">Picks Tracked</div></div>
-    <div><div class="pn">100%</div><div class="pl">Verified Records</div></div>
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-val" id="heroTipsters">—</div><div class="hs-lbl">Active Tipsters</div></div>
+    <div class="hs"><div class="hs-val" id="heroPicks">—</div><div class="hs-lbl">Picks Tracked</div></div>
+    <div class="hs"><div class="hs-val">100%</div><div class="hs-lbl">Verified Records</div></div>
   </div>
 </section>
 
+<!-- TICKER -->
 <div class="ticker-wrap">
   <div class="ticker" id="tickerContent">
-    <span class="ti"><b>★</b> NO FAKE ROI</span>
-    <span class="ti"><b>★</b> NO DELETED LOSSES</span>
-    <span class="ti"><b>★</b> PICKS LOCKED ON POST</span>
-    <span class="ti"><b>★</b> AUTO-VERIFIED RESULTS</span>
-    <span class="ti"><b>★</b> REAL RECORDS ONLY</span>
-    <span class="ti"><b>★</b> NO FAKE ROI</span>
-    <span class="ti"><b>★</b> NO DELETED LOSSES</span>
-    <span class="ti"><b>★</b> PICKS LOCKED ON POST</span>
-    <span class="ti"><b>★</b> AUTO-VERIFIED RESULTS</span>
-    <span class="ti"><b>★</b> REAL RECORDS ONLY</span>
+    <span class="ti"><b>✓</b> PICKS LOCKED ON POST</span>
+    <span class="ti"><b>✓</b> NO FAKE ROI</span>
+    <span class="ti"><b>✓</b> NO DELETED LOSSES</span>
+    <span class="ti"><b>✓</b> AUTO-VERIFIED RESULTS</span>
+    <span class="ti"><b>✓</b> IMMUTABLE RECORDS</span>
+    <span class="ti"><b>✓</b> RANKED BY PERFORMANCE</span>
+    <span class="ti"><b>✓</b> PICKS LOCKED ON POST</span>
+    <span class="ti"><b>✓</b> NO FAKE ROI</span>
+    <span class="ti"><b>✓</b> NO DELETED LOSSES</span>
+    <span class="ti"><b>✓</b> AUTO-VERIFIED RESULTS</span>
+    <span class="ti"><b>✓</b> IMMUTABLE RECORDS</span>
+    <span class="ti"><b>✓</b> RANKED BY PERFORMANCE</span>
   </div>
 </div>
 
-<!-- TRUST STRIP -->
-<div style="border-bottom:1px solid var(--bd)">
-  <div class="trust-strip">
-    <div class="ts-item"><span class="ts-icon">🔒</span><div class="ts-title">Picks Locked Forever</div><div class="ts-desc">Once posted, no edits. No deletions. Ever.</div></div>
-    <div class="ts-item"><span class="ts-icon">⚡</span><div class="ts-title">Auto-Verified Results</div><div class="ts-desc">Results graded automatically from live data.</div></div>
-    <div class="ts-item"><span class="ts-icon">📊</span><div class="ts-title">Real ROI Only</div><div class="ts-desc">Stats calculated from settled picks only.</div></div>
-    <div class="ts-item"><span class="ts-icon">🏆</span><div class="ts-title">Ranked by Performance</div><div class="ts-desc">Leaderboard updated in real time.</div></div>
-  </div>
-</div>
-
-<section class="features" id="features">
-  <span class="sec-tag">Why LEDGR</span>
-  <h2 class="sec-h">BUILT TO <em>EXPOSE FAKES</em><br>AND REWARD <em>THE REAL</em></h2>
-  <div class="feat-grid">
-    <div class="fc"><span class="fi">📊</span><div class="fh">Verified Records</div><div class="fp">Every pick tracked automatically. Tipsters cannot manipulate results.</div></div>
-    <div class="fc"><span class="fi">🏆</span><div class="fh">Live Leaderboard</div><div class="fp">Real-time ranking by ROI. Find the best tipster for your style instantly.</div></div>
-    <div class="fc"><span class="fi">💳</span><div class="fh">Subscription Marketplace</div><div class="fp">Subscribe to proven tipsters. They set their price and get paid automatically.</div></div>
-    <div class="fc"><span class="fi">⚡</span><div class="fh">ELO Rating System</div><div class="fp">A proprietary rating that accounts for odds difficulty — not just win rate.</div></div>
-    <div class="fc"><span class="fi">📈</span><div class="fh">Bankroll Simulator</div><div class="fp">See exactly how much you would have made following any tipster.</div></div>
-    <div class="fc"><span class="fi">🎯</span><div class="fh">Reliability Score</div><div class="fp">Separates lucky streaks from real sharps. Built on sample size and consistency.</div></div>
-  </div>
-</section>
-
-<hr class="div">
-
-<section class="lb-section" id="leaderboard">
-  <span class="sec-tag">Live Rankings</span>
-  <h2 class="sec-h">TOP TIPSTERS <em>RIGHT NOW</em></h2>
-  <div class="lb-preview">
-    <div class="lb-head-row"><span></span><span>Tipster</span><span style="text-align:center">ROI</span><span style="text-align:center">W/R</span><span style="text-align:center">Picks</span><span></span></div>
-    <div id="lbRows"><div style="text-align:center;padding:32px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px">Loading live data...</div></div>
-    <div class="lb-cta"><a href="/leaderboard">View Full Leaderboard →</a></div>
-  </div>
-</section>
-
-<hr class="div">
-
-<!-- SOCIAL PROOF -->
-<div class="social-proof">
-  <span class="sec-tag">By the numbers</span>
-  <h2 class="sec-h" style="margin-bottom:40px">THE NUMBERS <em>DON'T LIE</em></h2>
-  <div class="sp-numbers">
-    <div class="sp-num"><div class="sp-val" id="spTipsters">—</div><div class="sp-lbl">Active Tipsters</div></div>
-    <div class="sp-num"><div class="sp-val" id="spPicks">—</div><div class="sp-lbl">Picks Tracked</div></div>
-    <div class="sp-num"><div class="sp-val">100%</div><div class="sp-lbl">Verified Records</div></div>
-    <div class="sp-num"><div class="sp-val">0</div><div class="sp-lbl">Fake Results</div></div>
-  </div>
-</div>
-
-<hr class="div">
-
-<section class="pricing" id="pricing">
-  <span class="sec-tag">Plans</span>
-  <h2 class="sec-h">SIMPLE PRICING.<br><em>NO SURPRISES.</em></h2>
-  <div class="price-grid">
-    <div class="pc">
-      <div class="pc-name">FREE</div>
-      <div class="pc-price">€0<span>/mo</span></div>
-      <div class="pc-per">Forever free</div>
-      <div class="pc-tagline">START BUILDING YOUR RECORD</div>
-      <ul class="pc-feats">
-        <li>Post unlimited picks</li>
-        <li>Verified public profile</li>
-        <li>Leaderboard ranking</li>
-        <li>Basic analytics</li>
-      </ul>
-      <button class="pc-btn pc-btn-out" onclick="openAuth()">Get Started Free</button>
+<!-- TRUST -->
+<div class="trust">
+  <span class="sec-label">Why LEDGR</span>
+  <h2 class="sec-h">BUILT FOR THOSE WHO<br><em>PLAY IT STRAIGHT</em></h2>
+  <div class="trust-grid">
+    <div class="trust-item">
+      <span class="ti-icon">🔒</span>
+      <div class="ti-title">Immutable Records</div>
+      <div class="ti-desc">Once posted, no tipster can edit or delete a pick. Your record is permanent.</div>
     </div>
-    <div class="pc featured">
-      <div class="pc-tag">⭐ MOST POPULAR</div>
-      <div class="pc-name">PRO</div>
-      <div class="pc-price">€19<span>/mo</span></div>
-      <div class="pc-per">Billed monthly · cancel anytime</div>
-      <div class="pc-tagline">FOLLOW WINNING TIPSTERS</div>
-      <ul class="pc-feats">
-        <li>Follow unlimited tipsters</li>
-        <li>Full analytics and charts</li>
-        <li>Bankroll simulator access</li>
-        <li>Priority notifications</li>
-        <li>Export data CSV / PDF</li>
-        <li>Early access to new features</li>
-      </ul>
-      <button class="pc-btn pc-btn-main" onclick="openAuth()">Start Pro Trial</button>
+    <div class="trust-item">
+      <span class="ti-icon">⚡</span>
+      <div class="ti-title">Auto-Verified Results</div>
+      <div class="ti-desc">Results graded automatically from live data. No self-reporting, no manipulation.</div>
     </div>
-    <div class="pc">
-      <div class="pc-name">TIPSTER</div>
-      <div class="pc-price">€0<span>+15%</span></div>
-      <div class="pc-per">Commission on subscriptions only</div>
-      <div class="pc-tagline">MONETIZE YOUR REPUTATION</div>
-      <ul class="pc-feats">
-        <li>Create subscription plans</li>
-        <li>Verified tipster badge</li>
-        <li>Automated monthly payouts</li>
-        <li>Subscriber analytics</li>
-        <li>You keep 85% of revenue</li>
-      </ul>
-      <button class="pc-btn pc-btn-out" onclick="openAuth()">Apply as Tipster</button>
+    <div class="trust-item">
+      <span class="ti-icon">📊</span>
+      <div class="ti-title">Real ROI Only</div>
+      <div class="ti-desc">Stats calculated from settled picks only. Win rates you can actually trust.</div>
+    </div>
+    <div class="trust-item">
+      <span class="ti-icon">🏆</span>
+      <div class="ti-title">Performance-Ranked</div>
+      <div class="ti-desc">The leaderboard updates in real time. The best tipsters rise — the rest can't hide.</div>
     </div>
   </div>
-</section>
-
-<div class="waitlist">
-  <div class="wl-urgency">🔥 Early Access — Limited Spots</div>
-  <h2 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,60px);letter-spacing:2px;margin-bottom:14px;color:var(--tx)">JOIN THE <span style="color:var(--ac)">WAITLIST</span></h2>
-  <p style="color:var(--mu2);font-size:14px;line-height:1.8;margin-bottom:32px">Get early access, free Pro trial, and founding member status. The sooner you join, the better your rank starts.</p>
-  <form action="https://bet.us4.list-manage.com/subscribe/post?u=e99303ac9c503d88f42a2301c&id=25746210a0&f_id=003e94e5f0" method="post" target="_blank">
-    <input type="email" name="EMAIL" required placeholder="Your email address" class="wl-input">
-    <div style="position:absolute;left:-5000px" aria-hidden="true"><input type="text" name="b_e99303ac9c503d88f42a2301c_25746210a0" tabindex="-1" value=""></div>
-    <input type="submit" value="Join the Waitlist →" class="wl-btn">
-  </form>
-  <div class="wl-proof">No spam. Unsubscribe anytime. Founding members get lifetime perks.</div>
 </div>
 
-<div class="cta-bottom">
+<!-- TOP TIPSTERS -->
+<div class="tipsters-section">
+  <span class="sec-label">Live Rankings</span>
+  <h2 class="sec-h" style="margin-bottom:32px">TOP TIPSTERS <em>RIGHT NOW</em></h2>
+  <div class="tipsters-grid" id="tipstersGrid">
+    <div class="tc-loading">Loading verified records...</div>
+  </div>
+  <div style="text-align:center;margin-top:28px">
+    <a href="/leaderboard" class="btn-secondary">Full Leaderboard →</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-row" style="border-top:1px solid var(--color-border);padding-top:80px">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-val" id="statTipsters">—</div><div class="stat-lbl">Active Tipsters</div></div>
+    <div class="stat-item"><div class="stat-val" id="statPicks">—</div><div class="stat-lbl">Picks Tracked</div></div>
+    <div class="stat-item"><div class="stat-val">100%</div><div class="stat-lbl">Verified Records</div></div>
+    <div class="stat-item"><div class="stat-val">0</div><div class="stat-lbl">Fake Results</div></div>
+  </div>
+</div>
+
+<!-- CTA BOTTOM -->
+<div class="cta-section">
   <div class="cta-box">
     <h2>YOUR RECORD IS<br><span>WAITING.</span></h2>
-    <p>Every pick you post builds your verified reputation. Start today — it is free forever.</p>
-    <a href="#" class="btn-glow" onclick="openAuth();return false">Create Free Account →</a>
+    <p>Every pick you post builds your verified reputation on LEDGR. Start free — your record starts the moment you post your first pick.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-primary" onclick="openAuth();return false">Create Free Account</a>
+      <a href="/leaderboard" class="btn-secondary">Browse Tipsters</a>
+    </div>
   </div>
 </div>
 
 <footer>
   <div class="foot-logo">LEDG<span>R</span></div>
-  <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace">© 2026 LEDGR — getledgr.bet</div>
-  <div class="foot-links"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:ledgr.contact@gmail.com">Contact</a><a href="https://x.com/getledgr" target="_blank">X / Twitter</a></div>
+  <div class="foot-copy">© 2026 LEDGR — getledgr.bet</div>
+  <div class="foot-links">
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="mailto:ledgr.contact@gmail.com">Contact</a>
+    <a href="https://x.com/getledgr" target="_blank">X / Twitter</a>
+  </div>
 </footer>
 
 <!-- AUTH MODAL -->
@@ -368,149 +314,175 @@ footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items
     <div id="loginForm">
       <input type="email" id="loginEmail" class="modal-input" placeholder="Email">
       <input type="password" id="loginPassword" class="modal-input" placeholder="Password">
-      <button class="modal-btn" id="loginBtn" onclick="handleLogin()">Log In →</button>
+      <button class="modal-btn" id="loginBtn" onclick="handleLogin()">Log In</button>
     </div>
     <div id="registerForm" style="display:none">
       <input type="email" id="regEmail" class="modal-input" placeholder="Email">
       <input type="text" id="regUsername" class="modal-input" placeholder="Username">
       <input type="password" id="regPassword" class="modal-input" placeholder="Password (min 6 chars)">
-      <button class="modal-btn" id="registerBtn" onclick="handleRegister()">Create Account →</button>
+      <button class="modal-btn" id="registerBtn" onclick="handleRegister()">Create Account</button>
     </div>
     <div class="modal-msg" id="authMsg"></div>
   </div>
 </div>
 
 <script src="/verify.js"></script>
+<script src="/brand-nav.js"></script>
 <script>
-const API='https://ledgr-backend-production-c132.up.railway.app';
-const colors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
+const DIV_CLASSES = ['div-elite','div-diamond','div-platinum','div-gold','',''];
 
-// Smart nav
+// Smart nav: if logged in, update btn
 (function(){
-  const u=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
-  const btn=document.getElementById('navBtn');
-  if(u&&btn){btn.textContent='Go to Dashboard →';btn.onclick=()=>window.location.href='/home';}
+  const u = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+  if (u) {
+    const profileLink = document.getElementById('profileNavLink');
+    if (profileLink) {
+      try { const usr = JSON.parse(u); if (usr.username) profileLink.href = '/tipster?u=' + usr.username; } catch(e){}
+    }
+  }
 })();
 
-async function loadData(){
-  try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    const picks=await r.json();
-    if(!Array.isArray(picks)||!picks.length)return;
-    const tipsters={};
-    picks.forEach(p=>{
-      if(!p.user)return;
-      const u=p.user.username;
-      if(!tipsters[u])tipsters[u]={pnl:0,stake:0,picks:0,wins:0,losses:0};
-      tipsters[u].picks++;tipsters[u].stake+=p.stake;tipsters[u].pnl+=p.pnl;
-      if(p.result==='win')tipsters[u].wins++;if(p.result==='loss')tipsters[u].losses++;
+async function loadData() {
+  try {
+    const r = await fetch(API + '/picks', {cache:'no-store'});
+    const picks = await r.json();
+    if (!Array.isArray(picks) || !picks.length) return;
+
+    const tipsters = {};
+    picks.forEach(p => {
+      if (!p.user) return;
+      const u = p.user.username;
+      if (!tipsters[u]) tipsters[u] = {pnl:0, stake:0, picks:0, wins:0, losses:0};
+      tipsters[u].picks++;
+      tipsters[u].stake += p.stake;
+      tipsters[u].pnl += p.pnl;
+      if (p.result === 'win') tipsters[u].wins++;
+      if (p.result === 'loss') tipsters[u].losses++;
     });
-    const count=Object.keys(tipsters).length;
-    document.getElementById('proofTipsters').textContent=count+'+';
-    document.getElementById('proofPicks').textContent=picks.length+'+';
-    document.getElementById('spTipsters').textContent=count+'+';
-    document.getElementById('spPicks').textContent=picks.length+'+';
-    const items=Object.entries(tipsters).map(([u,t])=>{
-      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-      return`<span class="ti"><b>★</b> @${u} — ROI ${parseFloat(roi)>=0?'+':''}${roi}%</span>`;
+
+    const count = Object.keys(tipsters).length;
+    document.getElementById('heroTipsters').textContent = count + '+';
+    document.getElementById('heroPicks').textContent = picks.length + '+';
+    document.getElementById('statTipsters').textContent = count + '+';
+    document.getElementById('statPicks').textContent = picks.length + '+';
+
+    // Ticker
+    const tickItems = Object.entries(tipsters).map(([u, t]) => {
+      const roi = t.stake > 0 ? ((t.pnl / t.stake) * 100).toFixed(1) : 0;
+      return '<span class="ti"><b>✓</b> @' + u + ' — ROI ' + (parseFloat(roi) >= 0 ? '+' : '') + roi + '%</span>';
     });
-    if(items.length)document.getElementById('tickerContent').innerHTML=[...items,...items].join('');
-    const top5=Object.entries(tipsters).sort((a,b)=>{
-      const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;
-      const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;
-      return rb-ra;
-    }).slice(0,5);
-    const medals=['🥇','🥈','🥉'];
-    document.getElementById('lbRows').innerHTML=top5.map(([u,t],i)=>{
-      const roi=t.stake>0?((t.pnl/t.stake)*100).toFixed(1):0;
-      const wr=(t.wins+t.losses)>0?((t.wins/(t.wins+t.losses))*100).toFixed(0):0;
-      const roiPos=parseFloat(roi)>=0;
-      return`<div class="lb-item" onclick="window.location.href='/tipster?u=${u}'">
-        <div class="lb-rank ${i===0?'g':i===1?'s':i===2?'b':''}">${i<3?medals[i]:i+1}</div>
-        <div class="lb-tipster"><div class="lb-av" style="background:${colors[i%colors.length]}">${u.substring(0,2).toUpperCase()}</div><div><div class="lb-name">@${u}</div><div class="lb-sub">${t.picks} picks</div></div></div>
-        <div class="lb-stat"><div class="lb-sv ${roiPos?'pos':'neg'}">${roiPos?'+':''}${roi}%</div><div class="lb-sl">ROI</div></div>
-        <div class="lb-stat"><div class="lb-sv neu">${wr}%</div><div class="lb-sl">WIN RATE</div></div>
-        <div class="lb-stat"><div class="lb-sv neu">${t.picks}</div><div class="lb-sl">PICKS</div></div>
-        <button class="follow" onclick="event.stopPropagation();this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following ✓':'Follow'">Follow</button>
-      </div>`;
+    if (tickItems.length) {
+      const doubled = [...tickItems, ...tickItems].join('');
+      document.getElementById('tickerContent').innerHTML = doubled;
+    }
+
+    // Top tipsters
+    const top = Object.entries(tipsters).sort((a, b) => {
+      const ra = a[1].stake > 0 ? (a[1].pnl / a[1].stake) * 100 : 0;
+      const rb = b[1].stake > 0 ? (b[1].pnl / b[1].stake) * 100 : 0;
+      return rb - ra;
+    }).slice(0, 6);
+
+    const grid = document.getElementById('tipstersGrid');
+    if (!top.length) { grid.innerHTML = '<div class="tc-loading">No verified records yet.</div>'; return; }
+
+    grid.innerHTML = top.map(([u, t], i) => {
+      const roi = t.stake > 0 ? ((t.pnl / t.stake) * 100).toFixed(1) : 0;
+      const wr = (t.wins + t.losses) > 0 ? ((t.wins / (t.wins + t.losses)) * 100).toFixed(0) : 0;
+      const roiPos = parseFloat(roi) >= 0;
+      const divClass = DIV_CLASSES[i] || '';
+      return '<div class="tipster-card ' + divClass + '" onclick="window.location.href=\'/tipster?u=' + u + '\'">' +
+        '<div class="tc-rank"><span class="tc-rank-num">#' + (i + 1) + '</span> Verified</div>' +
+        '<div class="tc-av" style="background:' + COLORS[i % COLORS.length] + '">' + u.substring(0,2).toUpperCase() + '</div>' +
+        '<div class="tc-name">@' + u + '</div>' +
+        '<div class="tc-picks">' + t.picks + ' picks tracked</div>' +
+        '<div class="tc-stats">' +
+          '<div><div class="tc-stat-val ' + (roiPos ? 'pos' : 'neg') + '">' + (roiPos ? '+' : '') + roi + '%</div><div class="tc-stat-lbl">ROI</div></div>' +
+          '<div><div class="tc-stat-val neu">' + wr + '%</div><div class="tc-stat-lbl">Win Rate</div></div>' +
+          '<div><div class="tc-stat-val neu">' + t.picks + '</div><div class="tc-stat-lbl">Picks</div></div>' +
+        '</div>' +
+      '</div>';
     }).join('');
-  }catch(e){
-    document.getElementById('lbRows').innerHTML='<div style="text-align:center;padding:32px;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:12px">We are syncing verified stats. Check back shortly.</div>';
+  } catch(e) {
+    document.getElementById('tipstersGrid').innerHTML = '<div class="tc-loading">Syncing verified stats — check back shortly.</div>';
   }
 }
 loadData();
 
-function openAuth(){document.getElementById('authModal').classList.add('open');}
-function closeAuth(){document.getElementById('authModal').classList.remove('open');}
-document.getElementById('authModal').addEventListener('click',function(e){if(e.target===this)closeAuth();});
-function switchTab(t){
-  document.getElementById('loginForm').style.display=t==='login'?'block':'none';
-  document.getElementById('registerForm').style.display=t==='register'?'block':'none';
-  document.getElementById('tabLogin').classList.toggle('active',t==='login');
-  document.getElementById('tabRegister').classList.toggle('active',t==='register');
-  document.getElementById('authMsg').textContent='';
-}
-function setMsg(msg,color){const el=document.getElementById('authMsg');el.textContent=msg;el.style.color=color||'var(--mu)';}
+function openAuth() { document.getElementById('authModal').classList.add('open'); }
+function closeAuth() { document.getElementById('authModal').classList.remove('open'); }
+document.getElementById('authModal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
 
-function showWakeBar(){
-  const bar=document.getElementById('wakeBar');const fill=document.getElementById('wakeFill');
-  bar.style.display='block';let pct=0;
-  const iv=setInterval(()=>{pct=Math.min(pct+2,95);fill.style.width=pct+'%';if(pct>=95)clearInterval(iv);},300);
+function switchTab(t) {
+  document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = t === 'register' ? 'block' : 'none';
+  document.getElementById('tabLogin').classList.toggle('active', t === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', t === 'register');
+  document.getElementById('authMsg').textContent = '';
+}
+function setMsg(msg, color) { const el = document.getElementById('authMsg'); el.textContent = msg; el.style.color = color || 'var(--color-muted)'; }
+
+function showWakeBar() {
+  const bar = document.getElementById('wakeBar'); const fill = document.getElementById('wakeFill');
+  bar.style.display = 'block'; let pct = 0;
+  const iv = setInterval(() => { pct = Math.min(pct + 2, 95); fill.style.width = pct + '%'; if (pct >= 95) clearInterval(iv); }, 300);
   return iv;
 }
-function hideWakeBar(){document.getElementById('wakeBar').style.display='none';}
+function hideWakeBar() { document.getElementById('wakeBar').style.display = 'none'; }
 
-async function handleLogin(){
-  const email=document.getElementById('loginEmail').value.trim();
-  const password=document.getElementById('loginPassword').value;
-  if(!email||!password){setMsg('Please fill in all fields','var(--rd)');return;}
-  const btn=document.getElementById('loginBtn');btn.disabled=true;btn.textContent='Logging in...';
-  const wv=showWakeBar();
-  try{
-    const r=await fetch(API+'/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
-    hideWakeBar();clearInterval(wv);
-    const d=await r.json();
-    if(d.token&&d.user){
-      localStorage.setItem('ledgr_token',d.token);localStorage.setItem('ledgr_user',JSON.stringify(d.user));
-      localStorage.setItem('token',d.token);localStorage.setItem('user',JSON.stringify(d.user));
-      setMsg('Welcome back!','var(--gr)');
-      setTimeout(()=>window.location.href='/home',600);
-    }else{setMsg(d.error||'Invalid credentials','var(--rd)');btn.disabled=false;btn.textContent='Log In →';}
-  }catch(e){hideWakeBar();clearInterval(wv);setMsg('Connection error — try again','var(--rd)');btn.disabled=false;btn.textContent='Log In →';}
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) { setMsg('Please fill in all fields', '#f87171'); return; }
+  const btn = document.getElementById('loginBtn'); btn.disabled = true; btn.textContent = 'Logging in...';
+  const wv = showWakeBar();
+  try {
+    const r = await fetch(API + '/auth/login', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email, password})});
+    hideWakeBar(); clearInterval(wv);
+    const d = await r.json();
+    if (d.token && d.user) {
+      localStorage.setItem('ledgr_token', d.token); localStorage.setItem('ledgr_user', JSON.stringify(d.user));
+      localStorage.setItem('token', d.token); localStorage.setItem('user', JSON.stringify(d.user));
+      setMsg('Welcome back!', '#34d399');
+      setTimeout(() => window.location.href = '/home', 600);
+    } else { setMsg(d.error || 'Invalid credentials', '#f87171'); btn.disabled = false; btn.textContent = 'Log In'; }
+  } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#f87171'); btn.disabled = false; btn.textContent = 'Log In'; }
 }
 
-async function handleRegister(){
-  const email=document.getElementById('regEmail').value.trim();
-  const username=document.getElementById('regUsername').value.trim();
-  const password=document.getElementById('regPassword').value;
-  if(!email||!username||!password){setMsg('Please fill in all fields','var(--rd)');return;}
-  if(password.length<6){setMsg('Password min 6 characters','var(--rd)');return;}
-  const btn=document.getElementById('registerBtn');btn.disabled=true;btn.textContent='Creating...';
-  const wv=showWakeBar();
-  try{
-    const r=await fetch(API+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,username,password})});
-    hideWakeBar();clearInterval(wv);
-    const d=await r.json();
-    if(d.message){
+async function handleRegister() {
+  const email = document.getElementById('regEmail').value.trim();
+  const username = document.getElementById('regUsername').value.trim();
+  const password = document.getElementById('regPassword').value;
+  if (!email || !username || !password) { setMsg('Please fill in all fields', '#f87171'); return; }
+  if (password.length < 6) { setMsg('Password min 6 characters', '#f87171'); return; }
+  const btn = document.getElementById('registerBtn'); btn.disabled = true; btn.textContent = 'Creating...';
+  const wv = showWakeBar();
+  try {
+    const r = await fetch(API + '/auth/register', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email, username, password})});
+    hideWakeBar(); clearInterval(wv);
+    const d = await r.json();
+    if (d.message) {
       window.VerifyEmail.show({
         email,
-        box:document.querySelector('.modal-box'),
-        onSuccess(data){
-          localStorage.setItem('ledgr_token',data.token);
-          localStorage.setItem('ledgr_user',JSON.stringify(data.user));
-          localStorage.setItem('token',data.token);
-          localStorage.setItem('user',JSON.stringify(data.user));
-          window.location.href='/home';
+        box: document.querySelector('.modal-box'),
+        onSuccess(data) {
+          localStorage.setItem('ledgr_token', data.token);
+          localStorage.setItem('ledgr_user', JSON.stringify(data.user));
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          window.location.href = '/home';
         }
       });
-    }else{setMsg(d.error||'Could not create account','var(--rd)');btn.disabled=false;btn.textContent='Create Account →';}
-  }catch(e){hideWakeBar();clearInterval(wv);setMsg('Connection error — try again','var(--rd)');btn.disabled=false;btn.textContent='Create Account →';}
+    } else { setMsg(d.error || 'Could not create account', '#f87171'); btn.disabled = false; btn.textContent = 'Create Account'; }
+  } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#f87171'); btn.disabled = false; btn.textContent = 'Create Account'; }
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key!=='Enter'||!document.getElementById('authModal').classList.contains('open'))return;
-  const loginVisible=document.getElementById('loginForm').style.display!=='none';
-  if(loginVisible)handleLogin();else handleRegister();
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || !document.getElementById('authModal').classList.contains('open')) return;
+  const loginVisible = document.getElementById('loginForm').style.display !== 'none';
+  if (loginVisible) handleLogin(); else handleRegister();
 });
 </script>
 </body>

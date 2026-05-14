@@ -132,6 +132,7 @@ nav{position:relative;z-index:50;background:rgba(7,6,13,0.96);backdrop-filter:bl
 }
 @media(max-width:480px){.sidebar{display:none}}
 </style>
+<link rel="stylesheet" href="/brand.css">
 </head>
 <body>
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
@@ -151,18 +152,38 @@ nav{position:relative;z-index:50;background:rgba(7,6,13,0.96);backdrop-filter:bl
   </div>
 </div>
 
-<nav>
-  <a href="/home" class="logo">LEDG<span>R</span></a>
-  <div class="nav-r">
-    <a href="/home" class="nav-link">Home</a>
-    <a href="/leaderboard" class="nav-link">Leaderboard</a>
-    <a href="/community" class="nav-link active">💬 Chat</a>
-    <a href="/feed" class="nav-link">🔴 Live</a>
-    <a href="/dashboard" class="nav-link">Post a Pick</a>
-    <div class="nav-user" id="navUser" onclick="goToProfile()">...</div>
-    <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+<nav class="brand-nav">
+  <a href="/" class="logo">LEDG<span>R</span></a>
+  <div class="brand-nav-links">
+    <a href="/" class="brand-nav-link">Home</a>
+    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+    <a href="/feed" class="brand-nav-link">Feed</a>
+    <a href="/analytics" class="brand-nav-link">Analytics</a>
+    <a href="/community" class="brand-nav-link active">Community</a>
+    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
   </div>
+  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
 </nav>
+<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+<div class="brand-slide-menu" id="brandSlideMenu">
+  <div class="brand-slide-header">
+    <span class="brand-slide-logo">LEDG<span>R</span></span>
+    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+  </div>
+  <div class="brand-slide-links">
+    <a href="/dashboard" class="brand-snl">Post a Pick</a>
+    <a href="/simulator" class="brand-snl">Simulator</a>
+    <a href="/compare" class="brand-snl">Compare Tipsters</a>
+    <a href="/badges" class="brand-snl">Badges</a>
+    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
+    <a href="/progress" class="brand-snl">Progress</a>
+    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
+    <a href="/settings" class="brand-snl">Settings</a>
+    <a href="/notifications" class="brand-snl">Notifications</a>
+    <a href="/news" class="brand-snl">News</a>
+  </div>
+  <div id="brandSlideAuth"></div>
+</div>
 
 <div class="chat-layout">
 
@@ -516,5 +537,6 @@ function showToast(msg) {
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');}
 </script>
+<script src="/brand-nav.js"></script>
 </body>
 </html>

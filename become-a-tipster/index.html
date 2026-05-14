@@ -82,12 +82,41 @@ footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items
 @media(max-width:700px){.earn-grid{grid-template-columns:1fr 1fr}.trust-grid{grid-template-columns:1fr 1fr}.cta-box{padding:40px 24px}nav{padding:0 20px}footer{flex-direction:column;padding:28px 20px}}
 @media(max-width:480px){.earn-grid{grid-template-columns:1fr}.trust-grid{grid-template-columns:1fr 1fr}.step{grid-template-columns:40px 1fr;gap:16px}.step-num{font-size:36px}}
 </style>
+<link rel="stylesheet" href="/brand.css">
 </head>
 <body>
-<nav>
+<nav class="brand-nav">
   <a href="/" class="logo">LEDG<span>R</span></a>
-  <button class="nav-btn" onclick="window.location.href='/login'">Get Started →</button>
+  <div class="brand-nav-links">
+    <a href="/" class="brand-nav-link">Home</a>
+    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+    <a href="/feed" class="brand-nav-link">Feed</a>
+    <a href="/analytics" class="brand-nav-link">Analytics</a>
+    <a href="/community" class="brand-nav-link">Community</a>
+    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
+  </div>
+  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
 </nav>
+<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+<div class="brand-slide-menu" id="brandSlideMenu">
+  <div class="brand-slide-header">
+    <span class="brand-slide-logo">LEDG<span>R</span></span>
+    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+  </div>
+  <div class="brand-slide-links">
+    <a href="/dashboard" class="brand-snl">Post a Pick</a>
+    <a href="/simulator" class="brand-snl">Simulator</a>
+    <a href="/compare" class="brand-snl">Compare Tipsters</a>
+    <a href="/badges" class="brand-snl">Badges</a>
+    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
+    <a href="/progress" class="brand-snl">Progress</a>
+    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
+    <a href="/settings" class="brand-snl">Settings</a>
+    <a href="/notifications" class="brand-snl">Notifications</a>
+    <a href="/news" class="brand-snl">News</a>
+  </div>
+  <div id="brandSlideAuth"></div>
+</div>
 
 <section class="hero">
   <div class="hero-grid"></div>
@@ -177,5 +206,6 @@ footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items
   <div style="font-size:11px;color:var(--mu);font-family:'DM Mono',monospace">© 2026 LEDGR — getledgr.bet</div>
   <div class="foot-links"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:ledgr.contact@gmail.com">Contact</a></div>
 </footer>
+<script src="/brand-nav.js"></script>
 </body>
 </html>

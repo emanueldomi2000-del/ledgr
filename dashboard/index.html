@@ -342,6 +342,7 @@ select option{background:#15122a}
   .nav-r .user-badge,.nav-r .logout-btn{display:none}
 }
 </style>
+<link rel="stylesheet" href="/brand.css">
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -408,22 +409,38 @@ select option{background:#15122a}
   </div>
 </div>
 
-  <nav>
-    <a href="/home" class="logo">LEDG<span>R</span></a>
-    <div class="nav-r">
-      <a href="/home" class="nav-link">Home</a>
-      <a href="/leaderboard" class="nav-link">Leaderboard</a>
-    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
-    <a href="/news" class="nav-link">📰 News</a>
-      <a href="/compare" class="nav-link">Compare</a>
-      <a href="/simulator" class="nav-link">Simulator</a>
-      <a href="/badges" class="nav-link">🏅 Badges</a>
-    <a href="/progress" class="nav-link">🎮 Progress</a>
-      <a href="/community" class="nav-link">💬 Chat</a>
-      <div class="user-badge" id="userBadge" onclick="goToProfile()">...</div>
-      <button class="logout-btn" onclick="logout()">Log Out</button><button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+  <nav class="brand-nav">
+    <a href="/" class="logo">LEDG<span>R</span></a>
+    <div class="brand-nav-links">
+      <a href="/" class="brand-nav-link">Home</a>
+      <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+      <a href="/feed" class="brand-nav-link">Feed</a>
+      <a href="/analytics" class="brand-nav-link">Analytics</a>
+      <a href="/community" class="brand-nav-link">Community</a>
+      <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
     </div>
+    <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
   </nav>
+  <div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+  <div class="brand-slide-menu" id="brandSlideMenu">
+    <div class="brand-slide-header">
+      <span class="brand-slide-logo">LEDG<span>R</span></span>
+      <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+    </div>
+    <div class="brand-slide-links">
+      <a href="/dashboard" class="brand-snl">Post a Pick</a>
+      <a href="/simulator" class="brand-snl">Simulator</a>
+      <a href="/compare" class="brand-snl">Compare Tipsters</a>
+      <a href="/badges" class="brand-snl">Badges</a>
+      <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
+      <a href="/progress" class="brand-snl">Progress</a>
+      <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
+      <a href="/settings" class="brand-snl">Settings</a>
+      <a href="/notifications" class="brand-snl">Notifications</a>
+      <a href="/news" class="brand-snl">News</a>
+    </div>
+    <div id="brandSlideAuth"></div>
+  </div>
   <div class="main">
     <div class="stats">
       <div class="stat"><div class="stat-label">Total Picks</div><div class="stat-val" id="statTotal">0</div></div>
@@ -1194,5 +1211,6 @@ async function postParlay(){
   finally{btn.textContent='POST PARLAY →';btn.disabled=parlayLegs.length<2;}
 }
 </script>
+<script src="/brand-nav.js"></script>
 </body>
 </html>

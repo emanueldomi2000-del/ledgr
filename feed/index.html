@@ -150,31 +150,44 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 @media(max-width:700px){.stat-strip{grid-template-columns:repeat(2,1fr)}.feed-filters{gap:4px}}
 @media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.ev-arrow{display:none}}
 </style>
+<link rel="stylesheet" href="/brand.css">
 </head>
 <body>
 <div class="bg-glow"></div>
 <div class="toast" id="toast"></div>
 
-<nav>
-  <a href="/home" class="logo">LEDG<span>R</span></a>
-  <div class="nav-links">
-    <a href="/home" class="nav-link">Home</a>
-    <a href="/leaderboard" class="nav-link">Leaderboard</a>
-    <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
-    <a href="/news" class="nav-link">📰 News</a>
-    <a href="/compare" class="nav-link">Compare</a>
-    <a href="/simulator" class="nav-link">Simulator</a>
-    <a href="/badges" class="nav-link">🏅 Badges</a>
-    <a href="/progress" class="nav-link">🎮 Progress</a>
-    <a href="/analytics" class="nav-link">📊 Analytics</a>
-    <a href="/feed" class="nav-link active">🔴 Live</a>
-    <a href="/dashboard" class="nav-link">＋ Post Pick</a>
-    <a href="/notifications" class="nav-link">🔔 Alerts</a>
-    <a href="/settings" class="nav-link">⚙️ Profile</a>
+<nav class="brand-nav">
+  <a href="/" class="logo">LEDG<span>R</span></a>
+  <div class="brand-nav-links">
+    <a href="/" class="brand-nav-link">Home</a>
+    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+    <a href="/feed" class="brand-nav-link active">Feed</a>
+    <a href="/analytics" class="brand-nav-link">Analytics</a>
+    <a href="/community" class="brand-nav-link">Community</a>
+    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
   </div>
-  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
-  <a href="/home" class="nav-btn">← Dashboard</a>
+  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
 </nav>
+<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+<div class="brand-slide-menu" id="brandSlideMenu">
+  <div class="brand-slide-header">
+    <span class="brand-slide-logo">LEDG<span>R</span></span>
+    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+  </div>
+  <div class="brand-slide-links">
+    <a href="/dashboard" class="brand-snl">Post a Pick</a>
+    <a href="/simulator" class="brand-snl">Simulator</a>
+    <a href="/compare" class="brand-snl">Compare Tipsters</a>
+    <a href="/badges" class="brand-snl">Badges</a>
+    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
+    <a href="/progress" class="brand-snl">Progress</a>
+    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
+    <a href="/settings" class="brand-snl">Settings</a>
+    <a href="/notifications" class="brand-snl">Notifications</a>
+    <a href="/news" class="brand-snl">News</a>
+  </div>
+  <div id="brandSlideAuth"></div>
+</div>
 
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <div class="slide-nav" id="slideNav">
@@ -567,5 +580,6 @@ function closeSlideNav(){document.getElementById('slideNav').classList.remove('o
 
 loadFeed();startCountdown();
 </script>
+<script src="/brand-nav.js"></script>
 </body>
 </html>
