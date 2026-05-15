@@ -1088,6 +1088,8 @@ function getTimeAgo(d){
   const diff=Date.now()-d.getTime();const mins=Math.floor(diff/60000),hrs=Math.floor(diff/3600000),days=Math.floor(diff/86400000);
   if(mins<1)return'now';if(mins<60)return mins+'m';if(hrs<24)return hrs+'h';return days+'d';
 }
+// Escape single quotes so dynamic values are safe inside onclick='...' attributes
+function eo(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
 
 /* ──── SCROLL FADE ──── */
 function initScrollFade(){
@@ -1103,7 +1105,7 @@ window.onload=()=>{
   if(!user||!user.username){window.location.href='/login';return;}
 
   document.getElementById('app').style.display='block';
-  document.getElementById('userBadge').textContent='@'+user.username;
+  const _ub=document.getElementById('userBadge');if(_ub)_ub.textContent='@'+user.username;
   document.getElementById('slideAvatar').textContent=user.username.slice(0,2).toUpperCase();
   document.getElementById('slideName').textContent='@'+user.username;
   if(window.Push)window.Push.init();
@@ -1516,7 +1518,7 @@ function renderTrendingPicks(all){
           ${p.confidence?`<div class="conf-badge-mini">${p.confidence} conf</div>`:''}
         </div>
         <div class="pc-actions">
-          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${p.event}','${p.market}',${p.odds},'${p.user.username}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
+          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
           <button class="view-btn-sm" onclick="window.location.href='/tipster?u=${p.user.username}'">View</button>
         </div>
       </div>
@@ -1533,7 +1535,7 @@ async function loadHomeTailCount(pickId){
     const uq=uid?'?userId='+uid:'';
     const d=await fetch(API+'/picks/'+pickId+'/tails'+uq).then(r=>r.json());
     const el=document.getElementById('ptc_'+pickId);
-    if(el&&d.count>0)el.textContent=d.count+' user'+(d.count===1?'':' s')+' tailed this pick';
+    if(el&&d.count>0)el.textContent=d.count+' user'+(d.count===1?'':'s')+' tailed this pick';
     const btn=document.getElementById('pcTail_'+pickId);
     if(btn&&d.tailed){btn.textContent='Tailed ✓';btn.classList.add('tailed');}
   }catch(e){}
@@ -1582,12 +1584,12 @@ function renderFeed(all){
       <div class="feed-footer"><span class="badge badge-sport">${p.sport}</span><span style="font-size:10px;color:var(--mu);font-family:'DM Mono',monospace">${p.stake}u</span>${resultBadge}</div>
       ${p.reasoning?`<div class="feed-reason">💭 ${p.reasoning}</div>`:''}
       <div class="feed-reactions">
-        <button class="tail-pick-btn ${tails[p.id]?'tailed':''}" id="tailBtn_${p.id}" onclick="tailFeed('${p.id}','${p.event}','${p.market}',${p.odds},'${p.user.username}',this,document.getElementById('tc_${p.id}'))">${tails[p.id]?'✓ tailed':'tail'}</button>
+        <button class="tail-pick-btn ${tails[p.id]?'tailed':''}" id="tailBtn_${p.id}" onclick="tailFeed('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',this,document.getElementById('tc_${p.id}'))">${tails[p.id]?'✓ tailed':'tail'}</button>
         <span class="tail-count" id="tc_${p.id}">0 tailed</span>
         <button class="react-btn" onclick="toggleReact(this,'fire_${p.id}')">🔥 <span>0</span></button>
         <button class="react-btn" onclick="toggleReact(this,'mind_${p.id}')">🤯 <span>0</span></button>
         <button class="cmt-toggle-btn" onclick="toggleComments('${p.id}',this)">💬 <span id="cmt_count_${p.id}">${getCommentCount(p.id)}</span></button>
-        <button class="share-tiny" onclick="sharePick('${p.event}','${p.market}',${p.odds},'${p.user.username}',${p.stake})" title="Share">↗</button>
+        <button class="share-tiny" onclick="sharePick('${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',${p.stake})" title="Share">↗</button>
       </div>
       <div class="comments-wrap" id="comments_${p.id}"></div>
     </div>`;
