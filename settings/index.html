@@ -453,7 +453,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
         <!-- SAVE -->
         <div class="save-wrap">
           <button class="save-btn" onclick="saveProfile()">SAVE PROFILE</button>
-          <div class="save-hint">Stored locally in your browser · Applies to your profile page instantly</div>
+          <div class="save-hint">Synced to backend · Visible across all your devices</div>
         </div>
 
         <!-- 05 MY SUBSCRIPTIONS -->
@@ -549,6 +549,76 @@ const SPORT_ICONS={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football'
 
 let user=null;
 let config={archetype:null,banner:'default',border:'clean',favSports:[]};
+let pendingAvatar=undefined;
+let pendingBanner=undefined;
+let currentAvatarB64=null;
+let currentBannerB64=null;
+
+/* ── IMAGE COMPRESSION ── */
+async function compressImage(file,maxW,maxH,quality){
+  return new Promise(resolve=>{
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      URL.revokeObjectURL(url);
+      let w=img.width,h=img.height;
+      if(w>maxW||h>maxH){const r=Math.min(maxW/w,maxH/h);w=Math.round(w*r);h=Math.round(h*r);}
+      const c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      resolve(c.toDataURL('image/jpeg',quality||0.82));
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);resolve(null);};
+    img.src=url;
+  });
+}
+
+/* ── BACKEND PROFILE ── */
+async function fetchOwnProfile(){
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token||!user)return;
+  try{
+    const r=await fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+token}});
+    if(!r.ok)return;
+    const data=await r.json();
+    if(data.archetype!=null)config.archetype=data.archetype;
+    if(data.banner)config.banner=data.banner;
+    if(data.border)config.border=data.border;
+    if(data.theme)config.theme=data.theme;
+    if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
+    if(data.bio!=null)config.bio=data.bio;
+    if(data.social_twitter!=null||data.social_instagram!=null)config.social={twitter:data.social_twitter||'',instagram:data.social_instagram||''};
+    const key=user.id||user.username;
+    if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
+    if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
+    localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
+    renderArchetypes();renderBanners();renderBorders();renderSports();renderThemes();loadIdentitySettings();applyPreview();
+  }catch(e){}
+}
+
+async function postProfile(){
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token||!user||!user.id)return false;
+  const payload={
+    archetype:config.archetype||null,
+    banner:config.banner||'default',
+    border:config.border||'clean',
+    theme:config.theme||'default',
+    favSports:config.favSports||[],
+    bio:config.bio||'',
+    social:{twitter:(config.social&&config.social.twitter)||'',instagram:(config.social&&config.social.instagram)||''},
+  };
+  if(pendingAvatar!==undefined)payload.avatarB64=pendingAvatar;
+  if(pendingBanner!==undefined)payload.bannerB64=pendingBanner;
+  try{
+    const r=await fetch(API+'/profile',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify(payload)
+    });
+    if(r.ok){pendingAvatar=undefined;pendingBanner=undefined;}
+    return r.ok;
+  }catch(e){return false;}
+}
 
 /* ── INIT ── */
 window.onload=()=>{
@@ -582,6 +652,7 @@ window.onload=()=>{
   // Load subscription data
   loadMySubscriptions();
   loadMySubscribers();
+  fetchOwnProfile();
 };
 
 const API='https://ledgr-backend-production-c132.up.railway.app';
@@ -789,26 +860,25 @@ function selectTheme(id){
   document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.id==='theme_'+id));
 }
 
-function handleAvUpload(input){
+async function handleAvUpload(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>2*1024*1024){showToast('IMAGE TOO LARGE — max 2MB',true);return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const b64=e.target.result;
-    localStorage.setItem('ledgr_avatar_'+(user.id||user.username),b64);
-    document.getElementById('avPreviewImg').src=b64;
-    document.getElementById('avPreviewImg').style.display='block';
-    document.getElementById('avPlaceholder').style.display='none';
-    document.getElementById('avRemove').style.display='flex';
-    const prev=document.getElementById('previewAv');
-    prev.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-    showToast('AVATAR UPDATED ✓');
-  };
-  reader.readAsDataURL(file);
+  if(file.size>10*1024*1024){showToast('IMAGE TOO LARGE — max 10MB',true);return;}
+  const b64=await compressImage(file,400,400,0.82);
+  if(!b64){showToast('IMAGE ERROR',true);return;}
+  pendingAvatar=b64;currentAvatarB64=b64;
+  localStorage.setItem('ledgr_avatar_'+(user.id||user.username),b64);
+  document.getElementById('avPreviewImg').src=b64;
+  document.getElementById('avPreviewImg').style.display='block';
+  document.getElementById('avPlaceholder').style.display='none';
+  document.getElementById('avRemove').style.display='flex';
+  const prev=document.getElementById('previewAv');
+  prev.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  showToast('AVATAR UPDATED — save to sync ✓');
 }
 
 function removeAvatar(e){
   e.stopPropagation();if(!user)return;
+  pendingAvatar=null;currentAvatarB64=null;
   localStorage.removeItem('ledgr_avatar_'+(user.id||user.username));
   document.getElementById('avPreviewImg').style.display='none';
   document.getElementById('avPreviewImg').src='';
@@ -818,28 +888,27 @@ function removeAvatar(e){
   showToast('AVATAR REMOVED');
 }
 
-function handleBannerImgUpload(input){
+async function handleBannerImgUpload(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>4*1024*1024){showToast('IMAGE TOO LARGE — max 4MB',true);return;}
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const b64=e.target.result;
-    localStorage.setItem('ledgr_banner_img_'+(user.id||user.username),b64);
-    document.getElementById('bannerImgPreview').src=b64;
-    document.getElementById('bannerImgPreview').style.display='block';
-    document.getElementById('bannerImgPlaceholder').style.display='none';
-    document.getElementById('bannerImgRemove').style.display='flex';
-    const prev=document.getElementById('previewBanner');
-    prev.style.backgroundImage=`url(${b64})`;
-    prev.style.backgroundSize='cover';
-    prev.style.backgroundPosition='center';
-    showToast('BANNER UPDATED ✓');
-  };
-  reader.readAsDataURL(file);
+  if(file.size>10*1024*1024){showToast('IMAGE TOO LARGE — max 10MB',true);return;}
+  const b64=await compressImage(file,1200,300,0.82);
+  if(!b64){showToast('IMAGE ERROR',true);return;}
+  pendingBanner=b64;currentBannerB64=b64;
+  localStorage.setItem('ledgr_banner_img_'+(user.id||user.username),b64);
+  document.getElementById('bannerImgPreview').src=b64;
+  document.getElementById('bannerImgPreview').style.display='block';
+  document.getElementById('bannerImgPlaceholder').style.display='none';
+  document.getElementById('bannerImgRemove').style.display='flex';
+  const prev=document.getElementById('previewBanner');
+  prev.style.backgroundImage=`url(${b64})`;
+  prev.style.backgroundSize='cover';
+  prev.style.backgroundPosition='center';
+  showToast('BANNER UPDATED — save to sync ✓');
 }
 
 function removeBannerImg(e){
   e.stopPropagation();if(!user)return;
+  pendingBanner=null;currentBannerB64=null;
   localStorage.removeItem('ledgr_banner_img_'+(user.id||user.username));
   document.getElementById('bannerImgPreview').style.display='none';
   document.getElementById('bannerImgPreview').src='';
@@ -861,6 +930,7 @@ function loadIdentitySettings(){
   const key=user.id||user.username;
   const av=localStorage.getItem('ledgr_avatar_'+key);
   if(av){
+    currentAvatarB64=av;
     document.getElementById('avPreviewImg').src=av;
     document.getElementById('avPreviewImg').style.display='block';
     document.getElementById('avPlaceholder').style.display='none';
@@ -870,6 +940,7 @@ function loadIdentitySettings(){
   }
   const ban=localStorage.getItem('ledgr_banner_img_'+key);
   if(ban){
+    currentBannerB64=ban;
     document.getElementById('bannerImgPreview').src=ban;
     document.getElementById('bannerImgPreview').style.display='block';
     document.getElementById('bannerImgPlaceholder').style.display='none';
@@ -886,7 +957,7 @@ function loadIdentitySettings(){
 }
 
 /* ── SAVE ── */
-function saveProfile(){
+async function saveProfile(){
   if(!user)return;
   config.bio=document.getElementById('bioInput').value.trim();
   config.social={
@@ -894,17 +965,13 @@ function saveProfile(){
     instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
   };
   localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
-  // Try to save bio to backend (silent fail)
-  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(config.bio&&token&&user.id){
-    fetch(API+'/users/'+user.id,{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({bio:config.bio})}).catch(()=>{});
-  }
   const btn=document.querySelector('.save-btn');
-  const orig=btn.textContent;
-  btn.textContent='✓ SAVED!';
-  btn.style.background='var(--gr)';
-  setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);
-  showToast('PROFILE SAVED ✓');
+  btn.textContent='SAVING…';btn.disabled=true;
+  const ok=await postProfile();
+  btn.disabled=false;
+  btn.textContent='✓ SAVED!';btn.style.background=ok?'var(--gr)':'var(--gold)';
+  setTimeout(()=>{btn.textContent='SAVE PROFILE';btn.style.background='';},2000);
+  showToast(ok?'PROFILE SYNCED ✓':'SAVED LOCALLY — backend offline');
 }
 
 /* ── UTILS ── */

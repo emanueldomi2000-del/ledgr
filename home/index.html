@@ -1166,10 +1166,32 @@ async function loadChatPreview(){
 
 async function loadData(){
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    if(!r.ok)throw new Error('err');
-    const all=await r.json();
+    const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+    const [picksRes,profileRes]=await Promise.all([
+      fetch(API+'/picks',{cache:'no-store'}),
+      user&&user.username
+        ?fetch(API+'/profile/'+user.username,{headers:token?{Authorization:'Bearer '+token}:{}}).catch(()=>null)
+        :Promise.resolve(null)
+    ]);
+    if(!picksRes.ok)throw new Error('err');
+    const all=await picksRes.json();
     if(!Array.isArray(all))throw new Error('invalid');
+    if(profileRes&&profileRes.ok){
+      try{
+        const prof=await profileRes.json();
+        const key=user.id||user.username;
+        if(prof.avatar_b64)localStorage.setItem('ledgr_avatar_'+key,prof.avatar_b64);
+        if(prof.banner_b64)localStorage.setItem('ledgr_banner_img_'+key,prof.banner_b64);
+        if(prof.archetype||prof.banner||prof.border){
+          localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({
+            archetype:prof.archetype,banner:prof.banner,border:prof.border,theme:prof.theme,
+            favSports:prof.fav_sports||[],bio:prof.bio||'',
+            social:{twitter:prof.social_twitter||'',instagram:prof.social_instagram||''},
+            savedAt:Date.now()
+          }));
+        }
+      }catch(e){}
+    }
     renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderRecords(all);
   }catch(e){document.getElementById('communityFeed').innerHTML='<div class="empty">Syncing feed...</div>';}
 }

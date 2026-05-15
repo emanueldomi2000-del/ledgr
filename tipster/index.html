@@ -646,10 +646,13 @@ async function handleSubscribe(){
 async function loadProfile(){
   if(!username){showNotFound();return;}
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
-    const all=await r.json();
+    const [picksRes,profileRes]=await Promise.all([
+      fetch(API+'/picks',{cache:'no-store'}),
+      fetch(API+'/profile/'+username).catch(()=>null)
+    ]);
+    const all=await picksRes.json();
     allPicks=all.filter(p=>p.user&&p.user.username===username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-    const profileCfg=getProfileConfig(username);
+    let profileCfg=getProfileConfig(username);
 
     const wins=allPicks.filter(p=>p.result==='win').length;
     const losses=allPicks.filter(p=>p.result==='loss').length;
@@ -668,6 +671,23 @@ async function loadProfile(){
     const sharpScore=window.getSharpScore?window.getSharpScore(allPicks):0;
     const autoArchetype=window.getArchetype?window.getArchetype(allPicks):null;
     const tipsterUserId=allPicks.length>0?allPicks[0].userId:null;
+
+    // Merge backend profile (takes priority over localStorage cache)
+    if(profileRes&&profileRes.ok){
+      try{
+        const bp=await profileRes.json();
+        if(bp.archetype!=null)profileCfg.archetype=bp.archetype;
+        if(bp.banner)profileCfg.banner=bp.banner;
+        if(bp.border)profileCfg.border=bp.border;
+        if(Array.isArray(bp.fav_sports))profileCfg.favSports=bp.fav_sports;
+        if(bp.bio!=null)profileCfg.bio=bp.bio;
+        if(bp.social_twitter!=null||bp.social_instagram!=null)profileCfg.social={twitter:bp.social_twitter||'',instagram:bp.social_instagram||''};
+        const avKey=tipsterUserId||username;
+        if(bp.avatar_b64)localStorage.setItem('ledgr_avatar_'+avKey,bp.avatar_b64);
+        if(bp.banner_b64)localStorage.setItem('ledgr_banner_img_'+avKey,bp.banner_b64);
+        localStorage.setItem('ledgr_profile_'+username,JSON.stringify({...profileCfg,savedAt:Date.now()}));
+      }catch(e){}
+    }
 
     // global rank
     const tipsterMap={};
