@@ -501,6 +501,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.9);backdrop-filter:
 
 </div><!-- /main -->
 
+<script src="/ledgr-ws.js"></script>
 <script src="/divisions.js"></script>
 <script src="/flow.js"></script>
 <script src="/archetypes.js"></script>
@@ -511,6 +512,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.9);backdrop-filter:
 <script>
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
 let allPicks = [], currentFilter = 'all', allTipsters = [], allSeasons = [];
+let rankingsData = null;
+let _picksLoaded = false, _picksLoading = null;
 const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#7c3aed,#ec4899)'];
 
 // ── Nav helpers ────────────────────────────────────────────
@@ -571,11 +574,11 @@ function getRankMove(username, currentRank) {
 
 function getBadgeIcons(t) {
   const icons = [];
-  const wr = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses)) * 100 : 0;
-  const roi = t.stake > 0 ? (t.pnl / t.stake) * 100 : 0;
+  const roi = t.roi != null ? t.roi : (t.stake > 0 ? (t.pnl / t.stake) * 100 : 0);
+  const wr  = t.winRate != null ? t.winRate * 100 : ((t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses)) * 100 : 0);
   if (t.streak >= 5) icons.push('🔥');
   if (roi >= 20 && t.picks >= 50) icons.push('💎');
-  if (wr >= 60 && (t.wins + t.losses) >= 30) icons.push('🎯');
+  if (wr >= 60 && t.picks >= 30) icons.push('🎯');
   if (t.picks >= 100) icons.push('👑');
   if (roi >= 15 && t.picks >= 10 && t.picks < 50) icons.push('🚀');
   return icons;
@@ -588,6 +591,71 @@ function getReliability(t) {
   const score = Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(t.picks/100)*20))+Math.min(10,t.picks));
   const color = score >= 70 ? 'var(--gr)' : score >= 40 ? 'var(--gold)' : 'var(--rd)';
   return {score, color, label: score + '/100'};
+}
+
+// ── Division lookup from pre-computed ranking string ────────────────────────
+function _divFromRanking(t) {
+  const D = {
+    LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},
+    ELITE:    {name:'ELITE',cls:'div-elite',icon:'🔱'},
+    DIAMOND:  {name:'DIAMOND',cls:'div-diamond',icon:'💎'},
+    PLATINUM: {name:'PLATINUM',cls:'div-platinum',icon:'⚡'},
+    GOLD:     {name:'GOLD',cls:'div-gold',icon:'🏆'},
+    SILVER:   {name:'SILVER',cls:'div-silver',icon:'🥈'},
+    BRONZE:   {name:'BRONZE',cls:'div-bronze',icon:'🥉'},
+  };
+  if (typeof t.division === 'string' && D[t.division]) return {...D[t.division], score: t.divisionScore || 0};
+  return getDivision(t);
+}
+
+// ── Build allTipsters from GET /rankings response ───────────────────────────
+function _buildTipstersFromRankings() {
+  if (!rankingsData || !Array.isArray(rankingsData.tipsters)) return;
+  allTipsters = rankingsData.tipsters.map(r => ({
+    username:         r.username,
+    userId:           r.userId,
+    picks:            r.totalPicks,
+    wins:             r.wins,
+    losses:           r.losses,
+    stake:            r.totalStake,
+    pnl:              r.totalPnl,
+    roi:              r.roi,
+    winRate:          r.winRate,
+    elo:              r.elo,
+    divisionScore:    r.divisionScore,
+    division:         r.division,
+    sharpScore:       r.sharpScore,
+    reliabilityScore: r.reliabilityScore,
+    streak:           r.streakType === 'win' ? r.currentStreak : 0,
+    streakType:       r.streakType,
+    bestStreak:       r.bestStreak,
+    archetype:        r.archetype,
+    flowState:        r.flowState,
+    isLive:           r.isLive,
+    lastPickAt:       r.lastPickAt,
+    recentPicks:      r.recentPicks || [],
+  }));
+}
+
+// ── Lazy-load allPicks only when a time/sport filter is applied ─────────────
+async function _ensurePicksLoaded() {
+  if (_picksLoaded) return;
+  if (_picksLoading) return _picksLoading;
+  _picksLoading = (async () => {
+    try {
+      const r = await fetch(API + '/picks', {cache:'no-store'});
+      if (r.ok) {
+        allPicks = await r.json();
+        if (!Array.isArray(allPicks)) allPicks = [];
+        const eloMap = {};
+        allPicks.forEach(p => { if (p.user && p.eloAfter) eloMap[p.user.username] = p.eloAfter; });
+        window._eloMap = eloMap;
+        _picksLoaded = true;
+      }
+    } catch(e) {}
+    _picksLoading = null;
+  })();
+  return _picksLoading;
 }
 
 // ELO counter animation
@@ -647,6 +715,19 @@ async function setTimeFilter(t, el) {
   document.getElementById('podium').style.display = 'none';
   document.getElementById('lbTableWrap').style.display = 'block';
   document.getElementById('lbContainer').innerHTML = '';
+
+  if (t === 'all' && currentFilter === 'all') {
+    _buildTipstersFromRankings();
+    updateStats();
+    renderLeaderboard();
+    return;
+  }
+
+  // Non-default filter: need full picks data
+  if (!_picksLoaded) {
+    document.getElementById('lbContainer').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:2px">LOADING…</div>';
+  }
+  await _ensurePicksLoaded();
   buildTipsters();
   updateSeasonBanner(t, allTipsters);
   renderLeaderboard();
@@ -721,13 +802,13 @@ function updateSeasonBanner(filter, tipsters) {
 
 async function loadLeaderboard() {
   try {
-    const [picksRes, seasonsRes] = await Promise.all([
-      fetch(API + '/picks', {cache:'no-store'}),
+    const [rankingsRes, seasonsRes] = await Promise.all([
+      fetch(API + '/rankings', {cache:'no-store'}),
       fetch(API + '/seasons', {cache:'no-store'}).catch(() => null)
     ]);
-    if (!picksRes.ok) throw new Error('Server error');
-    allPicks = await picksRes.json();
-    if (!Array.isArray(allPicks)) allPicks = [];
+    if (!rankingsRes.ok) throw new Error('Server error');
+    rankingsData = await rankingsRes.json();
+    if (!rankingsData || !Array.isArray(rankingsData.tipsters)) throw new Error('Invalid response');
 
     if (seasonsRes && seasonsRes.ok) {
       allSeasons = await seasonsRes.json();
@@ -742,19 +823,8 @@ async function loadLeaderboard() {
       });
     }
 
-    const eloMap = {};
-    allPicks.forEach(p => { if (p.user && p.eloAfter) eloMap[p.user.username] = p.eloAfter; });
-    window._eloMap = eloMap;
-
-    buildTipsters();
+    _buildTipstersFromRankings();
     updateStats();
-
-    if (window.Flow) {
-      const picksMap = {};
-      allTipsters.forEach(t => { picksMap[t.username] = allPicks.filter(p => p.user?.username === t.username); });
-      const flowMap = window.Flow.detectAll(picksMap);
-      allTipsters.forEach(t => { t.flowState = flowMap[t.username] || null; });
-    }
     renderLeaderboard();
   } catch (e) {
     document.getElementById('lbTableWrap').style.display = 'none';
@@ -795,49 +865,79 @@ function buildTipsters() {
     const allTimePicks = allPicks.filter(p => p.user?.username === u);
     map[u].sharpScore = window.getSharpScore ? window.getSharpScore(allTimePicks) : 0;
     map[u].archetype  = window.getArchetype  ? window.getArchetype(allTimePicks)  : null;
+    // Pre-compute roi/winRate for consistent rendering with rankings path
+    map[u].roi     = map[u].stake > 0 ? (map[u].pnl / map[u].stake) * 100 : 0;
+    map[u].winRate = (map[u].wins + map[u].losses) > 0 ? map[u].wins / (map[u].wins + map[u].losses) : 0;
   });
+
+  // Flow detection
+  if (window.Flow) {
+    const picksMap = {};
+    Object.keys(map).forEach(u => { picksMap[u] = allPicks.filter(p => p.user?.username === u); });
+    const flowMap = window.Flow.detectAll(picksMap);
+    Object.keys(map).forEach(u => { map[u].flowState = flowMap[u] || null; });
+  }
+
   allTipsters = Object.values(map);
 }
 
 function updateStats() {
-  const now = Date.now();
-  const yesterday = now - 86400000;
+  if (rankingsData && rankingsData.todayStats) {
+    const ts = rankingsData.todayStats;
+    const total = (ts.winsToday || 0) + (ts.lossesToday || 0);
+    document.getElementById('sbToday').textContent = total || '—';
+    document.getElementById('sbTodaySub').textContent = total ? 'Last 24 hours' : 'No picks yet today';
+    document.getElementById('sbBigWin').textContent = ts.bigWinPnl != null ? (ts.bigWinPnl >= 0 ? '+' : '') + Number(ts.bigWinPnl).toFixed(1) + 'u' : '—';
+    document.getElementById('sbBigWinSub').textContent = ts.bigWinPnl != null ? 'Best P&L in 24h' : 'No wins yet today';
+    const active = ts.activeToday || 0;
+    document.getElementById('sbActive').textContent = active || '—';
+    document.getElementById('sbActiveSub').textContent = active ? active + ' tipsters active' : 'No activity yet';
+  } else {
+    // Fallback: compute from allPicks (loaded when filter is applied)
+    const now = Date.now();
+    const yesterday = now - 86400000;
+    const todayPicks = allPicks.filter(p => new Date(p.createdAt).getTime() >= yesterday);
+    document.getElementById('sbToday').textContent = todayPicks.length || '—';
+    document.getElementById('sbTodaySub').textContent = todayPicks.length ? `across ${new Set(todayPicks.map(p=>p.user?.username)).size} tipsters` : 'No picks yet today';
+    const todayWins = todayPicks.filter(p => p.result === 'win' && p.pnl > 0).sort((a,b) => b.pnl - a.pnl);
+    const bigW = todayWins[0];
+    document.getElementById('sbBigWin').textContent = bigW ? (bigW.pnl >= 0 ? '+' : '') + bigW.pnl.toFixed(1) + 'u' : '—';
+    document.getElementById('sbBigWinSub').textContent = bigW ? '@' + (bigW.user?.username || '?') : 'No wins yet today';
+    const actMap = {};
+    todayPicks.forEach(p => { if (!p.user) return; actMap[p.user.username] = (actMap[p.user.username] || 0) + 1; });
+    const mostActive = Object.entries(actMap).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById('sbActive').textContent = mostActive ? '@' + mostActive[0] : '—';
+    document.getElementById('sbActiveSub').textContent = mostActive ? mostActive[1] + ' picks today' : 'No activity yet';
+  }
 
-  // Today's picks
-  const todayPicks = allPicks.filter(p => new Date(p.createdAt).getTime() >= yesterday);
-  document.getElementById('sbToday').textContent = todayPicks.length || '—';
-  document.getElementById('sbTodaySub').textContent = todayPicks.length ? `across ${new Set(todayPicks.map(p=>p.user?.username)).size} tipsters` : 'No picks yet today';
-
-  // Biggest win today
-  const todayWins = todayPicks.filter(p => p.result === 'win' && p.pnl > 0).sort((a,b) => b.pnl - a.pnl);
-  const bigW = todayWins[0];
-  document.getElementById('sbBigWin').textContent = bigW ? (bigW.pnl >= 0 ? '+' : '') + bigW.pnl.toFixed(1) + 'u' : '—';
-  document.getElementById('sbBigWinSub').textContent = bigW ? '@' + (bigW.user?.username || '?') : 'No wins yet today';
-
-  // Most active today
-  const actMap = {};
-  todayPicks.forEach(p => { if (!p.user) return; actMap[p.user.username] = (actMap[p.user.username] || 0) + 1; });
-  const mostActive = Object.entries(actMap).sort((a, b) => b[1] - a[1])[0];
-  document.getElementById('sbActive').textContent = mostActive ? '@' + mostActive[0] : '—';
-  document.getElementById('sbActiveSub').textContent = mostActive ? mostActive[1] + ' picks today' : 'No activity yet';
-
-  // #1 ROI all time
+  // #1 ROI all time (from allTipsters, whichever path populated it)
   const sorted = [...allTipsters].filter(t => t.picks >= 5).sort((a,b) => {
-    const roiA = a.stake > 0 ? (a.pnl/a.stake)*100 : 0;
-    const roiB = b.stake > 0 ? (b.pnl/b.stake)*100 : 0;
+    const roiA = a.roi != null ? a.roi : (a.stake>0?(a.pnl/a.stake)*100:0);
+    const roiB = b.roi != null ? b.roi : (b.stake>0?(b.pnl/b.stake)*100:0);
     return roiB - roiA;
   });
   if (sorted[0]) {
-    const roi = sorted[0].stake > 0 ? (sorted[0].pnl/sorted[0].stake)*100 : 0;
+    const roi = sorted[0].roi != null ? sorted[0].roi : (sorted[0].stake>0?(sorted[0].pnl/sorted[0].stake)*100:0);
     document.getElementById('sbTopROI').textContent = (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%';
     document.getElementById('sbTopSub').textContent = '@' + sorted[0].username;
   }
 }
 
-function filterBy(sport, btn) {
+async function filterBy(sport, btn) {
   currentFilter = sport;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+
+  if (sport === 'all' && currentTimeFilter === 'all') {
+    _buildTipstersFromRankings();
+    renderLeaderboard();
+    return;
+  }
+
+  if (!_picksLoaded) {
+    document.getElementById('lbContainer').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:2px">LOADING…</div>';
+  }
+  await _ensurePicksLoaded();
   buildTipsters();
   renderLeaderboard();
 }
@@ -850,13 +950,19 @@ function renderLeaderboard() {
   if (search) list = list.filter(t => t.username.toLowerCase().includes(search));
 
   list.sort((a, b) => {
-    const roiA = a.stake>0?(a.pnl/a.stake)*100:0, roiB = b.stake>0?(b.pnl/b.stake)*100:0;
-    const wrA  = (a.wins+a.losses)>0?(a.wins/(a.wins+a.losses))*100:0, wrB = (b.wins+b.losses)>0?(b.wins/(b.wins+b.losses))*100:0;
+    const roiA = a.roi != null ? a.roi : (a.stake>0?(a.pnl/a.stake)*100:0);
+    const roiB = b.roi != null ? b.roi : (b.stake>0?(b.pnl/b.stake)*100:0);
+    const wrA  = a.winRate != null ? a.winRate*100 : ((a.wins+a.losses)>0?(a.wins/(a.wins+a.losses))*100:0);
+    const wrB  = b.winRate != null ? b.winRate*100 : ((b.wins+b.losses)>0?(b.wins/(b.wins+b.losses))*100:0);
     if (sort==='roi')   return roiB-roiA;
     if (sort==='wr')    return wrB-wrA;
     if (sort==='picks') return b.picks-a.picks;
     if (sort==='pnl')   return b.pnl-a.pnl;
-    if (sort==='rel')   return getReliability(b).score - getReliability(a).score;
+    if (sort==='rel') {
+      const relA = a.reliabilityScore != null ? a.reliabilityScore : getReliability(a).score;
+      const relB = b.reliabilityScore != null ? b.reliabilityScore : getReliability(b).score;
+      return relB-relA;
+    }
     return roiB-roiA;
   });
 
@@ -885,9 +991,9 @@ function renderLeaderboard() {
     const ORDER = [1, 0, 2]; // silver-center-gold, gold-center position
     podiumEl.innerHTML = ORDER.map(i => {
       const t    = top3[i];
-      const roi  = t.stake > 0 ? (t.pnl / t.stake * 100) : 0;
-      const wr   = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0;
-      const div  = getDivision(t);
+      const roi  = t.roi != null ? t.roi : (t.stake > 0 ? (t.pnl / t.stake * 100) : 0);
+      const wr   = t.winRate != null ? t.winRate * 100 : ((t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0);
+      const div  = _divFromRanking(t);
       const icons= getBadgeIcons(t).slice(0, 3);
       const cls  = ['p1','p2','p3'][i];
       const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
@@ -937,10 +1043,12 @@ function renderLeaderboard() {
 
   lbCont.innerHTML = tableList.map((t, idx) => {
     const globalRank = search ? idx + 1 : idx + 4;
-    const roi  = t.stake > 0 ? (t.pnl / t.stake * 100) : 0;
-    const wr   = (t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0;
-    const {score, color} = getReliability(t);
-    const div  = getDivision(t);
+    const roi  = t.roi != null ? t.roi : (t.stake > 0 ? (t.pnl / t.stake * 100) : 0);
+    const wr   = t.winRate != null ? t.winRate * 100 : ((t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0);
+    const relRaw = t.reliabilityScore != null ? t.reliabilityScore : getReliability(t).score;
+    const score = Math.round(relRaw);
+    const color = score >= 70 ? 'var(--gr)' : score >= 40 ? 'var(--gold)' : 'var(--rd)';
+    const div  = _divFromRanking(t);
     const icons= getBadgeIcons(t).slice(0, 2);
     const move = getRankMove(t.username, globalRank);
 

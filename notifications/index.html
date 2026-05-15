@@ -172,8 +172,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.94);backdrop-filte
   <div id="notifsList"></div>
 </div>
 
+<script src="/ledgr-ws.js"></script>
 <script src="/push.js"></script>
 <script>
+const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;let currentFilter='all';
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function goToProfile(){if(user)window.location.href='/tipster?u='+user.username;}
@@ -181,6 +183,80 @@ function openSlideNav(){document.getElementById('slideNav').classList.add('open'
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 function getTimeAgo(d){const diff=Date.now()-d.getTime();const mins=Math.floor(diff/60000),hrs=Math.floor(diff/3600000),days=Math.floor(diff/86400000);if(mins<1)return'just now';if(mins<60)return mins+'m ago';if(hrs<24)return hrs+'h ago';return days+'d ago';}
 function setFilter(f,btn){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderNotifs();}
+
+// ── Backend notification helpers ──────────────────────────────
+function _beNotifToLocal(n){
+  const p=n.payload||{};
+  const username=p.username||p.tipster||p.tailedBy||'';
+  const ts=new Date(n.createdAt).getTime();
+  let icon='🔔',text='',ref='',type=n.type;
+  if(n.type==='followed_posted'){
+    icon='📌';text=`<b>@${username}</b> posted: ${p.event||''} @ ${parseFloat(p.odds||0).toFixed(2)}`;ref=username;type='new_pick';
+  }else if(n.type==='pick_result'){
+    if(p.result==='win'){icon='✅';text=`Your pick on <b>${p.event||'a game'}</b> won — +${parseFloat(p.pnl||0).toFixed(2)}u`;}
+    else if(p.result==='loss'){icon='❌';text=`Your pick on <b>${p.event||'a game'}</b> lost`;}
+    else{icon='🔄';text=`Your pick on <b>${p.event||'a game'}</b> was a push`;}
+    type='pick_result';
+  }else if(n.type==='pick_tailed'){
+    icon='✈️';text=`<b>@${username||'Someone'}</b> tailed your pick`;type='pick_tailed';
+  }else if(n.type==='streak_milestone'){
+    icon='🔥';text=`<b>@${username}</b> is on a <b>${p.streak}-win streak</b>`;ref=username;type='streak';
+  }else if(n.type==='division_up'){
+    icon='🏆';text=`<b>@${username}</b> reached <b>${p.toDivision}</b>`;ref=username;type='division';
+  }else{
+    text=`New activity from <b>@${username}</b>`;ref=username;
+  }
+  return{id:'_be_'+n.id,_backendId:n.id,type,icon,text,ref,ts,read:!!n.readAt};
+}
+
+async function loadNotificationsFromAPI(){
+  if(!user||!user.id)return;
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
+  try{
+    const r=await fetch(API+'/notifications?userId='+user.id,{headers:tk?{Authorization:'Bearer '+tk}:{}});
+    if(!r.ok)return;
+    const data=await r.json();
+    const backendNotifs=(Array.isArray(data)?data:data.notifications||[]).map(_beNotifToLocal);
+    if(!backendNotifs.length)return;
+    // Merge: prepend backend notifs that aren't already in localStorage
+    const existing=getNotifs();
+    const existingBeIds=new Set(existing.filter(n=>n._backendId).map(n=>n._backendId));
+    const newOnes=backendNotifs.filter(n=>!existingBeIds.has(n._backendId));
+    if(newOnes.length){
+      saveNotifs([...newOnes,...existing].slice(0,100));
+      renderNotifs();
+    }
+  }catch(e){}
+}
+
+async function markAllReadOnBackend(){
+  if(!user||!user.id)return;
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
+  try{
+    await fetch(API+'/notifications/read-all',{
+      method:'PATCH',headers:{'Content-Type':'application/json',...(tk?{Authorization:'Bearer '+tk}:{})},
+      body:JSON.stringify({userId:user.id}),
+    });
+  }catch(e){}
+}
+
+function subscribeWS(){
+  if(!window.LedgrWS)return;
+  // Live personal notifications → prepend to list
+  var PERSONAL=['pick_result','pick_tailed','followed_posted'];
+  PERSONAL.forEach(function(type){
+    window.LedgrWS.on(type,function(ev){
+      // Convert to local shape and prepend
+      var fake={id:Date.now(),type:ev.type,payload:ev.payload||{},createdAt:new Date().toISOString(),readAt:new Date().toISOString()};
+      var notif=_beNotifToLocal(fake);
+      notif.id=Date.now()+'_ws_'+Math.random().toString(36).slice(2,6);
+      notif.read=true; // page is open, user sees it
+      var existing=getNotifs();
+      saveNotifs([notif,...existing].slice(0,100));
+      renderNotifs();
+    });
+  });
+}
 
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
@@ -190,7 +266,10 @@ window.onload=()=>{
   if(!user||!user.username){window.location.href='/';return;}
   document.getElementById('userBadge').textContent='@'+user.username;
   markAllRead();
+  markAllReadOnBackend();
   renderNotifs();
+  loadNotificationsFromAPI();
+  subscribeWS();
   if(window.Push)window.Push.init().then(()=>initPushUI());
 };
 

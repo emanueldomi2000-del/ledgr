@@ -12,6 +12,13 @@
   --color-muted: #6B6B6B;
   --color-border: #2A2A2A;
   --color-glow: rgba(123,44,255,0.35);
+  --color-app-accent: #b89fff;
+  --rarity-ambient:  rgba(255,255,255,0.04);
+  --rarity-subtle:   rgba(52,211,153,0.10);
+  --rarity-medium:   rgba(52,211,153,0.20);
+  --rarity-prestige: rgba(251,191,36,0.25);
+  --rarity-moment:   rgba(184,159,255,0.30);
+  --opacity-locked:  0.42;
 }
 
 /* ── BRAND NAV ── */
@@ -68,6 +75,10 @@ nav.brand-nav .logo span { color: var(--color-purple); }
 
 .brand-nav-link.active {
   color: var(--color-purple-light);
+}
+
+nav.brand-nav.app-context .brand-nav-link.active {
+  color: var(--color-app-accent);
 }
 
 .brand-hamburger {

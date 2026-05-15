@@ -948,6 +948,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 </div>
 </div><!-- /app -->
 
+<script src="/ledgr-ws.js"></script>
 <script src="/divisions.js"></script>
 <script src="/flow.js"></script>
 <script src="/animations.js"></script>
@@ -1114,8 +1115,8 @@ window.onload=()=>{
   document.getElementById('heroEyebrow').textContent=user.username.toUpperCase()+'\'S RECORD';
   document.getElementById('heroTagline').innerHTML=tl[0]+'<br><span class="ac">'+tl[1]+'</span>';
 
-  const h=new Date().getHours();const base=h>=18&&h<=23?12:h>=14&&h<=17?8:h>=9&&h<=13?6:3;
-  document.getElementById('onlineCount').textContent=(base+Math.floor(Math.random()*4))+' online';
+  // Online count set by WS; placeholder until connected
+  document.getElementById('onlineCount').textContent='— online';
 
   const streak=getLoginStreak();drawStreakDays(streak,'loginStreakDays2');
   const lsc2=document.getElementById('loginStreakCount2');if(lsc2)lsc2.textContent=streak+(streak===1?' day':' days');
@@ -1127,6 +1128,7 @@ window.onload=()=>{
   updateNotifBadge();
   loadData();
   loadChatPreview();
+  subscribeWS();
 };
 
 async function loadChatPreview(){
@@ -1167,10 +1169,13 @@ async function loadChatPreview(){
 async function loadData(){
   try{
     const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-    const [picksRes,profileRes]=await Promise.all([
+    const [picksRes,profileRes,rankingRes]=await Promise.all([
       fetch(API+'/picks',{cache:'no-store'}),
       user&&user.username
         ?fetch(API+'/profile/'+user.username,{headers:token?{Authorization:'Bearer '+token}:{}}).catch(()=>null)
+        :Promise.resolve(null),
+      user&&user.username
+        ?fetch(API+'/rankings/'+user.username).catch(()=>null)
         :Promise.resolve(null)
     ]);
     if(!picksRes.ok)throw new Error('err');
@@ -1192,6 +1197,10 @@ async function loadData(){
         }
       }catch(e){}
     }
+    // Cache ranking metadata for use in render functions
+    if(rankingRes&&rankingRes.ok){
+      try{window._myRankingMeta=await rankingRes.json();}catch(e){}
+    }
     renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderRecords(all);
   }catch(e){document.getElementById('communityFeed').innerHTML='<div class="empty">Syncing feed...</div>';}
 }
@@ -1206,7 +1215,9 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
       av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
     }
     if(window.Divisions){
-      const avDiv=getDivision(myPicks);
+      const rm2=window._myRankingMeta;
+      const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
+      const avDiv=rm2&&rm2.division&&D[rm2.division]?D[rm2.division]:getDivision(myPicks);
       window.Divisions.applyGlow(av,avDiv);
     }
   }
@@ -1216,12 +1227,16 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';
   const settled=[...myPicks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
-  const rel=getReliability(myPicks).score;
+  const rm=window._myRankingMeta;
+  const rel=rm?Math.round(rm.reliabilityScore):getReliability(myPicks).score;
+  const finalStreak=rm&&rm.streakType==='win'?rm.currentStreak:streak;
   const idROI=document.getElementById('idROI');if(idROI){idROI.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
-  const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=rank>0?'#'+rank:'#—';
-  const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=streak>0?streak+'W 🔥':'—';
+  const finalRank=rm&&rm.rank?rm.rank:rank;
+  const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=finalRank>0?'#'+finalRank:'#—';
+  const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=finalStreak>0?finalStreak+'W 🔥':'—';
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'—';
-  const div=getDivision(myPicks);const idDiv=document.getElementById('idDiv');
+  const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
+  const div=divObj;const idDiv=document.getElementById('idDiv');
   if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
   const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
@@ -1283,10 +1298,16 @@ function renderProfileCard(all){
   const tipsters={};
   all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
   const sorted=Object.entries(tipsters).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
-  const rank=sorted.findIndex(([u])=>u===user.username)+1;
+  const rawRank=sorted.findIndex(([u])=>u===user.username)+1;
+  const rmPc=window._myRankingMeta;
+  const rank=rmPc&&rmPc.rank?rmPc.rank:rawRank;
   const hsRank=document.getElementById('hsRank');if(hsRank)hsRank.textContent=rank>0?'#'+rank:'#—';
-  const {score}=getReliability(my);const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'—';
-  const div=getDivision(my);const db=document.getElementById('divisionBadge');
+  const rawRel=getReliability(my).score;
+  const {score}={score:rmPc?Math.round(rmPc.reliabilityScore):rawRel};
+  const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'—';
+  const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
+  const div=rmPc&&rmPc.division&&D[rmPc.division]?D[rmPc.division]:getDivision(my);
+  const db=document.getElementById('divisionBadge');
   if(db){
     if(window.Divisions){db.className='division-badge';db.innerHTML=window.Divisions.pillHTML(div,'md');}
     else{db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;}
@@ -1836,6 +1857,62 @@ function exportWinCard(){
   const a=document.createElement('a');a.download='ledgr-pick.png';a.href=cvs.toDataURL('image/png');a.click();
 }
 function _rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();ctx.fill();}
+
+/* ── WS INTEGRATION ─────────────────────────────────────────── */
+function subscribeWS(){
+  if(!window.LedgrWS)return;
+
+  window.LedgrWS.on('online_count',function(ev){
+    const n=ev.n!=null?ev.n:(ev.payload&&ev.payload.n!=null?ev.payload.n:null);
+    if(n!=null){const oc=document.getElementById('onlineCount');if(oc)oc.textContent=n+' online';}
+  });
+
+  // Personal: my pick was graded
+  window.LedgrWS.on('pick_result',function(ev){
+    if(!window.LedgrWS.isVisible())return;
+    const p=ev.payload||{};
+    if(p.result==='win')showToast('✅ Pick won: +'+(parseFloat(p.pnl||0)).toFixed(2)+'u');
+    else if(p.result==='loss')showToast('❌ Pick graded: lost');
+    else if(p.result==='push')showToast('🔄 Pick graded: push (stake returned)');
+  });
+
+  // Personal: someone tailed my pick
+  window.LedgrWS.on('pick_tailed',function(ev){
+    if(!window.LedgrWS.isVisible())return;
+    const p=ev.payload||{};
+    const who=(p.tailedBy||p.username||'Someone');
+    showToast('✈️ @'+who+' tailed your pick');
+  });
+
+  // Broadcast high-rarity events → add to activity ticker
+  function _addToTicker(html){
+    const ticker=document.getElementById('tickerText');if(!ticker)return;
+    const span=document.createElement('span');span.innerHTML=html;
+    ticker.insertBefore(span,ticker.firstChild);
+  }
+  const DIV_ICON={LEGENDARY:'🐐',ELITE:'🔱',DIAMOND:'💎',PLATINUM:'⚡',GOLD:'🏆',SILVER:'🥈',BRONZE:'🥉'};
+
+  window.LedgrWS.on('big_win',function(ev){
+    if(!window.LedgrWS.isVisible())return;
+    if((ev._rarity||1)<3)return;
+    const p=ev.payload||{};const u=ev.username||'';
+    _addToTicker('🔥 <b>@'+u+'</b> landed <b>+'+(parseFloat(p.pnl||0)).toFixed(1)+'u</b> on '+p.event+' @ <b>'+(parseFloat(p.odds||0)).toFixed(2)+'</b>');
+  });
+
+  window.LedgrWS.on('streak_milestone',function(ev){
+    if(!window.LedgrWS.isVisible())return;
+    if((ev._rarity||1)<3)return;
+    const p=ev.payload||{};const u=ev.username||'';
+    _addToTicker('🔥 <b>@'+u+'</b> is on a <b>'+p.streak+'-WIN STREAK</b>');
+  });
+
+  window.LedgrWS.on('division_up',function(ev){
+    if(!window.LedgrWS.isVisible())return;
+    if((ev._rarity||1)<3)return;
+    const p=ev.payload||{};const u=ev.username||'';
+    _addToTicker((DIV_ICON[p.toDivision]||'🏆')+' <b>@'+u+'</b> reached <b>'+p.toDivision+'</b>');
+  });
+}
 </script>
 <script src="/football.js"></script>
 <script src="/brand-nav.js"></script>

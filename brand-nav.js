@@ -14,6 +14,8 @@ function brandNavInit() {
   if (raw) {
     try {
       const u = JSON.parse(raw);
+      const nav = document.querySelector('nav.brand-nav');
+      if (nav) nav.classList.add('app-context');
       if (u && u.username) {
         if (profileLink) profileLink.href = '/tipster?u=' + u.username;
         if (logoLink) logoLink.href = '/home';

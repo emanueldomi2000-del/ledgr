@@ -69,7 +69,7 @@
   background:#0c0a1a;border:1px solid rgba(184,159,255,.08);
   transition:transform .25s,box-shadow .25s;overflow:hidden;cursor:default}
 .bg-card.bg-unlocked:hover{transform:translateY(-4px)}
-.bg-card.bg-locked{opacity:.52}
+.bg-card.bg-locked{opacity:.42}
 
 /* Rarity card glows (unlocked only) */
 .bg-card.bg-unlocked.r-common   {border-color:rgba(148,163,184,.28)}

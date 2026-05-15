@@ -646,9 +646,10 @@ async function handleSubscribe(){
 async function loadProfile(){
   if(!username){showNotFound();return;}
   try{
-    const [picksRes,profileRes]=await Promise.all([
+    const [picksRes,profileRes,rankingRes]=await Promise.all([
       fetch(API+'/picks',{cache:'no-store'}),
-      fetch(API+'/profile/'+username).catch(()=>null)
+      fetch(API+'/profile/'+username).catch(()=>null),
+      fetch(API+'/rankings/'+username).catch(()=>null)
     ]);
     const all=await picksRes.json();
     allPicks=all.filter(p=>p.user&&p.user.username===username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
@@ -689,11 +690,22 @@ async function loadProfile(){
       }catch(e){}
     }
 
-    // global rank
-    const tipsterMap={};
-    all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsterMap[u])tipsterMap[u]={pnl:0,stake:0};tipsterMap[u].pnl+=p.pnl;tipsterMap[u].stake+=p.stake;});
-    const sorted=Object.entries(tipsterMap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
-    const rank=sorted.findIndex(([u])=>u===username)+1;
+    // Pre-computed ranking stats (ELO, division, sharp, reliability, rank)
+    let rankingMeta=null;
+    if(rankingRes&&rankingRes.ok){
+      try{rankingMeta=await rankingRes.json();}catch(e){}
+    }
+
+    // global rank — use backend rank if available, else compute from picks
+    let rank=0;
+    if(rankingMeta&&rankingMeta.rank){
+      rank=rankingMeta.rank;
+    }else{
+      const tipsterMap={};
+      all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsterMap[u])tipsterMap[u]={pnl:0,stake:0};tipsterMap[u].pnl+=p.pnl;tipsterMap[u].stake+=p.stake;});
+      const sortedAll=Object.entries(tipsterMap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
+      rank=sortedAll.findIndex(([u])=>u===username)+1;
+    }
 
     const sports={};allPicks.forEach(p=>{if(!sports[p.sport])sports[p.sport]=0;sports[p.sport]++;});
     const sportList=Object.entries(sports).sort((a,b)=>b[1]-a[1]);
@@ -715,12 +727,21 @@ async function loadProfile(){
     const favSportsHtml=favSports.length?`<div class="dna-tags" style="margin-top:8px">${favSports.map(s=>`<span class="dna-tag grinder">${SPORT_ICONS_MINI[s]||'🎯'} ${s}</span>`).join('')}</div>`:'';
     const displayArch=arch||autoArchetype;
     const archetypeHtml=displayArch?`<div class="archetype-badge" style="color:${displayArch.color};border-color:${displayArch.color}55;background:${displayArch.color}11" title="${displayArch.desc||''}">${displayArch.icon} ${displayArch.name.replace('The ','').toUpperCase()}</div>`:'';
-    const ssColor=sharpScore>=70?'var(--gr)':sharpScore>=40?'var(--gold)':'var(--rd)';
-    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(sharpScore,{size:76}):'';
+    // Use backend-authoritative stats when available, fall back to client-computed
+    const finalSharpScore = rankingMeta ? rankingMeta.sharpScore : sharpScore;
+    const ssColor=finalSharpScore>=70?'var(--gr)':finalSharpScore>=40?'var(--gold)':'var(--rd)';
+    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(finalSharpScore,{size:76}):'';
     const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
 
-    const divObj=getDivision(allPicks);
-    const flowState=window.Flow?window.Flow.detect(allPicks):null;
+    const divObj=rankingMeta&&rankingMeta.division
+      ? (() => {
+          const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
+          return D[rankingMeta.division] || getDivision(allPicks);
+        })()
+      : getDivision(allPicks);
+    const flowState=rankingMeta&&rankingMeta.flowState
+      ? rankingMeta.flowState
+      : (window.Flow?window.Flow.detect(allPicks):null);
     const flowBadgeHTML=flowState?window.Flow.badgeHTML(flowState):'';
 
     // Custom avatar / banner image from localStorage
@@ -790,7 +811,7 @@ async function loadProfile(){
         <div class="dna-tags">${getDNATags(allPicks).map(t=>`<span class="dna-tag ${t.cls}">${t.icon} ${t.label}</span>`).join('')}</div>
         ${favSportsHtml}
         ${reliabilityHtml}
-        ${(()=>{const elo=getELOFromPicks(allPicks);const{label,color}=getELOLabel(elo);return`<div class="elo-box"><div class="elo-val" style="color:${color}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
+        ${(()=>{const elo=rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks);const{label,color}=getELOLabel(elo);return`<div class="elo-box"><div class="elo-val" style="color:${color}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
       </div>
 
       <div class="stats-row">
@@ -811,7 +832,7 @@ async function loadProfile(){
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
             ${gaugeHTML?`<div class="at-gauge-section"><div class="at-tip" data-tip="${SHARP_TIP}"><div class="at-gauge-wrap">${gaugeHTML}<div class="at-gauge-lbl">Sharp Score</div>${displayArch?`<span class="at-badge" style="color:${displayArch.color};border-color:${displayArch.color}44;background:${displayArch.color}11;margin-top:2px">${displayArch.icon} ${displayArch.name}</span>`:''}</div></div></div>`:''}
-            <div class="perf-row"><span class="perf-key">Sharp Score</span><span class="perf-val" style="color:${ssColor}">${sharpScore>0?sharpScore.toFixed(0)+'/100':'—'}</span></div>
+            <div class="perf-row"><span class="perf-key">Sharp Score</span><span class="perf-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0)+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${wins}W — ${losses}L — ${pending}P${pushes>0?' — '+pushes+' Push':''}${voids>0?' — '+voids+' Void':''}</span></div>
             <div class="perf-row"><span class="perf-key">ROI</span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
             <div class="perf-row"><span class="perf-key">Win Rate</span><span class="perf-val">${wr}%</span></div>
@@ -821,7 +842,7 @@ async function loadProfile(){
             <div class="perf-row"><span class="perf-key">Win Streak</span><span class="perf-val" style="color:${streak>=3?'var(--orange)':'var(--tx)'}">${streak>=3?'🔥 ':''} W${streak}</span></div>
             <div class="perf-row"><span class="perf-key">Reliability</span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Global Rank</span><span class="perf-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</span></div>
-            <div class="perf-row"><span class="perf-key">ELO Rating</span><span class="perf-val" style="color:var(--ac)">${getELOFromPicks(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">ELO Rating</span><span class="perf-val" style="color:var(--ac)">${rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Best Streak Ever</span><span class="perf-val" style="color:var(--orange)">🔥 W${getBestStreak(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Biggest Win</span><span class="perf-val pos">+€${getBiggestWin(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Fav Market</span><span class="perf-val">${getFavMarket(allPicks)}</span></div>

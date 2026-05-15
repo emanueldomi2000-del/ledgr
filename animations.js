@@ -39,8 +39,8 @@
 .la-div-platinum .la-glow{background:radial-gradient(circle,rgba(56,189,248,.18),transparent 68%)}
 .la-div-diamond .la-rankup-name{color:#b89fff;text-shadow:0 0 60px rgba(184,159,255,.35)}
 .la-div-diamond .la-glow{background:radial-gradient(circle,rgba(184,159,255,.22),transparent 68%)}
-.la-div-elite .la-rankup-name{color:#f87171;text-shadow:0 0 60px rgba(248,113,113,.3)}
-.la-div-elite .la-glow{background:radial-gradient(circle,rgba(248,113,113,.2),transparent 68%)}
+.la-div-elite .la-rankup-name{color:#e879a0;text-shadow:0 0 60px rgba(232,121,160,.3)}
+.la-div-elite .la-glow{background:radial-gradient(circle,rgba(232,121,160,.2),transparent 68%)}
 .la-div-legend .la-rankup-name{color:#fbbf24;text-shadow:0 0 80px rgba(251,191,36,.5),0 0 20px rgba(251,191,36,.8)}
 .la-div-legend .la-glow{background:radial-gradient(circle,rgba(251,191,36,.28),transparent 68%)}
 

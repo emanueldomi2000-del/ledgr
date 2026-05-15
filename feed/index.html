@@ -257,11 +257,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div class="feed-end" id="feedEnd" style="display:none">— END OF FEED —</div>
 </div>
 
+<script src="/ledgr-ws.js"></script>
 <script src="/flow.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const AV_COLORS=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#1d4ed8,#3b82f6)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#9d174d,#ec4899)','linear-gradient(135deg,#0e7490,#06b6d4)','linear-gradient(135deg,#7c2d12,#ea580c)','linear-gradient(135deg,#4c1d95,#8b5cf6)'];
-let allEvents=[];let currentFilter='all';let refreshTimer=null;let countdown=30;
+let allEvents=[];let currentFilter='all';let refreshTimer=null;let countdown=30;let _wsConnected=false;
 
 function avColor(name){let h=0;for(const c of name)h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h];}
 
@@ -295,8 +296,8 @@ function computeEvents(allPicks){
     events.push({type,user:p.user.username,ts:new Date(p.createdAt).getTime(),detail:{event:p.event,market:p.market,odds:p.odds,pnl:p.pnl,pickId:p.id}});
   });
 
-  // POSTED events (last 14 days)
-  const cutoff=Date.now()-14*86400000;
+  // POSTED events (last 48h)
+  const cutoff=Date.now()-2*86400000;
   allPicks.filter(p=>p.user&&p.result==='pending'&&new Date(p.createdAt).getTime()>cutoff).forEach(p=>{
     events.push({type:'posted',user:p.user.username,ts:new Date(p.createdAt).getTime(),detail:{event:p.event,market:p.market,odds:p.odds,stake:p.stake,pickId:p.id}});
   });
@@ -305,7 +306,7 @@ function computeEvents(allPicks){
   Object.entries(tMap).forEach(([username,picks])=>{
     const settled=picks.filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
-    if(streak>=3&&settled.length>0){
+    if(streak>=3&&settled.length>0&&(Date.now()-new Date(settled[0].createdAt).getTime()<7*86400000)){
       events.push({type:'streak',user:username,ts:new Date(settled[0].createdAt).getTime()+200,detail:{streak}});
     }
   });
@@ -315,7 +316,7 @@ function computeEvents(allPicks){
     if(picks.length<5)return;
     const div=getDivision(picks);if(div.name==='BRONZE'||div.name==='SILVER')return;
     const sorted=picks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-    events.push({type:'division',user:username,ts:new Date(sorted[0].createdAt).getTime()-300,detail:{division:div,picks:picks.length}});
+    if(Date.now()-new Date(sorted[0].createdAt).getTime()<7*86400000)events.push({type:'division',user:username,ts:new Date(sorted[0].createdAt).getTime()-300,detail:{division:div,picks:picks.length}});
   });
 
   // MILESTONE events (pick count milestones)
@@ -375,68 +376,55 @@ function updateCounts(events){
   });
 }
 
-function renderEvents(events,delay=true){
-  const container=document.getElementById('feedContainer');
-  const filtered=currentFilter==='all'?events:events.filter(e=>{
-    if(currentFilter==='win')return e.type==='win'||e.type==='bigwin';
-    return e.type===currentFilter;
-  });
-  if(!filtered.length){
-    container.innerHTML=`<div class="empty-feed"><span class="empty-feed-icon">${currentFilter==='win'?'🏆':currentFilter==='underdog'?'👑':currentFilter==='streak'?'🔥':currentFilter==='division'?'💎':'📌'}</span>No ${currentFilter==='all'?'events yet':'events of this type yet'} — check back soon.</div>`;
-    document.getElementById('feedEnd').style.display='none';return;
+function buildSingleCard(ev,i,delay){
+  const d=ev.detail;const av=evAvatar(ev);
+  let actionHtml='',badgeHtml='',detailHtml='';
+  if(ev.type==='win'){
+    const pPos=d.pnl>=0;
+    actionHtml=`won a pick`;
+    detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
+    badgeHtml=`<span class="ev-badge ev-badge-win">✓ WIN ${pPos?'+':''}${d.pnl.toFixed(2)}u</span>`;
+  }else if(ev.type==='bigwin'){
+    actionHtml=`just landed a big one`;
+    detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
+    badgeHtml=`<span class="ev-badge ev-badge-bigwin">🔥 +${d.pnl.toFixed(2)}u</span>`;
+  }else if(ev.type==='underdog'){
+    actionHtml=`cashed an underdog`;
+    detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
+    badgeHtml=`<span class="ev-badge ev-badge-underdog">👑 UNDERDOG +${d.pnl.toFixed(2)}u</span>`;
+  }else if(ev.type==='streak'){
+    const s=d.streak;const fire=s>=10?'🔥🔥🔥':s>=7?'🔥🔥':'🔥';
+    actionHtml=`is on a ${fire} <b style="color:var(--orange)">${s} WIN STREAK</b>`;
+    detailHtml=`${s>=7?'Unstoppable.':s>=5?'On fire.':'Heating up.'} ${s} consecutive wins.`;
+    badgeHtml=`<span class="ev-badge ev-badge-streak">W${s} STREAK</span>`;
+  }else if(ev.type==='division'){
+    const div=d.division;
+    actionHtml=`reached <b style="color:var(--cyan)">${div.icon} ${div.name}</b> division`;
+    detailHtml=`${d.picks} picks logged · Performance recognized.`;
+    badgeHtml=`<span class="ev-badge ev-badge-division">${div.icon} ${div.name}</span>`;
+  }else if(ev.type==='milestone'){
+    actionHtml=`hit <b style="color:var(--gold)">${d.count} PICKS</b>`;
+    detailHtml=`${d.count}-pick milestone reached. Track record growing.`;
+    badgeHtml=`<span class="ev-badge ev-badge-milestone">🎯 ${d.count} PICKS</span>`;
+  }else if(ev.type==='flow'){
+    const st=d.state;
+    actionHtml=`is <b style="color:${st.color}">${st.label}</b>`;
+    detailHtml=st.desc;
+    badgeHtml=`<span class="ev-badge ev-badge-flow flow-chip flow-${st.id}">${st.label}</span>`;
+  }else{
+    actionHtml=`posted a pick`;
+    detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b> · ${d.stake}u`;
+    badgeHtml=`<span class="ev-badge ev-badge-posted">📌 PENDING</span>`;
   }
-
-  container.innerHTML=filtered.map((ev,i)=>{
-    const d=ev.detail;const av=evAvatar(ev);const isNew=i<3;
-    let actionHtml='',badgeHtml='',detailHtml='';
-
-    if(ev.type==='win'){
-      const pPos=d.pnl>=0;
-      actionHtml=`won a pick`;
-      detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
-      badgeHtml=`<span class="ev-badge ev-badge-win">✓ WIN ${pPos?'+':''}${d.pnl.toFixed(2)}u</span>`;
-    }else if(ev.type==='bigwin'){
-      actionHtml=`just landed a big one`;
-      detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
-      badgeHtml=`<span class="ev-badge ev-badge-bigwin">🔥 +${d.pnl.toFixed(2)}u</span>`;
-    }else if(ev.type==='underdog'){
-      actionHtml=`cashed an underdog`;
-      detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
-      badgeHtml=`<span class="ev-badge ev-badge-underdog">👑 UNDERDOG +${d.pnl.toFixed(2)}u</span>`;
-    }else if(ev.type==='streak'){
-      const s=d.streak;const fire=s>=10?'🔥🔥🔥':s>=7?'🔥🔥':'🔥';
-      actionHtml=`is on a ${fire} <b style="color:var(--orange)">${s} WIN STREAK</b>`;
-      detailHtml=`${s>=7?'Unstoppable.':s>=5?'On fire.':'Heating up.'} ${s} consecutive wins.`;
-      badgeHtml=`<span class="ev-badge ev-badge-streak">W${s} STREAK</span>`;
-    }else if(ev.type==='division'){
-      const div=d.division;
-      actionHtml=`reached <b style="color:var(--cyan)">${div.icon} ${div.name}</b> division`;
-      detailHtml=`${d.picks} picks logged · Performance recognized.`;
-      badgeHtml=`<span class="ev-badge ev-badge-division">${div.icon} ${div.name}</span>`;
-    }else if(ev.type==='milestone'){
-      actionHtml=`hit <b style="color:var(--gold)">${d.count} PICKS</b>`;
-      detailHtml=`${d.count}-pick milestone reached. Track record growing.`;
-      badgeHtml=`<span class="ev-badge ev-badge-milestone">🎯 ${d.count} PICKS</span>`;
-    }else if(ev.type==='flow'){
-      const st=d.state;
-      actionHtml=`is <b style="color:${st.color}">${st.label}</b>`;
-      detailHtml=st.desc;
-      badgeHtml=`<span class="ev-badge ev-badge-flow flow-chip flow-${st.id}">${st.label}</span>`;
-    }else{
-      actionHtml=`posted a pick`;
-      detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b> · ${d.stake}u`;
-      badgeHtml=`<span class="ev-badge ev-badge-posted">📌 PENDING</span>`;
-    }
-
-    const pid=d.pickId||'';
-    const reactBarHtml=pid?`<div class="react-bar" data-pick="${pid}">
+  const pid=d.pickId||'';
+  const reactBarHtml=pid?`<div class="react-bar" data-pick="${pid}">
       <button class="react-btn" id="rf_${pid}" onclick="toggleReact('${pid}','fire',this,event)" title="Fire">🔥 <span class="react-count"></span></button>
       <button class="react-btn" id="rr_${pid}" onclick="toggleReact('${pid}','rocket',this,event)" title="Rocket">🚀 <span class="react-count"></span></button>
       <button class="react-btn" id="rd_${pid}" onclick="toggleReact('${pid}','diamond',this,event)" title="Diamond">💎 <span class="react-count"></span></button>
       <button class="react-btn" id="rc_${pid}" onclick="toggleReact('${pid}','clap',this,event)" title="Clap">👏 <span class="react-count"></span></button>
       <button class="tail-btn-react" id="tf_${pid}" onclick="toggleTailFeed('${pid}',this,event)">✈️ Tail <span class="tail-count-react"></span></button>
     </div>`:'';
-    return`<div class="event-card ev-${ev.type}" onclick="window.location.href='/tipster?u=${ev.user}'" style="${delay?'animation-delay:'+(i*35)+'ms':''}">
+  return`<div class="event-card ev-${ev.type}" onclick="window.location.href='/tipster?u=${ev.user}'" style="${delay?'animation-delay:'+(i*35)+'ms':''}">
       <div class="ev-av" style="background:${av}">${ev.user.slice(0,2).toUpperCase()}</div>
       <div class="ev-body">
         <div class="ev-top">
@@ -449,14 +437,109 @@ function renderEvents(events,delay=true){
       </div>
       <span class="ev-arrow">→</span>
     </div>`;
-  }).join('');
+}
 
+function renderEvents(events,delay=true){
+  const container=document.getElementById('feedContainer');
+  const filtered=currentFilter==='all'?events:events.filter(e=>{
+    if(currentFilter==='win')return e.type==='win'||e.type==='bigwin';
+    return e.type===currentFilter;
+  });
+  if(!filtered.length){
+    container.innerHTML=`<div class="empty-feed"><span class="empty-feed-icon">${currentFilter==='win'?'🏆':currentFilter==='underdog'?'👑':currentFilter==='streak'?'🔥':currentFilter==='division'?'💎':'📌'}</span>No ${currentFilter==='all'?'events yet':'events of this type yet'} — check back soon.</div>`;
+    document.getElementById('feedEnd').style.display='none';return;
+  }
+  container.innerHTML=filtered.map((ev,i)=>buildSingleCard(ev,i,delay)).join('');
   document.getElementById('feedEnd').style.display=filtered.length>10?'block':'none';
-  // Load interaction counts after render (non-blocking)
-  setTimeout(loadAllInteractions, 100);
+  setTimeout(loadAllInteractions,100);
 }
 
 function evAvatar(ev){return avColor(ev.user);}
+
+// ── WS INTEGRATION ───────────────────────────────────────────
+function _divIcon(div){
+  const icons={LEGENDARY:'🐐',ELITE:'🔱',DIAMOND:'💎',PLATINUM:'⚡',GOLD:'🏆',SILVER:'🥈',BRONZE:'🥉'};
+  return icons[div]||'🏆';
+}
+
+function _wsEventToFeedEvent(wsEv){
+  const username=wsEv.username||(wsEv.payload&&wsEv.payload.username)||'';
+  const payload=wsEv.payload||{};
+  const ts=wsEv.createdAt?new Date(wsEv.createdAt).getTime():Date.now();
+  const rarity=wsEv._rarity||1;
+  if(wsEv.type==='pick_win'||wsEv.type==='big_win'){
+    const isBig=wsEv.type==='big_win'||(payload.pnl>=3);
+    return{type:isBig?'bigwin':'win',user:username,ts,_rarity:rarity,detail:{event:payload.event,market:payload.market,odds:payload.odds,pnl:payload.pnl,pickId:payload.pickId}};
+  }
+  if(wsEv.type==='underdog_hit')return{type:'underdog',user:username,ts,_rarity:rarity,detail:{event:payload.event,market:payload.market,odds:payload.odds,pnl:payload.pnl,pickId:payload.pickId}};
+  if(wsEv.type==='streak_milestone')return{type:'streak',user:username,ts,_rarity:rarity,detail:{streak:payload.streak}};
+  if(wsEv.type==='division_up')return{type:'division',user:username,ts,_rarity:rarity,detail:{division:{name:payload.toDivision,icon:_divIcon(payload.toDivision),cls:(payload.toDivision||'').toLowerCase()},picks:payload.picks}};
+  if(wsEv.type==='milestone_pick')return{type:'milestone',user:username,ts,_rarity:rarity,detail:{count:payload.count}};
+  return null;
+}
+
+function prependFeedCard(feedEv){
+  const container=document.getElementById('feedContainer');
+  if(container.querySelector('.empty-feed'))container.innerHTML='';
+  const dummy=document.createElement('div');
+  dummy.innerHTML=buildSingleCard(feedEv,0,false);
+  const card=dummy.firstElementChild;
+  if(!card)return;
+  container.insertBefore(card,container.firstChild);
+  // Rarity-aware glow that fades out
+  const rarity=feedEv._rarity||1;
+  if(rarity>=2){
+    const glowColor=rarity>=4?'rgba(251,191,36,0.25)':rarity>=3?'rgba(52,211,153,0.2)':'rgba(52,211,153,0.1)';
+    card.style.transition='none';
+    card.style.boxShadow='0 0 20px '+glowColor;
+    requestAnimationFrame(()=>{card.style.transition='box-shadow 2s ease';card.style.boxShadow='none';});
+  }
+  while(container.children.length>60)container.removeChild(container.lastChild);
+  const pid=feedEv.detail&&feedEv.detail.pickId;
+  if(pid)setTimeout(()=>loadInteractionsForPick(pid),150);
+}
+
+async function loadInteractionsForPick(pid){
+  const uid=_getUid();const uq=uid?'?userId='+uid:'';
+  try{
+    const[rr,tr]=await Promise.all([
+      fetch(API+'/picks/'+pid+'/reactions'+uq).then(r=>r.json()),
+      fetch(API+'/picks/'+pid+'/tails'+uq).then(r=>r.json()),
+    ]);
+    updateReactionUI(pid,rr,tr);
+  }catch(e){}
+}
+
+function subscribeWS(){
+  if(!window.LedgrWS)return;
+  window.LedgrWS.on('online_count',function(ev){
+    const n=ev.n!=null?ev.n:(ev.payload&&ev.payload.n!=null?ev.payload.n:null);
+    if(n!=null)document.getElementById('onlineCount').textContent=n;
+  });
+  window.LedgrWS.on('ws_connected',function(){
+    _wsConnected=true;
+    document.getElementById('refreshCountdown').textContent='LIVE';
+  });
+  window.LedgrWS.on('ws_disconnected',function(){
+    _wsConnected=false;
+  });
+  var WS_TYPES=['pick_win','big_win','underdog_hit','streak_milestone','division_up','milestone_pick'];
+  WS_TYPES.forEach(function(type){
+    window.LedgrWS.on(type,function(ev){
+      if(!window.LedgrWS.isVisible())return;
+      var rarity=ev._rarity||1;
+      if(rarity<2)return;
+      var feedEv=_wsEventToFeedEvent(ev);
+      if(!feedEv)return;
+      allEvents.unshift(feedEv);
+      if(allEvents.length>120)allEvents.pop();
+      // Only prepend if matches current filter
+      var typeMatch=currentFilter==='all'||currentFilter===feedEv.type||(currentFilter==='win'&&(feedEv.type==='win'||feedEv.type==='bigwin'));
+      if(typeMatch)prependFeedCard(feedEv);
+      updateCounts(allEvents);
+    });
+  });
+}
 
 // ── INTERACTIONS ─────────────────────────────────────────────
 function _getUid(){
@@ -553,9 +636,7 @@ async function loadFeed(){
     updateCounts(allEvents);
     renderEvents(allEvents,true);
     loadAllInteractions();
-
-    const h=new Date().getHours();const base=h>=18&&h<=23?14:h>=14&&h<=17?10:h>=9&&h<=13?7:4;
-    document.getElementById('onlineCount').textContent=(base+Math.floor(Math.random()*5));
+    // Online count is set by WS online_count event; no fake fallback
   }catch(e){
     document.getElementById('feedContainer').innerHTML='<div class="empty-feed"><span class="empty-feed-icon">⚠️</span>Could not load feed. Try refreshing.</div>';
   }
@@ -568,6 +649,7 @@ function doRefresh(){
 
 function startCountdown(){
   refreshTimer=setInterval(()=>{
+    if(_wsConnected){document.getElementById('refreshCountdown').textContent='LIVE';return;}
     countdown--;
     document.getElementById('refreshCountdown').textContent=countdown+'s';
     if(countdown<=0){countdown=30;loadFeed();}
@@ -578,7 +660,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 
-loadFeed();startCountdown();
+loadFeed();startCountdown();subscribeWS();
 </script>
 <script src="/brand-nav.js"></script>
 </body>
