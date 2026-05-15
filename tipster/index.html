@@ -163,6 +163,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .badge.clv-pos{background:rgba(52,211,153,0.1);color:var(--gr);border:1px solid rgba(52,211,153,0.28)}
 .badge.clv-neg{background:rgba(248,113,113,0.1);color:var(--rd);border:1px solid rgba(248,113,113,0.28)}
 .badge.clv-null{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
+.badge-push{background:rgba(56,189,248,.12);color:var(--cyan);border:1px solid rgba(56,189,248,.2)}
+.badge-void{background:rgba(107,107,107,.12);color:var(--mu2);border:1px solid rgba(107,107,107,.2)}
+.push-border{border-left:3px solid var(--cyan)}
+.void-border{border-left:3px solid var(--mu)}
+.pf-btn.push.active{border-color:rgba(56,189,248,.4);color:var(--cyan);background:rgba(56,189,248,.08)}
+.pf-btn.void.active{border-color:rgba(107,107,107,.4);color:var(--mu2);background:rgba(107,107,107,.08)}
 .pick-pnl{font-family:'DM Mono',monospace;font-size:11px;font-weight:700}
 .pick-pnl.pos{color:var(--gr)}.pick-pnl.neg{color:var(--rd)}.pick-pnl.zero{color:var(--mu)}
 .pick-time{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-left:auto}
@@ -326,6 +332,29 @@ const confLabels={low:'🔴 Low',medium:'🟡 Medium',high:'🟢 High',max:'⚡ 
 let allPicks=[];
 let currentFilter='all';
 
+// Result state → display mapping. Add new states here when backend adds them.
+const RESULT_UI={
+  win:    {badge:'WIN',    badgeCls:'badge-win',    cardCls:'win-border',    tabCls:'win',     tabLabel:'✅ Won'},
+  loss:   {badge:'LOSS',   badgeCls:'badge-loss',   cardCls:'loss-border',   tabCls:'loss',    tabLabel:'❌ Lost'},
+  push:   {badge:'PUSH',   badgeCls:'badge-push',   cardCls:'push-border',   tabCls:'push',    tabLabel:'〰️ Push'},
+  void:   {badge:'VOID',   badgeCls:'badge-void',   cardCls:'void-border',   tabCls:'void',    tabLabel:'🚫 Void'},
+  pending:{badge:'PENDING',badgeCls:'badge-pending',cardCls:'pending-border',tabCls:'pending', tabLabel:'⏳ Pending'},
+};
+function rui(r){return RESULT_UI[r]||RESULT_UI.pending;}
+
+// Returns pick filter tab HTML. Push/Void tabs only appear when picks with those states exist.
+function _pickFilterTabs(picks){
+  const hasPush=picks.some(p=>p.result==='push');
+  const hasVoid=picks.some(p=>p.result==='void');
+  const t=(k,cls)=>`<div class="pf-btn ${cls} ${currentFilter===k?'active':''}" onclick="filterPicks('${k}',this)">${RESULT_UI[k].tabLabel}</div>`;
+  return`<div class="pick-filter" id="pickFilterTabs">`+
+    `<div class="pf-btn ${currentFilter==='all'?'active':''}" onclick="filterPicks('all',this)">All</div>`+
+    t('win','win')+t('loss','loss')+t('pending','pending')+
+    (hasPush?t('push','push'):'')+
+    (hasVoid?t('void','void'):'')+
+    '</div>';
+}
+
 function getScore(picks){
   if(picks.length<3)return{score:0,desc:'Need more picks',color:'var(--mu)',needs:true,needsN:Math.max(0,3-picks.length)};
   const wins=picks.filter(p=>p.result==='win').length;
@@ -349,7 +378,7 @@ function getBadges(picks){
   const roi=stake>0?(pnl/stake)*100:0;
   const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
   const avgOdds=picks.length>0?picks.reduce((s,p)=>s+p.odds,0)/picks.length:0;
-  const sorted=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const sorted=[...picks].filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   let streak=0;for(const p of sorted){if(p.result==='win')streak++;else break;}
   if(streak>=5)badges.push({icon:'🔥',name:'Hot Streak',cls:'fire'});
   if(roi>=20&&picks.length>=50)badges.push({icon:'💎',name:'Diamond',cls:'diamond'});
@@ -383,19 +412,20 @@ function renderPicks(){
   if(!c)return;
   if(!filtered.length){c.innerHTML=`<div class="empty">${currentFilter==='all'?'No picks yet.':'No '+currentFilter+' picks.'}</div>`;return;}
   c.innerHTML=filtered.map(p=>{
-    const rb=p.result==='win'?'<span class="badge badge-win">WIN</span>':p.result==='loss'?'<span class="badge badge-loss">LOSS</span>':'<span class="badge badge-pending">PENDING</span>';
+    const ui=rui(p.result);
+    const rb=`<span class="badge ${ui.badgeCls}">${ui.badge}</span>`;
     const ps=p.pnl>0?`<span class="pick-pnl pos">+€${p.pnl.toFixed(2)}</span>`:p.pnl<0?`<span class="pick-pnl neg">-€${Math.abs(p.pnl).toFixed(2)}</span>`:'<span class="pick-pnl zero">€0</span>';
-    const borderCls=p.result==='win'?'win-border':p.result==='loss'?'loss-border':'pending-border';
+    const borderCls=ui.cardCls;
     const confHtml=p.confidence?`<span class="conf-badge ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
     const icon=sportIcon[p.sport]||'🎯';
     const CLV_TIP='Closing Line Value measures if you got better odds than the market closed at. Positive CLV = sharp bettor.';
-    const clvHtml=p.clv!=null
-      ?p.clv>=0
-        ?`<span class="badge clv-pos" title="${CLV_TIP}">▲ +${p.clv.toFixed(1)}% CLV</span>`
-        :`<span class="badge clv-neg" title="${CLV_TIP}">▼ ${p.clv.toFixed(1)}% CLV</span>`
-      :p.result!=='pending'
-        ?`<span class="badge clv-null" title="${CLV_TIP}">CLV pending</span>`
-        :'';
+    const clvHtml=(p.result==='win'||p.result==='loss')
+      ?p.clv!=null
+        ?p.clv>=0
+          ?`<span class="badge clv-pos" title="${CLV_TIP}">▲ +${p.clv.toFixed(1)}% CLV</span>`
+          :`<span class="badge clv-neg" title="${CLV_TIP}">▼ ${p.clv.toFixed(1)}% CLV</span>`
+        :`<span class="badge clv-null" title="${CLV_TIP}">CLV pending</span>`
+      :'';
     return`<div class="pick-card ${borderCls}">
       <div class="pick-header">
         <span class="pick-sport-icon">${icon}</span>
@@ -623,6 +653,8 @@ async function loadProfile(){
 
     const wins=allPicks.filter(p=>p.result==='win').length;
     const losses=allPicks.filter(p=>p.result==='loss').length;
+    const pushes=allPicks.filter(p=>p.result==='push').length;
+    const voids=allPicks.filter(p=>p.result==='void').length;
     const pending=allPicks.filter(p=>p.result==='pending').length;
     const stake=allPicks.reduce((s,p)=>s+p.stake,0);
     const pnl=allPicks.reduce((s,p)=>s+p.pnl,0);
@@ -752,12 +784,7 @@ async function loadProfile(){
       <div class="content-grid">
         <div class="panel">
           <div class="panel-title">ALL PICKS</div>
-          <div class="pick-filter">
-            <div class="pf-btn active" onclick="filterPicks('all',this)">All</div>
-            <div class="pf-btn win" onclick="filterPicks('win',this)">✅ Won</div>
-            <div class="pf-btn loss" onclick="filterPicks('loss',this)">❌ Lost</div>
-            <div class="pf-btn pending" onclick="filterPicks('pending',this)">⏳ Pending</div>
-          </div>
+          ${_pickFilterTabs(allPicks)}
           <div id="picksList"></div>
         </div>
         <div>
@@ -765,7 +792,7 @@ async function loadProfile(){
             <div class="panel-title">PERFORMANCE</div>
             ${gaugeHTML?`<div class="at-gauge-section"><div class="at-tip" data-tip="${SHARP_TIP}"><div class="at-gauge-wrap">${gaugeHTML}<div class="at-gauge-lbl">Sharp Score</div>${displayArch?`<span class="at-badge" style="color:${displayArch.color};border-color:${displayArch.color}44;background:${displayArch.color}11;margin-top:2px">${displayArch.icon} ${displayArch.name}</span>`:''}</div></div></div>`:''}
             <div class="perf-row"><span class="perf-key">Sharp Score</span><span class="perf-val" style="color:${ssColor}">${sharpScore>0?sharpScore.toFixed(0)+'/100':'—'}</span></div>
-            <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${wins}W — ${losses}L — ${pending}P</span></div>
+            <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${wins}W — ${losses}L — ${pending}P${pushes>0?' — '+pushes+' Push':''}${voids>0?' — '+voids+' Void':''}</span></div>
             <div class="perf-row"><span class="perf-key">ROI</span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
             <div class="perf-row"><span class="perf-key">Win Rate</span><span class="perf-val">${wr}%</span></div>
             <div class="perf-row"><span class="perf-key">P&L</span><span class="perf-val ${pPos?'pos':'neg'}">${pPos?'+€':'-€'}${Math.abs(pnl).toFixed(2)}</span></div>
