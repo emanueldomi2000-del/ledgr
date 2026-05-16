@@ -255,7 +255,7 @@
 
   function injectTooltips() {
     document.querySelectorAll(SELS).forEach(function (el) {
-      if (el.querySelector('.tt-q') || el.getAttribute('data-tt-done')) return;
+      if (el.querySelector('.tt-q') || el.querySelector('.tip-trigger') || el.getAttribute('data-tt-done')) return;
       const txt = el.textContent.trim();
       for (var i = 0; i < PATTERNS.length; i++) {
         if (PATTERNS[i].re.test(txt)) {
