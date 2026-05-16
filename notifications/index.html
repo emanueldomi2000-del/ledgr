@@ -39,8 +39,12 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.94);backdrop-filte
 .notif-day-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;padding:12px 0 6px}
 .notif-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:all .2s;position:relative}
 .notif-card:hover{border-color:var(--bd2);background:rgba(255,255,255,0.025)}
-.notif-card.unread{border-left:2px solid var(--ac)}
-.notif-card.unread::before{content:'';position:absolute;top:18px;left:-1px;width:2px;height:16px;background:var(--ac);border-radius:1px}
+.notif-card.read{opacity:.5;border-color:transparent}
+.notif-card.read:hover{opacity:.75;border-color:var(--bd)}
+.notif-card.unread{border-left:3px solid #2A2A2A}
+.notif-card.unread-elite{border-left:3px solid #7B2CFF}
+.notif-card.unread-system{border-left:3px solid #FFD700}
+.elite-pill{display:inline-flex;align-items:center;gap:3px;background:rgba(123,44,255,0.12);border:1px solid rgba(123,44,255,0.35);color:#b89fff;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1.5px;padding:2px 7px;border-radius:5px;margin-right:6px;vertical-align:middle;flex-shrink:0}
 .nf-icon{font-size:22px;flex-shrink:0;margin-top:2px}
 .nf-body{flex:1}
 .nf-text{font-size:13px;color:var(--tx);line-height:1.5}.nf-text b{color:var(--ac)}
@@ -177,6 +181,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.94);backdrop-filte
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;let currentFilter='all';
+let eliteSet=new Set(); // usernames in ELITE or LEGENDARY division
+
+async function loadRankingsForElite(){
+  try{
+    const r=await fetch(API+'/rankings',{cache:'no-store'});
+    if(!r.ok)return;
+    const d=await r.json();
+    const list=Array.isArray(d)?d:(d&&d.tipsters?d.tipsters:[]);
+    list.forEach(t=>{
+      if(t.division==='ELITE'||t.division==='LEGENDARY')eliteSet.add(t.username);
+    });
+  }catch(e){}
+}
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function goToProfile(){if(user)window.location.href='/tipster?u='+user.username;}
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
@@ -269,6 +286,7 @@ window.onload=()=>{
   markAllReadOnBackend();
   renderNotifs();
   loadNotificationsFromAPI();
+  loadRankingsForElite();
   subscribeWS();
   if(window.Push)window.Push.init().then(()=>initPushUI());
 };
@@ -345,16 +363,23 @@ function renderNotifs(){
     if(!groups[key])groups[key]=[];groups[key].push(n);
   });
   const TYPE_LABELS={new_pick:'NEW PICK',streak:'STREAK',division:'DIVISION'};
+  const SYSTEM_TYPES=new Set(['pick_result','pick_tailed']);
   list.innerHTML=Object.entries(groups).map(([day,items])=>`
     <div class="notif-day-label">${day}</div>
-    ${items.map(n=>`<div class="notif-card ${n.read?'':'unread'}" onclick="handleClick('${n.type||''}','${n.ref||''}')">
-      <span class="nf-icon">${n.icon||'🔔'}</span>
-      <div class="nf-body">
-        <div class="nf-text">${n.text}${n.type&&TYPE_LABELS[n.type]?`<span class="nf-type-badge ${n.type}">${TYPE_LABELS[n.type]}</span>`:''}</div>
-        <div class="nf-time">${getTimeAgo(new Date(n.ts))}</div>
-      </div>
-      ${!n.read?'<div class="nf-unread-dot"></div>':''}
-    </div>`).join('')}
+    ${items.map(n=>{
+      const isSystem=SYSTEM_TYPES.has(n.type)||!n.ref;
+      const isElite=!n.read&&!isSystem&&eliteSet.has(n.ref);
+      const cardCls=n.read?'read':isSystem?'unread-system':isElite?'unread-elite':'unread';
+      const eliteTag=isElite?`<span class="elite-pill">⚡ ELITE</span>`:'';
+      return`<div class="notif-card ${cardCls}" onclick="handleClick('${n.type||''}','${n.ref||''}')">
+        <span class="nf-icon">${n.icon||'🔔'}</span>
+        <div class="nf-body">
+          <div class="nf-text">${eliteTag}${n.text}${n.type&&TYPE_LABELS[n.type]?`<span class="nf-type-badge ${n.type}">${TYPE_LABELS[n.type]}</span>`:''}</div>
+          <div class="nf-time">${getTimeAgo(new Date(n.ts))}</div>
+        </div>
+        ${!n.read?'<div class="nf-unread-dot"></div>':''}
+      </div>`;
+    }).join('')}
   `).join('');
 }
 

@@ -61,6 +61,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .verified-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:var(--cyan);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;font-weight:700}
 .vdot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes sharpPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,229,160,0)}50%{box-shadow:0 0 8px 2px rgba(0,229,160,0.18)}}
 .streak-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(251,146,60,0.1);border:1px solid rgba(251,146,60,0.25);color:var(--orange);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;font-weight:700}
 .rank-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;font-weight:700}
 .profile-username{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:3px;line-height:1;margin-bottom:4px;color:var(--tx)}
@@ -795,6 +796,10 @@ async function loadProfile(){
               ${flowBadgeHTML}
             </div>
             <div class="profile-username">@${username}</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;margin-bottom:10px">
+              <span style="background:#121212;border:1px solid #2A2A2A;color:var(--mu2);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px">${allPicks.length} VERIFIED PICKS 🔒</span>
+              ${finalSharpScore>70?`<span style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.25);color:#00e5a0;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;animation:sharpPulse 3s ease-in-out infinite">✓ VERIFIED SHARP</span>`:''}
+            </div>
             ${bioHtml}
             ${socialHtml}
             <div style="display:flex;gap:12px;margin-top:5px;flex-wrap:wrap">

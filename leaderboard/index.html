@@ -1068,6 +1068,9 @@ function renderLeaderboard() {
     const ss = t.sharpScore || 0;
     const ssColor = ss >= 70 ? 'var(--gr)' : ss >= 40 ? 'var(--gold)' : 'var(--rd)';
     const eloClass = (t.elo||1000) >= 1200 ? 'top' : (t.elo||1000) < 900 ? 'low' : '';
+    const usernameColor = globalRank === 1 ? '#FFD700' : globalRank <= 10 ? '#B14CFF' : '';
+    const usernamePfx = globalRank === 1 ? '👑 ' : '';
+    const sharpMark = ss > 70 ? `<span style="color:#00e5a0;font-size:11px;margin-left:4px">✓ Sharp</span>` : '';
 
     return `<div class="lb-row" style="--ri:${idx}" onclick="window.location.href='/tipster?u=${t.username}'">
       <div class="rank-cell">
@@ -1077,7 +1080,7 @@ function renderLeaderboard() {
       <div class="tipster-col">
         ${avHTML}
         <div class="tip-info">
-          <div class="tip-name">@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}</div>
+          <div class="tip-name" ${usernameColor?`style="color:${usernameColor}"`:''}>${usernamePfx}@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}${sharpMark}</div>
           <div class="tip-sub">${t.picks} picks</div>
           <div class="tip-badges">${divPill}${flowHtml||archHtml}</div>
         </div>
