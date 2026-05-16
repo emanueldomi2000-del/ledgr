@@ -347,6 +347,20 @@ select option{background:#15122a}
   .mobile-menu-btn{display:block}
   .nav-r .user-badge,.nav-r .logout-btn{display:none}
 }
+@media(max-width:768px){
+  /* Fixture search */
+  .fixture-search{width:100%;min-height:48px;font-size:16px}
+  /* Market chips — 2-column grid */
+  .chips-wrap{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .chip{font-size:13px;text-align:center;padding:8px 6px}
+  /* Parlay panel — slides up from bottom */
+  .parlay-panel{top:auto;right:0;left:0;bottom:-60vh;width:100%;height:60vh;border-radius:16px 16px 0 0;border-left:none;border-top:1px solid rgba(251,191,36,.18);box-shadow:0 -8px 48px rgba(0,0,0,.55);transition:bottom .35s cubic-bezier(.4,0,.2,1)}
+  .parlay-panel.open{bottom:0}
+  /* Submit button — sticky above bottom nav */
+  .submit-btn{position:sticky;bottom:72px;width:100%;z-index:10}
+  /* Body clearance for sticky button */
+  body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>

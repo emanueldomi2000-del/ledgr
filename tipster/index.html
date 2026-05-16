@@ -251,6 +251,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .elo-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--ac);line-height:1}
 .elo-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
 .elo-desc{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace}
+@media(max-width:768px){
+  /* Stats grid: 2 columns */
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  /* Profile actions: follow + subscribe full-width flex */
+  .profile-actions{flex-direction:row;flex-wrap:wrap;gap:8px;width:100%}
+  .follow-btn,.sub-btn{flex:1;min-width:0;text-align:center}
+  .share-btn{flex:1;min-width:0;text-align:center}
+  /* Pick cards: full width */
+  .pick-card{width:100%;margin:0}
+  /* Cover and hero adjustments */
+  .cover-banner{height:90px}
+  .profile-username{font-size:30px}
+}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>

@@ -2,6 +2,9 @@
    LEDGR Brand System
    ═══════════════════════════════════════ */
 
+/* Global touch polish */
+body { -webkit-tap-highlight-color: transparent; }
+
 :root {
   --color-bg: #0A0A0A;
   --color-surface: #121212;
@@ -265,6 +268,21 @@ nav.brand-nav.app-context .brand-nav-link.active {
   }
   .brand-nav-links {
     display: none;
+  }
+  /* Slide menu: full-screen on mobile */
+  .brand-slide-menu {
+    width: 100vw;
+    height: 100dvh;
+    right: -100vw;
+    border-radius: 0;
+    border-left: none;
+  }
+  .brand-slide-menu.open {
+    right: 0;
+  }
+  /* Pages with a bottom nav */
+  body.has-bottom-nav {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
   }
 }
 

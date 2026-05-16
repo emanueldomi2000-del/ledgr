@@ -315,6 +315,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
   .rewards-grid{grid-template-columns:repeat(2,1fr)}
   .badge-grid{grid-template-columns:repeat(2,1fr)}
 }
+@media(max-width:768px){
+  .div-track{scroll-snap-type:x mandatory}
+  .div-node{scroll-snap-align:start}
+}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>

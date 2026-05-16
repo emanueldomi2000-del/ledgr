@@ -131,6 +131,23 @@ nav{position:relative;z-index:50;background:rgba(7,6,13,0.96);backdrop-filter:bl
   .input-area{padding:10px 12px}
 }
 @media(max-width:480px){.sidebar{display:none}}
+@media(max-width:768px){
+  /* Sidebar becomes horizontal room tab bar */
+  .chat-layout{flex-direction:column}
+  .sidebar{width:100%;height:auto;flex-direction:row;border-right:none;border-bottom:1px solid var(--bd);flex-shrink:0;display:flex}
+  .sidebar-head{display:none}
+  .rooms-list{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:6px 8px;gap:4px;scrollbar-width:none;flex:1}
+  .rooms-list::-webkit-scrollbar{display:none}
+  .room-btn{flex-shrink:0;width:auto;padding:6px 14px;border-radius:20px;margin-bottom:0;gap:6px}
+  .room-btn.active{border-radius:20px}
+  .room-info{display:block}
+  .room-name{font-size:11px}
+  .room-count{display:none}
+  /* Chat input — fixed above bottom nav */
+  .input-area{position:fixed;bottom:64px;left:0;right:0;padding:8px 16px;background:#121212;z-index:10;border-top:1px solid var(--bd)}
+  /* Messages scroll area */
+  .messages-wrap{height:calc(100dvh - 180px);flex:none;overflow-y:auto;padding-bottom:calc(64px + 58px + 8px)}
+}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>

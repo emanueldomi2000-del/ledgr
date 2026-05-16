@@ -321,6 +321,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.9);backdrop-filter:
   .frozen-row{grid-template-columns:40px 1fr 68px 68px}
   .frozen-row>*:nth-child(5),.frozen-row>*:nth-child(6),.frozen-row>*:nth-child(7){display:none}
 }
+@media(max-width:768px){
+  /* Podium — horizontal scroll with snap */
+  .podium-section{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:12px;padding-bottom:16px;align-items:flex-end;grid-template-columns:unset}
+  .podium-section::-webkit-scrollbar{display:none}
+  .podium-card{min-width:200px;flex-shrink:0;scroll-snap-align:center}
+  /* Table — show only Rank + Tipster + ROI */
+  .lb-head,.lb-row{grid-template-columns:44px 1fr 72px}
+  .lb-head>*:nth-child(n+4),.lb-row>*:nth-child(n+4){display:none}
+  .frozen-row{grid-template-columns:44px 1fr 72px}
+  .frozen-row>*:nth-child(n+4){display:none}
+  /* Search */
+  .search-input{height:44px;font-size:16px}
+  .search-wrap{max-width:100%;width:100%;margin-bottom:12px}
+}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>
