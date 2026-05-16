@@ -37,7 +37,7 @@
       '#lv-ticker{border-top:1px solid rgba(184,159,255,.1);border-bottom:1px solid rgba(184,159,255,.1);background:rgba(255,255,255,.012)}',
       '.lv-ticker-inner{max-width:1100px;margin:0 auto;padding:6px 24px;display:flex;align-items:center;gap:12px;overflow:hidden}',
       '.lv-scroll{overflow:hidden;flex:1}',
-      '.lv-msgs{display:flex;gap:48px;white-space:nowrap;animation:lv-tick 34s linear infinite;font-family:\'DM Mono\',monospace;font-size:9px;color:rgba(106,102,144,.85)}',
+      '.lv-msgs{display:flex;gap:48px;white-space:nowrap;animation:lv-tick 20s linear infinite;font-family:\'DM Mono\',monospace;font-size:9px;color:rgba(106,102,144,.85)}',
       '.lv-msgs b{color:#9590b8}',
       '@keyframes lv-tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}',
       '.lv-online-lbl{font-family:\'DM Mono\',monospace;font-size:9px;color:#34d399;flex-shrink:0;letter-spacing:1px}',
@@ -199,6 +199,11 @@
     if (!el) return;
     var doubled = msgs.concat(msgs).map(function (m) { return '<span>' + m + '</span>'; }).join('');
     el.innerHTML = doubled;
+    // Set duration for 40px/s scroll speed (el scrolls by 50% of its own width)
+    requestAnimationFrame(function() {
+      var w = el.scrollWidth * 0.5;
+      if (w > 0) el.style.animationDuration = Math.max(8, Math.round(w / 40)) + 's';
+    });
   }
 
   function _refreshTicker() {
@@ -214,7 +219,11 @@
   }
 
   // ── Online count ─────────────────────────────────────────────────────────────
+  var _lastOnlineUpdate = 0;
   function _setOnline(n) {
+    var now = Date.now();
+    if (now - _lastOnlineUpdate < 45000) return;
+    _lastOnlineUpdate = now;
     var label = n + ' online';
     var homeEl = document.getElementById('onlineCount');
     if (homeEl) homeEl.textContent = label;
@@ -505,6 +514,19 @@
     }
   }
 
+  // ── Pause ticker animation when off-screen ────────────────────────────────────
+  function _observeTicker(elId) {
+    if (!('IntersectionObserver' in window)) return;
+    var el = document.getElementById(elId);
+    if (!el) return;
+    var container = el.parentElement || el;
+    new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        el.style.animationPlayState = e.isIntersecting ? 'running' : 'paused';
+      });
+    }, {threshold: 0}).observe(container);
+  }
+
   // ── Ticker inject for LB ──────────────────────────────────────────────────────
   function _injectLBTicker() {
     if (document.getElementById('lv-ticker')) return;
@@ -536,6 +558,8 @@
 
       _tickerMsgs = _buildHistoricalMsgs(picks);
       _refreshTicker();
+      _observeTicker('lv-msgs');
+      _observeTicker('tickerText');
 
       // Online count: server will push real count, show reasonable placeholder from picks
       // Active in last 7 days (not faked with multiplier)

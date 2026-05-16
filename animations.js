@@ -25,7 +25,7 @@
 @keyframes la-blink{0%,100%{opacity:.2}50%{opacity:.5}}
 
 /* GLOW ORB */
-.la-glow{position:absolute;z-index:1;width:520px;height:520px;border-radius:50%;pointer-events:none;animation:la-glow-pulse 2s ease-in-out infinite}
+.la-glow{position:absolute;z-index:1;width:520px;height:520px;border-radius:50%;pointer-events:none;animation:la-glow-pulse 3s ease-in-out infinite}
 @keyframes la-glow-pulse{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:.85;transform:scale(1.08)}}
 
 /* DIVISION COLOURS */
@@ -49,8 +49,8 @@
 @keyframes la-burst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(0);opacity:0}}
 
 /* BADGE UNLOCK */
-.la-badge-wrap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(130px);z-index:9000;pointer-events:none;animation:la-badge-anim 3.2s cubic-bezier(.34,1.1,.64,1) forwards}
-@keyframes la-badge-anim{0%{transform:translateX(-50%) translateY(130px);opacity:0}12%{transform:translateX(-50%) translateY(0);opacity:1}80%{transform:translateX(-50%) translateY(0);opacity:1}100%{transform:translateX(-50%) translateY(130px);opacity:0}}
+.la-badge-wrap{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(130px);z-index:9000;pointer-events:none;animation:la-badge-anim 4.5s cubic-bezier(.34,1.1,.64,1) forwards}
+@keyframes la-badge-anim{0%{transform:translateX(-50%) translateY(130px);opacity:0}9%{transform:translateX(-50%) translateY(0);opacity:1}87%{transform:translateX(-50%) translateY(0);opacity:1}100%{transform:translateX(-50%) translateY(130px);opacity:0}}
 
 .la-badge-card{background:#0d0b18;border:1px solid rgba(184,159,255,.22);border-radius:18px;padding:18px 28px;display:flex;align-items:center;gap:16px;box-shadow:0 12px 56px rgba(0,0,0,.7),0 0 0 1px rgba(184,159,255,.08),0 0 40px rgba(184,159,255,.06);min-width:260px}
 .la-badge-bar{width:3px;height:52px;border-radius:2px;background:linear-gradient(to bottom,#b89fff,#38bdf8);flex-shrink:0}
@@ -60,11 +60,11 @@
 .la-badge-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:#f0edff}
 
 /* STREAK FIRE */
-.la-streak-wrap{position:fixed;top:50%;left:50%;z-index:9000;pointer-events:none;transform:translate(-50%,-50%) scale(.8);opacity:0;animation:la-streak-anim 2.6s ease forwards}
+.la-streak-wrap{position:fixed;top:50%;left:50%;z-index:9000;pointer-events:none;transform:translate(-50%,-50%) scale(.8);opacity:0;animation:la-streak-anim 2.5s ease forwards}
 @keyframes la-streak-anim{0%{transform:translate(-50%,-50%) scale(.78);opacity:0}18%{transform:translate(-50%,-52%) scale(1.04);opacity:1}32%{transform:translate(-50%,-50%) scale(1);opacity:1}82%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-58%) scale(.95);opacity:0}}
 
 .la-streak-card{background:rgba(7,6,13,.96);border:1px solid rgba(251,146,60,.28);border-radius:24px;padding:28px 52px;text-align:center;box-shadow:0 0 80px rgba(251,146,60,.12),0 12px 40px rgba(0,0,0,.7)}
-.la-streak-fire{font-size:56px;line-height:1;display:block;margin-bottom:8px;animation:la-fire-wave .38s ease-in-out infinite alternate}
+.la-streak-fire{font-size:56px;line-height:1;display:block;margin-bottom:8px;animation:la-fire-wave 0.6s ease-in-out infinite alternate}
 @keyframes la-fire-wave{from{transform:scale(1) rotate(-3deg)}to{transform:scale(1.1) rotate(3deg)}}
 .la-streak-count{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:4px;color:#fb923c;line-height:1;text-shadow:0 0 40px rgba(251,146,60,.4)}
 .la-streak-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:5px;color:rgba(251,146,60,.65);text-transform:uppercase;margin-top:6px}
@@ -87,7 +87,7 @@
 .la-sn-stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#f0edff;line-height:1}
 .la-sn-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(240,237,255,.35);text-transform:uppercase;margin-top:2px}
 .la-sn-tap{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(240,237,255,.2);margin-top:24px;animation:la-blink 1.5s 1s infinite}
-.la-sn-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.14),transparent 70%);pointer-events:none;animation:la-glow-pulse 2s ease-in-out infinite}
+.la-sn-glow{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(251,191,36,.14),transparent 70%);pointer-events:none;animation:la-glow-pulse 3s ease-in-out infinite}
 `;
 
     document.head.appendChild(s);
@@ -198,7 +198,7 @@
         '</div>' +
       '</div>';
     document.body.appendChild(wrap);
-    setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 3300);
+    setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 4600);
   };
 
   // ── streakAnimation ──────────────────────────────────────────────────
@@ -212,7 +212,7 @@
         '<div class="la-streak-label">Win Streak</div>' +
       '</div>';
     document.body.appendChild(wrap);
-    setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 2700);
+    setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 2600);
   };
 
   // ── Orchestration helpers ────────────────────────────────────────────

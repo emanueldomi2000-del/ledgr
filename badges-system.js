@@ -76,7 +76,7 @@
 .bg-card.bg-unlocked.r-rare     {border-color:rgba(56,189,248,.38);box-shadow:0 0 22px rgba(56,189,248,.07)}
 .bg-card.bg-unlocked.r-epic     {border-color:rgba(184,159,255,.48);box-shadow:0 0 28px rgba(184,159,255,.1)}
 .bg-card.bg-unlocked.r-legendary{border-color:rgba(251,191,36,.55);box-shadow:0 0 36px rgba(251,191,36,.14);
-  animation:bg-legend-pulse 2.5s ease-in-out infinite}
+  animation:bg-legend-pulse 3s ease-in-out infinite}
 @keyframes bg-legend-pulse{
   0%,100%{box-shadow:0 0 36px rgba(251,191,36,.14)}
   50%     {box-shadow:0 0 52px rgba(251,191,36,.28)}
@@ -101,7 +101,7 @@
 .bg-unlocked.r-epic     .bg-icon-wrap{box-shadow:0 0 22px rgba(184,159,255,.45)}
 .bg-unlocked.r-legendary .bg-icon-wrap{
   box-shadow:0 0 26px rgba(251,191,36,.55);
-  animation:bg-icon-legend 2s ease-in-out infinite}
+  animation:bg-icon-legend 3s ease-in-out infinite}
 @keyframes bg-icon-legend{
   0%,100%{box-shadow:0 0 26px rgba(251,191,36,.55)}
   50%     {box-shadow:0 0 40px rgba(251,191,36,.8)}
@@ -118,7 +118,7 @@
 .r-rare     .bg-rarity-pill{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.28);color:#38bdf8}
 .r-epic     .bg-rarity-pill{background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.35);color:#b89fff}
 .r-legendary .bg-rarity-pill{background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.38);color:#fbbf24;
-  animation:bg-legend-pill 2s ease-in-out infinite}
+  animation:bg-legend-pill 3s ease-in-out infinite}
 @keyframes bg-legend-pill{
   0%,100%{text-shadow:none}
   50%     {text-shadow:0 0 10px rgba(251,191,36,.7)}
@@ -466,7 +466,7 @@
 
     overlay.addEventListener('click', dismiss);
     // Auto-dismiss after 6s for common, longer for rarer
-    var autoDur = {common:5000, rare:6000, epic:7000, legendary:9000}[badge.rarity] || 6000;
+    var autoDur = {common:3500, rare:3500, epic:3500, legendary:3500}[badge.rarity] || 3500;
     setTimeout(dismiss, autoDur);
   }
 

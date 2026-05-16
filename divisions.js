@@ -30,19 +30,19 @@
 
 /* ══════════ SILVER ══════════ */
 .div-wrap-silver .div-av-inner{box-shadow:0 0 14px rgba(148,163,184,.48),0 0 30px rgba(148,163,184,.18)}
-.div-wrap-silver .div-av-aura{background:radial-gradient(circle,rgba(148,163,184,.22) 0%,transparent 68%);animation:dv-pulse 2.8s ease-in-out infinite}
+.div-wrap-silver .div-av-aura{background:radial-gradient(circle,rgba(148,163,184,.22) 0%,transparent 68%);animation:dv-pulse 3s ease-in-out infinite}
 
 /* ══════════ GOLD ══════════ */
 .div-wrap-gold .div-av-inner{box-shadow:0 0 18px rgba(251,191,36,.58),0 0 38px rgba(251,191,36,.22)}
-.div-wrap-gold .div-av-aura{background:radial-gradient(circle,rgba(251,191,36,.28) 0%,transparent 65%);animation:dv-pulse 2.2s ease-in-out infinite}
+.div-wrap-gold .div-av-aura{background:radial-gradient(circle,rgba(251,191,36,.28) 0%,transparent 65%);animation:dv-pulse 3s ease-in-out infinite}
 
 /* ══════════ PLATINUM ══════════ */
 .div-wrap-platinum .div-av-inner{box-shadow:0 0 20px rgba(56,189,248,.62),0 0 42px rgba(56,189,248,.24)}
-.div-wrap-platinum .div-av-aura{background:radial-gradient(circle,rgba(56,189,248,.3) 0%,transparent 62%);animation:dv-pulse 1.9s ease-in-out infinite}
+.div-wrap-platinum .div-av-aura{background:radial-gradient(circle,rgba(56,189,248,.3) 0%,transparent 62%);animation:dv-pulse 3s ease-in-out infinite}
 
 /* ══════════ DIAMOND ══════════ */
 .div-wrap-diamond .div-av-inner{box-shadow:0 0 22px rgba(184,159,255,.68),0 0 46px rgba(184,159,255,.3),0 0 0 1px rgba(184,159,255,.22)}
-.div-wrap-diamond .div-av-aura{background:radial-gradient(circle,rgba(184,159,255,.35) 0%,transparent 60%);animation:dv-pulse-scale 1.6s ease-in-out infinite}
+.div-wrap-diamond .div-av-aura{background:radial-gradient(circle,rgba(184,159,255,.35) 0%,transparent 60%);animation:dv-pulse-scale 3s ease-in-out infinite}
 
 /* ══════════ ELITE ══════════ */
 .div-wrap-elite .div-av-inner{box-shadow:0 0 26px rgba(232,121,160,.72),0 0 52px rgba(232,121,160,.35),0 0 0 1px rgba(232,121,160,.28)}
@@ -50,7 +50,7 @@
 
 /* ══════════ LEGENDARY ══════════ */
 .div-wrap-legendary .div-av-inner{box-shadow:0 0 32px rgba(251,191,36,.78),0 0 64px rgba(251,191,36,.38)}
-.div-wrap-legendary .div-av-aura{inset:-5px;border-radius:inherit;background:conic-gradient(from 0deg,#e879a0,#fb923c,#fbbf24,#34d399,#38bdf8,#818cf8,#e879a0);filter:blur(7px);animation:dv-rotate 2s linear infinite}
+.div-wrap-legendary .div-av-aura{inset:-5px;border-radius:inherit;background:conic-gradient(from 0deg,#e879a0,#fb923c,#fbbf24,#34d399,#38bdf8,#818cf8,#e879a0);filter:blur(7px);animation:dv-rotate 3s linear infinite}
 
 /* ── Keyframes ── */
 @keyframes dv-pulse      {0%,100%{opacity:.6}50%{opacity:1}}
@@ -62,7 +62,7 @@
   from{transform:rotate(0deg) translateY(var(--dv-orbit,-28px)) rotate(0deg)}
   to  {transform:rotate(360deg) translateY(var(--dv-orbit,-28px)) rotate(-360deg)}
 }
-.div-part-elite{width:5px;height:5px;box-shadow:0 0 5px currentColor;animation:dv-orbit-elite 2.4s linear infinite}
+.div-part-elite{width:5px;height:5px;box-shadow:0 0 5px currentColor;animation:dv-orbit-elite 3s linear infinite}
 .div-part-elite:nth-child(1){color:#e879a0;animation-delay:0s}
 .div-part-elite:nth-child(2){color:#c026d3;animation-delay:-.6s}
 .div-part-elite:nth-child(3){color:#7c3aed;animation-delay:-1.2s}
@@ -73,7 +73,7 @@
   from{transform:rotate(0deg) translateY(var(--dv-orbit,-28px)) rotate(0deg)}
   to  {transform:rotate(360deg) translateY(var(--dv-orbit,-28px)) rotate(-360deg)}
 }
-.div-part-legend{width:4px;height:4px;box-shadow:0 0 6px currentColor;animation:dv-orbit-legend 2s linear infinite}
+.div-part-legend{width:4px;height:4px;box-shadow:0 0 6px currentColor;animation:dv-orbit-legend 3s linear infinite}
 .div-part-legend:nth-child(1){color:#e879a0;animation-delay:0s}
 .div-part-legend:nth-child(2){color:#fb923c;animation-delay:-.33s}
 .div-part-legend:nth-child(3){color:#fbbf24;animation-delay:-.67s}
@@ -91,9 +91,9 @@
 .dv-pill-silver  {background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.28);color:#94a3b8}
 .dv-pill-gold    {background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.38);color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.35)}
 .dv-pill-platinum{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);color:#38bdf8;text-shadow:0 0 10px rgba(56,189,248,.3)}
-.dv-pill-diamond {background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.38);color:#b89fff;text-shadow:0 0 10px rgba(184,159,255,.35);animation:dv-pulse 2s ease-in-out infinite}
-.dv-pill-elite   {background:rgba(232,121,160,.1);border:1px solid rgba(232,121,160,.35);color:#e879a0;text-shadow:0 0 12px rgba(232,121,160,.5);animation:dv-badge-elite 1.8s ease-in-out infinite}
-.dv-pill-legendary{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(184,159,255,.12),rgba(232,121,160,.1));border:1px solid rgba(251,191,36,.35);color:#fbbf24;text-shadow:0 0 14px rgba(251,191,36,.6);animation:dv-badge-legend 2s ease-in-out infinite}
+.dv-pill-diamond {background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.38);color:#b89fff;text-shadow:0 0 10px rgba(184,159,255,.35);animation:dv-pulse 3s ease-in-out infinite}
+.dv-pill-elite   {background:rgba(232,121,160,.1);border:1px solid rgba(232,121,160,.35);color:#e879a0;text-shadow:0 0 12px rgba(232,121,160,.5);animation:dv-badge-elite 3s ease-in-out infinite}
+.dv-pill-legendary{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(184,159,255,.12),rgba(232,121,160,.1));border:1px solid rgba(251,191,36,.35);color:#fbbf24;text-shadow:0 0 14px rgba(251,191,36,.6);animation:dv-badge-legend 3s ease-in-out infinite}
 
 @keyframes dv-badge-elite  {0%,100%{box-shadow:none}50%{box-shadow:0 0 14px rgba(232,121,160,.4)}}
 @keyframes dv-badge-legend {0%,100%{box-shadow:none}50%{box-shadow:0 0 20px rgba(251,191,36,.45)}}
@@ -237,6 +237,25 @@
     if (divDef.particles) {
       wrap.insertAdjacentHTML('beforeend', _particlesHTML(divDef));
     }
+
+    _observeWrap(wrap);
+  }
+
+  // ── Pause animations when off-screen ────────────────────────────
+  var _io = null;
+  function _observeWrap(wrap) {
+    if (!('IntersectionObserver' in window)) return;
+    if (!_io) {
+      _io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          var s = e.isIntersecting ? 'running' : 'paused';
+          e.target.querySelectorAll('.div-av-aura,.div-part').forEach(function(el) {
+            el.style.animationPlayState = s;
+          });
+        });
+      }, {threshold: 0});
+    }
+    _io.observe(wrap);
   }
 
   // ── Boot ─────────────────────────────────────────────────────────
