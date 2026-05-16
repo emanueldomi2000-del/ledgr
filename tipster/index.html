@@ -265,6 +265,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   .profile-username{font-size:30px}
 }
 </style>
+<style>
+.tip-trigger{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#2A2A2A;border:1px solid #7B2CFF;border-radius:50%;font-size:10px;color:#B14CFF;cursor:pointer;margin-left:4px;flex-shrink:0;vertical-align:middle;transition:background .15s,border-color .15s;position:relative;line-height:1}
+.tip-trigger:hover{background:rgba(123,44,255,0.2);border-color:#B14CFF}
+.tip-popup{display:none;position:fixed;z-index:99999;background:#1E1E1E;border:1px solid #7B2CFF;border-radius:8px;padding:10px 14px;font-size:13px;color:#E6E6E6;max-width:260px;line-height:1.5;box-shadow:0 0 20px rgba(123,44,255,0.3);pointer-events:none}
+</style>
 <link rel="stylesheet" href="/brand.css">
 </head>
 <body>
@@ -852,17 +857,17 @@ async function loadProfile(){
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
             ${gaugeHTML?`<div class="at-gauge-section"><div class="at-tip" data-tip="${SHARP_TIP}"><div class="at-gauge-wrap">${gaugeHTML}<div class="at-gauge-lbl">Sharp Score</div>${displayArch?`<span class="at-badge" style="color:${displayArch.color};border-color:${displayArch.color}44;background:${displayArch.color}11;margin-top:2px">${displayArch.icon} ${displayArch.name}</span>`:''}</div></div></div>`:''}
-            <div class="perf-row"><span class="perf-key">Sharp Score</span><span class="perf-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0)+'/100':'—'}</span></div>
+            <div class="perf-row"><span class="perf-key">Sharp Score <span class="tip-trigger" data-tip="Sharp Score measures the quality of your picks — not just wins. It factors in ROI consistency, how many picks you have, the difficulty of your odds, and your CLV. A score above 70 means you are beating the market.">?</span></span><span class="perf-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0)+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${wins}W — ${losses}L — ${pending}P${pushes>0?' — '+pushes+' Push':''}${voids>0?' — '+voids+' Void':''}</span></div>
-            <div class="perf-row"><span class="perf-key">ROI</span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
-            <div class="perf-row"><span class="perf-key">Win Rate</span><span class="perf-val">${wr}%</span></div>
-            <div class="perf-row"><span class="perf-key">P&L</span><span class="perf-val ${pPos?'pos':'neg'}">${pPos?'+€':'-€'}${Math.abs(pnl).toFixed(2)}</span></div>
+            <div class="perf-row"><span class="perf-key">ROI <span class="tip-trigger" data-tip="Return on Investment. Shows your profit as a percentage of total stake. +10% ROI means for every €100 bet you made €10 profit on average.">?</span></span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
+            <div class="perf-row"><span class="perf-key">Win Rate <span class="tip-trigger" data-tip="Percentage of picks that won. 60% means 6 out of every 10 picks were winners. High win rate alone does not mean profitability — odds matter too.">?</span></span><span class="perf-val">${wr}%</span></div>
+            <div class="perf-row"><span class="perf-key">P&amp;L <span class="tip-trigger" data-tip="Profit and Loss in euros. Total amount won or lost across all your picks combined.">?</span></span><span class="perf-val ${pPos?'pos':'neg'}">${pPos?'+€':'-€'}${Math.abs(pnl).toFixed(2)}</span></div>
             <div class="perf-row"><span class="perf-key">Avg Odds</span><span class="perf-val">${avg}</span></div>
             <div class="perf-row"><span class="perf-key">Best Win</span><span class="perf-val pos">+€${best.toFixed(2)}</span></div>
             <div class="perf-row"><span class="perf-key">Win Streak</span><span class="perf-val" style="color:${streak>=3?'var(--orange)':'var(--tx)'}">${streak>=3?'🔥 ':''} W${streak}</span></div>
-            <div class="perf-row"><span class="perf-key">Reliability</span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
+            <div class="perf-row"><span class="perf-key">Reliability <span class="tip-trigger" data-tip="Reliability Score combines ROI (40%), Win Rate (30%), pick volume (20%) and recent activity (10%). Ranges from 0 to 100. Above 70 is considered trustworthy.">?</span></span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Global Rank</span><span class="perf-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</span></div>
-            <div class="perf-row"><span class="perf-key">ELO Rating</span><span class="perf-val" style="color:var(--ac)">${rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">ELO Rating <span class="tip-trigger" data-tip="ELO is a competitive ranking system borrowed from chess. It goes up when you win and down when you lose, weighted by the odds. Starting ELO is 1000. Above 1100 is elite level.">?</span></span><span class="perf-val" style="color:var(--ac)">${rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Best Streak Ever</span><span class="perf-val" style="color:var(--orange)">🔥 W${getBestStreak(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Biggest Win</span><span class="perf-val pos">+€${getBiggestWin(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Fav Market</span><span class="perf-val">${getFavMarket(allPicks)}</span></div>
@@ -888,6 +893,7 @@ async function loadProfile(){
       }
       if(tipsterUserId)initSubscriptionUI(tipsterUserId);
       if(window.initTooltips)window.initTooltips();
+      initTipTriggers();
     },80);
 
   }catch(e){
@@ -966,6 +972,45 @@ loadProfile();
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+
+function initTipTriggers(){
+  let popup=document.getElementById('globalTipPopup');
+  if(!popup){
+    popup=document.createElement('div');
+    popup.id='globalTipPopup';
+    popup.className='tip-popup';
+    document.body.appendChild(popup);
+    // keep popup alive when mouse enters it
+    popup.addEventListener('mouseenter',function(){clearTimeout(popup._hideTimer);});
+    popup.addEventListener('mouseleave',function(){popup.style.display='none';});
+  }
+  document.querySelectorAll('.tip-trigger').forEach(function(el){
+    if(el._tipInited)return;
+    el._tipInited=true;
+    el.addEventListener('mouseenter',function(e){
+      clearTimeout(popup._hideTimer);
+      popup.textContent=el.getAttribute('data-tip')||'';
+      popup.style.display='block';
+      var r=el.getBoundingClientRect();
+      var pw=260,ph=popup.offsetHeight||80;
+      var left=r.left+r.width/2-pw/2;
+      left=Math.max(8,Math.min(left,window.innerWidth-pw-8));
+      var top=r.top-ph-10;
+      if(top<8)top=r.bottom+10;
+      popup.style.left=left+'px';
+      popup.style.top=top+'px';
+    });
+    el.addEventListener('mouseleave',function(){
+      popup._hideTimer=setTimeout(function(){popup.style.display='none';},150);
+    });
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      if(popup.style.display==='block'){popup.style.display='none';}
+      else{el.dispatchEvent(new MouseEvent('mouseenter'));}
+    });
+  });
+  document.addEventListener('click',function(){popup.style.display='none';},{passive:true});
+}
 </script>
 <script src="/brand-nav.js"></script>
 </body>
