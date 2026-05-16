@@ -887,6 +887,7 @@ async function loadProfile(){
         }
       }
       if(tipsterUserId)initSubscriptionUI(tipsterUserId);
+      if(window.initTooltips)window.initTooltips();
     },80);
 
   }catch(e){
