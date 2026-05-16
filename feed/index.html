@@ -61,7 +61,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .feed-title span{color:var(--gr)}
 .feed-live-block{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .live-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.2);border-radius:20px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gr);letter-spacing:2px;font-weight:700}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--gr);animation:livePulse 1.2s infinite}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--gr);animation:livePulse 1.5s infinite}
 @keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 .feed-meta-row{display:flex;gap:16px;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)}
 .feed-meta-row b{color:var(--mu2)}
@@ -96,13 +96,13 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .event-card.ev-win{border-left-color:var(--gr)}
 .event-card.ev-bigwin{border-left-color:var(--gr);background:rgba(52,211,153,0.03)}
 .event-card.ev-bigwin::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gr),transparent)}
-.event-card.ev-underdog{border-left-color:var(--gold)}
-.event-card.ev-underdog::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
-.event-card.ev-streak{border-left-color:var(--orange)}
-.event-card.ev-division{border-left-color:var(--cyan)}
-.event-card.ev-posted{border-left-color:rgba(184,159,255,0.4);opacity:.75}
+.event-card.ev-underdog{border-left-color:#00e5a0}
+.event-card.ev-underdog::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,#00e5a0,transparent)}
+.event-card.ev-streak{border-left-color:#7B2CFF}
+.event-card.ev-division{border-left-color:#7B2CFF}
+.event-card.ev-posted{border-left-color:#7B2CFF;opacity:.75}
 .event-card.ev-posted:hover{opacity:1}
-.event-card.ev-milestone{border-left-color:var(--gold);background:rgba(251,191,36,0.03)}
+.event-card.ev-milestone{border-left-color:#7B2CFF;background:rgba(123,44,255,0.03)}
 
 .ev-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0;position:relative}
 .ev-body{flex:1;min-width:0}
@@ -131,7 +131,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .feed-end{text-align:center;padding:32px 0;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px}
 
 /* ── REACTION BAR ── */
-.react-bar{display:flex;align-items:center;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap}
+.react-bar{display:flex;align-items:center;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap;visibility:hidden;opacity:0;transition:opacity .15s,visibility .15s}
+.event-card:hover .react-bar{visibility:visible;opacity:1}
+@media(max-width:700px){.react-bar{visibility:visible;opacity:1}}
 .react-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);color:var(--mu2);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .14s;user-select:none;line-height:1}
 .react-btn:hover:not(:disabled){border-color:rgba(255,255,255,.18);color:var(--tx);transform:scale(1.06)}
 .react-btn:disabled{opacity:.6;cursor:default}
@@ -243,11 +245,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <!-- FILTERS -->
   <div class="feed-filters">
     <button class="ff-btn active" data-type="all" onclick="setFilter('all',this)">All <span class="ff-count" id="cnt-all">0</span></button>
-    <button class="ff-btn win" data-type="win" onclick="setFilter('win',this)">🏆 Wins <span class="ff-count" id="cnt-win">0</span></button>
-    <button class="ff-btn underdog" data-type="underdog" onclick="setFilter('underdog',this)">👑 Underdogs <span class="ff-count" id="cnt-underdog">0</span></button>
-    <button class="ff-btn streak" data-type="streak" onclick="setFilter('streak',this)">🔥 Streaks <span class="ff-count" id="cnt-streak">0</span></button>
-    <button class="ff-btn division" data-type="division" onclick="setFilter('division',this)">💎 Divisions <span class="ff-count" id="cnt-division">0</span></button>
-    <button class="ff-btn posted" data-type="posted" onclick="setFilter('posted',this)">📌 Posted <span class="ff-count" id="cnt-posted">0</span></button>
+    <button class="ff-btn win" data-type="win" onclick="setFilter('win',this)">Wins <span class="ff-count" id="cnt-win">0</span></button>
+    <button class="ff-btn underdog" data-type="underdog" onclick="setFilter('underdog',this)">Underdogs <span class="ff-count" id="cnt-underdog">0</span></button>
+    <button class="ff-btn streak" data-type="streak" onclick="setFilter('streak',this)">Streaks <span class="ff-count" id="cnt-streak">0</span></button>
+    <button class="ff-btn division" data-type="division" onclick="setFilter('division',this)">Divisions <span class="ff-count" id="cnt-division">0</span></button>
+    <button class="ff-btn posted" data-type="posted" onclick="setFilter('posted',this)">Posted <span class="ff-count" id="cnt-posted">0</span></button>
   </div>
 
   <!-- FEED -->
@@ -393,8 +395,8 @@ function buildSingleCard(ev,i,delay){
     detailHtml=`<b>${d.event}</b> · ${d.market} @ <b>${parseFloat(d.odds).toFixed(2)}</b>`;
     badgeHtml=`<span class="ev-badge ev-badge-underdog">👑 UNDERDOG +${d.pnl.toFixed(2)}u</span>`;
   }else if(ev.type==='streak'){
-    const s=d.streak;const fire=s>=10?'🔥🔥🔥':s>=7?'🔥🔥':'🔥';
-    actionHtml=`is on a ${fire} <b style="color:var(--orange)">${s} WIN STREAK</b>`;
+    const s=d.streak;
+    actionHtml=`is on a 🔥 <b style="color:var(--orange)">${s}-WIN STREAK</b>`;
     detailHtml=`${s>=7?'Unstoppable.':s>=5?'On fire.':'Heating up.'} ${s} consecutive wins.`;
     badgeHtml=`<span class="ev-badge ev-badge-streak">W${s} STREAK</span>`;
   }else if(ev.type==='division'){
@@ -552,8 +554,10 @@ function updateReactionUI(pickId,reactions,tails){
     const btn=document.getElementById(prefix+'_'+pickId);
     if(!btn)return;
     const count=reactions[emoji]||0;
+    const reacted=!!(reactions.userReactions&&reactions.userReactions.includes(emoji));
     btn.querySelector('.react-count').textContent=count||'';
-    btn.classList.toggle('reacted',!!(reactions.userReactions&&reactions.userReactions.includes(emoji)));
+    btn.classList.toggle('reacted',reacted);
+    btn.style.display=(count>0||reacted)?'':'none';
   });
   const tb=document.getElementById('tf_'+pickId);
   if(tb){

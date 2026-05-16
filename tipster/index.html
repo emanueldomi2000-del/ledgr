@@ -76,7 +76,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .sub-btn.subscribed:hover{background:rgba(52,211,153,0.2)}
 .sub-count{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:3px;letter-spacing:1px}
 /* REACTION BAR */
-.react-bar{display:flex;align-items:center;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap}
+.react-bar{display:flex;align-items:center;gap:5px;margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.04);flex-wrap:wrap;visibility:hidden;opacity:0;transition:opacity .15s,visibility .15s}
+.pick-card:hover .react-bar,.pick-item:hover .react-bar{visibility:visible;opacity:1}
+@media(max-width:700px){.react-bar{visibility:visible;opacity:1}}
 .react-btn{display:inline-flex;align-items:center;gap:3px;padding:4px 9px;border-radius:20px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);color:var(--mu2);font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .14s;user-select:none;line-height:1}
 .react-btn:hover:not(:disabled){border-color:rgba(255,255,255,.18);color:var(--tx);transform:scale(1.06)}
 .react-btn:disabled{opacity:.6;cursor:default}
@@ -889,8 +891,11 @@ function _updateReactUI(pid,reactions,tails){
   const map={fire:'rf',rocket:'rr',diamond:'rd',clap:'rc'};
   Object.entries(map).forEach(([emoji,prefix])=>{
     const btn=document.getElementById(prefix+'_'+pid);if(!btn)return;
-    btn.querySelector('.react-count').textContent=reactions[emoji]||'';
-    btn.classList.toggle('reacted',!!(reactions.userReactions&&reactions.userReactions.includes(emoji)));
+    const count=reactions[emoji]||0;
+    const reacted=!!(reactions.userReactions&&reactions.userReactions.includes(emoji));
+    btn.querySelector('.react-count').textContent=count||'';
+    btn.classList.toggle('reacted',reacted);
+    btn.style.display=(count>0||reacted)?'':'none';
   });
   const tb=document.getElementById('tf_'+pid);
   if(tb){tb.querySelector('.tail-count-react').textContent=tails.count?tails.count+'':'';tb.classList.toggle('tailed',!!tails.tailed);}

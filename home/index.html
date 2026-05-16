@@ -244,7 +244,9 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 .badge-sport{color:var(--mu2);background:rgba(255,255,255,.04);border:1px solid var(--bd)}
 .feed-reason{font-size:11px;color:var(--mu);font-style:italic;margin-bottom:8px;line-height:1.5}
 /* REACTIONS */
-.feed-reactions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.feed-reactions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;visibility:hidden;opacity:0;transition:opacity .15s,visibility .15s}
+.feed-card:hover .feed-reactions{visibility:visible;opacity:1}
+@media(max-width:700px){.feed-reactions{visibility:visible;opacity:1}}
 .react-btn{background:none;border:1px solid var(--bd);border-radius:20px;padding:4px 10px;font-size:11px;color:var(--mu);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace}
 .react-btn:hover{border-color:var(--bd2);color:var(--mu2);transform:scale(1.05)}
 .react-btn.active{border-color:rgba(184,159,255,0.3);color:var(--ac);background:rgba(184,159,255,0.05)}
@@ -984,7 +986,7 @@ function getPickBadges(pick,tipsterPicks){
   const roi=stake>0?(pnl/stake)*100:0;
   if(roi>=20&&tipsterPicks.length>=10)badges.push({cls:'sb-value',label:'💎 VALUE'});
   if(tipsterPicks.length>=50&&roi>0)badges.push({cls:'sb-lock',label:'👑 LOCK'});
-  return badges.slice(0,2);
+  return badges.slice(0,1);
 }
 function renderStatusBadges(badges){return badges.map(b=>`<span class="sb ${b.cls}">${b.label}</span>`).join('');}
 
@@ -1747,7 +1749,7 @@ function renderActivityTicker(all){
   Object.entries(byUser).forEach(([u,picks])=>{
     const sorted=picks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let streak=0;for(const p of sorted){if(p.result==='win')streak++;else break;}
-    if(streak>=4)events.push(`🔥🔥 <b>@${u}</b> is on a <b>${streak}-WIN STREAK</b>`);
+    if(streak>=4)events.push(`🔥 <b>@${u}</b> is on a <b>${streak}-WIN STREAK</b>`);
     else if(streak>=3)events.push(`⚡ <b>@${u}</b> on a <b>${streak}-win streak</b>`);
   });
   all.filter(p=>p.user&&(!p.result||p.result==='pending')&&now-new Date(p.createdAt).getTime()<86400000*2)

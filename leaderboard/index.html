@@ -1079,7 +1079,7 @@ function renderLeaderboard() {
         <div class="tip-info">
           <div class="tip-name">@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}</div>
           <div class="tip-sub">${t.picks} picks</div>
-          <div class="tip-badges">${divPill}${archHtml}${flowHtml}</div>
+          <div class="tip-badges">${divPill}${flowHtml||archHtml}</div>
         </div>
       </div>
       <div class="lb-stat">
