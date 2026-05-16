@@ -7,11 +7,11 @@
     s.id = 'tt-styles';
     s.textContent = `
 /* ═══ LEDGR TOOLTIP SYSTEM ══════════════════════════════════ */
-.tt-q{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.28);color:#fbbf24;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;cursor:pointer;padding:0;line-height:1;margin-left:4px;flex-shrink:0;vertical-align:middle;transition:background .15s,border-color .15s;position:relative}
+.tt-q{display:inline-flex;align-items:center;justify-content:center;min-width:20px;min-height:20px;width:15px;height:15px;border-radius:50%;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.28);color:#fbbf24;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;cursor:pointer;padding:0;line-height:1;margin-left:4px;flex-shrink:0;vertical-align:middle;transition:background .15s,border-color .15s;position:relative}
 .tt-q::before{content:'';position:absolute;inset:-14px}
 .tt-q:hover,.tt-q.tt-open{background:rgba(251,191,36,0.22);border-color:rgba(251,191,36,0.55)}
 
-#tt-box{position:fixed;z-index:9500;width:260px;background:#0d0b18;border:1px solid rgba(251,191,36,0.22);border-radius:13px;padding:14px 16px;box-shadow:0 16px 48px rgba(0,0,0,.75),0 0 0 1px rgba(251,191,36,0.06);pointer-events:none;opacity:0;transform:translateY(8px) scale(.97);transition:opacity .18s,transform .18s;line-height:1.5}
+#tt-box{position:fixed;z-index:9999;width:260px;background:#0d0b18;border:1px solid rgba(251,191,36,0.22);border-radius:13px;padding:14px 16px;box-shadow:0 16px 48px rgba(0,0,0,.75),0 0 0 1px rgba(251,191,36,0.06);pointer-events:none;opacity:0;transform:translateY(8px) scale(.97);transition:opacity .18s,transform .18s;line-height:1.5}
 #tt-box.tt-show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
 #tt-box.tt-below .tt-arrow{top:-6px;bottom:auto;transform:rotate(-135deg)}
 
@@ -97,8 +97,13 @@
   };
 
   // ── State ────────────────────────────────────────────────────────
-  let activeBtn = null;
-  let box       = null;
+  let activeBtn  = null;
+  let box        = null;
+  let isMobile   = false;
+  let hideTimer  = null;
+
+  // Detect mobile via touchstart (not UA sniffing)
+  document.addEventListener('touchstart', function () { isMobile = true; }, { once: true, passive: true });
 
   function getBox() {
     if (!box) {
@@ -106,9 +111,25 @@
       box.id = 'tt-box';
       box.innerHTML = '<div class="tt-arrow"></div>';
       document.body.appendChild(box);
-      // Close on outside click/tap
-      document.addEventListener('pointerdown', function (e) {
+
+      // Keep popup alive when mouse moves into it (desktop grace period)
+      box.addEventListener('mouseenter', function () { clearTimeout(hideTimer); });
+      box.addEventListener('mouseleave', function () { hide(); });
+
+      // Close on tap outside (mobile)
+      document.addEventListener('touchstart', function (e) {
         if (box.classList.contains('tt-show') &&
+            !box.contains(e.target) &&
+            e.target !== activeBtn &&
+            !e.target.classList.contains('tt-q')) {
+          hide();
+        }
+      }, { passive: true });
+
+      // Close on click outside (desktop fallback)
+      document.addEventListener('pointerdown', function (e) {
+        if (!isMobile &&
+            box.classList.contains('tt-show') &&
             !box.contains(e.target) &&
             e.target !== activeBtn &&
             !e.target.classList.contains('tt-q')) {
@@ -122,8 +143,14 @@
   function show(btn, key) {
     const tip = TIPS[key];
     if (!tip) return;
-    if (activeBtn === btn && getBox().classList.contains('tt-show')) { hide(); return; }
 
+    // Mobile: toggle on repeated tap of same button
+    if (isMobile && activeBtn === btn && getBox().classList.contains('tt-show')) {
+      hide();
+      return;
+    }
+
+    clearTimeout(hideTimer);
     activeBtn = btn;
     document.querySelectorAll('.tt-q.tt-open').forEach(function (b) { b.classList.remove('tt-open'); });
     btn.classList.add('tt-open');
@@ -137,7 +164,7 @@
       '<div class="tt-arrow"></div>';
 
     b.classList.remove('tt-show', 'tt-below');
-    // Position
+
     requestAnimationFrame(function () {
       const bw = b.offsetWidth  || 260;
       const bh = b.offsetHeight || 160;
@@ -155,7 +182,6 @@
       b.style.left = left + 'px';
       b.style.top  = top  + 'px';
 
-      // Arrow horizontal offset to point at button
       const arrowLeft = br.left + br.width / 2 - left - 5;
       const arrow     = b.querySelector('.tt-arrow');
       if (arrow) arrow.style.left = Math.max(10, Math.min(arrowLeft, bw - 20)) + 'px';
@@ -178,7 +204,7 @@
     { re: /win\s*rate/i,           key: 'winrate'     },
     { re: /\belo\b/i,              key: 'elo'         },
     { re: /reliabilit/i,           key: 'reliability' },
-    { re: /p&(amp;)?l\b/i,         key: 'pnl'        },
+    { re: /p&(amp;)?l\b/i,        key: 'pnl'         },
     { re: /\bunits?\b/i,           key: 'units'       },
     { re: /archetype/i,            key: 'archetype'   },
     { re: /division/i,             key: 'division'    },
@@ -198,15 +224,32 @@
     btn.setAttribute('aria-label', 'Learn about ' + (TIPS[key] ? TIPS[key].label : key));
     btn.setAttribute('data-tt', key);
     btn.textContent = '?';
-    btn.addEventListener('click', function (e) { e.stopPropagation(); show(btn, key); });
-    // Desktop hover
-    btn.addEventListener('mouseenter', function () { show(btn, key); });
-    btn.addEventListener('mouseleave', function () {
-      // Delay to allow moving into popup
-      setTimeout(function () {
-        if (box && !box.matches(':hover') && activeBtn === btn) hide();
-      }, 120);
+
+    // Mobile: touchstart toggle
+    btn.addEventListener('touchstart', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      show(btn, key);
+    }, { passive: false });
+
+    // Desktop: click (fallback when not mobile)
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (!isMobile) show(btn, key);
     });
+
+    // Desktop: hover with 120ms grace period
+    btn.addEventListener('mouseenter', function () {
+      if (!isMobile) { clearTimeout(hideTimer); show(btn, key); }
+    });
+    btn.addEventListener('mouseleave', function () {
+      if (!isMobile) {
+        hideTimer = setTimeout(function () {
+          if (box && !box.matches(':hover') && activeBtn === btn) hide();
+        }, 120);
+      }
+    });
+
     return btn;
   }
 
@@ -227,7 +270,7 @@
     });
   }
 
-  // Re-inject when DOM mutates (handles dynamic renders)
+  // Re-inject after dynamic content renders
   let debTimer;
   const obs = new MutationObserver(function () {
     clearTimeout(debTimer);
@@ -245,7 +288,6 @@
     setTimeout(boot, 100);
   }
 
-  // Public
   window.initTooltips = injectTooltips;
 
 })();
