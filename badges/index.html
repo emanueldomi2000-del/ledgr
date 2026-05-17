@@ -175,6 +175,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   </div>
   <div class="badges-grid" id="badgesGrid"><div class="empty">Loading badges...</div></div>
 </div>
+<script src="/brand-nav.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let allBadges=[];let currentRarity='all';
@@ -269,8 +270,6 @@ async function loadBadges(){
 }
 loadBadges();
 
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>

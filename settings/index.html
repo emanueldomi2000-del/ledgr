@@ -15,36 +15,38 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
 
 /* ── NAV ── */
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
+/* ══ NAV ══ */
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
-.nav-links{display:flex;gap:4px;align-items:center}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
+.nav-links{display:flex;gap:2px}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:7px 11px;border-radius:6px;transition:all .2s;font-family:'Barlow',sans-serif}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.nav-link.active{color:var(--ac)}
-.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center}
+.nav-btn{background:var(--ac);color:#07060d;border:none;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;letter-spacing:1px;transition:all .2s}
 .nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ac);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateY(0);opacity:1}
 
-/* ── SLIDE NAV ── */
+/* ══ SLIDE NAV ══ */
 .slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
 .slide-nav.open{right:0}
 .slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
 .slide-nav-overlay.open{display:block}
 .slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:5px;color:var(--tx)}
 .slide-nav-logo span{color:var(--ac)}
 .slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
 .snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
 .snl:hover{background:var(--acg)}
 .snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx);font-family:'Barlow',sans-serif}
 .slide-nav-links{padding:12px 8px}
-.slide-nav-user{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
-.sn-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center}
-.sn-name{font-family:'DM Mono',monospace;font-size:12px;color:var(--mu2)}
+.slide-nav-post{padding:0 16px 12px}
+.snp-post-btn{display:block;width:100%;background:var(--ac);color:#07060d;border:none;border-radius:10px;padding:13px;font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-align:center;text-decoration:none;cursor:pointer;transition:background .2s}
+.snp-post-btn:hover{background:#cdb8ff}
 .slide-nav-logout{padding:0 16px 16px}
-.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .2s}
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 
 /* ── MAIN ── */
@@ -183,10 +185,13 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/feed" class="nav-link">🔴 Live</a>
     <a href="/parlay" class="nav-link">🎰 Parlay</a>
     <a href="/notifications" class="nav-link">🔔 Alerts</a>
-    <a href="/settings" class="nav-link active">⚙️ Profile</a>
+    <a href="/analytics" class="nav-link">📊 Analytics</a>
+    <a href="/settings" class="nav-link">⚙️ Profile</a>
   </div>
-  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
-  <a href="/home" class="nav-btn">← Dashboard</a>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+    <button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
+  </div>
 </nav>
 
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
@@ -194,10 +199,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div class="slide-nav-header">
     <div class="slide-nav-logo">LEDG<span>R</span></div>
     <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
-  </div>
-  <div class="slide-nav-user">
-    <div class="sn-av" id="snAv">??</div>
-    <div class="sn-name" id="snName">@username</div>
   </div>
   <div class="slide-nav-links">
     <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
@@ -209,11 +210,11 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
     <a href="/parlay" class="snl"><span class="snl-icon">🎰</span><div class="snl-text">Parlay Builder</div></a>
     <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
+    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
     <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
   </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="logout()">Log Out</button>
-  </div>
+  <div class="slide-nav-post"><a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a></div>
+  <div class="slide-nav-logout"><button class="snl-logout" onclick="window.location.href='/home'">Log Out</button></div>
 </div>
 
 <div class="main">
@@ -316,6 +317,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   </div>
 </div>
 
+<script src="/brand-nav.js"></script>
 <script>
 const ARCHETYPES=[
   {id:'sniper',icon:'🎯',name:'The Sniper',desc:'Precision over volume. Every pick is deliberate and lethal.',color:'#34d399'},
@@ -513,8 +515,6 @@ function showToast(msg,isErr){
   setTimeout(()=>t.classList.remove('show'),2500);
 }
 function logout(){localStorage.removeItem('ledgr_user');localStorage.removeItem('ledgr_token');localStorage.removeItem('user');localStorage.removeItem('token');window.location.href='/';}
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>

@@ -12,116 +12,38 @@
 :root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--bl:#38bdf8;--gold:#fbbf24}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
+/* ══ NAV ══ */
+nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:6px;color:var(--tx);text-decoration:none}
 .logo span{color:var(--ac)}
-.nav-links{display:flex;gap:4px}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
+.nav-links{display:flex;gap:2px}
+.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:7px 11px;border-radius:6px;transition:all .2s;font-family:'Barlow',sans-serif}
 .nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.nav-link.active{color:var(--ac);background:var(--acg)}
-.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.nav-btn{background:var(--ac);color:#07060d;border:none;padding:8px 18px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif;letter-spacing:1px;transition:all .2s}
 .nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.main{max-width:1000px;margin:0 auto;padding:48px 24px;position:relative;z-index:2}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
-.page-title span{color:var(--ac)}
-.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
+.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--ac);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateY(0);opacity:1}
 
-/* SELECT BOX */
-.select-box{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:28px;margin-bottom:32px}
-.select-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--ac);margin-bottom:16px}
-.select-row{display:grid;grid-template-columns:1fr 48px 1fr auto;gap:12px;align-items:end}
-.vs{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--mu);text-align:center;padding-bottom:10px}
-.form-label{display:block;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.form-select{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:11px 14px;outline:none;cursor:pointer;transition:border-color .2s}
-.form-select:focus{border-color:var(--bd2)}
-.form-select option{background:#15122a}
-.compare-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:11px 24px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer;white-space:nowrap;transition:all .2s}
-.compare-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-
-/* WINNER SCREEN */
-.winner-screen{background:var(--s1);border:1px solid var(--bd2);border-radius:20px;padding:40px;text-align:center;margin-bottom:24px;position:relative;overflow:hidden}
-.winner-screen::before{content:'';position:absolute;inset:-1px;border-radius:20px;background:linear-gradient(135deg,rgba(184,159,255,0.3),rgba(52,211,153,0.15),rgba(124,95,230,0.2));z-index:-1}
-.winner-screen::after{content:'';position:absolute;inset:1px;border-radius:19px;background:var(--s1);z-index:-1}
-.winner-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;position:relative;z-index:1}
-.winner-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,80px);letter-spacing:3px;line-height:1;margin-bottom:8px;position:relative;z-index:1}
-.winner-sub{font-size:14px;color:var(--mu2);line-height:1.7;margin-bottom:20px;position:relative;z-index:1}
-.winner-stats{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;position:relative;z-index:1}
-.ws-item{text-align:center}
-.ws-val{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;line-height:1}
-.ws-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
-.winner-btn{background:var(--ac);color:#07060d;padding:12px 28px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;display:inline-block;margin-top:20px;transition:all .2s;position:relative;z-index:1}
-.winner-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.tie-screen{background:var(--s1);border:1px solid var(--bd2);border-radius:20px;padding:36px;text-align:center;margin-bottom:24px}
-.tie-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--mu2);margin-bottom:8px}
-
-/* BATTLE GRID */
-.battle-header{display:grid;grid-template-columns:1fr auto 1fr;gap:0;margin-bottom:16px}
-.battle-side{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;text-align:center;transition:all .2s}
-.battle-side.winner-a{border-color:rgba(184,159,255,0.4);background:linear-gradient(135deg,rgba(184,159,255,0.08),var(--s1))}
-.battle-side.winner-b{border-color:rgba(56,189,248,0.4);background:linear-gradient(135deg,rgba(56,189,248,0.08),var(--s1))}
-.battle-side.left{border-right:none;border-radius:16px 0 0 16px}
-.battle-side.right{border-left:none;border-radius:0 16px 16px 0;text-align:right}
-.battle-mid{background:var(--s2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:center;padding:0 12px;min-width:50px}
-.battle-av{width:52px;height:52px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#fff}
-.battle-side.right .battle-av{margin:0 0 8px auto}
-.battle-username{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:2px}
-.battle-username.a{color:var(--ac)}.battle-username.b{color:var(--bl)}
-.battle-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace}
-
-/* STAT BARS */
-.stat-bar-row{margin-bottom:10px}
-.stat-bar-labels{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:12px}
-.stat-bar-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;text-align:center}
-.stat-bar-val-a{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--ac)}
-.stat-bar-val-b{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--bl)}
-.stat-bar-track{height:6px;background:rgba(255,255,255,0.05);border-radius:3px;position:relative;overflow:hidden}
-.stat-bar-fill-a{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,var(--ac),rgba(184,159,255,0.5));border-radius:3px;transition:width 1s ease}
-.stat-bar-fill-b{position:absolute;right:0;top:0;height:100%;background:linear-gradient(270deg,var(--bl),rgba(56,189,248,0.5));border-radius:3px;transition:width 1s ease}
-.winner-badge-a{font-size:9px;color:var(--ac);font-family:'DM Mono',monospace;background:var(--acg);border:1px solid rgba(184,159,255,0.2);padding:2px 8px;border-radius:4px}
-.winner-badge-b{font-size:9px;color:var(--bl);font-family:'DM Mono',monospace;background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);padding:2px 8px;border-radius:4px}
-
-/* ROI CHART */
-.roi-chart-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:16px}
-.chart-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--ac);margin-bottom:14px}
-.chart-area{width:100%;height:120px}
-
-/* SIMILAR TIPSTERS */
-.similar-section{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-top:16px}
-.similar-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--ac);margin-bottom:12px}
-.similar-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.similar-card{background:var(--s2);border:1px solid var(--bd);border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:all .2s}
-.similar-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
-.sim-av{width:36px;height:36px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff}
-.sim-name{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:2px}
-.sim-roi{font-family:'Bebas Neue',sans-serif;font-size:15px}
-.sim-roi.pos{color:var(--gr)}.sim-roi.neg{color:var(--rd)}
-
-.empty-state{text-align:center;padding:60px;color:var(--mu)}
-.empty-state .icon{font-size:48px;margin-bottom:16px}
-.empty-state h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:8px;color:var(--tx)}
-.empty-state p{font-size:14px;color:var(--mu2);line-height:1.7}
-
-@media(max-width:700px){.select-row{grid-template-columns:1fr;gap:10px}.vs{display:none}.compare-btn{width:100%}.battle-side.left{border-radius:16px;border-right:1px solid var(--bd);margin-bottom:8px}.battle-side.right{border-radius:16px;border-left:1px solid var(--bd);text-align:left}.battle-side.right .battle-av{margin:0 auto 8px}.battle-mid{display:none}.winner-stats{gap:16px}.similar-grid{grid-template-columns:repeat(2,1fr)}nav{padding:0 16px}.nav-link{display:none}}
-
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
+/* ══ SLIDE NAV ══ */
 .slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
 .slide-nav.open{right:0}
 .slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
 .slide-nav-overlay.open{display:block}
 .slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700;letter-spacing:5px;color:var(--tx)}
 .slide-nav-logo span{color:var(--ac)}
 .slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
 .snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
 .snl:hover{background:var(--acg)}
 .snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx);font-family:'Barlow',sans-serif}
 .slide-nav-links{padding:12px 8px}
 .slide-nav-post{padding:0 16px 12px}
-.snp-post-btn{display:block;width:100%;background:var(--ac);color:#07060d;border:none;border-radius:10px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;text-align:center;text-decoration:none;cursor:pointer;transition:background .2s}
+.snp-post-btn{display:block;width:100%;background:var(--ac);color:#07060d;border:none;border-radius:10px;padding:13px;font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-align:center;text-decoration:none;cursor:pointer;transition:background .2s}
 .snp-post-btn:hover{background:#cdb8ff}
 .slide-nav-logout{padding:0 16px 16px}
-.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .2s}
 .snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 @media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
 
@@ -141,17 +63,21 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/home" class="nav-link">Home</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>
     <a href="/hall-of-fame" class="nav-link">🏛️ HOF</a>
-    <a href="/compare" class="nav-link active">Compare</a>
+    <a href="/compare" class="nav-link">Compare</a>
     <a href="/simulator" class="nav-link">Simulator</a>
     <a href="/badges" class="nav-link">🏅 Badges</a>
-    <a href="/analytics" class="nav-link">📊 Analytics</a>
     <a href="/feed" class="nav-link">🔴 Live</a>
     <a href="/parlay" class="nav-link">🎰 Parlay</a>
     <a href="/notifications" class="nav-link">🔔 Alerts</a>
+    <a href="/analytics" class="nav-link">📊 Analytics</a>
     <a href="/settings" class="nav-link">⚙️ Profile</a>
   </div>
-  <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button><button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="mobile-menu-btn" onclick="openSlideNav()">☰</button>
+    <button class="nav-btn" onclick="window.location.href='/dashboard'">Post a Pick</button>
+  </div>
 </nav>
+
 <div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
 <div class="slide-nav" id="slideNav">
   <div class="slide-nav-header">
@@ -165,20 +91,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
     <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
-    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
     <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
     <a href="/parlay" class="snl"><span class="snl-icon">🎰</span><div class="snl-text">Parlay Builder</div></a>
     <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
+    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
     <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
   </div>
-  <div class="slide-nav-post">
-    <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
-  </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="window.location.href='/'">Log Out</button>
-  </div>
+  <div class="slide-nav-post"><a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a></div>
+  <div class="slide-nav-logout"><button class="snl-logout" onclick="window.location.href='/home'">Log Out</button></div>
 </div>
-
 <div class="main">
   <div class="page-title">COMPARE <span>TIPSTERS</span></div>
   <div class="page-sub">HEAD TO HEAD · WHO PERFORMED BETTER?</div>
@@ -200,6 +121,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   </div>
 </div>
 <script src="/reliability.js"></script>
+<script src="/brand-nav.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let allPicks=[];
@@ -422,8 +344,6 @@ function runComparison(){
 
 loadTipsters();
 
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 </script>
 </body>
 </html>

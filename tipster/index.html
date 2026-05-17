@@ -482,6 +482,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px">LOADING PROFILE...</div>
 </div>
 
+<script src="/brand-nav.js"></script>
 <script src="/reliability.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
@@ -1093,9 +1094,6 @@ function shareProfile(){
   navigator.clipboard.writeText(url).then(()=>showToast('LINK COPIED! 📋')).catch(()=>{const d=document.createElement('input');d.value=url;document.body.appendChild(d);d.select();document.execCommand('copy');document.body.removeChild(d);showToast('LINK COPIED! 📋');});
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
-
 loadProfile();
 </script>
 </body>
