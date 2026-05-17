@@ -493,37 +493,78 @@ function renderPicks(){
   const filtered=currentFilter==='all'?allPicks:allPicks.filter(p=>p.result===currentFilter);
   const c=document.getElementById('picksList');
   if(!c)return;
-  if(!filtered.length){c.innerHTML=`<div class="empty">${currentFilter==='all'?'No picks yet.':'No '+currentFilter+' picks.'}</div>`;return;}
-  c.innerHTML=filtered.map(p=>{
+  if(!filtered.length){
+    const isOwn=(()=>{try{const u=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');return u&&u.username===username;}catch(e){return false;}})();
+    if(currentFilter==='all'){
+      c.innerHTML=`<div class="empty-state">
+        <div class="es-div">📋</div>
+        <div class="es-title">No picks posted yet</div>
+        <div class="es-sub">Every legend starts somewhere.<br>The verified record begins with the first pick.</div>
+        ${isOwn?`<a href="/dashboard" class="es-cta">Post Your First Pick →</a>`:''}
+      </div>`;
+    }else{
+      c.innerHTML=`<div class="empty">No ${currentFilter} picks.</div>`;
+    }
+    return;
+  }
+  c.innerHTML=filtered.map((p,idx)=>{
     const ui=rui(p.result);
-    const rb=`<span class="badge ${ui.badgeCls}">${ui.badge}</span>`;
-    const ps=p.pnl>0?`<span class="pick-pnl pos">+€${p.pnl.toFixed(2)}</span>`:p.pnl<0?`<span class="pick-pnl neg">-€${Math.abs(p.pnl).toFixed(2)}</span>`:'<span class="pick-pnl zero">€0</span>';
     const borderCls=ui.cardCls;
-    const confHtml=p.confidence?`<span class="conf-badge ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
     const icon=sportIcon[p.sport]||'🎯';
-    const CLV_TIP='Closing Line Value measures if you got better odds than the market closed at. Positive CLV = sharp bettor.';
-    const clvHtml=(p.result==='win'||p.result==='loss')
-      ?p.clv!=null
-        ?p.clv>=0
-          ?`<span class="badge clv-pos" title="${CLV_TIP}">▲ +${p.clv.toFixed(1)}% CLV</span>`
-          :`<span class="badge clv-neg" title="${CLV_TIP}">▼ ${p.clv.toFixed(1)}% CLV</span>`
-        :`<span class="badge clv-null" title="${CLV_TIP}">CLV pending</span>`
+    const dateStr=new Date(p.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'});
+
+    // Result badge
+    let resultBadge;
+    if(p.result==='pending'){
+      resultBadge=`<span class="result-badge rb-pending"><span class="pending-dot"></span>LIVE</span>`;
+    }else if(p.result==='win'){
+      resultBadge=`<span class="result-badge rb-win">WIN ✓</span>`;
+    }else if(p.result==='loss'){
+      resultBadge=`<span class="result-badge rb-loss">LOSS</span>`;
+    }else if(p.result==='push'){
+      resultBadge=`<span class="result-badge rb-push">PUSH</span>`;
+    }else{
+      resultBadge=`<span class="result-badge rb-void">VOID</span>`;
+    }
+
+    // P&L display
+    const pnlHtml=p.pnl>0
+      ?`<span class="pick-pnl pos">+${p.pnl.toFixed(2)}u</span>`
+      :p.pnl<0
+      ?`<span class="pick-pnl neg">−${Math.abs(p.pnl).toFixed(2)}u</span>`
+      :'<span class="pick-pnl zero">0u</span>';
+
+    // CLV
+    const clvHtml=(p.result==='win'||p.result==='loss')&&p.clv!=null
+      ?p.clv>=0
+        ?`<span class="badge clv-pos">▲ +${p.clv.toFixed(1)}% CLV</span>`
+        :`<span class="badge clv-neg">▼ ${p.clv.toFixed(1)}% CLV</span>`
       :'';
-    return`<div class="pick-card ${borderCls}">
-      <div class="pick-header">
-        <span class="pick-sport-icon">${icon}</span>
-        <div><div class="pick-event-text">${p.event}</div><div class="pick-market-text">${p.market}</div></div>
+
+    // Confidence
+    const confHtml=p.confidence?`<span class="conf-badge ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
+
+    return`<div class="pick-card ${borderCls} anim-pick" style="animation-delay:${Math.min(idx*30,300)}ms">
+      <div class="pick-top-row">
+        <div class="pick-event-wrap">
+          <div class="pick-event-text">${p.event||'—'}</div>
+          <div class="pick-sport-date">
+            <span class="pick-sport-pill">${icon} ${p.sport}</span>
+            <span class="pick-date-text">${dateStr}</span>
+          </div>
+        </div>
+        ${resultBadge}
       </div>
-      <div class="pick-body">
-        <div class="pick-meta">
-          <span class="badge badge-sport">${p.sport}</span>
-          <span style="font-size:11px;color:var(--mu)">${p.stake}u</span>
-          ${confHtml}${rb}${ps}${clvHtml}
-        </div>
-        <div style="text-align:right">
-          <div class="pick-odds">${p.odds}</div>
-          <div class="pick-time">${new Date(p.createdAt).toLocaleDateString('en-GB')}</div>
-        </div>
+      <div class="pick-mid-row">
+        <span class="pick-market">${p.market}</span>
+        <span class="pick-odds-large">${p.odds}</span>
+      </div>
+      <div class="pick-bot-row">
+        <span class="pick-stake-lbl">${p.stake}u stake</span>
+        ${pnlHtml}
+        ${clvHtml}
+        ${confHtml}
+        <span class="pick-verified">🔒 Verified</span>
       </div>
       ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
       <div class="react-bar" data-pick="${p.id}">
@@ -535,8 +576,7 @@ function renderPicks(){
       </div>
     </div>`;
   }).join('');
-  // Load interaction counts after render
-  setTimeout(tipsterLoadInteractions, 80);
+  setTimeout(tipsterLoadInteractions,80);
 }
 
 function filterPicks(filter,el){
@@ -775,6 +815,12 @@ async function loadProfile(){
     allPicks=all.filter(p=>p.user&&p.user.username===username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let profileCfg=getProfileConfig(username);
 
+    // Pre-computed ranking stats — init early so roi/wr/avg can use them
+    let rankingMeta=null;
+    if(rankingRes&&rankingRes.ok){
+      try{rankingMeta=await rankingRes.json();}catch(e){}
+    }
+
     const wins=allPicks.filter(p=>p.result==='win').length;
     const losses=allPicks.filter(p=>p.result==='loss').length;
     const pushes=allPicks.filter(p=>p.result==='push').length;
@@ -811,12 +857,6 @@ async function loadProfile(){
       }catch(e){}
     }
 
-    // Pre-computed ranking stats (ELO, division, sharp, reliability, rank)
-    let rankingMeta=null;
-    if(rankingRes&&rankingRes.ok){
-      try{rankingMeta=await rankingRes.json();}catch(e){}
-    }
-
     // global rank — use backend rank if available, else compute from picks
     let rank=0;
     if(rankingMeta&&rankingMeta.rank){
@@ -851,7 +891,7 @@ async function loadProfile(){
     // Use backend-authoritative stats when available, fall back to client-computed
     const finalSharpScore = rankingMeta ? rankingMeta.sharpScore : sharpScore;
     const ssColor=finalSharpScore>=70?'var(--gr)':finalSharpScore>=40?'var(--gold)':'var(--rd)';
-    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(finalSharpScore,{size:76}):'';
+    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(finalSharpScore,{size:120}):'';
     const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
 
     const divObj=rankingMeta&&rankingMeta.division
@@ -946,25 +986,25 @@ async function loadProfile(){
         </div>
       </div>
 
-      <div class="stats-grid-6">
-        <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu">${rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length}</div><div class="stat-lbl">Picks</div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</div><div class="stat-lbl">ROI</div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu">${wr}%</div><div class="stat-lbl">Win Rate</div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pPos?'pos':'neg'}">${pPos?'+':'−'}${Math.abs(rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl).toFixed(2)}u</div><div class="stat-lbl">P&amp;L</div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.36s"><div class="stat-val neu">${avg}</div><div class="stat-lbl">Avg Odds</div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0):'-'}</div><div class="stat-lbl">Sharp Score</div></div>
-      </div>
+      <div class="stats-grid-6">${(()=>{const clvDisp=(rankingMeta&&rankingMeta.clvAvg!=null)?((rankingMeta.clvAvg>=0?'+':'')+rankingMeta.clvAvg.toFixed(1)+'%'):'—';const clvColor=(rankingMeta&&rankingMeta.clvAvg!=null)?(rankingMeta.clvAvg>=0?'var(--gr)':'var(--rd)'):'var(--mu)';const pnlDisp=rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl;const pnlPos=pnlDisp>=0;return`
+        <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu">${rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length}</div><div class="stat-lbl">Picks <span class="tip-trigger" data-tip="Total number of picks posted. 30+ picks is the minimum for statistical significance. 100+ gives high confidence in the numbers.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pnlPos?'pos':'neg'}">${pnlPos?'+':'−'}${Math.abs(pnlDisp).toFixed(2)}u</div><div class="stat-lbl">P&amp;L <span class="tip-trigger" data-tip="Total Profit & Loss in units across all settled picks. Positive means profit, negative means loss. 1u = 1 unit of bankroll.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.36s"><div class="stat-val neu">${avg}</div><div class="stat-lbl">Avg Odds <span class="tip-trigger" data-tip="Average decimal odds across all picks. Higher avg odds = higher risk bets. A profitable tipster at 2.5+ avg odds has real edge.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${clvColor}">${clvDisp}</div><div class="stat-lbl">CLV Avg <span class="tip-trigger" data-tip="Closing Line Value — whether you consistently beat the closing market odds. The closing line is the sharpest price. Positive CLV means you are a sharp bettor.">?</span></div></div>
+      `})()}</div>
 
       <div class="content-grid">
         <div class="panel">
-          <div class="panel-title">ALL PICKS <span class="panel-count">${allPicks.length}</span></div>
+          <div class="panel-title" id="picksTitle">ALL PICKS <span class="panel-count">${allPicks.length}</span></div>
           ${_pickFilterTabs(allPicks)}
           <div id="picksList"></div>
         </div>
         <div>
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
-            ${gaugeHTML?`<div class="at-gauge-section"><div class="at-tip" data-tip="${SHARP_TIP}"><div class="at-gauge-wrap">${gaugeHTML}<div class="at-gauge-lbl">Sharp Score</div>${displayArch?`<span class="at-badge" style="color:${displayArch.color};border-color:${displayArch.color}44;background:${displayArch.color}11;margin-top:2px">${displayArch.icon} ${displayArch.name}</span>`:''}</div></div></div>`:''}
+            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 12px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div style="display:inline-block">${gaugeHTML}</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">Sharp Score</div><div style="font-size:11px;color:var(--mu);font-family:'Barlow',sans-serif;margin-top:3px">${finalSharpScore>=70?'Top performer · Verified edge':finalSharpScore>=40?'Building edge':'Early track record'}</div>${displayArch?`<div style="margin-top:8px"><span style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;border:1px solid ${displayArch.color}44;background:${displayArch.color}11;color:${displayArch.color}">${displayArch.icon} ${displayArch.name}</span></div>`:''}</div>`:''}
             <div class="perf-row"><span class="perf-key">Sharp Score <span class="tip-trigger" data-tip="Sharp Score measures the quality of your picks — not just wins. It factors in ROI consistency, how many picks you have, the difficulty of your odds, and your CLV. A score above 70 means you are beating the market.">?</span></span><span class="perf-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0)+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${recordBarHTML(wins,losses,pending)}</span></div>
             <div class="perf-row"><span class="perf-key">ROI <span class="tip-trigger" data-tip="Return on Investment. Shows your profit as a percentage of total stake. +10% ROI means for every €100 bet you made €10 profit on average.">?</span></span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
