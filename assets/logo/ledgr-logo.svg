@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 40" height="32" role="img" aria-label="LEDGR">
+  <title>LEDGR</title>
+  <!-- Icon mark: dark circle + L letterform -->
+  <circle cx="20" cy="20" r="19" fill="#0c0a1a"/>
+  <circle cx="20" cy="20" r="19" fill="none" stroke="#b89fff" stroke-width="1.2" opacity="0.5"/>
+  <!-- L lettermark -->
+  <rect x="13" y="11" width="6" height="20" rx="1" fill="#b89fff"/>
+  <rect x="13" y="25" width="15" height="6" rx="1" fill="#b89fff"/>
+  <!-- Wordmark -->
+  <text x="46" y="29" font-family="'Rajdhani','Arial Narrow',Arial,sans-serif" font-size="28" font-weight="700" letter-spacing="5" fill="#f0edff">LEDG<tspan fill="#b89fff">R</tspan></text>
+</svg>
