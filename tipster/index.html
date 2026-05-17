@@ -415,6 +415,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 }
 .logo-img{height:32px;width:auto;display:block;object-fit:contain}
 @media(max-width:600px){.logo-img{height:28px}}
+/* ══ SPORTSBOOK PILL ══ */
+.pc-sb{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);background:rgba(255,255,255,0.04);border:1px solid var(--bd);padding:2px 7px;border-radius:10px;white-space:nowrap}
+/* ══ MINI TIMELINE ══ */
+.mini-tl{position:relative;padding-left:22px}
+.mini-tl-spine{position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:var(--bd)}
+.mini-tl-item{position:relative;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.mini-tl-item:last-child{margin-bottom:0}
+.mini-tl-node{position:absolute;left:-22px;width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:8px;top:2px;z-index:2;flex-shrink:0}
+.mini-tl-node.ntl-green{border-color:var(--gr);background:rgba(52,211,153,0.1)}
+.mini-tl-node.ntl-purple{border-color:var(--ac);background:var(--acg)}
+.mini-tl-node.ntl-gold{border-color:var(--gold);background:rgba(251,191,36,0.08)}
+.mini-tl-body{flex:1}
+.mini-tl-title{font-family:'Barlow',sans-serif;font-size:12px;font-weight:600;color:var(--tx);line-height:1.3}
+.mini-tl-date{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);margin-top:1px;letter-spacing:1px}
 </style>
 </head>
 <body>
@@ -468,6 +482,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px">LOADING PROFILE...</div>
 </div>
 
+<script src="/reliability.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const username=new URLSearchParams(window.location.search).get('u')||'';
@@ -668,7 +683,7 @@ function renderPicks(){
       </div>
       <div class="pc-bottom">
         <span class="pc-stake">${p.stake}u stake</span>
-        ${pnlHtml}${confHtml}
+        ${pnlHtml}${confHtml}${p.sportsbook?`<span class="pc-sb">${p.sportsbook}</span>`:''}
       </div>
       ${p.reasoning?`<div class="pc-reasoning">💭 "${p.reasoning}"</div>`:''}
       <div class="pc-verified">🔒 Verified</div>
@@ -679,6 +694,41 @@ function renderPicks(){
 function filterPicks(filter,el){
   currentFilter=filter;document.querySelectorAll('.pf-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');renderPicks();
+}
+
+function buildMiniTimeline(picks){
+  if(!picks||!picks.length)return'';
+  const chrono=[...picks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  const settled=chrono.filter(p=>p.result==='win'||p.result==='loss');
+  const events=[];
+  const fmt=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}):'—';
+  // Journey start
+  events.push({type:'purple',icon:'🚀',title:'Journey Begins',date:chrono[0].createdAt});
+  // First win
+  const fw=chrono.find(p=>p.result==='win');
+  if(fw)events.push({type:'green',icon:'✓',title:'First Win',date:fw.createdAt});
+  // Pick milestones
+  [10,50,100].forEach(n=>{if(chrono.length>=n)events.push({type:'gold',icon:'#',title:`Pick #${n}`,date:chrono[n-1].createdAt});});
+  // Best streak ≥3
+  let maxS=0,curS=0,sDate=null;
+  for(const p of settled){if(p.result==='win'){curS++;if(curS>maxS){maxS=curS;sDate=p.createdAt;}}else curS=0;}
+  if(maxS>=3)events.push({type:'green',icon:'🔥',title:`${maxS}W Streak`,date:sDate});
+  // CLV turned positive
+  const clvPks=settled.filter(p=>p.clv!=null);
+  if(clvPks.length>=3){let cs=0,clvMD=null;for(const p of clvPks){cs+=p.clv;if(cs/clvPks.indexOf(p)>0&&!clvMD)clvMD=p.createdAt;}if(clvMD)events.push({type:'green',icon:'📈',title:'CLV Turned Positive',date:clvMD});}
+  // Sort by date, take last 5
+  events.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const last5=events.slice(-5);
+  if(!last5.length)return'';
+  const nodeColor={green:'ntl-green',purple:'ntl-purple',gold:'ntl-gold'};
+  return`<div class="mini-tl"><div class="mini-tl-spine"></div>${last5.map(ev=>`
+    <div class="mini-tl-item">
+      <div class="mini-tl-node ${nodeColor[ev.type]||''}">${ev.type==='purple'?'':ev.icon==='#'?'·':ev.icon}</div>
+      <div class="mini-tl-body">
+        <div class="mini-tl-title">${ev.title}</div>
+        <div class="mini-tl-date">${fmt(ev.date)}</div>
+      </div>
+    </div>`).join('')}</div>`;
 }
 
 function animateGauge(score,color){
@@ -711,6 +761,13 @@ async function loadProfile(){
     const rPos=parseFloat(roi)>=0,pPos=pnl>=0;
     const {score,desc,color,needs,needsN}=getScore(allPicks);
     const {badges,streak}=getBadges(allPicks);
+    // Trust & credibility data
+    const gradeInfo=window.getReliabilityGrade?getReliabilityGrade(allPicks):{grade:'—',color:'var(--mu)',score:0};
+    const lastPickDate=allPicks.length>0?allPicks[0].createdAt:null;
+    const vBadgeHtml=window.verificationBadgeHTML?verificationBadgeHTML(allPicks.length,gradeInfo.score,lastPickDate):'';
+    const trustFlags=window.computeSuspicionFlags?computeSuspicionFlags(allPicks):[];
+    const flagsHtml=trustFlags.length>0?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">${trustFlags.map(f=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:9px;color:#6a6690;border:1px solid rgba(106,102,144,0.25);background:rgba(106,102,144,0.05)">ℹ ${f.message}</span>`).join('')}</div>`:'';
+    const sampleWarn=window.sampleWarningHTML?sampleWarningHTML(allPicks.length):'';
     const div=getDivision(allPicks);
     const elo=getELOFromPicks(allPicks);const {label:eloLabel,color:eloColor}=getELOLabel(elo);
 
@@ -797,8 +854,10 @@ async function loadProfile(){
     <div class="identity-tags">
       <span class="tag-pill tag-verified"><span class="vdot"></span>VERIFIED</span>
       <span class="div-pill ${div.cls}">${div.icon} ${div.name}</span>
+      ${vBadgeHtml}
       ${safeRank>0&&topPct!==null?`<span class="rank-badge">🏅 #${safeRank} · Top ${topPct}%</span>`:''}
     </div>
+    ${flagsHtml?`<div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:4px"><span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px">DATA NOTES:</span>${flagsHtml}</div>`:''}
     <div class="profile-username">@${username}</div>
     <div class="sub-tags">
       ${arch?`<span class="archetype-pill" style="color:${arch.color};border-color:${arch.color}40;background:${arch.color}12">${arch.icon} ${arch.name.replace('The ','').toUpperCase()}</span>`:''}
@@ -924,6 +983,7 @@ async function loadProfile(){
       <div class="st1-lbl">ELO · ${eloLabel}</div>
     </div>
   </div>
+  ${sampleWarn?`<div style="text-align:center;padding:6px 0 2px">${sampleWarn}</div>`:''}
   <!-- Tier 2: secondary stats (smaller) -->
   <div class="stat-tier2">
     <div class="st2-card"><div class="st2-val ac">${allPicks.length}</div><div class="st2-lbl">Picks</div></div>
@@ -944,6 +1004,16 @@ ${badges.length>0?`<div class="panel" style="margin-bottom:16px">
     ${badges.map(b=>`<div class="ach-card ${b.cls}"><div class="ach-icon">${b.icon}</div><div class="ach-name">${b.name}</div></div>`).join('')}
   </div>
 </div>`:''}
+
+${(allPicks.length>=100&&gradeInfo.score>=60&&(wins+losses)>=50&&trustFlags.length===0)?`<div style="background:linear-gradient(135deg,rgba(0,229,160,0.05),rgba(0,229,160,0.02));border:1px solid rgba(0,229,160,0.2);border-radius:12px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;gap:14px;animation:statFade .4s ease both">
+  <span style="font-size:22px;color:var(--gr)">✓</span>
+  <div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gr);letter-spacing:2px;font-weight:700;text-transform:uppercase">Verified Track Record</div>
+    <div style="font-family:'Barlow',sans-serif;font-size:12px;color:var(--mu2);margin-top:2px">${allPicks.length} picks · Grade ${gradeInfo.grade} · No anomalies detected</div>
+  </div>
+</div>`:''}
+
+${(()=>{const tl=buildMiniTimeline(allPicks);return tl?`<div class="panel" style="margin-bottom:16px"><div class="section-hd"><span class="section-hd-accent"></span><h2>TRACK RECORD</h2></div>${tl}</div>`:''})()}
 
 <!-- MAIN GRID: PICKS + SIDEBAR -->
 <div class="content-grid">
@@ -984,8 +1054,10 @@ ${badges.length>0?`<div class="panel" style="margin-bottom:16px">
       <div class="perf-row"><span class="perf-key">Fav Market</span><span class="perf-val">${getFavMarket(allPicks)}</span></div>
       <div class="perf-row"><span class="perf-key">Fav Sport</span><span class="perf-val">${getFavSport(allPicks)}</span></div>
       <div class="perf-row"><span class="perf-key">Sharp Score</span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
+      ${gradeInfo.score>0?`<div class="perf-row"><span class="perf-key">Reliability Grade</span><span class="perf-val" style="color:${gradeInfo.color};font-size:15px;font-weight:700">${gradeInfo.grade} <span style="font-size:10px;color:var(--mu)">${gradeInfo.score}/100</span></span></div>`:''}
       <div class="perf-row"><span class="perf-key">Global Rank</span><span class="perf-val gold">${safeRank>0?'#'+safeRank:'—'}</span></div>
       <div class="pnl-chart" id="pnlChart"></div>
+      ${flagsHtml?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--bd)"><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;margin-bottom:6px;text-transform:uppercase">Data Notes</div>${flagsHtml}</div>`:''}
     </div>
     ${sportList.length>0?`<div class="panel">
       <div class="section-hd"><span class="section-hd-accent"></span><h2>BY SPORT</h2></div>

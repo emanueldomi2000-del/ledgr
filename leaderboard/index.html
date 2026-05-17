@@ -277,6 +277,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   </div>
   <div id="lbContainer"><div class="empty">Loading leaderboard...</div></div>
 </div>
+<script src="/reliability.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let allPicks=[],currentFilter='all',allTipsters=[];
@@ -503,8 +504,8 @@ function renderLeaderboard(){
       <div class="tipster-col">
         <div class="av" style="background:${colors[i%colors.length]}">${t.username.substring(0,2).toUpperCase()}</div>
         <div>
-          <div class="tip-name">@${t.username} ${badgeHtml}</div>
-          <div class="tip-picks-sub">${t.picks} picks</div>
+          <div class="tip-name">@${t.username} ${badgeHtml}${window.verificationBadgeHTML?verificationBadgeHTML(t.picks,score,t.lastPickAt||null):''}</div>
+          <div class="tip-picks-sub">${t.picks} picks${window.sampleWarningHTML&&t.picks<25?` · ${sampleWarningHTML(t.picks)}`:''}</div>
           <span class="division-badge-sm ${getDivision(t).cls}">${getDivision(t).icon} ${getDivision(t).name}</span>
         </div>
       </div>
@@ -513,7 +514,7 @@ function renderLeaderboard(){
       <div class="lb-stat"><div class="lsv neu">${t.picks}</div><div class="lsl">PICKS</div></div>
       <div class="streak-col">${t.streak>=3?'🔥 W'+t.streak:'—'}</div>
       <div class="rel-col">
-        ${score>0?`<div class="rel-score" style="color:${color}">${score}</div><div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace">/100</div>`:'<span style="color:var(--mu);font-size:11px">—</span>'}
+        ${score>0?(()=>{const g=window.gradeFromScore?gradeFromScore(score):{grade:'',color};return`<div class="rel-score" style="color:${color}">${score}</div><div class="rel-bar-wrap"><div class="rel-bar-fill" style="width:${score}%;background:${color}"></div></div><div style="font-size:9px;font-family:'DM Mono',monospace;font-weight:700;color:${g.color}">${g.grade}</div>`;})():'<span style="color:var(--mu);font-size:11px">—</span>'}
       </div>
       <div class="lb-stat"><div class="elo-badge ${t.elo>=1200?'top':t.elo<900?'low':''}">${t.elo||1000}</div></div>
       <button class="follow-btn" onclick="event.stopPropagation();this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following ✓':'Follow'">Follow</button>

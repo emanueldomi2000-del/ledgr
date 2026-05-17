@@ -566,7 +566,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
       <span class="vdiv">·</span>
       <span>rank <b id="hsRank">—</b></span>
       <span class="vdiv">·</span>
-      <span><b id="hsRel">—</b> reliability</span>
+      <span><b id="hsRel">—</b> reliability <span id="hsRelGrade" style="display:none;font-weight:700"></span></span>
     </div>
 </div>
 <div class="hero-identity">
@@ -850,6 +850,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
 </div>
 </div><!-- /app -->
 
+<script src="/reliability.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;
@@ -1042,6 +1043,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=rank>0?'#'+rank:'#—';
   const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=streak>0?streak+'W 🔥':'—';
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'—';
+  if(rel>0&&window.gradeFromScore){const g=gradeFromScore(rel);const idRelG=document.getElementById('idRel');if(idRelG)idRelG.title='Grade: '+g.grade;}
   const div=getDivision(myPicks);const idDiv=document.getElementById('idDiv');
   if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
   const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
@@ -1081,6 +1083,7 @@ function renderProfileCard(all){
   const rank=sorted.findIndex(([u])=>u===user.username)+1;
   const hsRank=document.getElementById('hsRank');if(hsRank)hsRank.textContent=rank>0?'#'+rank:'#—';
   const {score}=getReliability(my);const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'—';
+  if(score>0&&window.gradeFromScore){const g=gradeFromScore(score);const gr=document.getElementById('hsRelGrade');if(gr){gr.textContent=g.grade;gr.style.color=g.color;gr.style.display='inline';}}
   const div=getDivision(my);const db=document.getElementById('divisionBadge');if(db){db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;renderIdentityPanel(my, rank, sorted.length);}
 }
 
