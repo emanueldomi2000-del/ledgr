@@ -782,9 +782,10 @@ async function loadProfile(){
     const pending=allPicks.filter(p=>p.result==='pending').length;
     const stake=allPicks.reduce((s,p)=>s+p.stake,0);
     const pnl=allPicks.reduce((s,p)=>s+p.pnl,0);
-    const roi=stake>0?((pnl/stake)*100).toFixed(1):0;
-    const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):0;
-    const avg=allPicks.length>0?(allPicks.reduce((s,p)=>s+p.odds,0)/allPicks.length).toFixed(2):0;
+    // Prefer authoritative backend values from rankings endpoint
+    const roi=(rankingMeta&&rankingMeta.roi!=null)?rankingMeta.roi.toFixed(1):(stake>0?((pnl/stake)*100).toFixed(1):0);
+    const wr=(rankingMeta&&rankingMeta.winRate!=null)?(rankingMeta.winRate*100).toFixed(0):((wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):0);
+    const avg=(rankingMeta&&rankingMeta.avgOdds!=null)?rankingMeta.avgOdds.toFixed(2):(allPicks.length>0?(allPicks.reduce((s,p)=>s+p.odds,0)/allPicks.length).toFixed(2):0);
     const best=wins>0?Math.max(...allPicks.filter(p=>p.result==='win').map(p=>p.pnl)):0;
     const rPos=parseFloat(roi)>=0,pPos=pnl>=0;
     const {score,desc,color,needs,needsN}=getScore(allPicks);
@@ -946,10 +947,10 @@ async function loadProfile(){
       </div>
 
       <div class="stats-grid-6">
-        <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu">${allPicks.length}</div><div class="stat-lbl">Picks</div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu">${rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length}</div><div class="stat-lbl">Picks</div></div>
         <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</div><div class="stat-lbl">ROI</div></div>
         <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu">${wr}%</div><div class="stat-lbl">Win Rate</div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pPos?'pos':'neg'}">${pPos?'+€':'-€'}${Math.abs(pnl).toFixed(2)}</div><div class="stat-lbl">P&amp;L</div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pPos?'pos':'neg'}">${pPos?'+':'−'}${Math.abs(rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl).toFixed(2)}u</div><div class="stat-lbl">P&amp;L</div></div>
         <div class="stat-card anim-stat" style="animation-delay:.36s"><div class="stat-val neu">${avg}</div><div class="stat-lbl">Avg Odds</div></div>
         <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0):'-'}</div><div class="stat-lbl">Sharp Score</div></div>
       </div>

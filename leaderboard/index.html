@@ -625,10 +625,10 @@ function _divFromRanking(t) {
 // ── Build allTipsters from GET /rankings response ───────────────────────────
 function _buildTipstersFromRankings() {
   if (!rankingsData || !Array.isArray(rankingsData.tipsters)) return;
-  allTipsters = rankingsData.tipsters.map(r => ({
+  allTipsters = rankingsData.tipsters.map((r, i) => ({
     username:         r.username,
     userId:           r.userId,
-    rank:             r.rank,
+    rank:             i + 1,
     picks:            r.totalPicks,
     wins:             r.wins,
     losses:           r.losses,
@@ -641,6 +641,8 @@ function _buildTipstersFromRankings() {
     division:         r.division,
     sharpScore:       r.sharpScore,
     reliabilityScore: r.reliabilityScore,
+    avgOdds:          r.avgOdds,
+    clvAvg:           r.clvAvg,
     streak:           r.streakType === 'win' ? r.currentStreak : 0,
     streakType:       r.streakType,
     bestStreak:       r.bestStreak,
@@ -1057,7 +1059,7 @@ function renderLeaderboard() {
   lbHead.style.display = tableList.length ? 'grid' : 'none';
 
   lbCont.innerHTML = tableList.map((t, idx) => {
-    const globalRank = (currentFilter === 'all' && sort === 'roi' && t.rank) ? t.rank : (search ? idx + 1 : idx + 4);
+    const globalRank = (!search && t.rank) ? t.rank : (search ? idx + 1 : idx + 4);
     const roi  = t.roi != null ? t.roi : (t.stake > 0 ? (t.pnl / t.stake * 100) : 0);
     const wr   = t.winRate != null ? t.winRate * 100 : ((t.wins + t.losses) > 0 ? (t.wins / (t.wins + t.losses) * 100) : 0);
     const relRaw = t.reliabilityScore != null ? t.reliabilityScore : getReliability(t).score;
