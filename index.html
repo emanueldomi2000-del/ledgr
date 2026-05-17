@@ -21,8 +21,6 @@
 html{scroll-behavior:smooth}
 body{background:var(--color-bg);color:var(--color-text);font-family:'Barlow',sans-serif;overflow-x:hidden;line-height:1.5}
 
-/* GRID NOISE */
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.35}
 
 /* HERO */
 .hero{padding:96px 24px 72px;text-align:center;position:relative;overflow:hidden;z-index:1;display:flex;flex-direction:column;align-items:center}
@@ -30,7 +28,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .hero-orb{position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(123,44,255,0.07),transparent 68%);top:0;left:50%;transform:translateX(-50%);pointer-events:none}
 
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(123,44,255,0.07);border:1px solid rgba(123,44,255,0.2);color:var(--color-purple-light);padding:6px 16px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;position:relative;z-index:2}
-.hero-dot{width:5px;height:5px;background:#34d399;border-radius:50%;animation:blink 2s infinite}
+.hero-dot{width:5px;height:5px;background:#00E5A0;border-radius:50%;animation:blink 2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
 h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5.5vw,82px);font-weight:700;letter-spacing:0px;line-height:.92;margin-bottom:22px;position:relative;z-index:2}
@@ -96,8 +94,8 @@ h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5.5vw,82px);font-weigh
 .tc-picks{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:1px;margin-bottom:18px}
 .tc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-top:1px solid var(--color-border);padding-top:16px}
 .tc-stat-val{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:500;line-height:1}
-.tc-stat-val.pos{color:#34d399}
-.tc-stat-val.neg{color:#f87171}
+.tc-stat-val.pos{color:#00E5A0}
+.tc-stat-val.neg{color:#FF3355}
 .tc-stat-val.neu{color:var(--color-text)}
 .tc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--color-muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
 .tc-loading{text-align:center;padding:40px;color:var(--color-muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;grid-column:1/-1}
@@ -321,8 +319,8 @@ if (localStorage.getItem('ledgr_token') && localStorage.getItem('ledgr_user')) {
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
 const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
 const DIV_MAP = {
-  LEGENDARY:{cls:'div-elite',icon:'🐐',label:'Legendary',color:'#f87171'},
-  ELITE:    {cls:'div-elite',icon:'🔱',label:'Elite',color:'#f87171'},
+  LEGENDARY:{cls:'div-elite',icon:'🐐',label:'Legendary',color:'#FF3355'},
+  ELITE:    {cls:'div-elite',icon:'🔱',label:'Elite',color:'#FF3355'},
   DIAMOND:  {cls:'div-diamond',icon:'💎',label:'Diamond',color:'#b14cff'},
   PLATINUM: {cls:'div-platinum',icon:'⚡',label:'Platinum',color:'#38bdf8'},
   GOLD:     {cls:'div-gold',icon:'🏆',label:'Gold',color:'#fbbf24'},
@@ -412,7 +410,7 @@ function hideWakeBar() { document.getElementById('wakeBar').style.display = 'non
 async function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
-  if (!email || !password) { setMsg('Please fill in all fields', '#f87171'); return; }
+  if (!email || !password) { setMsg('Please fill in all fields', '#FF3355'); return; }
   const btn = document.getElementById('loginBtn'); btn.disabled = true; btn.textContent = 'Logging in...';
   const wv = showWakeBar();
   try {
@@ -422,18 +420,18 @@ async function handleLogin() {
     if (d.token && d.user) {
       localStorage.setItem('ledgr_token', d.token); localStorage.setItem('ledgr_user', JSON.stringify(d.user));
       localStorage.setItem('token', d.token); localStorage.setItem('user', JSON.stringify(d.user));
-      setMsg('Welcome back!', '#34d399');
+      setMsg('Welcome back!', '#00E5A0');
       setTimeout(() => window.location.replace('/home'), 600);
-    } else { setMsg(d.error || 'Invalid credentials', '#f87171'); btn.disabled = false; btn.textContent = 'Log In'; }
-  } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#f87171'); btn.disabled = false; btn.textContent = 'Log In'; }
+    } else { setMsg(d.error || 'Invalid credentials', '#FF3355'); btn.disabled = false; btn.textContent = 'Log In'; }
+  } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#FF3355'); btn.disabled = false; btn.textContent = 'Log In'; }
 }
 
 async function handleRegister() {
   const email = document.getElementById('regEmail').value.trim();
   const username = document.getElementById('regUsername').value.trim();
   const password = document.getElementById('regPassword').value;
-  if (!email || !username || !password) { setMsg('Please fill in all fields', '#f87171'); return; }
-  if (password.length < 6) { setMsg('Password min 6 characters', '#f87171'); return; }
+  if (!email || !username || !password) { setMsg('Please fill in all fields', '#FF3355'); return; }
+  if (password.length < 6) { setMsg('Password min 6 characters', '#FF3355'); return; }
   const btn = document.getElementById('registerBtn'); btn.disabled = true; btn.textContent = 'Creating...';
   const wv = showWakeBar();
   try {
@@ -452,8 +450,8 @@ async function handleRegister() {
           window.location.replace('/home');
         }
       });
-    } else { setMsg(d.error || 'Could not create account', '#f87171'); btn.disabled = false; btn.textContent = 'Create Account'; }
-  } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#f87171'); btn.disabled = false; btn.textContent = 'Create Account'; }
+    } else { setMsg(d.error || 'Could not create account', '#FF3355'); btn.disabled = false; btn.textContent = 'Create Account'; }
+  } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#FF3355'); btn.disabled = false; btn.textContent = 'Create Account'; }
 }
 
 document.addEventListener('keydown', e => {

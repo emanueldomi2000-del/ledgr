@@ -11,15 +11,7 @@
 html{scroll-behavior:smooth}
 body{background:#0A0A0A;color:#E6E6E6;font-family:'Barlow',sans-serif;min-height:100vh}
 
-/* ── GUEST NAV ── */
-nav.bat-nav{position:sticky;top:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(10,10,10,0.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid #2A2A2A}
-.bat-logo{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;letter-spacing:6px;color:#E6E6E6;text-decoration:none}
-.bat-logo span{color:#7B2CFF}
-.bat-nav-right{display:flex;align-items:center;gap:12px}
-.bat-login{color:#6B6B6B;font-size:13px;font-family:'Barlow',sans-serif;font-weight:500;text-decoration:none;padding:7px 13px;border-radius:6px;transition:color .15s,background .15s}
-.bat-login:hover{color:#E6E6E6;background:rgba(255,255,255,0.04)}
-.bat-cta-nav{background:#7B2CFF;color:#fff;border:none;border-radius:7px;padding:8px 18px;font-family:'Barlow',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;transition:background .2s}
-.bat-cta-nav:hover{background:#B14CFF}
+/* ── GUEST NAV (kept for reference, brand-nav used) ── */
 
 /* ── HERO ── */
 .hero{padding:100px 24px 80px;text-align:center;position:relative;overflow:hidden}
@@ -64,13 +56,13 @@ nav.bat-nav{position:sticky;top:0;z-index:100;height:60px;display:flex;align-ite
 .founding-inner{max-width:960px;margin:0 auto}
 .founding-box{background:#0A0A0A;border:1px solid rgba(251,191,36,0.2);border-radius:16px;padding:40px 40px 36px;position:relative;overflow:hidden}
 .founding-box::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(251,191,36,0.04),transparent 60%);pointer-events:none}
-.founding-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);color:#fbbf24;padding:5px 14px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.founding-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);color:#FFD700;padding:5px 14px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
 .founding-box h2{font-family:'Rajdhani',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:700;letter-spacing:2px;color:#E6E6E6;margin-bottom:10px}
-.founding-box h2 span{color:#fbbf24}
+.founding-box h2 span{color:#FFD700}
 .founding-box p{font-size:14px;color:#6B6B6B;line-height:1.75;max-width:520px;margin-bottom:32px}
 .founding-perks{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .perk{background:#121212;border:1px solid rgba(251,191,36,0.12);border-radius:10px;padding:18px 16px}
-.perk-val{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#fbbf24;line-height:1;margin-bottom:4px}
+.perk-val{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;color:#FFD700;line-height:1;margin-bottom:4px}
 .perk-lbl{font-size:12px;font-weight:600;color:#E6E6E6;margin-bottom:4px}
 .perk-desc{font-size:11px;color:#6B6B6B;line-height:1.6}
 
@@ -95,7 +87,6 @@ footer{border-top:1px solid #2A2A2A;padding:28px 40px;display:flex;align-items:c
 
 /* ── RESPONSIVE ── */
 @media(max-width:768px){
-  nav.bat-nav{padding:0 20px}
   .hero{padding:80px 20px 60px}
   .hero-orb{width:400px;height:400px}
   .benefit-grid{grid-template-columns:1fr}
@@ -110,19 +101,35 @@ footer{border-top:1px solid #2A2A2A;padding:28px 40px;display:flex;align-items:c
   .step-num{font-size:34px}
   .hero-actions{flex-direction:column;align-items:stretch}
   .hero-primary{text-align:center}
-  .bat-login{display:none}
 }
 </style>
 </head>
 <body>
 
-<nav class="bat-nav">
-  <a href="/" class="bat-logo">LEDG<span>R</span></a>
-  <div class="bat-nav-right">
-    <a href="/leaderboard" class="bat-login">Leaderboard</a>
-    <a href="/register" class="bat-cta-nav">Get Started</a>
+<nav class="brand-nav">
+  <a href="/home" class="logo" id="profileNavLink">
+    <picture>
+      <source media="(max-width:768px)" srcset="/assets/logo/ledgr-icon.png">
+      <img src="/assets/logo/ledgr-logo.png" alt="LEDGR" height="36">
+    </picture>
+  </a>
+  <div class="brand-nav-links">
+    <a href="/home" class="brand-nav-link">Home</a>
+    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+    <a href="/feed" class="brand-nav-link">Feed</a>
+    <a href="/settings" class="brand-nav-link">Settings</a>
   </div>
+  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
 </nav>
+<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+<div class="brand-slide-menu" id="brandSlideMenu">
+  <div class="brand-slide-header">
+    <span class="brand-slide-logo">LEDG<span>R</span></span>
+    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+  </div>
+  <div class="brand-slide-links"></div>
+  <div id="brandSlideAuth"></div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -241,5 +248,6 @@ footer{border-top:1px solid #2A2A2A;padding:28px 40px;display:flex;align-items:c
   </div>
 </footer>
 
+<script src="/brand-nav.js"></script>
 </body>
 </html>
