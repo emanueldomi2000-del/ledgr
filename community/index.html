@@ -342,10 +342,17 @@ function setWsStatus(state) {
 // ── Rooms ─────────────────────────────────────────────────────
 async function loadRooms() {
   try {
-    const r = await fetch(API + '/chat/rooms');
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(API + '/chat/rooms', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!r.ok) throw new Error();
     rooms = await r.json();
+    if (!Array.isArray(rooms)) throw new Error();
     renderRooms();
     if (rooms.length) selectRoom(rooms[0]);
+    else document.getElementById('roomsList').innerHTML =
+      '<div style="padding:16px;font-family:\'DM Mono\',monospace;font-size:10px;color:var(--mu)">No rooms yet</div>';
   } catch(e) {
     document.getElementById('roomsList').innerHTML =
       '<div style="padding:16px;font-family:\'DM Mono\',monospace;font-size:10px;color:var(--rd)">Could not load rooms</div>';
@@ -399,13 +406,17 @@ async function selectRoom(room) {
   document.getElementById('messagesWrap').innerHTML =
     '<div class="msg-system">Loading messages…</div>';
   try {
-    const r = await fetch(API + '/chat/rooms/' + room.id + '/messages');
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const r = await fetch(API + '/chat/rooms/' + room.id + '/messages', { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!r.ok) throw new Error();
     const msgs = await r.json();
-    renderMessages(msgs);
+    renderMessages(Array.isArray(msgs) ? msgs : []);
     scrollToBottom(true);
   } catch(e) {
     document.getElementById('messagesWrap').innerHTML =
-      '<div class="empty-chat"><div class="icon">⚠️</div><div>Could not load messages</div></div>';
+      '<div class="empty-chat"><div class="icon">⚠️</div><div>Could not load messages.<br>Backend may be offline.</div></div>';
   }
 }
 
