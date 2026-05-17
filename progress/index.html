@@ -1,367 +1,205 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEDGR — Progression</title>
-<meta name="description" content="Track your LEDGR division, unlock rewards, and climb from Bronze to Legendary.">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>LEDGR — My Progress</title>
+<link rel="icon" href="/assets/logo/ledgr-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#060508;--s1:#0d0b14;--s2:#11101a;
-  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.12);
-  --ac:#b89fff;--tx:#f0edff;--mu:#544f6e;--mu2:#8b87a8;
-  --gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c;
+:root {
+  --bg:#0A0A0A; --s1:#121212; --s2:#1E1E1E; --bd:#2A2A2A;
+  --ac:#7B2CFF; --ac-l:#B14CFF; --acg:rgba(123,44,255,0.08);
+  --tx:#E6E6E6; --mu:#6B6B6B; --mu2:#9590b8;
+  --gr:#00e5a0; --rd:#ff3355; --gold:#fbbf24; --cyan:#38bdf8; --orange:#fb923c;
 }
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.3}
+body { background:var(--bg); color:var(--tx); font-family:'Barlow',sans-serif; min-height:100vh; overflow-x:hidden; }
+body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; opacity:0.3; }
+a { color:inherit; text-decoration:none; }
 
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter:blur(28px);border-bottom:1px solid var(--bd);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
-.logo span{color:var(--ac)}
-.nav-links{display:flex;gap:2px;align-items:center}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:7px 12px;border-radius:6px;transition:all .2s}
-.nav-link:hover{color:var(--tx)}
-.nav-link.active{color:var(--ac)}
-.user-badge{background:transparent;border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:pointer;transition:all .2s}
-.user-badge:hover{color:var(--ac);border-color:var(--bd2)}
-.logout-btn{background:transparent;border:none;color:var(--mu);padding:7px 10px;font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;transition:color .2s}
-.logout-btn:hover{color:var(--rd)}
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--mu2);font-size:20px;cursor:pointer}
-.notif-bell{background:none;border:none;color:var(--mu2);font-size:16px;cursor:pointer;padding:7px 6px;position:relative;transition:color .2s}
-.notif-bell:hover{color:var(--tx)}
+/* Skeleton */
+.skel { display:inline-block; border-radius:6px; background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%); background-size:800px 100%; animation:shimmer 1.6s infinite linear; }
+@keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
 
-/* ── SLIDE NAV ── */
-.slide-nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s}
-.slide-nav-overlay.open{opacity:1;pointer-events:all}
-.slide-nav{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:#0c0a1a;border-left:1px solid var(--bd);z-index:91;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
-.slide-nav.open{right:0}
-.slide-nav-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--bd)}
-.slide-nav-close{background:none;border:none;color:var(--mu2);font-size:18px;cursor:pointer}
-.slide-nav-profile{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;border-bottom:1px solid var(--bd)}
-.snp-av{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#6d28d9,#b89fff);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:14px;color:#fff;flex-shrink:0}
-.snp-name{font-weight:700;font-size:13px;color:var(--tx)}
-.snp-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.slide-nav-links{padding:12px 8px;flex:1;overflow-y:auto}
-.snl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:1px;color:var(--mu2);font-size:13px}
-.snl:hover{background:rgba(255,255,255,0.04);color:var(--tx)}
-.snl-icon{font-size:16px;width:20px;text-align:center}
-.slide-nav-post{padding:12px 20px;border-top:1px solid var(--bd)}
-.snp-post-btn{display:block;text-align:center;background:var(--ac);color:#060508;text-decoration:none;border-radius:10px;padding:11px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px}
-.slide-nav-logout{padding:12px 20px}
-.snl-logout{background:none;border:none;color:var(--mu);font-size:12px;cursor:pointer;font-family:'Syne';padding:4px 0;transition:color .2s}
-.snl-logout:hover{color:var(--rd)}
+/* Layout */
+.main { max-width:1100px; margin:0 auto; padding:24px 24px 80px; position:relative; z-index:2; }
+.two-col { display:grid; grid-template-columns:3fr 2fr; gap:20px; margin-bottom:8px; }
+.panel { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; }
 
-/* ── MAIN LAYOUT ── */
-.main{max-width:1120px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:2}
-@keyframes fadeSlideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-
-/* ── HERO DIVISION ── */
-.prog-hero{padding:56px 0 48px;text-align:center}
-.ph-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:32px;animation:fadeSlideUp .5s ease both}
-.ph-emblem-zone{position:relative;display:inline-flex;align-items:center;justify-content:center;margin-bottom:28px;animation:fadeSlideUp .55s .06s ease both;opacity:0;animation-fill-mode:forwards}
-.ph-emblem{position:relative;width:180px;height:180px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ph-emblem-aura{position:absolute;inset:-24px;border-radius:50%;pointer-events:none}
-.ph-emblem-ring{position:absolute;inset:-8px;border-radius:50%;pointer-events:none;border:2px solid transparent}
-.ph-emblem-icon{font-size:72px;line-height:1;position:relative;z-index:2;filter:drop-shadow(0 0 18px currentColor)}
-.ph-emblem-particles{position:absolute;inset:0;border-radius:50%;pointer-events:none;z-index:3}
-
-/* Division-specific emblem styles */
-.pe-bronze .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(196,144,112,.18),rgba(180,120,80,.08));border:2px solid rgba(180,120,80,.3);box-shadow:0 0 32px rgba(180,120,80,.3),inset 0 0 24px rgba(180,120,80,.06)}
-.pe-bronze .ph-emblem-aura{background:radial-gradient(circle,rgba(180,120,80,.18) 0%,transparent 68%)}
-.pe-silver .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(203,213,225,.1),rgba(148,163,184,.05));border:2px solid rgba(148,163,184,.35);box-shadow:0 0 36px rgba(148,163,184,.35),inset 0 0 24px rgba(148,163,184,.06)}
-.pe-silver .ph-emblem-aura{background:radial-gradient(circle,rgba(148,163,184,.2) 0%,transparent 65%);animation:ph-pulse 2.8s ease-in-out infinite}
-.pe-gold .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(251,191,36,.18),rgba(245,158,11,.06));border:2px solid rgba(251,191,36,.45);box-shadow:0 0 40px rgba(251,191,36,.4),inset 0 0 28px rgba(251,191,36,.08)}
-.pe-gold .ph-emblem-aura{background:radial-gradient(circle,rgba(251,191,36,.28) 0%,transparent 60%);animation:ph-pulse 2.2s ease-in-out infinite}
-.pe-platinum .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(56,189,248,.15),rgba(14,165,233,.05));border:2px solid rgba(56,189,248,.5);box-shadow:0 0 44px rgba(56,189,248,.45),inset 0 0 28px rgba(56,189,248,.08)}
-.pe-platinum .ph-emblem-aura{background:radial-gradient(circle,rgba(56,189,248,.3) 0%,transparent 58%);animation:ph-pulse 1.9s ease-in-out infinite}
-.pe-diamond .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(184,159,255,.18),rgba(139,92,246,.06));border:2px solid rgba(184,159,255,.55);box-shadow:0 0 48px rgba(184,159,255,.5),0 0 80px rgba(184,159,255,.2),inset 0 0 32px rgba(184,159,255,.08)}
-.pe-diamond .ph-emblem-aura{background:radial-gradient(circle,rgba(184,159,255,.35) 0%,transparent 55%);animation:ph-pulse-scale 1.6s ease-in-out infinite}
-.pe-elite .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(232,121,160,.15),rgba(139,92,246,.08));border:2px solid rgba(232,121,160,.55);box-shadow:0 0 52px rgba(232,121,160,.5),0 0 90px rgba(232,121,160,.22)}
-.pe-elite .ph-emblem-aura{inset:-16px;border-radius:50%;background:conic-gradient(from 0deg,rgba(232,121,160,.55) 0%,rgba(139,92,246,.45) 50%,rgba(232,121,160,.55) 100%);filter:blur(12px);animation:ph-rotate 3s linear infinite}
-.pe-legendary .ph-emblem{background:radial-gradient(circle at 40% 40%,rgba(251,191,36,.2),rgba(232,121,160,.06));border:2px solid rgba(251,191,36,.6);box-shadow:0 0 60px rgba(251,191,36,.6),0 0 100px rgba(251,191,36,.3)}
-.pe-legendary .ph-emblem-aura{inset:-12px;border-radius:50%;background:conic-gradient(from 0deg,#e879a0,#fb923c,#fbbf24,#34d399,#38bdf8,#818cf8,#e879a0);filter:blur(10px);animation:ph-rotate 2s linear infinite}
-
-@keyframes ph-pulse{0%,100%{opacity:.5}50%{opacity:1}}
-@keyframes ph-pulse-scale{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-@keyframes ph-rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-/* Elite particles */
-@keyframes ph-orbit-elite{from{transform:rotate(0deg) translateY(-56px) rotate(0deg)}to{transform:rotate(360deg) translateY(-56px) rotate(-360deg)}}
-.ph-part-elite{position:absolute;top:50%;left:50%;width:7px;height:7px;border-radius:50%;margin:-3.5px 0 0 -3.5px;box-shadow:0 0 7px currentColor;animation:ph-orbit-elite 2.2s linear infinite}
-.ph-part-elite:nth-child(1){color:#e879a0;animation-delay:0s}
-.ph-part-elite:nth-child(2){color:#c026d3;animation-delay:-.55s}
-.ph-part-elite:nth-child(3){color:#7c3aed;animation-delay:-1.1s}
-.ph-part-elite:nth-child(4){color:#e879a0;animation-delay:-1.65s}
-
-/* Legendary particles */
-@keyframes ph-orbit-legend{from{transform:rotate(0deg) translateY(-64px) rotate(0deg)}to{transform:rotate(360deg) translateY(-64px) rotate(-360deg)}}
-.ph-part-legend{position:absolute;top:50%;left:50%;width:6px;height:6px;border-radius:50%;margin:-3px 0 0 -3px;box-shadow:0 0 8px currentColor;animation:ph-orbit-legend 1.8s linear infinite}
-.ph-part-legend:nth-child(1){color:#e879a0;animation-delay:0s}
-.ph-part-legend:nth-child(2){color:#fb923c;animation-delay:-.3s}
-.ph-part-legend:nth-child(3){color:#fbbf24;animation-delay:-.6s}
-.ph-part-legend:nth-child(4){color:#34d399;animation-delay:-.9s}
-.ph-part-legend:nth-child(5){color:#38bdf8;animation-delay:-1.2s}
-.ph-part-legend:nth-child(6){color:#818cf8;animation-delay:-1.5s}
-
-.ph-div-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,64px);letter-spacing:6px;margin-bottom:6px;animation:fadeSlideUp .5s .12s ease both;opacity:0;animation-fill-mode:forwards}
-.ph-div-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);letter-spacing:2px;margin-bottom:24px;animation:fadeSlideUp .5s .16s ease both;opacity:0;animation-fill-mode:forwards}
-.ph-score-row{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:12px;animation:fadeSlideUp .5s .2s ease both;opacity:0;animation-fill-mode:forwards}
-.ph-score-num{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;line-height:1}
-.ph-score-sep{color:var(--mu);font-family:'DM Mono',monospace;font-size:14px}
-.ph-score-max{color:var(--mu2);font-family:'DM Mono',monospace;font-size:14px}
-.ph-next-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);margin-bottom:16px}
-.ph-next-label b{color:var(--tx)}
-.ph-progress-bar{width:min(460px,90vw);margin:0 auto;animation:fadeSlideUp .5s .24s ease both;opacity:0;animation-fill-mode:forwards}
-.ph-pb-track{height:10px;background:rgba(255,255,255,.06);border-radius:8px;overflow:hidden;position:relative}
-.ph-pb-fill{height:100%;border-radius:8px;transition:width 1.4s cubic-bezier(.34,1.15,.64,1);position:relative;overflow:hidden}
-.ph-pb-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.35) 50%,transparent 100%);animation:ph-shimmer 2.2s linear infinite}
-@keyframes ph-shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
-.ph-pb-labels{display:flex;justify-content:space-between;margin-top:8px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
-
-/* ── DIVISION TRACK (BATTLE PASS) ── */
-.div-track-wrap{margin:0 0 48px;animation:fadeSlideUp .5s .28s ease both;opacity:0;animation-fill-mode:forwards}
-.div-track-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;text-align:center}
-.div-track{display:flex;align-items:flex-start;position:relative;overflow-x:auto;padding:8px 0 24px;scrollbar-width:none}
-.div-track::-webkit-scrollbar{display:none}
-.div-track-line{position:absolute;top:46px;left:0;right:0;height:3px;z-index:0}
-.div-track-line-bg{position:absolute;inset:0;background:rgba(255,255,255,.06);border-radius:2px}
-.div-track-line-fill{position:absolute;top:0;left:0;bottom:0;border-radius:2px;transition:width 1.4s cubic-bezier(.34,1.15,.64,1)}
-.div-node{flex:1;min-width:120px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:2;cursor:default}
-.dn-circle{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;position:relative;transition:transform .3s;border:2px solid transparent;flex-shrink:0}
-.dn-past .dn-circle{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.4);box-shadow:0 0 14px rgba(52,211,153,.2)}
-.dn-current .dn-circle{transform:scale(1.28);border-color:currentColor}
-.dn-future .dn-circle{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08);opacity:.45}
-.dn-past .dn-circle::after{content:'✓';position:absolute;bottom:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--gr);color:#060508;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'Syne'}
-.dn-current .dn-pulse{position:absolute;inset:-6px;border-radius:50%;animation:dn-ring-pulse 2s ease-in-out infinite}
-@keyframes dn-ring-pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.8;transform:scale(1.1)}}
-.dn-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-top:8px;color:var(--mu2);text-align:center}
-.dn-current .dn-name{color:var(--tx);font-weight:700}
-.dn-past .dn-name{color:var(--gr)}
-.dn-reward{font-size:9px;color:var(--mu);text-align:center;margin-top:4px;line-height:1.4;max-width:100px;padding:0 4px}
-.dn-current .dn-reward{color:var(--mu2)}
-
-/* ── TWO COL ROW ── */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
-
-/* ── SCORE BREAKDOWN ── */
-.score-card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:28px}
-.sc-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
-.sc-total{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--bd)}
-.sc-total-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1}
-.sc-total-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)}
-.sc-rows{display:flex;flex-direction:column;gap:14px}
-.sc-row{}
-.sc-row-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
-.sc-row-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2)}
-.sc-row-score{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
-.sc-row-max{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)}
-.sc-track{height:5px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
-.sc-fill{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.34,1.15,.64,1)}
-.sc-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:4px;font-style:italic}
-
-/* ── SEASON WIDGET ── */
-.season-card{background:linear-gradient(135deg,rgba(184,159,255,.06),rgba(56,189,248,.03));border:1px solid rgba(184,159,255,.15);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:16px}
-.sn-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase}
-.sn-name{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--tx);margin-bottom:4px}
-.sn-days{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2)}
-.sn-days b{color:var(--orange)}
-.sn-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.sn-stat{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:12px;padding:14px}
-.sn-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
-.sn-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px}
-.sn-rank-wrap{text-align:center;padding:16px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:14px}
-.sn-rank-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
-.sn-rank-num{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1;color:var(--gold)}
-.sn-rank-of{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)}
-.sn-no-season{text-align:center;padding:24px;color:var(--mu);font-family:'DM Mono',monospace;font-size:11px}
-
-/* ── DIVISION REWARDS ── */
-.rewards-section{margin-bottom:40px}
-.section-head{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px}
-.rewards-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px}
-.rw-card{border-radius:16px;padding:18px 12px;text-align:center;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02);position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
-.rw-card:hover{transform:translateY(-4px)}
-.rw-card.rw-current{border-width:2px}
-.rw-card.rw-locked{opacity:.4}
-.rw-card.rw-unlocked{}
-.rw-icon{font-size:28px;margin-bottom:8px;display:block}
-.rw-div-name{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
-.rw-rewards{display:flex;flex-direction:column;gap:4px}
-.rw-item{font-size:9px;color:var(--mu2);line-height:1.4;font-family:'Syne'}
-.rw-item.highlight{color:var(--tx)}
-.rw-current-tag{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;background:rgba(255,255,255,.1);border-radius:10px;padding:2px 8px;color:var(--mu2);white-space:nowrap}
-.rw-locked-icon{position:absolute;top:8px;right:8px;font-size:12px;opacity:.4}
-
-/* Bronze */
-.rw-bronze{border-color:rgba(180,120,80,.25);background:rgba(180,120,80,.05)}
-.rw-bronze.rw-current{border-color:rgba(180,120,80,.5);box-shadow:0 0 24px rgba(180,120,80,.15)}
-.rw-bronze .rw-div-name{color:#b47850}
-/* Silver */
-.rw-silver{border-color:rgba(148,163,184,.25);background:rgba(148,163,184,.04)}
-.rw-silver.rw-current{border-color:rgba(148,163,184,.5);box-shadow:0 0 24px rgba(148,163,184,.15)}
-.rw-silver .rw-div-name{color:#94a3b8}
-/* Gold */
-.rw-gold{border-color:rgba(251,191,36,.25);background:rgba(251,191,36,.04)}
-.rw-gold.rw-current{border-color:rgba(251,191,36,.5);box-shadow:0 0 24px rgba(251,191,36,.18)}
-.rw-gold .rw-div-name{color:#fbbf24}
-/* Platinum */
-.rw-platinum{border-color:rgba(56,189,248,.25);background:rgba(56,189,248,.04)}
-.rw-platinum.rw-current{border-color:rgba(56,189,248,.5);box-shadow:0 0 24px rgba(56,189,248,.18)}
-.rw-platinum .rw-div-name{color:#38bdf8}
-/* Diamond */
-.rw-diamond{border-color:rgba(184,159,255,.25);background:rgba(184,159,255,.04)}
-.rw-diamond.rw-current{border-color:rgba(184,159,255,.5);box-shadow:0 0 28px rgba(184,159,255,.2)}
-.rw-diamond .rw-div-name{color:#b89fff}
-/* Elite */
-.rw-elite{border-color:rgba(232,121,160,.25);background:rgba(232,121,160,.04)}
-.rw-elite.rw-current{border-color:rgba(232,121,160,.5);box-shadow:0 0 28px rgba(232,121,160,.2)}
-.rw-elite .rw-div-name{color:#e879a0}
-/* Legendary */
-.rw-legendary{border-color:rgba(251,191,36,.3);background:linear-gradient(135deg,rgba(251,191,36,.06),rgba(184,159,255,.04))}
-.rw-legendary.rw-current{border-color:rgba(251,191,36,.6);box-shadow:0 0 36px rgba(251,191,36,.25);animation:rw-legend-pulse 2.5s ease-in-out infinite}
-.rw-legendary .rw-div-name{color:#fbbf24}
-@keyframes rw-legend-pulse{0%,100%{box-shadow:0 0 36px rgba(251,191,36,.25)}50%{box-shadow:0 0 52px rgba(251,191,36,.4)}}
-
-/* ── BADGE COLLECTION ── */
-.badge-section{margin-bottom:40px}
-.badge-filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.bf-btn{font-family:'DM Mono',monospace;font-size:9px;padding:4px 12px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--mu2);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.bf-btn.active{border-color:var(--ac);color:var(--ac);background:rgba(184,159,255,.1)}
-.badge-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-.bg-card{position:relative;border-radius:16px;padding:20px 16px;background:var(--s1);border:1px solid rgba(184,159,255,.08);transition:transform .25s,box-shadow .25s;overflow:hidden;cursor:default}
-.bg-card.bg-unlocked:hover{transform:translateY(-4px)}
-.bg-card.bg-locked{opacity:.48}
-.bg-card.bg-unlocked.r-common{border-color:rgba(148,163,184,.28)}
-.bg-card.bg-unlocked.r-rare{border-color:rgba(56,189,248,.38);box-shadow:0 0 22px rgba(56,189,248,.07)}
-.bg-card.bg-unlocked.r-epic{border-color:rgba(184,159,255,.48);box-shadow:0 0 28px rgba(184,159,255,.1)}
-.bg-card.bg-unlocked.r-legendary{border-color:rgba(251,191,36,.55);box-shadow:0 0 36px rgba(251,191,36,.14);animation:bg-legend-pulse 2.5s ease-in-out infinite}
-@keyframes bg-legend-pulse{0%,100%{box-shadow:0 0 36px rgba(251,191,36,.14)}50%{box-shadow:0 0 52px rgba(251,191,36,.28)}}
-.bg-corner-glow{position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;filter:blur(22px);pointer-events:none;opacity:0;transition:opacity .4s}
-.bg-unlocked .bg-corner-glow{opacity:.15}
-.r-common .bg-corner-glow{background:#94a3b8}
-.r-rare .bg-corner-glow{background:#38bdf8}
-.r-epic .bg-corner-glow{background:#b89fff}
-.r-legendary .bg-corner-glow{background:#fbbf24;opacity:.2}
-.bg-icon-wrap{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);margin-bottom:12px}
-.bg-icon{font-size:24px;line-height:1}
-.bg-unlocked.r-common .bg-icon-wrap{box-shadow:0 0 14px rgba(148,163,184,.22)}
-.bg-unlocked.r-rare .bg-icon-wrap{box-shadow:0 0 16px rgba(56,189,248,.32)}
-.bg-unlocked.r-epic .bg-icon-wrap{box-shadow:0 0 20px rgba(184,159,255,.42)}
-.bg-unlocked.r-legendary .bg-icon-wrap{box-shadow:0 0 24px rgba(251,191,36,.52);animation:bg-icon-legend 2s ease-in-out infinite}
-@keyframes bg-icon-legend{0%,100%{box-shadow:0 0 24px rgba(251,191,36,.52)}50%{box-shadow:0 0 38px rgba(251,191,36,.78)}}
-.bg-rarity-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
-.r-common .bg-rarity-pill{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.22);color:#94a3b8}
-.r-rare .bg-rarity-pill{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#38bdf8}
-.r-epic .bg-rarity-pill{background:rgba(184,159,255,.1);border:1px solid rgba(184,159,255,.3);color:#b89fff}
-.r-legendary .bg-rarity-pill{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.35);color:#fbbf24}
-.bg-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--tx);margin-bottom:4px}
-.bg-desc{font-size:10.5px;color:#9590b8;line-height:1.55;margin-bottom:8px}
-.bg-earned-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:#34d399;font-family:'DM Mono',monospace;font-size:8px;padding:2px 8px;border-radius:20px}
-.bg-locked-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);color:#6a6690;font-family:'DM Mono',monospace;font-size:8px;padding:2px 8px;border-radius:20px}
-.bg-prog{margin-top:8px}
-.bg-prog-row{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:8px;color:#6a6690;margin-bottom:3px}
-.bg-prog-track{height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
-.bg-prog-fill{height:100%;border-radius:2px;transition:width 1.1s ease}
-.bg-lock-icon{position:absolute;bottom:4px;right:6px;font-size:12px;opacity:.4}
-
-/* ── MILESTONES TIMELINE ── */
-.milestones-section{margin-bottom:40px}
-.ms-tabs{display:flex;gap:6px;margin-bottom:24px}
-.ms-tab{font-family:'DM Mono',monospace;font-size:9px;padding:5px 14px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--mu2);cursor:pointer;transition:all .2s;letter-spacing:1px}
-.ms-tab.active{border-color:var(--ac);color:var(--ac);background:rgba(184,159,255,.1)}
-.ms-timeline{position:relative}
-.ms-spine{position:absolute;left:19px;top:0;bottom:0;width:2px;background:rgba(255,255,255,.06)}
-.ms-spine-fill{position:absolute;left:0;top:0;width:2px;background:linear-gradient(to bottom,var(--gr),var(--gr) var(--fill,0%),transparent var(--fill,0%));transition:height 1.4s ease}
-.ms-item{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;position:relative}
-.ms-node{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.1);background:var(--s1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;position:relative;z-index:2;transition:all .3s}
-.ms-item.done .ms-node{border-color:var(--gr);background:rgba(52,211,153,.1);box-shadow:0 0 12px rgba(52,211,153,.2)}
-.ms-item.current .ms-node{border-color:var(--ac);background:rgba(184,159,255,.1);box-shadow:0 0 14px rgba(184,159,255,.25);animation:ms-pulse 2s ease-in-out infinite}
-@keyframes ms-pulse{0%,100%{box-shadow:0 0 14px rgba(184,159,255,.25)}50%{box-shadow:0 0 24px rgba(184,159,255,.5)}}
-.ms-item.locked .ms-node{opacity:.35}
-.ms-body{flex:1;background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:14px 16px;transition:border-color .3s}
-.ms-item.done .ms-body{border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.03)}
-.ms-item.current .ms-body{border-color:rgba(184,159,255,.25)}
-.ms-item.locked .ms-body{opacity:.45}
-.ms-body-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.ms-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;color:var(--tx)}
-.ms-check{color:var(--gr);font-size:14px}
-.ms-desc{font-size:11px;color:var(--mu2);font-family:'DM Mono',monospace}
-.ms-date{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:4px}
-.ms-prog{margin-top:8px}
-.ms-prog-row{display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:3px}
-.ms-prog-track{height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden}
-.ms-prog-fill{height:100%;border-radius:2px;background:var(--ac);transition:width 1.2s ease}
-
-/* ── SKELETON ── */
-@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
-.skel{display:inline-block;border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s infinite linear}
-.skel-emblem{width:180px;height:180px;border-radius:50%;margin:0 auto}
-.skel-line{height:14px;margin:10px auto}
-.skel-pb{height:10px;border-radius:8px;margin:0 auto}
-
-/* ── RESPONSIVE ── */
-@media(max-width:960px){
-  nav{padding:0 16px}
-  .nav-link{display:none}
-  .mobile-menu-btn{display:block}
-  .two-col{grid-template-columns:1fr}
-  .rewards-grid{grid-template-columns:repeat(4,1fr)}
-  .badge-grid{grid-template-columns:repeat(3,1fr)}
+/* Section title */
+.sec-title {
+  font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700;
+  letter-spacing:0.08em; color:var(--tx);
+  border-left:2px solid var(--ac); padding-left:10px;
+  margin-bottom:20px; display:flex; align-items:center; gap:10px;
 }
-@media(max-width:600px){
-  .rewards-grid{grid-template-columns:repeat(2,1fr)}
-  .badge-grid{grid-template-columns:repeat(2,1fr)}
+.sec-title::after { content:''; flex:1; height:1px; background:var(--bd); }
+
+/* Logo divider */
+.logo-divider { display:flex; align-items:center; gap:12px; margin:32px 0; }
+.logo-divider::before,.logo-divider::after { content:''; flex:1; height:1px; background:var(--bd); }
+.logo-divider img { width:16px; height:16px; opacity:0.3; }
+
+/* ── Hero Card ── */
+.hero-card { position:relative; border-radius:16px; overflow:hidden; margin-bottom:8px; padding:32px; }
+.hero-banner-bronze { background:linear-gradient(135deg,#1a0e08,#2d1a0a,#1a100c); }
+.hero-banner-silver { background:linear-gradient(135deg,#0e1018,#161b24,#0a0d14); }
+.hero-banner-gold { background:linear-gradient(135deg,#0d0900,#1f1500,#0a0800); }
+.hero-banner-gold::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(75deg,rgba(251,191,36,0.04) 0px,transparent 80px,rgba(251,191,36,0.02) 160px); pointer-events:none; }
+.hero-banner-platinum { background:linear-gradient(135deg,#00111a,#001f2e,#000d1a); }
+.hero-banner-diamond { background:linear-gradient(135deg,#080520,#10073a,#040918); }
+.hero-banner-elite { background:linear-gradient(135deg,#0a0420,#1a0840,#080318); }
+.hero-banner-legendary { background:linear-gradient(135deg,#100500,#1a0030,#00100a); }
+@keyframes legendShimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.hero-banner-legendary::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(251,191,36,0.06),rgba(184,159,255,0.06),rgba(52,211,153,0.04)); background-size:300% 300%; animation:legendShimmer 8s ease infinite; pointer-events:none; }
+.hero-overlay { position:absolute; inset:0; background:linear-gradient(to right,rgba(10,10,10,0.3),transparent 60%); pointer-events:none; }
+.hero-noise { position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; }
+.hero-watermark { position:absolute; right:24px; top:50%; transform:translateY(-50%); height:120px; opacity:0.04; pointer-events:none; z-index:1; }
+.hero-inner { position:relative; z-index:2; display:flex; align-items:center; gap:28px; flex-wrap:wrap; }
+.hero-av { width:80px; height:80px; border-radius:50%; border:3px solid var(--bg); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; color:#fff; flex-shrink:0; position:relative; }
+.hero-av-ring { position:absolute; inset:-5px; border-radius:50%; }
+.hring-bronze { border:2px solid rgba(180,120,80,0.5); box-shadow:0 0 12px rgba(180,120,80,0.2); }
+.hring-silver { border:2px solid rgba(148,163,184,0.4); box-shadow:0 0 12px rgba(148,163,184,0.15); }
+.hring-gold { border:2px solid rgba(251,191,36,0.7); box-shadow:0 0 16px rgba(251,191,36,0.3); }
+.hring-platinum { border:2px solid rgba(56,189,248,0.5); animation:ringPulse 2.5s ease-in-out infinite; }
+.hring-diamond { border:2px solid rgba(56,189,248,0.8); animation:diamondCrackle 2s ease-in-out infinite; }
+.hring-elite::before { content:''; position:absolute; inset:-3px; border-radius:50%; background:conic-gradient(from 0deg,#7B2CFF,#B14CFF,#f87171,#7B2CFF); animation:conicSpin 3s linear infinite; -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); }
+.hring-legendary::before { content:''; position:absolute; inset:-3px; border-radius:50%; background:conic-gradient(from 0deg,#fbbf24,#b89fff,#34d399,#38bdf8,#f87171,#fbbf24); animation:conicSpin 4s linear infinite; -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); }
+@keyframes ringPulse { 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0)} 50%{box-shadow:0 0 0 8px rgba(56,189,248,0.1)} }
+@keyframes diamondCrackle { 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0),0 0 8px rgba(56,189,248,0.2)} 50%{box-shadow:0 0 0 6px rgba(56,189,248,0.08),0 0 20px rgba(56,189,248,0.4)} }
+@keyframes conicSpin { to{transform:rotate(360deg)} }
+
+.hero-center { flex:1; min-width:220px; }
+.hero-div-name { font-family:'Rajdhani',sans-serif; font-size:32px; font-weight:700; letter-spacing:2px; line-height:1; margin-bottom:4px; }
+.hero-elo-nums { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--mu2); margin-bottom:8px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
+.hero-bar-track { height:10px; background:rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; margin-bottom:6px; position:relative; }
+.hero-bar-fill { height:100%; border-radius:8px; transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1); position:relative; overflow:hidden; }
+.hero-bar-fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:barShimmer 2s linear infinite; }
+@keyframes barShimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+.hero-bar-sub { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mu); margin-bottom:4px; }
+.hero-bar-week { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gr); }
+
+.hero-pills { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+.hero-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; white-space:nowrap; }
+.pill-streak { background:rgba(251,146,60,0.1); border:1px solid rgba(251,146,60,0.25); color:var(--orange); }
+.pill-rank { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); color:var(--gold); }
+.pill-sharp-green { background:rgba(0,229,160,0.08); border:1px solid rgba(0,229,160,0.25); color:var(--gr); }
+.pill-sharp-amber { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); color:var(--gold); }
+.pill-sharp-red { background:rgba(255,51,85,0.08); border:1px solid rgba(255,51,85,0.2); color:var(--rd); }
+
+/* ── Timeline ── */
+.timeline-wrap { position:relative; padding-left:28px; }
+.tl-spine { position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--bd); }
+.tl-spine-fill { position:absolute; left:0; top:0; width:2px; background:linear-gradient(to bottom,var(--ac),var(--ac-l)); transition:height 1.4s ease; }
+.tl-item { position:relative; margin-bottom:20px; opacity:0; transform:translateX(-10px); transition:opacity 0.4s ease,transform 0.4s ease; }
+.tl-item.visible { opacity:1; transform:translateX(0); }
+.tl-node { position:absolute; left:-32px; width:18px; height:18px; border-radius:50%; border:2px solid var(--bd); background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:9px; top:4px; z-index:2; }
+.tl-node.node-green { border-color:var(--gr); background:rgba(0,229,160,0.1); box-shadow:0 0 8px rgba(0,229,160,0.2); }
+.tl-node.node-purple { border-color:var(--ac); background:var(--acg); box-shadow:0 0 8px rgba(123,44,255,0.2); }
+.tl-node.node-gold { border-color:var(--gold); background:rgba(251,191,36,0.08); box-shadow:0 0 8px rgba(251,191,36,0.2); }
+.tl-node.node-logo { border:none; background:transparent; }
+.tl-node.node-logo img { width:18px; height:18px; opacity:0.6; }
+.tl-node.node-large { width:24px; height:24px; left:-35px; font-size:12px; }
+.tl-body { background:var(--s1); border:1px solid var(--bd); border-radius:10px; padding:12px 14px; }
+.tl-body.tl-body-purple { border-color:rgba(123,44,255,0.2); }
+.tl-body.tl-body-gold { border-color:rgba(251,191,36,0.2); background:rgba(251,191,36,0.02); }
+.tl-body.tl-body-green { border-color:rgba(0,229,160,0.15); }
+.tl-title { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700; letter-spacing:0.5px; color:var(--tx); margin-bottom:2px; }
+.tl-date { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--mu); letter-spacing:1px; }
+
+/* ── Next Unlocks ── */
+.unlock-item { margin-bottom:16px; }
+.unlock-label { font-family:'Barlow',sans-serif; font-size:13px; font-weight:600; color:var(--tx); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+.unlock-prog-text { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--mu); }
+.unlock-track { height:8px; background:rgba(255,255,255,0.05); border-radius:6px; overflow:hidden; }
+.unlock-fill { height:100%; border-radius:6px; transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1); background:var(--ac); }
+.unlock-fill.fill-near { background:linear-gradient(90deg,var(--ac),var(--ac-l)); }
+
+/* ── Momentum Panel ── */
+.momentum-card { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; position:relative; overflow:hidden; }
+.momentum-bg-chart { position:absolute; inset:0; pointer-events:none; opacity:0.12; }
+.momentum-header { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; letter-spacing:1px; margin-bottom:16px; position:relative; z-index:1; }
+.momentum-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; position:relative; z-index:1; margin-bottom:16px; }
+.mom-stat { background:var(--s2); border:1px solid var(--bd); border-radius:8px; padding:12px; }
+.mom-stat-val { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin-bottom:3px; }
+.mom-stat-lbl { font-family:'Barlow',sans-serif; font-size:10px; color:var(--mu); letter-spacing:1px; text-transform:uppercase; }
+.trend-row { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; position:relative; z-index:1; }
+
+/* ── Skill Radar ── */
+.radar-card { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; display:flex; flex-direction:column; align-items:center; }
+.radar-svg { width:280px; height:280px; overflow:visible; }
+.radar-axis { stroke:var(--bd); stroke-width:1; }
+.radar-grid { stroke:rgba(255,255,255,0.04); stroke-width:1; fill:none; }
+.radar-polygon { transition:d 0.8s ease-out; }
+.radar-label { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; fill:var(--mu2); }
+.radar-value { font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--tx); }
+
+/* ── Season ── */
+.season-hero { background:var(--s1); border:1px solid rgba(123,44,255,0.2); border-radius:12px; padding:24px; margin-bottom:16px; }
+.season-name { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; letter-spacing:3px; color:var(--tx); margin-bottom:4px; }
+.season-days { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mu); margin-bottom:16px; }
+.season-countdown-track { height:6px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden; margin-bottom:8px; }
+.season-countdown-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--ac),var(--ac-l)); }
+.rewards-row { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:20px; }
+.rew-item { text-align:center; padding:12px 6px; border-radius:10px; border:1px solid var(--bd); background:var(--s2); position:relative; transition:transform 0.2s; }
+.rew-item:hover { transform:translateY(-2px); }
+.rew-item.rew-unlocked { border-color:rgba(0,229,160,0.2); background:rgba(0,229,160,0.03); }
+.rew-item.rew-current { border-color:var(--ac); background:var(--acg); animation:rewPulse 2s ease-in-out infinite; }
+.rew-item.rew-locked { opacity:0.4; }
+@keyframes rewPulse { 0%,100%{box-shadow:0 0 0 0 rgba(123,44,255,0)} 50%{box-shadow:0 0 0 6px rgba(123,44,255,0.1)} }
+.rew-icon { font-size:20px; display:block; margin-bottom:6px; }
+.rew-div { font-family:'JetBrains Mono',monospace; font-size:7px; color:var(--mu); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.rew-label { font-family:'Barlow',sans-serif; font-size:9px; color:var(--mu2); line-height:1.4; }
+
+/* ── Big Moments ── */
+.moments-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.moment-card { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; position:relative; overflow:hidden; transition:border-color 0.2s,box-shadow 0.2s; }
+.moment-card:hover { border-color:rgba(123,44,255,0.3); box-shadow:0 4px 20px rgba(123,44,255,0.08); }
+.moment-watermark { position:absolute; top:12px; right:12px; width:24px; height:24px; opacity:0.08; }
+.moment-icon { font-size:24px; margin-bottom:8px; }
+.moment-value { font-family:'Rajdhani',sans-serif; font-size:48px; font-weight:700; line-height:1; margin-bottom:4px; }
+.moment-label { font-family:'Barlow',sans-serif; font-size:10px; color:var(--mu); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+.moment-date { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--mu); }
+
+/* ── Animations ── */
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.anim-hero { animation:fadeIn 0.3s ease both; }
+.anim-slide { animation:slideUp 0.4s ease both; }
+@media(prefers-reduced-motion:reduce) { *{animation:none!important;transition:none!important} }
+
+/* ── Responsive ── */
+@media(max-width:768px) {
+  .two-col { grid-template-columns:1fr; }
+  .moments-grid { grid-template-columns:1fr; }
+  .rewards-row { grid-template-columns:repeat(4,1fr); }
+  .hero-pills { flex-direction:row; flex-wrap:wrap; }
+  .hero-inner { gap:16px; }
+  .radar-svg { width:220px; height:220px; }
 }
-@media(max-width:768px){
-  .div-track{scroll-snap-type:x mandatory}
-  .div-node{scroll-snap-align:start}
+@media(max-width:480px) {
+  .rewards-row { grid-template-columns:repeat(2,1fr); }
+  .hero-av { width:64px; height:64px; font-size:22px; }
 }
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>
 <body>
-
-<!-- ═══ SLIDE NAV ═══ -->
-<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
-<div class="slide-nav" id="slideNav">
-  <div class="slide-nav-header">
-    <span style="font-family:'Bebas Neue';font-size:20px;letter-spacing:4px">LEDG<span style="color:#b89fff">R</span></span>
-    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
-  </div>
-  <div class="slide-nav-profile" onclick="goToProfile();closeSlideNav()">
-    <div class="snp-av" id="slideAvatar">?</div>
-    <div><div class="snp-name" id="slideName">@—</div><div class="snp-sub">View your profile →</div></div>
-  </div>
-  <div class="slide-nav-links">
-    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
-    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
-    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
-    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
-    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
-    <a href="/progress" class="snl" style="color:#b89fff"><span class="snl-icon">🎮</span><div class="snl-text">Progression</div></a>
-    <a href="/community" class="snl"><span class="snl-icon">💬</span><div class="snl-text">Community Chat</div></a>
-    <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
-    <a href="/dashboard" class="snl"><span class="snl-icon">＋</span><div class="snl-text">Post a Pick</div></a>
-    <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
-    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
-  </div>
-  <div class="slide-nav-post"><a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a></div>
-  <div class="slide-nav-logout"><button class="snl-logout" onclick="logout()">Log Out</button></div>
-</div>
-
-<!-- ═══ NAV ═══ -->
 <nav class="brand-nav">
-  <a href="/" class="logo">LEDG<span>R</span></a>
+  <a href="/" class="logo">
+    <picture>
+      <source media="(max-width:768px)" srcset="/assets/logo/ledgr-icon.png">
+      <img src="/assets/logo/ledgr-logo.png" alt="LEDGR" height="36">
+    </picture>
+  </a>
   <div class="brand-nav-links">
-    <a href="/" class="brand-nav-link">Home</a>
+    <a href="/home" class="brand-nav-link">Home</a>
     <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
     <a href="/feed" class="brand-nav-link">Feed</a>
     <a href="/analytics" class="brand-nav-link">Analytics</a>
     <a href="/community" class="brand-nav-link">Community</a>
-    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
+    <a href="/home" class="brand-nav-link">Profile</a>
   </div>
   <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
 </nav>
@@ -386,699 +224,653 @@ nav{position:sticky;top:0;z-index:50;background:rgba(6,5,8,0.94);backdrop-filter
   <div id="brandSlideAuth"></div>
 </div>
 
-<!-- ═══ MAIN ═══ -->
-<div class="main">
-
-  <!-- ── HERO DIVISION ── -->
-  <div class="prog-hero" id="progHero">
-    <div class="ph-eyebrow">YOUR PROGRESSION</div>
-    <div class="ph-emblem-zone" id="emblemZone">
-      <div class="skel skel-emblem"></div>
-    </div>
-    <div class="ph-div-name" id="divName" style="opacity:0;animation:none">—</div>
-    <div class="ph-div-sub" id="divSub" style="opacity:0;animation:none">Loading…</div>
-    <div class="ph-score-row" id="scoreRow" style="opacity:0;animation:none">
-      <span class="ph-score-num" id="scoreNum">—</span>
-      <span class="ph-score-sep">/</span>
-      <span class="ph-score-max">100</span>
-    </div>
-    <div class="ph-next-label" id="nextLabel" style="display:none"></div>
-    <div class="ph-progress-bar" id="mainPb" style="display:none">
-      <div class="ph-pb-track"><div class="ph-pb-fill" id="mainPbFill" style="width:0%"></div></div>
-      <div class="ph-pb-labels"><span id="pbCurDiv">—</span><span id="pbNextDiv">—</span></div>
-    </div>
-  </div>
-
-  <!-- ── DIVISION TRACK ── -->
-  <div class="div-track-wrap">
-    <div class="div-track-label">DIVISION TRACK</div>
-    <div style="position:relative">
-      <div class="div-track" id="divTrack">
-        <div class="div-track-line">
-          <div class="div-track-line-bg"></div>
-          <div class="div-track-line-fill" id="trackLineFill" style="width:0%"></div>
-        </div>
-        <!-- nodes injected by JS -->
-      </div>
-    </div>
-  </div>
-
-  <!-- ── REWARDS ── -->
-  <div class="rewards-section">
-    <div class="section-head">DIVISION REWARDS</div>
-    <div class="rewards-grid" id="rewardsGrid">
-      <!-- injected by JS -->
-    </div>
-  </div>
-
-  <!-- ── TWO-COL: SCORE BREAKDOWN + SEASON ── -->
-  <div class="two-col">
-    <div class="score-card">
-      <div class="sc-title">DIVISION SCORE BREAKDOWN</div>
-      <div class="sc-total">
-        <div>
-          <div class="sc-total-label">TOTAL SCORE</div>
-          <div class="sc-total-num" id="totalScore">—</div>
-        </div>
-        <div id="totalDivPill"></div>
-      </div>
-      <div class="sc-rows" id="scRows">
-        <div class="skel" style="height:48px;border-radius:10px;width:100%"></div>
-        <div class="skel" style="height:48px;border-radius:10px;width:100%;margin-top:12px"></div>
-        <div class="skel" style="height:48px;border-radius:10px;width:100%;margin-top:12px"></div>
-        <div class="skel" style="height:48px;border-radius:10px;width:100%;margin-top:12px"></div>
-      </div>
-    </div>
-
-    <div class="season-card" id="seasonCard">
-      <div class="sn-title">CURRENT SEASON</div>
-      <div class="skel" style="height:28px;border-radius:8px;width:60%;margin-bottom:8px"></div>
-      <div class="skel" style="height:13px;border-radius:6px;width:40%;margin-bottom:16px"></div>
-      <div class="skel skel-pb" style="height:80px;width:100%;border-radius:14px;margin-bottom:16px"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div class="skel" style="height:60px;border-radius:12px"></div>
-        <div class="skel" style="height:60px;border-radius:12px"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── BADGES ── -->
-  <div class="badge-section">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-      <div class="section-head" style="margin-bottom:0">BADGE COLLECTION</div>
-      <div class="badge-filter-row" style="margin-bottom:0">
-        <button class="bf-btn active" data-filter="all" onclick="filterBadges('all',this)">ALL</button>
-        <button class="bf-btn" data-filter="unlocked" onclick="filterBadges('unlocked',this)">UNLOCKED</button>
-        <button class="bf-btn" data-filter="common" onclick="filterBadges('common',this)">COMMON</button>
-        <button class="bf-btn" data-filter="rare" onclick="filterBadges('rare',this)">RARE</button>
-        <button class="bf-btn" data-filter="epic" onclick="filterBadges('epic',this)">EPIC</button>
-        <button class="bf-btn" data-filter="legendary" onclick="filterBadges('legendary',this)">LEGENDARY</button>
-      </div>
-    </div>
-    <div class="badge-grid" id="badgeGrid">
-      <!-- injected by JS -->
-    </div>
-  </div>
-
-  <!-- ── MILESTONES ── -->
-  <div class="milestones-section">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
-      <div class="section-head" style="margin-bottom:0">MILESTONES</div>
-      <div class="ms-tabs">
-        <button class="ms-tab active" onclick="switchMsTab('volume',this)">VOLUME</button>
-        <button class="ms-tab" onclick="switchMsTab('performance',this)">PERFORMANCE</button>
-        <button class="ms-tab" onclick="switchMsTab('division',this)">DIVISIONS</button>
-      </div>
-    </div>
-    <div class="ms-timeline" id="msTimeline">
-      <!-- injected by JS -->
-    </div>
-  </div>
-
-</div><!-- /main -->
+<div class="main" id="mainContent">
+  <div style="text-align:center;padding:80px;color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:12px">Loading progress...</div>
+</div>
 
 <script src="/divisions.js"></script>
-<script src="/badges-system.js"></script>
+<script src="/flow.js"></script>
 <script>
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
 
-// ── Auth ─────────────────────────────────────────────────────
-function logout() {
-  localStorage.clear();
-  window.location.href = '/login';
-}
-function goToProfile() {
-  if (USERNAME) window.location.href = '/tipster?u=' + USERNAME;
-}
-function openSlideNav() {
-  document.getElementById('slideNav').classList.add('open');
-  document.getElementById('slideOverlay').classList.add('open');
-}
-function closeSlideNav() {
-  document.getElementById('slideNav').classList.remove('open');
-  document.getElementById('slideOverlay').classList.remove('open');
-}
+// Auth check
+const _u = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null');
+const _t = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+if (!_u || !_t) { window.location.replace('/login'); }
 
-// Auth — parse from ledgr_user (same pattern as all other pages)
-const _userRaw = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
-const _userObj = _userRaw ? JSON.parse(_userRaw) : null;
-const TOKEN    = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
-const USER_ID  = _userObj?.id || null;
-const USERNAME = _userObj?.username || localStorage.getItem('username') || null;
+const USERNAME = _u ? _u.username : '';
+const USER_ID  = _u ? _u.id : '';
 
-if (!TOKEN || !USER_ID) { window.location.href = '/login'; }
-
-// ── Seed nav user display ────────────────────────────────────
-(function() {
-  const ub = document.getElementById('userBadge');
-  if (ub && USERNAME) ub.textContent = '@' + USERNAME;
-  const sn = document.getElementById('slideName');
-  if (sn && USERNAME) sn.textContent = '@' + USERNAME;
-  const sa = document.getElementById('slideAvatar');
-  if (sa && USERNAME) sa.textContent = USERNAME ? USERNAME[0].toUpperCase() : '?';
-})();
-
-// ── Division config ──────────────────────────────────────────
-const DIV_ORDER = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
-const DIV_META = {
-  BRONZE:    { icon:'🥉', color:'#b47850', cls:'bronze', min:0,  next:20 },
-  SILVER:    { icon:'🥈', color:'#94a3b8', cls:'silver', min:20, next:35 },
-  GOLD:      { icon:'🏆', color:'#fbbf24', cls:'gold',   min:35, next:50 },
-  PLATINUM:  { icon:'⚡', color:'#38bdf8', cls:'platinum',min:50,next:65 },
-  DIAMOND:   { icon:'💎', color:'#b89fff', cls:'diamond',min:65, next:80 },
-  ELITE:     { icon:'🔱', color:'#e879a0', cls:'elite',  min:80, next:92 },
-  LEGENDARY: { icon:'🐐', color:'#fbbf24', cls:'legendary',min:92,next:100 },
-};
-const DIV_REWARDS = {
-  BRONZE:    ['Basic profile badge','Record verification','Public leaderboard ranking'],
-  SILVER:    ['Silver profile border','Silver badge cosmetic','Division rank shown on profile'],
-  GOLD:      ['Gold name highlight','Exclusive Gold badge','Priority in leaderboard display'],
-  PLATINUM:  ['Animated avatar ring','Platinum badge','Exclusive Platinum cosmetic'],
-  DIAMOND:   ['Diamond particle orbit','Exclusive Diamond badge','Profile diamond glow effect'],
-  ELITE:     ['Elite rotating aura','Elite glow badge','10% reduced platform commission'],
-  LEGENDARY: ['Rainbow aura effect','Legendary crown badge','5% commission rate','Hall of Fame entry'],
-};
-
-// ── Milestone definitions ────────────────────────────────────
-const MS_VOLUME = [
-  { id:'p1',   icon:'🎯', label:'First Pick',   desc:'Your journey begins.',              picks:1   },
-  { id:'p10',  icon:'📊', label:'10 Picks',     desc:'Getting into the rhythm.',          picks:10  },
-  { id:'p25',  icon:'📈', label:'25 Picks',     desc:'Building a real verified record.',  picks:25  },
-  { id:'p50',  icon:'💪', label:'50 Picks',     desc:'Halfway to veteran status.',        picks:50  },
-  { id:'p100', icon:'💯', label:'100 Picks',    desc:'Century milestone — serious edge.', picks:100 },
-  { id:'p250', icon:'🏆', label:'250 Picks',    desc:'Elite volume — statistically significant.', picks:250 },
-  { id:'p500', icon:'🌟', label:'500 Picks',    desc:'Hall of Fame territory.',           picks:500 },
-];
-const MS_PERFORMANCE = [
-  { id:'firstwin',   icon:'✅', label:'First Win',         desc:'Win your first pick.',                      check: s => s.wins >= 1 },
-  { id:'streak3',    icon:'🔥', label:'3-Win Streak',      desc:'Three consecutive wins.',                   check: s => s.streak >= 3 },
-  { id:'streak5',    icon:'🔥', label:'5-Win Streak',      desc:'Five consecutive wins.',                    check: s => s.streak >= 5 },
-  { id:'profitable', icon:'📈', label:'Profitable Overall', desc:'Positive ROI with 5+ picks.',              check: s => s.roi > 0 && s.picks >= 5 },
-  { id:'wr60',       icon:'🎯', label:'60% Win Rate',      desc:'60%+ win rate over 20+ picks.',            check: s => s.wr >= 60 && s.settled >= 20 },
-  { id:'clv',        icon:'⚡', label:'CLV Positive',      desc:'Positive closing line value.',              check: s => s.avgCLV > 0 && s.clvCount >= 5 },
-  { id:'profit_m',   icon:'📅', label:'Profitable Month',  desc:'Positive P&L for a full calendar month.',  check: s => s.profitableMonthStreak >= 1 },
-];
-const MS_DIVISION = [
-  { id:'silver',    icon:'🥈', label:'Reach Silver',    desc:'Score 20+ division points.', div:'SILVER'    },
-  { id:'gold',      icon:'🏆', label:'Reach Gold',      desc:'Score 35+ division points.', div:'GOLD'      },
-  { id:'platinum',  icon:'⚡', label:'Reach Platinum',  desc:'Score 50+ division points.', div:'PLATINUM'  },
-  { id:'diamond',   icon:'💎', label:'Reach Diamond',   desc:'Score 65+ division points.', div:'DIAMOND'   },
-  { id:'elite',     icon:'🔱', label:'Reach Elite',     desc:'Score 80+ division points.', div:'ELITE'     },
-  { id:'legendary', icon:'🐐', label:'Reach Legendary', desc:'Score 92+ division points.', div:'LEGENDARY' },
+// ELO tier system
+const ELO_TIERS = [
+  { name:'BRONZE',    min:0,    max:1000, color:'#b47850', bannerCls:'hero-banner-bronze', ringCls:'hring-bronze', icon:'🥉' },
+  { name:'SILVER',    min:1000, max:1400, color:'#94a3b8', bannerCls:'hero-banner-silver', ringCls:'hring-silver', icon:'🥈' },
+  { name:'GOLD',      min:1400, max:1800, color:'#fbbf24', bannerCls:'hero-banner-gold',   ringCls:'hring-gold',   icon:'🏆' },
+  { name:'PLATINUM',  min:1800, max:2200, color:'#38bdf8', bannerCls:'hero-banner-platinum',ringCls:'hring-platinum',icon:'⚡' },
+  { name:'DIAMOND',   min:2200, max:2800, color:'#b89fff', bannerCls:'hero-banner-diamond', ringCls:'hring-diamond', icon:'💎' },
+  { name:'ELITE',     min:2800, max:3400, color:'#e879a0', bannerCls:'hero-banner-elite',   ringCls:'hring-elite',   icon:'🔱' },
+  { name:'LEGENDARY', min:3400, max:4000, color:'#fbbf24', bannerCls:'hero-banner-legendary',ringCls:'hring-legendary',icon:'🐐' },
 ];
 
-// ── Filter badges ─────────────────────────────────────────────
-let _badgeCards = [];
-function filterBadges(filter, btn) {
-  document.querySelectorAll('.bf-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  _badgeCards.forEach(({ el, rarity, unlocked }) => {
-    let show = true;
-    if (filter === 'unlocked') show = unlocked;
-    else if (filter !== 'all') show = rarity === filter;
-    el.style.display = show ? '' : 'none';
-  });
-}
-
-// ── Milestone tab switch ─────────────────────────────────────
-let _msData = {};
-function switchMsTab(tab, btn) {
-  document.querySelectorAll('.ms-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderMilestones(tab, _msData);
-}
-
-// ── Error fallback ────────────────────────────────────────────
-function renderError(msg) {
-  // Render page with zero picks so it still shows structure
-  const emptyDiv  = { name: 'BRONZE', score: 0, icon: '🥉', color: '#b47850' };
-  const emptyStats = calcStatsSimple([]);
-  emptyStats.divScore = 0; emptyStats.divisionName = 'BRONZE';
-  renderHero(emptyDiv, 0, []);
-  renderTrack(emptyDiv, 0);
-  renderRewards(emptyDiv);
-  renderScoreBreakdown(0, 0, 0, 0, 0, emptyDiv, 0, 0, 0);
-
-  // Show a notice instead of dead skeletons
-  const notice = `<div style="background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:12px;padding:16px 20px;margin-bottom:20px;font-family:'DM Mono',monospace;font-size:11px;color:#f87171;letter-spacing:1px">
-    ⚠️ ${msg || 'Could not load picks. Check your connection and refresh.'}
-    <br><button onclick="load()" style="margin-top:10px;background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);border-radius:6px;padding:6px 14px;color:#f87171;font-family:\'DM Mono\',monospace;font-size:10px;cursor:pointer;letter-spacing:1px">↻ RETRY</button>
-  </div>`;
-  document.getElementById('seasonCard').innerHTML = notice;
-  document.getElementById('scRows').innerHTML = notice;
-
-  const emptyUnlocked = {};
-  renderBadges(emptyStats, emptyUnlocked, {});
-  _msData = { stats: emptyStats, div: emptyDiv, allPicks: [], leaderboard: [] };
-  renderMilestones('volume', _msData);
-}
-
-// ── Main loader ──────────────────────────────────────────────
-async function load() {
-  // Reset skeletons
-  document.getElementById('emblemZone').innerHTML = '<div class="skel skel-emblem"></div>';
-
-  let allPicks = [];
-  let season   = null;
-  let leaderboard = [];
-
-  // Fetch picks — fetch all, filter to this user client-side
-  try {
-    const r = await fetch(`${API}/picks`, {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-      cache: 'no-store'
-    });
-    if (r.ok) {
-      const all = await r.json();
-      allPicks = Array.isArray(all) ? all.filter(p => p.userId === USER_ID) : [];
-    } else {
-      console.warn('Picks fetch failed:', r.status);
-    }
-  } catch (err) {
-    console.warn('Picks fetch error:', err.message);
-    renderError('Could not reach server. Check your connection and try again.');
-    return;
+function getEloTier(elo) {
+  for (let i = ELO_TIERS.length - 1; i >= 0; i--) {
+    if (elo >= ELO_TIERS[i].min) return ELO_TIERS[i];
   }
+  return ELO_TIERS[0];
+}
 
-  // Fetch active season (non-critical — silently skip if fails)
+function getTierRoman(elo, tier) {
+  const range = tier.max - tier.min;
+  const pos = elo - tier.min;
+  const frac = Math.min(1, pos / range);
+  if (frac >= 0.75) return 'I';
+  if (frac >= 0.50) return 'II';
+  if (frac >= 0.25) return 'III';
+  return 'IV';
+}
+
+const DIV_SCORE = {
+  BRONZE:0, SILVER:20, GOLD:35, PLATINUM:50, DIAMOND:65, ELITE:80, LEGENDARY:92
+};
+
+function computeEloFromDivScore(divScore) {
+  return Math.round(1000 + (divScore / 100) * 3000);
+}
+
+async function loadProgress() {
   try {
-    const sr = await fetch(`${API}/seasons/active`);
-    if (sr.ok) {
-      season = await sr.json();
-      // Fetch season leaderboard
+    const [picksRes, rankingsRes, seasonsRes] = await Promise.all([
+      fetch(API + '/picks', { cache: 'no-store' }),
+      fetch(API + '/rankings', { cache: 'no-store' }).catch(() => null),
+      fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null),
+    ]);
+
+    const allPicks = await picksRes.json();
+    const myPicks = allPicks.filter(p => p.userId === USER_ID)
+      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+    let rankingMeta = null;
+    let myRank = 0;
+    let totalTipsters = 0;
+    if (rankingsRes && rankingsRes.ok) {
+      const rd = await rankingsRes.json();
+      if (rd && Array.isArray(rd.tipsters)) {
+        totalTipsters = rd.tipsters.length;
+        const idx = rd.tipsters.findIndex(t => t.userId === USER_ID);
+        if (idx >= 0) {
+          rankingMeta = rd.tipsters[idx];
+          myRank = idx + 1;
+        }
+      }
+    }
+
+    let activeSeason = null;
+    let pastSeasons = [];
+    if (seasonsRes && seasonsRes.ok) {
       try {
-        const lb = await fetch(`${API}/seasons/${season.id}/leaderboard`);
-        if (lb.ok) leaderboard = await lb.json();
-      } catch (_) {}
+        const allSeasons = await seasonsRes.json();
+        if (Array.isArray(allSeasons)) {
+          activeSeason = allSeasons.find(s => s.isActive) || allSeasons[0];
+          pastSeasons = allSeasons.filter(s => !s.isActive && s.champion);
+        }
+      } catch(e) {}
     }
-  } catch (_) {}
 
-  // Compute stats — always succeeds (handles 0-pick case)
-  const stats = typeof BadgeSystem !== 'undefined'
-    ? BadgeSystem.calcStats(allPicks)
-    : calcStatsSimple(allPicks);
-
-  const div = typeof Divisions !== 'undefined'
-    ? Divisions.get(allPicks)
-    : { name: 'BRONZE', score: 0, icon: '🥉', color: '#b47850' };
-
-  stats.divScore     = div.score  || 0;
-  stats.divisionName = div.name   || 'BRONZE';
-
-  // Score components
-  const roi      = stats.roi  || 0;
-  const wr       = stats.wr   || 0;
-  const pcount   = allPicks.length;
-  const roiScore = Math.round(Math.min(40, Math.max(0, (roi / 20) * 40)));
-  const wrScore  = Math.round(Math.min(30, Math.max(0, (wr  / 70) * 30)));
-  const volScore = Math.round(Math.min(20, Math.max(0, (pcount / 100) * 20)));
-  const pckScore = Math.min(10, pcount);
-  const total    = roiScore + wrScore + volScore + pckScore;
-
-  // Render all sections
-  renderHero(div, total, allPicks);
-  renderTrack(div, total);
-  renderRewards(div);
-  renderScoreBreakdown(roiScore, wrScore, volScore, pckScore, total, div, roi, wr, pcount);
-  renderSeason(season, leaderboard, allPicks);
-
-  const extra = { emailVerified: true, divisionName: div.name, followers: 0 };
-  const lbRow = leaderboard.find(r => r.userId === USER_ID);
-  if (lbRow) extra.leaderboardRank = lbRow.rank;
-  const unlocked = typeof BadgeSystem !== 'undefined' ? BadgeSystem.checkAll(stats, extra) : {};
-  renderBadges(stats, unlocked, extra);
-
-  _msData = { stats, div, allPicks, leaderboard };
-  renderMilestones('volume', _msData);
-}
-
-function calcStatsSimple(picks) {
-  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
-  const wins    = settled.filter(p => p.result === 'win').length;
-  const pnl     = picks.reduce((s, p) => s + (p.pnl || 0), 0);
-  const stake   = picks.reduce((s, p) => s + (p.stake || 0), 0);
-  return {
-    picks: picks.length, wins, settled: settled.length,
-    roi: stake > 0 ? (pnl / stake) * 100 : 0,
-    wr: settled.length > 0 ? (wins / settled.length) * 100 : 0,
-    pnl, streak: 0, avgCLV: 0, clvCount: 0,
-    profitableMonthStreak: 0, accountAgeDays: 9999, divScore: 0,
-  };
-}
-
-// ── Render hero ──────────────────────────────────────────────
-function renderHero(div, score, picks) {
-  const name = div.name;
-  const meta = DIV_META[name] || DIV_META.BRONZE;
-  const idx  = DIV_ORDER.indexOf(name);
-  const isMax = name === 'LEGENDARY';
-
-  // Build emblem HTML
-  const partsCls = name === 'ELITE' ? 'ph-part-elite' : name === 'LEGENDARY' ? 'ph-part-legend' : '';
-  const nParts   = name === 'ELITE' ? 4 : name === 'LEGENDARY' ? 6 : 0;
-  let partsHTML  = '';
-  if (nParts > 0) {
-    partsHTML = '<div class="ph-emblem-particles">';
-    for (let i = 0; i < nParts; i++) partsHTML += `<div class="${partsCls}"></div>`;
-    partsHTML += '</div>';
+    renderAll(myPicks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons);
+  } catch(e) {
+    document.getElementById('mainContent').innerHTML =
+      '<div style="text-align:center;padding:80px;color:var(--mu);font-family:\'JetBrains Mono\',monospace">Could not load progress. <a href="/home" style="color:var(--ac)">Go home →</a></div>';
   }
-
-  document.getElementById('emblemZone').innerHTML = `
-    <div class="ph-emblem-zone pe-${meta.cls}">
-      <div class="ph-emblem">
-        <div class="ph-emblem-aura"></div>
-        <span class="ph-emblem-icon" style="color:${meta.color}">${meta.icon}</span>
-        ${partsHTML}
-      </div>
-    </div>`;
-
-  // Name + subtitle
-  const nameEl = document.getElementById('divName');
-  nameEl.textContent = name;
-  nameEl.style.color = meta.color;
-  nameEl.style.textShadow = `0 0 40px ${meta.color}80`;
-  nameEl.style.opacity = '1';
-  nameEl.style.animation = 'fadeSlideUp .5s .12s ease both';
-
-  const SUBS = {
-    BRONZE:'Start of the journey',SILVER:'Rising through the ranks',GOLD:'Proven tipster',
-    PLATINUM:'Elite performance',DIAMOND:'Diamond-tier precision',ELITE:'Top 5% of LEDGR',
-    LEGENDARY:'The absolute pinnacle'
-  };
-  const subEl = document.getElementById('divSub');
-  subEl.textContent = SUBS[name] || '';
-  subEl.style.opacity = '1';
-  subEl.style.animation = 'fadeSlideUp .5s .16s ease both';
-
-  const snEl = document.getElementById('scoreNum');
-  snEl.textContent = score;
-  snEl.style.color = meta.color;
-  snEl.parentElement.style.opacity = '1';
-  snEl.parentElement.style.animation = 'fadeSlideUp .5s .2s ease both';
-
-  // Progress bar
-  const nextDiv = isMax ? null : DIV_ORDER[idx + 1];
-  const nextMeta = nextDiv ? DIV_META[nextDiv] : null;
-  const curMin  = meta.min;
-  const nextMin = isMax ? 100 : nextMeta.min;
-  const rangeSize = nextMin - curMin;
-  const inRange   = score - curMin;
-  const pct       = isMax ? 100 : Math.min(100, Math.round((inRange / rangeSize) * 100));
-  const ptsNeeded = isMax ? 0 : nextMin - score;
-
-  const nl = document.getElementById('nextLabel');
-  nl.style.display = 'block';
-  if (isMax) {
-    nl.innerHTML = '<b style="color:#fbbf24">LEGENDARY — Maximum Division Reached</b>';
-  } else {
-    nl.innerHTML = `<b>${ptsNeeded}</b> points to <b style="color:${nextMeta.color}">${nextDiv}</b>`;
-  }
-
-  const pbWrap = document.getElementById('mainPb');
-  pbWrap.style.display = 'block';
-  const fill = document.getElementById('mainPbFill');
-  fill.style.background = isMax
-    ? 'linear-gradient(90deg,#e879a0,#fb923c,#fbbf24,#34d399,#38bdf8,#818cf8)'
-    : `linear-gradient(90deg,${meta.color}cc,${meta.color})`;
-  setTimeout(() => { fill.style.width = pct + '%'; }, 80);
-
-  document.getElementById('pbCurDiv').textContent = name + ' (' + curMin + ')';
-  document.getElementById('pbNextDiv').textContent = isMax ? 'MAX' : (nextDiv + ' (' + nextMin + ')');
 }
 
-// ── Render division track ─────────────────────────────────────
-function renderTrack(div, score) {
-  const track = document.getElementById('divTrack');
-  const curIdx = DIV_ORDER.indexOf(div.name);
-  let html = `<div class="div-track-line">
-    <div class="div-track-line-bg"></div>
-    <div class="div-track-line-fill" id="trackLineFill" style="background:${DIV_META[div.name].color}"></div>
-  </div>`;
+function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons) {
+  const wins   = picks.filter(p => p.result === 'win').length;
+  const losses = picks.filter(p => p.result === 'loss').length;
+  const pushes = picks.filter(p => p.result === 'push').length;
+  const pending = picks.filter(p => p.result === 'pending').length;
+  const settledPicks = picks.filter(p => p.result === 'win' || p.result === 'loss');
+  const totalStake = picks.reduce((s,p) => s + (p.stake||0), 0);
+  const totalPnl   = picks.reduce((s,p) => s + (p.pnl||0), 0);
+  const roi = totalStake > 0 ? (totalPnl / totalStake) * 100 : 0;
+  const winRate = (wins + losses) > 0 ? wins / (wins + losses) : 0;
+  const avgOdds = picks.length > 0 ? picks.reduce((s,p) => s + (p.odds||0), 0) / picks.length : 0;
 
-  DIV_ORDER.forEach((name, i) => {
-    const meta   = DIV_META[name];
-    const state  = i < curIdx ? 'past' : i === curIdx ? 'current' : 'future';
-    const pulse  = state === 'current' ? '<div class="dn-pulse" style="border:2px solid ' + meta.color + '40;background:' + meta.color + '1a"></div>' : '';
-    const reward = DIV_REWARDS[name][0];
-    html += `<div class="div-node dn-${state}">
-      <div class="dn-circle" style="color:${meta.color};${state==='current'?'border-color:'+meta.color+';box-shadow:0 0 22px '+meta.color+'60':''}">
-        ${pulse}${meta.icon}
-      </div>
-      <div class="dn-name">${name}</div>
-      <div class="dn-reward">${reward}</div>
-    </div>`;
-  });
+  const elo = rankingMeta ? rankingMeta.elo : computeEloFromDivScore(rankingMeta ? rankingMeta.divisionScore : 0);
+  const sharpScore = rankingMeta ? (rankingMeta.sharpScore || 0) : 0;
+  const reliabilityScore = rankingMeta ? (rankingMeta.reliabilityScore || 0) : 0;
+  const clvAvg = rankingMeta ? (rankingMeta.clvAvg || 0) : 0;
+  const currentStreak = rankingMeta ? Math.max(0, rankingMeta.currentStreak || 0) : 0;
+  const divisionName = rankingMeta ? (rankingMeta.division || 'BRONZE') : 'BRONZE';
 
-  track.innerHTML = html;
+  const actualElo = rankingMeta && rankingMeta.elo ? rankingMeta.elo : computeEloFromDivScore(DIV_SCORE[divisionName] || 0);
+  const tier = getEloTier(actualElo);
+  const roman = getTierRoman(actualElo, tier);
+  const eloInTier = actualElo - tier.min;
+  const tierRange = tier.max - tier.min;
+  const eloPercent = Math.min(100, Math.round((eloInTier / tierRange) * 100));
+  const eloToNext = tier.max - actualElo;
+  const nextTier = ELO_TIERS[ELO_TIERS.indexOf(tier) + 1] || tier;
 
-  // Animate the track fill line
-  const fillPct = Math.min(100, Math.round((curIdx / (DIV_ORDER.length - 1)) * 100));
-  setTimeout(() => {
-    const fl = document.getElementById('trackLineFill');
-    if (fl) fl.style.width = fillPct + '%';
-    if (fl) fl.style.transition = 'width 1.4s cubic-bezier(.34,1.15,.64,1)';
-  }, 100);
-}
+  const rankPct = totalTipsters > 0 ? Math.round((1 - myRank / totalTipsters) * 100) : null;
 
-// ── Render rewards grid ────────────────────────────────────────
-function renderRewards(div) {
-  const curIdx = DIV_ORDER.indexOf(div.name);
-  let html = '';
-  DIV_ORDER.forEach((name, i) => {
-    const meta      = DIV_META[name];
-    const rewards   = DIV_REWARDS[name];
-    const isCurrent = i === curIdx;
-    const isLocked  = i > curIdx;
-    const cls       = `rw-card rw-${meta.cls}` + (isCurrent ? ' rw-current' : '') + (isLocked ? ' rw-locked' : ' rw-unlocked');
-    html += `<div class="${cls}">
-      ${isCurrent ? '<div class="rw-current-tag">YOU ARE HERE</div>' : ''}
-      ${isLocked ? '<div class="rw-locked-icon">🔒</div>' : ''}
-      <div class="rw-icon">${meta.icon}</div>
-      <div class="rw-div-name">${name}</div>
-      <div class="rw-rewards">
-        ${rewards.map((r, ri) => `<div class="rw-item${ri===0?' highlight':''}">${r}</div>`).join('')}
-      </div>
-    </div>`;
-  });
-  document.getElementById('rewardsGrid').innerHTML = html;
-}
+  const sorted = [...settledPicks].sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt));
+  let streak = 0;
+  for (const p of sorted) { if (p.result === 'win') streak++; else break; }
 
-// ── Render score breakdown ─────────────────────────────────────
-function renderScoreBreakdown(roiScore, wrScore, volScore, pckScore, total, div, roi, wr, pcount) {
-  const meta = DIV_META[div.name];
-  document.getElementById('totalScore').textContent = total;
-  document.getElementById('totalScore').style.color = meta.color;
-  document.getElementById('totalDivPill').innerHTML =
-    `<span style="font-family:'DM Mono';font-size:10px;padding:4px 12px;border-radius:20px;
-      border:1px solid ${meta.color}55;background:${meta.color}18;color:${meta.color};
-      letter-spacing:2px">${meta.icon} ${div.name}</span>`;
+  const now = Date.now();
+  const day14ago = now - 14*24*3600*1000;
+  const day7ago  = now - 7*24*3600*1000;
+  const recent14 = picks.filter(p => new Date(p.createdAt).getTime() >= day14ago);
+  const recent7  = picks.filter(p => new Date(p.createdAt).getTime() >= day7ago);
+  const prev7    = picks.filter(p => { const t = new Date(p.createdAt).getTime(); return t >= day14ago && t < day7ago; });
+  const roi14 = (()=>{ const s=recent14.reduce((a,p)=>a+(p.stake||0),0); const n=recent14.reduce((a,p)=>a+(p.pnl||0),0); return s>0?(n/s)*100:0; })();
+  const roi7  = (()=>{ const s=recent7.reduce((a,p)=>a+(p.stake||0),0);  const n=recent7.reduce((a,p)=>a+(p.pnl||0),0);  return s>0?(n/s)*100:0; })();
+  const roiPrev7=(()=>{ const s=prev7.reduce((a,p)=>a+(p.stake||0),0); const n=prev7.reduce((a,p)=>a+(p.pnl||0),0); return s>0?(n/s)*100:0; })();
+  const wr14  = (()=>{ const w=recent14.filter(p=>p.result==='win').length; const l=recent14.filter(p=>p.result==='loss').length; return(w+l)>0?Math.round(w/(w+l)*100):0; })();
+  const pnl14 = recent14.reduce((s,p)=>s+(p.pnl||0),0);
+  const trend = roi7 > roiPrev7 + 2 ? 'rising' : roi7 < roiPrev7 - 2 ? 'declining' : 'stable';
 
-  const rows = [
-    { label:'ROI BONUS',   score:roiScore,  max:40, fill:'#34d399', hint:`ROI: ${roi.toFixed(1)}% → ${roiScore}/40 pts  (max at +20% ROI)` },
-    { label:'WIN RATE',    score:wrScore,   max:30, fill:'#38bdf8', hint:`Win rate: ${wr.toFixed(1)}% → ${wrScore}/30 pts  (max at 70%+ WR)` },
-    { label:'VOLUME',      score:volScore,  max:20, fill:'#b89fff', hint:`${pcount} picks → ${volScore}/20 pts  (max at 100 picks)` },
-    { label:'PICK COUNT',  score:pckScore,  max:10, fill:'#fbbf24', hint:`${Math.min(pcount,10)}/10 picks bonus` },
+  const roiVar = (()=>{
+    if (settledPicks.length < 3) return 50;
+    const rs = settledPicks.map(p=>{const s=p.stake||1;return(p.pnl||0)/s*100;});
+    const mean=rs.reduce((a,b)=>a+b,0)/rs.length;
+    const variance=rs.reduce((a,b)=>a+Math.pow(b-mean,2),0)/rs.length;
+    return Math.max(0,Math.min(100,100-Math.sqrt(variance)));
+  })();
+  const radarAxes = [
+    { label:'Consistency', value:Math.round(roiVar) },
+    { label:'Sharpness',   value:Math.round(Math.min(100,sharpScore)) },
+    { label:'CLV',         value:Math.round(Math.min(100,Math.max(0,((clvAvg+10)/20)*100))) },
+    { label:'Volume',      value:Math.round(Math.min(100,(picks.length/100)*100)) },
+    { label:'Reliability', value:Math.round(Math.min(100,reliabilityScore)) },
+    { label:'Safety',      value:Math.round(Math.min(100,Math.max(0,(1-(avgOdds-1)/4)*100))) },
   ];
 
-  let html = '';
-  rows.forEach(r => {
-    const pct = Math.round((r.score / r.max) * 100);
-    html += `<div class="sc-row">
-      <div class="sc-row-head">
-        <span class="sc-row-label">${r.label}</span>
-        <span><span class="sc-row-score" style="color:${r.fill}">${r.score}</span>
-        <span class="sc-row-max">/${r.max}</span></span>
-      </div>
-      <div class="sc-track"><div class="sc-fill" style="width:0%;background:${r.fill}" data-pct="${pct}"></div></div>
-      <div class="sc-hint">${r.hint}</div>
-    </div>`;
+  const flowState = window.Flow ? window.Flow.detect({
+    picks: settledPicks, currentStreak, streakType: streak>0?'win':'', clvAvg, avgOdds, roi, winRate
+  }) : null;
+
+  const biggestWin = wins > 0 ? Math.max(...picks.filter(p=>p.result==='win').map(p=>p.pnl||0)) : null;
+  const biggestWinDate = biggestWin != null ? picks.find(p=>p.result==='win'&&Math.abs((p.pnl||0)-biggestWin)<0.01)?.createdAt : null;
+
+  const byDay = {};
+  picks.forEach(p => {
+    const d = new Date(p.createdAt).toISOString().slice(0,10);
+    byDay[d] = (byDay[d]||0) + (p.pnl||0);
   });
-  document.getElementById('scRows').innerHTML = html;
-  setTimeout(() => {
-    document.querySelectorAll('.sc-fill[data-pct]').forEach(el => {
-      el.style.width = el.dataset.pct + '%';
-      el.style.transition = 'width 1.2s cubic-bezier(.34,1.15,.64,1)';
-    });
-  }, 100);
-}
+  const dayEntries = Object.entries(byDay).sort((a,b)=>b[1]-a[1]);
+  const bestDay = dayEntries.length ? dayEntries[0] : null;
 
-// ── Render season widget ───────────────────────────────────────
-function renderSeason(season, leaderboard, picks) {
-  const card = document.getElementById('seasonCard');
-  if (!season) {
-    card.innerHTML = `<div class="sn-title">CURRENT SEASON</div>
-      <div class="sn-no-season">No active season right now.<br>Check back soon.</div>`;
-    return;
-  }
-  const daysLeft = Math.max(0, Math.ceil((new Date(season.endDate) - Date.now()) / 86400000));
-  const myRow = leaderboard.find(r => r.userId === USER_ID);
-  const myRank = myRow ? myRow.rank : null;
+  let bestStreak = 0, curS = 0;
+  for (const p of settledPicks) { if(p.result==='win'){curS++;bestStreak=Math.max(bestStreak,curS);}else curS=0; }
 
-  // Compute season picks stats
-  const sPicks   = picks.filter(p => p.seasonId === season.id);
-  const sWins    = sPicks.filter(p => p.result === 'win').length;
-  const sLosses  = sPicks.filter(p => p.result === 'loss').length;
-  const sStake   = sPicks.reduce((a, p) => a + (p.stake || 0), 0);
-  const sPnl     = sPicks.reduce((a, p) => a + (p.pnl || 0), 0);
-  const sRoi     = sStake > 0 ? (sPnl / sStake * 100) : 0;
-  const sWr      = (sWins + sLosses) > 0 ? (sWins / (sWins + sLosses) * 100) : 0;
-
-  card.innerHTML = `
-    <div class="sn-title">CURRENT SEASON</div>
-    <div class="sn-name">${season.name}</div>
-    <div class="sn-days">Season ends in <b>${daysLeft}</b> days</div>
-    ${myRank
-      ? `<div class="sn-rank-wrap">
-          <div class="sn-rank-lbl">YOUR RANK</div>
-          <div class="sn-rank-num">#${myRank}</div>
-          <div class="sn-rank-of">out of ${leaderboard.length} tipsters</div>
-        </div>`
-      : `<div style="text-align:center;padding:16px;color:var(--mu);font-family:'DM Mono';font-size:10px">
-          Post picks to appear on the season leaderboard
-        </div>`}
-    <div class="sn-stats">
-      <div class="sn-stat">
-        <div class="sn-stat-lbl">SEASON ROI</div>
-        <div class="sn-stat-val" style="color:${sRoi >= 0 ? '#34d399' : '#f87171'}">${sRoi >= 0 ? '+' : ''}${sRoi.toFixed(1)}%</div>
-      </div>
-      <div class="sn-stat">
-        <div class="sn-stat-lbl">SEASON WR</div>
-        <div class="sn-stat-val">${sWr.toFixed(1)}%</div>
-      </div>
-      <div class="sn-stat">
-        <div class="sn-stat-lbl">SEASON PICKS</div>
-        <div class="sn-stat-val">${sPicks.length}</div>
-      </div>
-      <div class="sn-stat">
-        <div class="sn-stat-lbl">SEASON P&L</div>
-        <div class="sn-stat-val" style="color:${sPnl >= 0 ? '#34d399' : '#f87171'}">${sPnl >= 0 ? '+' : ''}${sPnl.toFixed(1)}u</div>
-      </div>
-    </div>`;
-}
-
-// ── Render badges ──────────────────────────────────────────────
-function renderBadges(stats, unlocked, extra) {
-  if (typeof BadgeSystem === 'undefined') {
-    document.getElementById('badgeGrid').innerHTML = '<div style="color:var(--mu);font-family:\'DM Mono\';font-size:11px">Badge system unavailable.</div>';
-    return;
-  }
-  _badgeCards = [];
-  const RARITY_COLORS = { common:'#94a3b8', rare:'#38bdf8', epic:'#b89fff', legendary:'#fbbf24' };
-  let html = '';
-  BadgeSystem.BADGES.forEach(badge => {
-    const isUnlocked = !!unlocked[badge.id];
-    const prog = badge.prog ? badge.prog(stats, extra) : null;
-    const pct  = prog ? Math.min(100, Math.round((prog.cur / prog.max) * 100)) : 0;
-    const rc   = RARITY_COLORS[badge.rarity] || '#94a3b8';
-
-    html += `<div class="bg-card ${isUnlocked ? 'bg-unlocked' : 'bg-locked'} r-${badge.rarity}" id="bgc_${badge.id}">
-      <div class="bg-corner-glow"></div>
-      <div class="bg-icon-wrap"><span class="bg-icon">${badge.icon}</span></div>
-      <div class="bg-rarity-pill">${badge.rarity.toUpperCase()}</div>
-      <div class="bg-name">${badge.name}</div>
-      <div class="bg-desc">${badge.desc}</div>
-      ${isUnlocked
-        ? '<div class="bg-earned-tag">✓ EARNED</div>'
-        : `<div class="bg-locked-tag">🔒 LOCKED</div>
-           ${prog && prog.cur < prog.max ? `<div class="bg-prog">
-             <div class="bg-prog-row"><span>${badge.req}</span><span>${prog.cur}/${prog.max}</span></div>
-             <div class="bg-prog-track"><div class="bg-prog-fill" style="width:0%;background:${rc}" data-pct="${pct}"></div></div>
-           </div>` : ''}`
-      }
-      ${!isUnlocked ? '<div class="bg-lock-icon">🔒</div>' : ''}
-    </div>`;
-
-    _badgeCards.push({ id: badge.id, rarity: badge.rarity, unlocked: isUnlocked });
+  document.getElementById('mainContent').innerHTML = buildHTML({
+    picks, wins, losses, pushes, pending, streak, bestStreak,
+    tier, roman, actualElo, eloInTier, tierRange, eloPercent, eloToNext, nextTier,
+    sharpScore, roi, winRate, avgOdds, clvAvg, myRank, totalTipsters, rankPct,
+    recent14, roi14, wr14, pnl14, trend,
+    radarAxes, flowState, divisionName,
+    biggestWin, biggestWinDate, bestDay, myRank,
+    activeSeason, pastSeasons, totalPnl, totalStake, rankingMeta
   });
-  document.getElementById('badgeGrid').innerHTML = html;
 
-  setTimeout(() => {
-    document.querySelectorAll('.bg-prog-fill[data-pct]').forEach(el => {
-      el.style.width = el.dataset.pct + '%';
-      el.style.transition = 'width 1.1s ease';
-    });
-  }, 120);
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      const fill = document.getElementById('heroBarFill');
+      if (fill) fill.style.width = eloPercent + '%';
+
+      document.querySelectorAll('[data-unlock-target]').forEach(el => {
+        el.style.width = el.getAttribute('data-unlock-target') + '%';
+      });
+
+      document.querySelectorAll('.tl-item').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 80);
+      });
+
+      animateRadar();
+
+      document.querySelectorAll('.moment-card').forEach((el, i) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, 300 + i * 60);
+      });
+    }, 50);
+  });
 }
 
-// ── Render milestones ──────────────────────────────────────────
-function renderMilestones(tab, data) {
-  const { stats, div, allPicks } = data || _msData;
-  if (!stats) return;
+function buildHTML(d) {
+  const {
+    picks, wins, losses, pushes, pending, streak, bestStreak,
+    tier, roman, actualElo, eloInTier, tierRange, eloPercent, eloToNext, nextTier,
+    sharpScore, roi, winRate, avgOdds, clvAvg, myRank, totalTipsters, rankPct,
+    recent14, roi14, wr14, pnl14, trend,
+    radarAxes, flowState, divisionName,
+    biggestWin, biggestWinDate, bestDay,
+    activeSeason, pastSeasons, totalPnl, rankingMeta
+  } = d;
 
-  const container = document.getElementById('msTimeline');
-  let items = [];
+  const divColor = tier.color;
+  const initials = USERNAME.slice(0,2).toUpperCase();
 
-  if (tab === 'volume') {
-    const pickCount = allPicks ? allPicks.length : (stats.picks || 0);
-    items = MS_VOLUME.map(m => {
-      const done    = pickCount >= m.picks;
-      const isCur   = !done && pickCount >= (m.picks * 0.5);
-      const pct     = Math.min(100, Math.round((pickCount / m.picks) * 100));
-      const hitPick = done && allPicks ? allPicks.slice().sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt))[m.picks-1] : null;
-      const dateStr = hitPick ? new Date(hitPick.createdAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : null;
-      return { ...m, done, isCur, pct, dateStr, type:'picks', target:m.picks, cur:pickCount };
-    });
-  } else if (tab === 'performance') {
-    items = MS_PERFORMANCE.map(m => {
-      const done = m.check ? m.check(stats) : false;
-      return { ...m, done, isCur:false, pct:done?100:0 };
-    });
-  } else if (tab === 'division') {
-    const curIdx = DIV_ORDER.indexOf(div ? div.name : 'BRONZE');
-    items = MS_DIVISION.map(m => {
-      const targetIdx = DIV_ORDER.indexOf(m.div);
-      const done = curIdx >= targetIdx;
-      const isCur = curIdx === targetIdx - 1;
-      return { ...m, done, isCur, pct: done ? 100 : 0, meta: DIV_META[m.div] };
-    });
-  }
-
-  const doneCount = items.filter(i => i.done).length;
-  const spineHPct = Math.round((doneCount / items.length) * 100);
-
-  let html = `<div class="ms-spine"><div class="ms-spine-fill" style="height:0%" data-target="${spineHPct}"></div></div>`;
-  items.forEach(item => {
-    const state = item.done ? 'done' : item.isCur ? 'current' : 'locked';
-    let color = '#34d399';
-    if (item.meta) color = item.meta.color;
-    html += `<div class="ms-item ${state}">
-      <div class="ms-node" style="${item.done?'border-color:'+color+';background:'+color+'1a':item.isCur?'border-color:'+color+';box-shadow:0 0 14px '+color+'60':''}">
-        ${item.icon}
-      </div>
-      <div class="ms-body">
-        <div class="ms-body-head">
-          <div class="ms-title" style="${item.done?'color:'+color:''}">${item.label}</div>
-          ${item.done ? '<div class="ms-check">✓</div>' : ''}
+  // ── Section 1: Hero ──
+  const heroHTML = `
+    <div class="hero-card ${tier.bannerCls} anim-hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-noise"></div>
+      <img src="/assets/logo/ledgr-icon.png" class="hero-watermark" alt="">
+      <div class="hero-inner">
+        <div style="position:relative;flex-shrink:0">
+          <div class="hero-av" style="background:linear-gradient(135deg,${divColor}40,${divColor}20)">
+            <div class="hero-av-ring ${tier.ringCls}"></div>
+            ${initials}
+          </div>
         </div>
-        <div class="ms-desc">${item.desc}</div>
-        ${item.dateStr ? `<div class="ms-date">Achieved ${item.dateStr}</div>` : ''}
-        ${!item.done && item.pct > 0 ? `<div class="ms-prog">
-          <div class="ms-prog-row"><span>Progress</span><span>${item.pct}%</span></div>
-          <div class="ms-prog-track"><div class="ms-prog-fill" style="width:0%" data-pct="${item.pct}"></div></div>
-        </div>` : ''}
-        ${!item.done && item.type === 'picks' ? `<div class="ms-prog">
-          <div class="ms-prog-row"><span>${(item.cur||0)} / ${item.target} picks</span><span>${item.pct}%</span></div>
-          <div class="ms-prog-track"><div class="ms-prog-fill" style="width:0%" data-pct="${item.pct}"></div></div>
-        </div>` : ''}
+        <div class="hero-center">
+          <div class="hero-div-name" style="color:${divColor}">${tier.name} ${roman}</div>
+          <div class="hero-elo-nums">${actualElo.toLocaleString()} / ${tier.max.toLocaleString()} RP</div>
+          <div class="hero-bar-track">
+            <div class="hero-bar-fill" id="heroBarFill" style="width:0%;background:linear-gradient(90deg,${divColor}aa,${divColor})"></div>
+          </div>
+          <div class="hero-bar-sub">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
+          ${picks.length >= 5 ? `<div class="hero-bar-week" style="color:var(--gr)">↑ ${myRank > 0 ? '#'+myRank+' globally' : 'Unranked'}</div>` : ''}
+        </div>
+        <div class="hero-pills">
+          ${streak >= 3 ? `<span class="hero-pill pill-streak">${streak}W Streak 🔥</span>` : ''}
+          ${rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
+          <span class="hero-pill ${sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}">Sharp: ${sharpScore.toFixed(0)}</span>
+        </div>
       </div>
-    </div>`;
-  });
+    </div>
+  `;
 
-  container.innerHTML = html;
+  const timeline = buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, tier.color);
+  const unlocks = buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank, totalTipsters, streak, divisionName);
 
-  setTimeout(() => {
-    const sf = container.querySelector('.ms-spine-fill');
-    if (sf) { sf.style.transition = 'height 1.4s ease'; sf.style.height = sf.dataset.target + '%'; }
-    container.querySelectorAll('.ms-prog-fill[data-pct]').forEach(el => {
-      el.style.transition = 'width 1.2s ease';
-      el.style.width = el.dataset.pct + '%';
-    });
-  }, 80);
+  const roiColor  = roi14 >= 0 ? 'var(--gr)' : 'var(--rd)';
+  const pnlColor  = pnl14 >= 0 ? 'var(--gr)' : 'var(--rd)';
+  const trendIcon = trend === 'rising' ? '↗' : trend === 'declining' ? '↘' : '→';
+  const trendColor = trend === 'rising' ? 'var(--gr)' : trend === 'declining' ? 'var(--rd)' : 'var(--mu)';
+  const flowLabel = flowState ? (flowState.short || flowState.label || 'Active') : 'Building';
+  const flowColor = flowState ? (flowState.color || 'var(--ac)') : 'var(--ac)';
+  const bgChart = buildSparkline(picks);
+  const momentumHTML = `
+    <div class="momentum-card">
+      <svg class="momentum-bg-chart" viewBox="0 0 300 120" preserveAspectRatio="none">${bgChart}</svg>
+      <div class="momentum-header" style="color:${flowColor}">Momentum: ${flowLabel}</div>
+      <div class="momentum-stats">
+        <div class="mom-stat"><div class="mom-stat-val" style="color:${roiColor}">${roi14>=0?'+':''}${roi14.toFixed(1)}%</div><div class="mom-stat-lbl">14d ROI</div></div>
+        <div class="mom-stat"><div class="mom-stat-val">${wr14}%</div><div class="mom-stat-lbl">Win Rate</div></div>
+        <div class="mom-stat"><div class="mom-stat-val" style="color:${pnlColor}">${pnl14>=0?'+':''}${pnl14.toFixed(1)}u</div><div class="mom-stat-lbl">14d P&L</div></div>
+        <div class="mom-stat"><div class="mom-stat-val">${recent14.length}</div><div class="mom-stat-lbl">Picks</div></div>
+      </div>
+      <div class="trend-row" style="color:${trendColor}">${trendIcon} ${trend.charAt(0).toUpperCase()+trend.slice(1)} vs previous 7 days</div>
+    </div>
+  `;
+
+  const radarHTML = `
+    <div class="radar-card">
+      <div class="sec-title" style="align-self:flex-start;width:100%">Skill Profile</div>
+      ${buildRadar(radarAxes, divColor)}
+    </div>
+  `;
+
+  const seasonHTML = buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName);
+
+  const biggestWinStr = biggestWin != null ? `+${biggestWin.toFixed(2)}u` : '—';
+  const biggestWinDateStr = biggestWinDate ? new Date(biggestWinDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : '';
+  const bestDayStr = bestDay ? `+${bestDay[1].toFixed(2)}u` : '—';
+  const bestDayDateStr = bestDay ? new Date(bestDay[0]).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : '';
+  const bestStreakStr = bestStreak > 0 ? `${bestStreak}W` : '—';
+  const bestRankStr = myRank > 0 ? `#${myRank}` : '—';
+
+  const momentsHTML = `
+    <div class="moments-grid">
+      ${momentCard('💰','Biggest Win',biggestWinStr,biggestWinDateStr,divColor)}
+      ${momentCard('🔥','Longest Streak',bestStreakStr,'All time',divColor)}
+      ${momentCard('📅','Best Day',bestDayStr,bestDayDateStr,divColor)}
+      ${momentCard('🏆','Best Rank',bestRankStr,'All time',divColor)}
+    </div>
+  `;
+
+  const div = `<div class="logo-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>`;
+
+  if (picks.length === 0) {
+    return `
+      ${heroHTML}
+      <div style="text-align:center;padding:60px 24px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-top:16px">
+        <div style="font-size:48px;margin-bottom:16px">📋</div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--tx);margin-bottom:8px">YOUR JOURNEY STARTS HERE</div>
+        <div style="font-size:14px;color:var(--mu);margin-bottom:24px;font-family:'Barlow',sans-serif">Every legend started with their first pick. Build your verified record.</div>
+        <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#fff;padding:12px 28px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-decoration:none">Post Your First Pick →</a>
+      </div>
+    `;
+  }
+
+  return `
+    ${heroHTML}
+    ${div}
+    <div class="two-col">
+      <div>
+        <div class="panel" style="margin-bottom:16px">
+          <div class="sec-title">Journey Timeline</div>
+          <div class="timeline-wrap">${timeline}</div>
+        </div>
+        <div class="panel">
+          <div class="sec-title">🎯 Next Unlocks</div>
+          ${unlocks}
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        ${momentumHTML}
+        ${radarHTML}
+      </div>
+    </div>
+    ${div}
+    ${seasonHTML}
+    ${div}
+    <div class="panel">
+      <div class="sec-title">Big Moments</div>
+      ${momentsHTML}
+    </div>
+  `;
 }
 
-load();
+function momentCard(icon, label, value, dateStr, divColor) {
+  return `
+    <div class="moment-card">
+      <img src="/assets/logo/ledgr-icon.png" class="moment-watermark" alt="">
+      <div class="moment-icon">${icon}</div>
+      <div class="moment-value" style="color:${value==='—'?'var(--mu)':divColor}">${value}</div>
+      <div class="moment-label">${label}</div>
+      ${dateStr ? `<div class="moment-date">${dateStr}</div>` : ''}
+    </div>
+  `;
+}
+
+function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, divColor) {
+  const events = [];
+  if (!picks.length) return '<div class="tl-item visible"><div class="tl-node node-logo"><img src="/assets/logo/ledgr-icon.png" alt=""></div><div class="tl-body"><div class="tl-title">Your journey starts here</div><div class="tl-date">Post your first pick to begin</div></div></div>';
+
+  const settled = picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+
+  events.push({type:'purple', icon:'🚀', title:'Journey Begins', date:picks[0].createdAt, large:true});
+
+  const firstWin = picks.find(p=>p.result==='win');
+  if (firstWin) events.push({type:'green', icon:'✓', title:'First Win', date:firstWin.createdAt});
+
+  [10, 50, 100, 250].forEach(n => {
+    if (picks.length >= n) {
+      events.push({type:'gold', icon:'#', title:`Pick #${n}`, date:picks[n-1]?.createdAt});
+    }
+  });
+
+  let cur=0, bestS=0, streakDate=null;
+  for (const p of settled) {
+    if (p.result==='win'){cur++;if(cur>bestS){bestS=cur;streakDate=p.createdAt;}}else cur=0;
+  }
+  if (bestS >= 5) events.push({type:'green', icon:'🔥', title:`${bestS}W Winning Streak`, date:streakDate, large:true});
+
+  const byDay = {};
+  picks.forEach(p=>{const d=new Date(p.createdAt).toISOString().slice(0,10);byDay[d]=(byDay[d]||0)+(p.pnl||0);});
+  const bestDay = Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
+  if (bestDay && bestDay[1] > 0) events.push({type:'gold', icon:'💰', title:`Best Day: +${bestDay[1].toFixed(1)}u`, date:bestDay[0]+'T12:00:00Z'});
+
+  if (sharpScore >= 70) events.push({type:'green', icon:'✓', title:'Verified Sharp Achieved', date:null, large:true});
+
+  events.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
+
+  return `<div class="tl-spine"><div class="tl-spine-fill" style="height:0%;--fill:100%"></div></div>` +
+    events.map((ev, i) => {
+      const dateStr = ev.date ? new Date(ev.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : 'Recently';
+      const isFirst = i === 0;
+      const nodeClass = isFirst ? 'node-logo' : `node-${ev.type}`;
+      const iconContent = isFirst ? `<img src="/assets/logo/ledgr-icon.png" style="width:16px;height:16px;opacity:0.7" alt="">` : ev.icon;
+      const bodyClass = `tl-body tl-body-${ev.type}`;
+      const large = ev.large ? ' node-large' : '';
+      return `
+        <div class="tl-item">
+          <div class="tl-node ${nodeClass}${large}">${iconContent}</div>
+          <div class="${bodyClass}">
+            <div class="tl-title">${ev.title}</div>
+            <div class="tl-date">${dateStr}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+}
+
+function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank, totalTipsters, streak, divisionName) {
+  const divOrder = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
+  const divThresh = {BRONZE:0,SILVER:20,GOLD:35,PLATINUM:50,DIAMOND:65,ELITE:80,LEGENDARY:92};
+  const currentDivIdx = divOrder.indexOf(divisionName);
+  const nextDiv = divOrder[currentDivIdx + 1];
+
+  const candidates = [];
+
+  candidates.push({
+    label: '🔥 Hot Streak Badge',
+    current: streak,
+    target: 5,
+    text: `${streak}/5 consecutive wins`
+  });
+
+  if (totalPnl < 500) candidates.push({
+    label: '💰 500u Profit',
+    current: Math.max(0, totalPnl),
+    target: 500,
+    text: `${totalPnl.toFixed(1)}u / 500u`
+  });
+
+  if (picks.length >= 10) candidates.push({
+    label: '📈 CLV Master',
+    current: Math.max(0, clvAvg + 2),
+    target: 7,
+    text: `CLV avg: ${clvAvg.toFixed(1)}% / +5% target`
+  });
+
+  if (nextDiv) {
+    const divScore = (()=>{
+      const w=picks.filter(p=>p.result==='win').length;
+      const l=picks.filter(p=>p.result==='loss').length;
+      const stake=picks.reduce((s,p)=>s+(p.stake||0),0);
+      const pnl=picks.reduce((s,p)=>s+(p.pnl||0),0);
+      const roi=stake>0?(pnl/stake)*100:0;
+      const wr=(w+l)>0?(w/(w+l))*100:0;
+      return Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
+    })();
+    candidates.push({
+      label: `${nextDiv.charAt(0)+nextDiv.slice(1).toLowerCase()} Division`,
+      current: Math.max(0, divScore - divThresh[divisionName]),
+      target: divThresh[nextDiv] - divThresh[divisionName],
+      text: `${divScore}/${divThresh[nextDiv]} points`
+    });
+  }
+
+  [50, 100].forEach(n => {
+    if (picks.length < n) candidates.push({
+      label: `📋 ${n} Picks`,
+      current: picks.length,
+      target: n,
+      text: `${picks.length}/${n} picks`
+    });
+  });
+
+  if (sharpScore < 70) candidates.push({
+    label: '🎯 Verified Sharp',
+    current: Math.max(0, sharpScore),
+    target: 70,
+    text: `Sharp Score: ${sharpScore.toFixed(0)}/70`
+  });
+
+  const shown = candidates
+    .filter(c => c.target > 0 && (c.current / c.target) > 0.05)
+    .sort((a,b) => (b.current/b.target) - (a.current/a.target))
+    .slice(0, 4);
+
+  if (!shown.length) return '<div style="color:var(--mu);font-family:\'Barlow\',sans-serif;font-size:13px">Keep posting picks to unlock achievements.</div>';
+
+  return shown.map(u => {
+    const pct = Math.min(100, Math.round((u.current / u.target) * 100));
+    const near = pct >= 80;
+    return `
+      <div class="unlock-item">
+        <div class="unlock-label">
+          <span>${u.label}</span>
+          <span class="unlock-prog-text">${u.text}</span>
+        </div>
+        <div class="unlock-track">
+          <div class="unlock-fill${near?' fill-near':''}" style="width:0%" data-unlock-target="${pct}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function buildSparkline(picks) {
+  const now = Date.now();
+  const cutoff = now - 14*24*3600*1000;
+  const recent = picks.filter(p=>new Date(p.createdAt).getTime()>=cutoff).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  if (recent.length < 2) return '';
+  let cum=0;
+  const points = recent.map(p=>{cum+=(p.pnl||0);return cum;});
+  const min=Math.min(0,...points), max=Math.max(0,...points);
+  const range=max-min||1;
+  const W=300,H=120;
+  const pts = points.map((v,i)=>`${(i/(points.length-1))*W},${H-((v-min)/range)*(H-10)-5}`).join(' ');
+  const isPos = points[points.length-1] >= 0;
+  const color = isPos ? '#00e5a0' : '#ff3355';
+  return `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="0,${H} ${pts} ${W},${H}" fill="${color}" opacity="0.3"/>`;
+}
+
+function buildRadar(axes, divColor) {
+  const N = axes.length;
+  const cx = 140, cy = 140, R = 100;
+  const angleStep = (2 * Math.PI) / N;
+
+  function point(r, i) {
+    const angle = -Math.PI/2 + i * angleStep;
+    return [cx + r * Math.cos(angle), cy + r * Math.sin(angle)];
+  }
+
+  let gridRings = '';
+  [0.25, 0.5, 0.75, 1].forEach(frac => {
+    const pts = Array.from({length:N},(_,i)=>point(R*frac,i).join(',')).join(' ');
+    gridRings += `<polygon points="${pts}" class="radar-grid"/>`;
+  });
+
+  let axisLines = '';
+  for (let i=0;i<N;i++) {
+    const [x,y]=point(R,i);
+    axisLines += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" class="radar-axis"/>`;
+  }
+
+  const dataPts = axes.map((a,i)=>point(R*(a.value/100),i).join(',')).join(' ');
+
+  let labels='';
+  axes.forEach((a,i) => {
+    const [lx,ly]=point(R+24,i);
+    const [vx,vy]=point(R*(a.value/100)+14,i);
+    const anchor=lx<cx-5?'end':lx>cx+5?'start':'middle';
+    labels+=`<text x="${lx}" y="${ly+4}" class="radar-label" text-anchor="${anchor}">${a.label}</text>`;
+    labels+=`<text x="${vx}" y="${vy+4}" class="radar-value" text-anchor="middle">${a.value}</text>`;
+  });
+
+  const logo=`<image href="/assets/logo/ledgr-icon.png" x="${cx-14}" y="${cy-14}" width="28" height="28" opacity="0.15"/>`;
+
+  return `<svg class="radar-svg" viewBox="0 0 280 280" id="radarSvg">
+    ${gridRings}
+    ${axisLines}
+    <polygon id="radarPoly" points="${dataPts}" fill="${divColor}" fill-opacity="0.2" stroke="${divColor}" stroke-width="2" class="radar-polygon"/>
+    ${labels}
+    ${logo}
+  </svg>`;
+}
+
+function animateRadar() {
+  const poly = document.getElementById('radarPoly');
+  if (!poly) return;
+  const finalPts = poly.getAttribute('points');
+  const N = 6;
+  const cx=140,cy=140;
+  const collapsedPts = Array(N).fill(`${cx},${cy}`).join(' ');
+  poly.setAttribute('points', collapsedPts);
+  requestAnimationFrame(() => {
+    poly.style.transition = 'points 0.8s ease-out';
+    setTimeout(() => { poly.setAttribute('points', finalPts); }, 50);
+  });
+}
+
+function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
+  const DIV_REWARDS = {
+    BRONZE:   { icon:'🥉', label:'Basic Badge', color:'#b47850' },
+    SILVER:   { icon:'🥈', label:'Profile Border', color:'#94a3b8' },
+    GOLD:     { icon:'🏆', label:'Gold Name', color:'#fbbf24' },
+    PLATINUM: { icon:'⚡', label:'Animated Ring', color:'#38bdf8' },
+    DIAMOND:  { icon:'💎', label:'Particle FX', color:'#b89fff' },
+    ELITE:    { icon:'🔱', label:'Elite Aura', color:'#e879a0' },
+    LEGENDARY:{ icon:'🐐', label:'HOF Entry', color:'#fbbf24' },
+  };
+  const divOrder = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
+  const currentDivIdx = divOrder.indexOf(divisionName);
+
+  const daysLeft = activeSeason ? (()=>{
+    try {
+      const end = new Date(activeSeason.endsAt || activeSeason.endDate);
+      const diff = Math.ceil((end - Date.now()) / (1000*3600*24));
+      return Math.max(0, diff);
+    } catch(e){ return null; }
+  })() : null;
+
+  const seasonPct = daysLeft != null && activeSeason ? (()=>{
+    try {
+      const start=new Date(activeSeason.startsAt||activeSeason.startDate||activeSeason.createdAt);
+      const end=new Date(activeSeason.endsAt||activeSeason.endDate);
+      const total=end-start; const elapsed=Date.now()-start;
+      return Math.min(100,Math.max(0,Math.round(elapsed/total*100)));
+    }catch(e){return 0;}
+  })() : 0;
+
+  const rewardsRow = divOrder.map((div, idx) => {
+    const rw = DIV_REWARDS[div];
+    const isPast = idx < currentDivIdx;
+    const isCurrent = idx === currentDivIdx;
+    const isLocked = idx > currentDivIdx;
+    const cls = isPast?'rew-unlocked':isCurrent?'rew-current':'rew-locked';
+    return `<div class="rew-item ${cls}" style="${isCurrent?'border-color:'+rw.color+';':isPast?'border-color:rgba(0,229,160,0.2);':''}">
+      <span class="rew-icon">${isPast?'✓':isLocked?'🔒':rw.icon}</span>
+      <div class="rew-div" style="color:${rw.color}">${div}</div>
+      <div class="rew-label">${rw.label}</div>
+    </div>`;
+  }).join('');
+
+  const pastHTML = pastSeasons.length ? `
+    <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu)">
+      ${pastSeasons.slice(0,3).map(s=>`<div style="padding:6px 0;border-bottom:1px solid var(--bd)">${s.name||'Past Season'} · ${s.champion?'Champion: @'+s.champion:'No champion'}</div>`).join('')}
+    </div>
+  ` : '';
+
+  return `
+    <div class="sec-title">Season Progression</div>
+    <div class="season-hero">
+      <div class="season-name">${activeSeason?(activeSeason.name||'CURRENT SEASON'):'SEASON'}</div>
+      <div class="season-days">${daysLeft!=null?daysLeft+' days remaining':'Season active'}${myRank?` · #${myRank} this season`:''}</div>
+      <div class="season-countdown-track">
+        <div class="season-countdown-fill" style="width:${seasonPct}%"></div>
+      </div>
+      <div class="rewards-row">${rewardsRow}</div>
+      ${pastHTML}
+    </div>
+  `;
+}
+
+function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+
+loadProgress();
 </script>
-<script src="/tooltips.js"></script>
-<script src="/brand-nav.js"></script>
 </body>
 </html>
