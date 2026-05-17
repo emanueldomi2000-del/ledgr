@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Privacy Policy</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,11 +25,13 @@ a{color:var(--ac);text-decoration:none}
 footer{border-top:1px solid var(--bd);padding:32px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:60px}
 .foot-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--ac);opacity:.6}
 .foot-p{font-size:12px;color:var(--mu);font-family:'DM Mono',monospace}
+.logo-img{height:32px;width:auto;display:block;object-fit:contain}
+@media(max-width:600px){.logo-img{height:28px}}
 </style>
 </head>
 <body>
 <nav>
-  <a href="/" class="logo">LEDGR</a>
+  <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.svg" alt="LEDGR" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none">LEDGR</span></a>
   <a href="/" class="back">← Back to Home</a>
 </nav>
 <div class="main">

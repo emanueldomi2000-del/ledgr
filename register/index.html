@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Sign Up</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -27,12 +28,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .login-link a{color:var(--ac);text-decoration:none}
 .back{display:block;text-align:center;margin-top:12px;font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;text-decoration:none}
 .back:hover{color:var(--ac)}
+.logo-img{height:32px;width:auto;display:block;object-fit:contain}
+@media(max-width:600px){.logo-img{height:28px}}
 </style>
 </head>
 <body>
 <div class="orb"></div>
 <div class="box">
-  <a href="/" class="logo">LEDG<span>R</span></a>
+  <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.svg" alt="LEDGR" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none">LEDGR</span></a>
   <div class="hero-tag">CREATE YOUR ACCOUNT</div>
   <label class="form-label">Email</label>
   <input type="email" id="regEmail" class="form-input" placeholder="your@email.com">

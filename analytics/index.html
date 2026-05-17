@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Analytics</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -133,6 +134,8 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 
 @media(max-width:900px){.hero-stats{grid-template-columns:repeat(3,1fr)}.two-col{grid-template-columns:1fr}.streak-cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.hero-stats{grid-template-columns:repeat(2,1fr)}.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.streak-cards{grid-template-columns:1fr}}
+.logo-img{height:32px;width:auto;display:block;object-fit:contain}
+@media(max-width:600px){.logo-img{height:28px}}
 </style>
 </head>
 <body>
@@ -140,7 +143,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 <div class="toast" id="toast"></div>
 
 <nav>
-  <a href="/home" class="logo">LEDG<span>R</span></a>
+  <a href="/home" class="logo"><img src="/assets/logo/ledgr-logo.svg" alt="LEDGR" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none">LEDGR</span></a>
   <div class="nav-links">
     <a href="/home" class="nav-link">Home</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>

@@ -3,6 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Post a Pick</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -291,6 +292,8 @@ select option{background:#15122a}
   .mobile-menu-btn{display:block}
   .nav-r .user-badge,.nav-r .logout-btn{display:none}
 }
+.logo-img{height:32px;width:auto;display:block;object-fit:contain}
+@media(max-width:600px){.logo-img{height:28px}}
 </style>
 </head>
 <body>
@@ -334,7 +337,7 @@ select option{background:#15122a}
 </div>
 
   <nav>
-    <a href="/home" class="logo">LEDG<span>R</span></a>
+    <a href="/home" class="logo"><img src="/assets/logo/ledgr-logo.svg" alt="LEDGR" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none">LEDGR</span></a>
     <div class="nav-r">
       <a href="/home" class="nav-link">Home</a>
       <a href="/leaderboard" class="nav-link">Leaderboard</a>

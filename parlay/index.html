@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Parlay Builder</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -823,6 +824,8 @@ nav{
   .action-btn{flex:none;width:calc(50% - 4px)}
   .toast{left:16px;right:16px;bottom:16px}
 }
+.logo-img{height:32px;width:auto;display:block;object-fit:contain}
+@media(max-width:600px){.logo-img{height:28px}}
 </style>
 </head>
 <body>
@@ -860,7 +863,7 @@ nav{
 
 <!-- NAV -->
 <nav>
-  <a href="/home" class="logo">LEDG<span>R</span></a>
+  <a href="/home" class="logo"><img src="/assets/logo/ledgr-logo.svg" alt="LEDGR" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"><span style="display:none">LEDGR</span></a>
   <div class="nav-links">
     <a href="/home" class="nav-link">Home</a>
     <a href="/leaderboard" class="nav-link">Leaderboard</a>
