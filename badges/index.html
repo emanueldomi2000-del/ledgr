@@ -1,508 +1,755 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEDGR — Badges</title>
-<meta name="description" content="Your LEDGR badge collection — earn trophies for streaks, ROI milestones, win rates, and more. Track your achievements.">
-<meta property="og:title" content="LEDGR — Badge Collection">
-<meta property="og:description" content="Earn badges for streaks, ROI milestones, and win rate achievements. Build your tipster legacy.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
-<meta property="og:url" content="https://getledgr.bet/badges">
-<meta property="og:type" content="website">
+<title>LEDGR — Badge Vault</title>
+<link rel="icon" href="/assets/logo/ledgr-icon.png">
+<meta property="og:title" content="LEDGR — Badge Vault">
+<meta property="og:description" content="Build your legend. Earn rare badges for streaks, ROI, CLV, and prestige milestones.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="LEDGR — Badge Collection">
-<meta name="twitter:description" content="Earn badges for streaks, ROI milestones, and win rate achievements.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c;--cyan:#38bdf8}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+:root{
+  --bg:#0A0A0A;--s1:#121212;--s2:#1E1E1E;--bd:#2A2A2A;
+  --ac:#7B2CFF;--ac-l:#B14CFF;--acg:rgba(123,44,255,0.08);
+  --tx:#E6E6E6;--mu:#6B6B6B;--mu2:#9590b8;
+  --gr:#00e5a0;--rd:#ff3355;--gold:#FFD700;--cyan:#38bdf8;--orange:#fb923c;
+  /* rarity */
+  --c-common:#6B6B6B;--c-rare:#4FC3F7;--c-epic:#7B2CFF;--c-legendary:#FFD700;--c-mythic:#ff6ac1;
+  /* division */
+  --div-color:#7B2CFF;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
 
 /* ── NAV ── */
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
-.logo span{color:var(--ac)}
+.brand-nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:rgba(10,10,10,0.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:200}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.nav-logo span{color:var(--ac)}
+.nav-logo img{height:26px;width:auto}
 .nav-links{display:flex;gap:4px}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
-.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.nav-link.active{color:var(--ac);background:var(--acg)}
-.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.nav-btn:hover{background:#cdb8ff}
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px}
-.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
-.slide-nav.open{right:0}
-.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
-.slide-nav-overlay.open{display:block}
-.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
-.slide-nav-logo span{color:var(--ac)}
-.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
-.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
-.snl:hover{background:var(--acg)}
-.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
-.slide-nav-links{padding:12px 8px}
-.slide-nav-post{padding:0 16px 12px}
-.snp-post-btn{display:block;width:100%;background:var(--ac);color:#07060d;border:none;border-radius:10px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;text-align:center;text-decoration:none;cursor:pointer;transition:background .2s}
-.snp-post-btn:hover{background:#cdb8ff}
-.slide-nav-logout{padding:0 16px 16px}
-.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
-@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}}
+.nav-links a{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--mu);transition:all .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--tx);background:var(--s2)}
+.nav-right{display:flex;gap:8px;align-items:center}
+.nav-btn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
+.nav-btn:hover{border-color:var(--ac);color:var(--ac)}
 
-/* ── PAGE ── */
-.main{max-width:1060px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,6vw,64px);letter-spacing:3px;margin-bottom:8px}
-.page-title span{color:var(--ac)}
-.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px}
+/* ── HERO ── */
+.hero{position:relative;overflow:hidden;padding:64px 24px 52px;text-align:center;min-height:380px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.hero-bg-glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 55% at 50% 40%,var(--div-color),transparent 70%);opacity:0.18}
+.hero-watermark{position:absolute;top:16px;right:20px;height:100px;opacity:0.04;pointer-events:none}
+.hero-bg-badge{position:absolute;font-size:200px;opacity:0.06;filter:blur(2px);transform:scale(6) rotate(0deg);animation:bgSpin 60s linear infinite;pointer-events:none;line-height:1;top:50%;left:50%;margin:-60px 0 0 -60px}
+.particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--div-color);opacity:0.15;animation:floatUp var(--dur,12s) var(--delay,0s) linear infinite}
+@keyframes floatUp{0%{transform:translateY(100vh) translateX(0);opacity:0.15}100%{transform:translateY(-60px) translateX(var(--drift,20px));opacity:0}}
+@keyframes bgSpin{to{transform:scale(6) rotate(360deg)}}
+.hero-title{font-family:'Rajdhani',sans-serif;font-size:clamp(42px,8vw,72px);font-weight:700;letter-spacing:4px;line-height:1;position:relative;z-index:2}
+.hero-subtitle{font-size:14px;color:var(--mu2);margin-top:6px;font-weight:500;letter-spacing:1px;position:relative;z-index:2}
+.hero-stats{display:flex;align-items:center;gap:0;margin-top:24px;background:rgba(18,18,18,0.7);border:1px solid var(--bd);border-radius:10px;overflow:hidden;position:relative;z-index:2;backdrop-filter:blur(8px)}
+.hero-stat{padding:12px 22px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.hero-stat-val{font-size:16px;font-weight:700;display:block;color:var(--tx)}
+.hero-stat-lbl{color:var(--mu);font-size:10px;margin-top:1px}
+.hero-stat+.hero-stat{border-left:1px solid var(--bd)}
+.hero-next{margin-top:20px;background:rgba(18,18,18,0.75);border:1px solid var(--bd);border-radius:10px;padding:14px 22px;min-width:280px;max-width:380px;position:relative;z-index:2;backdrop-filter:blur(8px)}
+.hero-next-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.hero-next-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.hero-next-track{height:5px;background:var(--s2);border-radius:3px;overflow:hidden}
+.hero-next-fill{height:100%;background:var(--div-color);border-radius:3px;transition:width 1.2s ease-out}
+.hero-next-sub{font-size:11px;color:var(--mu);margin-top:5px;font-family:'JetBrains Mono',monospace}
 
-/* ── PROGRESS BAR ── */
-.progress-wrap{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:22px 28px;margin-bottom:28px}
-.prog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.prog-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--ac)}
-.prog-count{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--tx)}
-.prog-sub{font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.prog-rarity-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
-.prog-r-item{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px}
-.prog-r-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.prog-bar-track{height:5px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden;margin-top:12px}
-.prog-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ac),rgba(184,159,255,.5));transition:width 1.2s ease}
+/* ── SHOWCASE ── */
+.showcase-wrap{max-width:1140px;margin:0 auto 0;padding:32px 24px 0}
+.sec-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.sec-header-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--mu)}
+.sec-header::after{content:'';flex:1;height:1px;background:var(--bd)}
+.sec-header-img{width:14px;height:14px;opacity:0.25}
+.showcase-slots{display:flex;gap:12px;flex-wrap:wrap}
+.showcase-slot{width:80px;height:88px;border-radius:12px;border:1.5px dashed var(--bd);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;position:relative;background:var(--s1)}
+.showcase-slot:hover{border-color:var(--ac);background:var(--acg)}
+.showcase-slot.has-badge{border-style:solid}
+.showcase-slot .slot-plus{font-size:20px;color:var(--bd)}
+.showcase-slot .slot-icon{font-size:28px;line-height:1}
+.showcase-slot .slot-name{font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--mu);margin-top:3px;text-align:center;padding:0 4px;line-height:1.2}
+.showcase-slot.selecting{border-color:var(--ac);background:var(--acg);animation:slotPulse 1s ease infinite}
+@keyframes slotPulse{0%,100%{box-shadow:0 0 0 0 rgba(123,44,255,0)}50%{box-shadow:0 0 0 4px rgba(123,44,255,0.2)}}
 
-/* ── FILTER TABS ── */
-.filter-row{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;align-items:center}
-.filter-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-right:4px}
-.rt{padding:6px 16px;border-radius:20px;font-size:11px;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;border:1px solid var(--bd);color:var(--mu2);background:transparent;letter-spacing:.5px}
-.rt:hover{border-color:var(--bd2);color:var(--tx)}
-.rt.active        {border-color:var(--bd2);color:var(--ac);background:var(--acg)}
-.rt.active.common {border-color:rgba(148,163,184,.4);color:#94a3b8;background:rgba(148,163,184,.08)}
-.rt.active.rare   {border-color:rgba(56,189,248,.4);color:var(--cyan);background:rgba(56,189,248,.08)}
-.rt.active.epic   {border-color:rgba(184,159,255,.5);color:var(--ac);background:var(--acg)}
-.rt.active.legendary{border-color:rgba(251,191,36,.5);color:var(--gold);background:rgba(251,191,36,.08)}
+/* ── PAGE BODY ── */
+.page{max-width:1140px;margin:0 auto;padding:32px 24px 60px}
 
-/* ── GRID ── */
-.badges-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media(max-width:760px){.badges-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:480px){.badges-grid{grid-template-columns:1fr}}
+/* ── SECTION ── */
+.badge-section{margin-bottom:40px}
+.badge-section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;border-left:3px solid var(--ac);padding-left:10px;cursor:pointer}
+.badge-section-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.badge-section-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);margin-left:auto}
+.badge-section-count.complete{color:var(--gr)}
+.badge-section-toggle{font-size:11px;color:var(--mu);white-space:nowrap}
+.section-divider{display:flex;align-items:center;gap:8px;margin:32px 0 28px}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--bd)}
+.section-divider img{width:14px;height:14px;opacity:0.25}
 
-/* ── SECTION LABEL ── */
-.rarity-section-lbl{grid-column:1/-1;display:flex;align-items:center;gap:12px;margin-top:8px;margin-bottom:4px}
-.rarity-section-lbl span{font-family:'DM Mono',monospace;font-size:10px;font-weight:700;letter-spacing:3px}
-.rarity-section-lbl::after{content:'';flex:1;height:1px;background:var(--bd)}
+/* ── BADGE GRID ── */
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.badge-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:580px){.badge-grid{grid-template-columns:repeat(2,1fr)}}
 
-/* ── EMPTY ── */
-.empty-state{text-align:center;padding:60px 20px;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;grid-column:1/-1}
+/* FEATURED grid (3 larger) */
+.badge-grid-featured{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:40px}
+@media(max-width:600px){.badge-grid-featured{grid-template-columns:1fr 1fr}}
 
-/* ── UNLOCK CTA ── */
-.unlock-cta{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.15);border-radius:12px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:14px}
-.unlock-cta-icon{font-size:20px;flex-shrink:0}
-.unlock-cta-text{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);line-height:1.6}
-.unlock-cta-count{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gr);flex-shrink:0}
+/* ── BADGE CARD ── */
+.badge-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.badge-card:hover{transform:translateY(-2px)}
+.badge-card.locked{filter:grayscale(0.7);opacity:0.45}
+.badge-card.locked .badge-icon{opacity:0.5}
+.badge-card-featured{padding:20px 14px;border-radius:16px}
+.badge-lock-overlay{position:absolute;top:8px;right:8px;font-size:11px;opacity:0.5}
+.badge-icon{font-size:36px;line-height:1;position:relative;z-index:1}
+.badge-card-featured .badge-icon{font-size:48px}
+.badge-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;text-align:center;line-height:1.2}
+.badge-card-featured .badge-name{font-size:16px}
+.badge-rarity-pill{font-size:8px;font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;padding:2px 7px;border-radius:10px;border:1px solid currentColor;font-weight:700;text-transform:uppercase}
+
+/* rarity treatments */
+.rarity-common .badge-rarity-pill{color:var(--c-common);border-color:var(--c-common)}
+.rarity-rare{box-shadow:0 0 12px rgba(79,195,247,0.3);border-color:#4FC3F7}
+.rarity-rare .badge-rarity-pill{color:var(--c-rare);border-color:var(--c-rare)}
+.rarity-epic{box-shadow:0 0 16px rgba(123,44,255,0.4);border-color:rgba(123,44,255,0.5)}
+.rarity-epic .badge-rarity-pill{color:var(--c-epic);border-color:var(--c-epic)}
+.rarity-legendary{box-shadow:0 0 24px rgba(255,215,0,0.4);border-color:rgba(255,215,0,0.5);animation:legendGlow 3s ease infinite}
+@keyframes legendGlow{0%,100%{box-shadow:0 0 24px rgba(255,215,0,0.4)}50%{box-shadow:0 0 36px rgba(255,215,0,0.6)}}
+.rarity-legendary .badge-rarity-pill{color:var(--c-legendary);border-color:var(--c-legendary)}
+.rarity-mythic{border-color:transparent;animation:mythicBorder 8s linear infinite,legendGlow 2s ease infinite}
+@keyframes mythicBorder{0%{border-color:hsl(0,80%,60%)}14%{border-color:hsl(51,80%,60%)}28%{border-color:hsl(102,80%,60%)}42%{border-color:hsl(153,80%,60%)}56%{border-color:hsl(204,80%,60%)}70%{border-color:hsl(255,80%,60%)}84%{border-color:hsl(306,80%,60%)}100%{border-color:hsl(360,80%,60%)}}
+.rarity-mythic .badge-rarity-pill{animation:mythicText 8s linear infinite;border-color:transparent}
+@keyframes mythicText{0%{color:hsl(0,80%,70%)}25%{color:hsl(90,80%,70%)}50%{color:hsl(180,80%,70%)}75%{color:hsl(270,80%,70%)}100%{color:hsl(360,80%,70%)}}
+
+/* legendary orbit particles */
+.orbit-ring{position:absolute;inset:-6px;pointer-events:none}
+.orbit-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:var(--gold);top:50%;left:50%;transform-origin:0 0;animation:orbitDot 4s linear infinite}
+@keyframes orbitDot{to{transform:rotate(360deg) translateX(44px) rotate(-360deg)}}
+
+/* rare pulse */
+.rarity-rare{animation:rarePulse 3s ease infinite}
+@keyframes rarePulse{0%,100%{box-shadow:0 0 12px rgba(79,195,247,0.3)}50%{box-shadow:0 0 20px rgba(79,195,247,0.5)}}
+
+/* shimmer on epic */
+.rarity-epic::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(123,44,255,0.06) 50%,transparent 60%);animation:shimmer 3s linear infinite}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+
+/* ── MODAL ── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-backdrop.open{opacity:1;pointer-events:auto}
+.modal-card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;width:100%;max-width:400px;padding:32px 28px;position:relative;transform:translateY(20px) scale(.97);transition:transform .2s;text-align:center}
+.modal-backdrop.open .modal-card{transform:translateY(0) scale(1)}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;transition:color .15s}
+.modal-close:hover{color:var(--tx)}
+.modal-icon{font-size:72px;line-height:1;margin-bottom:12px;display:block}
+.modal-rarity{font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;padding:3px 10px;border-radius:10px;border:1px solid currentColor;display:inline-block;margin-bottom:10px}
+.modal-name{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;margin-bottom:6px}
+.modal-desc{font-size:14px;color:var(--mu2);line-height:1.6;margin-bottom:16px}
+.modal-divider{height:1px;background:var(--bd);margin:16px 0}
+.modal-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);text-align:left;display:flex;flex-direction:column;gap:8px}
+.modal-meta-row{display:flex;justify-content:space-between;align-items:center}
+.modal-meta-lbl{color:var(--mu);font-size:10px;letter-spacing:1px}
+.modal-meta-val{color:var(--tx)}
+.modal-progress-track{height:5px;background:var(--s2);border-radius:3px;overflow:hidden;margin-top:4px}
+.modal-progress-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
+.modal-secret{color:var(--mu);font-style:italic;font-size:13px;margin:12px 0}
+.modal-hint{font-size:11px;color:var(--mu);border:1px dashed var(--bd);border-radius:6px;padding:8px 12px;margin-top:8px;text-align:center;font-style:italic}
+.modal-equip-btn{width:100%;margin-top:14px;padding:10px;border-radius:8px;border:1px solid var(--ac);background:var(--acg);color:var(--ac);font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s}
+.modal-equip-btn:hover{background:var(--ac);color:#fff}
+.modal-equip-btn.equipped{background:rgba(0,229,160,0.1);border-color:var(--gr);color:var(--gr)}
+.modal-watermark{position:absolute;bottom:12px;right:14px;width:28px;height:28px;opacity:0.06}
+.modal-unlock-date{color:var(--gr);font-size:11px}
+.modal-pct{color:var(--mu);font-size:11px}
+.modal-reward{background:rgba(123,44,255,0.06);border:1px solid rgba(123,44,255,0.2);border-radius:6px;padding:8px 12px;text-align:left;margin-top:8px}
+.modal-reward-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.modal-reward-val{font-size:13px;color:var(--ac-l)}
+
+/* ── LOADING ── */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:12px;color:var(--mu)}
+.spinner{width:32px;height:32px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── UTILS ── */
+.collapsed .badge-grid,.collapsed .badge-grid-featured{display:none}
+.show-toggle{font-size:12px;color:var(--ac);cursor:pointer;margin-top:6px;display:inline-block;font-family:'Barlow',sans-serif;font-weight:500}
+.show-toggle:hover{text-decoration:underline}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>
 <body>
+
 <nav class="brand-nav">
-  <a href="/" class="logo">LEDG<span>R</span></a>
-  <div class="brand-nav-links">
-    <a href="/" class="brand-nav-link">Home</a>
-    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
-    <a href="/feed" class="brand-nav-link">Feed</a>
-    <a href="/analytics" class="brand-nav-link">Analytics</a>
-    <a href="/community" class="brand-nav-link">Community</a>
-    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
+  <a class="nav-logo" href="/home/">
+    <picture>
+      <source srcset="/assets/logo/ledgr-logo.png" type="image/png">
+      <span><span>L</span>EDGR</span>
+    </picture>
+  </a>
+  <div class="nav-links">
+    <a href="/home/">Home</a>
+    <a href="/feed/">Feed</a>
+    <a href="/leaderboard/">Ranks</a>
+    <a href="/progress/">Progress</a>
+    <a href="/badges/" class="active">Badges</a>
   </div>
-  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="logout()">Sign Out</button>
+  </div>
 </nav>
-<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
-<div class="brand-slide-menu" id="brandSlideMenu">
-  <div class="brand-slide-header">
-    <span class="brand-slide-logo">LEDG<span>R</span></span>
-    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
-  </div>
-  <div class="brand-slide-links">
-    <a href="/dashboard" class="brand-snl">Post a Pick</a>
-    <a href="/simulator" class="brand-snl">Simulator</a>
-    <a href="/compare" class="brand-snl">Compare Tipsters</a>
-    <a href="/badges" class="brand-snl">Badges</a>
-    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
-    <a href="/progress" class="brand-snl">Progress</a>
-    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
-    <a href="/settings" class="brand-snl">Settings</a>
-    <a href="/notifications" class="brand-snl">Notifications</a>
-    <a href="/news" class="brand-snl">News</a>
-  </div>
-  <div id="brandSlideAuth"></div>
-</div>
 
-<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
-<div class="slide-nav" id="slideNav">
-  <div class="slide-nav-header">
-    <div class="slide-nav-logo">LEDG<span>R</span></div>
-    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-bg-glow" id="heroBgGlow"></div>
+  <img class="hero-watermark" src="/assets/logo/ledgr-icon.png" alt="">
+  <div class="particles" id="particlesWrap"></div>
+  <div class="hero-bg-badge" id="heroBgBadge"></div>
+
+  <div class="hero-title" id="heroTitle">BADGE VAULT</div>
+  <div class="hero-subtitle" id="heroSubtitle">BUILD YOUR LEGEND</div>
+
+  <div class="hero-stats" id="heroStats">
+    <div class="hero-stat"><span class="hero-stat-val" id="hUnlocked">—</span><div class="hero-stat-lbl">Unlocked</div></div>
+    <div class="hero-stat"><span class="hero-stat-val" id="hLegendary" style="color:var(--gold)">—</span><div class="hero-stat-lbl">Legendary</div></div>
+    <div class="hero-stat"><span class="hero-stat-val" id="hEpic" style="color:var(--c-epic)">—</span><div class="hero-stat-lbl">Epic</div></div>
+    <div class="hero-stat"><span class="hero-stat-val" id="hCompletion" style="color:var(--ac)">—</span><div class="hero-stat-lbl">Completion</div></div>
   </div>
-  <div class="slide-nav-links">
-    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
-    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
-    <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
-    <a href="/news" class="snl"><span class="snl-icon">📰</span><div class="snl-text">Sports Intel</div></a>
-    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
-    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
-    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
-    <a href="/progress" class="snl"><span class="snl-icon">🎮</span><div class="snl-text">Progression</div></a>
-    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
-    <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
-    <a href="/dashboard" class="snl"><span class="snl-icon">＋</span><div class="snl-text">Post a Pick</div></a>
-    <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
-    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
-  </div>
-  <div class="slide-nav-post">
-    <a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a>
-  </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="logout()">Log Out</button>
+
+  <div class="hero-next" id="heroNext" style="display:none">
+    <div class="hero-next-label">Next Unlock</div>
+    <div class="hero-next-name" id="heroNextName">—</div>
+    <div class="hero-next-track"><div class="hero-next-fill" id="heroNextFill" style="width:0%"></div></div>
+    <div class="hero-next-sub" id="heroNextSub"></div>
   </div>
 </div>
 
-<div class="main">
-  <div class="page-title">YOUR <span>BADGES</span></div>
-  <div class="page-sub">EARN TROPHIES · BUILD YOUR LEGACY</div>
-
-  <!-- OVERALL PROGRESS -->
-  <div class="progress-wrap" id="progressWrap" style="display:none">
-    <div class="prog-top">
-      <div>
-        <div class="prog-title">BADGE PROGRESS</div>
-        <div class="prog-sub" id="progSub">Loading…</div>
-      </div>
-      <div class="prog-count"><span id="progUnlocked">0</span>/<span id="progTotal">0</span></div>
-    </div>
-    <div class="prog-rarity-row" id="progRarityRow"></div>
-    <div class="prog-bar-track"><div class="prog-bar-fill" id="progFill" style="width:0%"></div></div>
+<!-- SHOWCASE -->
+<div class="showcase-wrap">
+  <div class="sec-header">
+    <span class="sec-header-title">Your Showcase</span>
+    <img class="sec-header-img" src="/assets/logo/ledgr-icon.png" alt="">
   </div>
-
-  <!-- NEW UNLOCK CTA (shown if fresh badges earned) -->
-  <div class="unlock-cta" id="newUnlockCta" style="display:none">
-    <span class="unlock-cta-icon">🎉</span>
-    <div class="unlock-cta-text">You've earned new badges! Click any unlocked badge to view its animation.</div>
-    <span class="unlock-cta-count" id="newUnlockCount">0</span>
-  </div>
-
-  <!-- FILTER TABS -->
-  <div class="filter-row">
-    <span class="filter-lbl">Filter</span>
-    <button class="rt active all"       onclick="setFilter('all',this)">All</button>
-    <button class="rt common"           onclick="setFilter('common',this)">⚪ Common</button>
-    <button class="rt rare"             onclick="setFilter('rare',this)">🔵 Rare</button>
-    <button class="rt epic"             onclick="setFilter('epic',this)">🟣 Epic</button>
-    <button class="rt legendary"        onclick="setFilter('legendary',this)">🟡 Legendary</button>
-  </div>
-
-  <!-- GRID -->
-  <div class="badges-grid" id="badgesGrid">
-    <div class="empty-state">Loading your badge collection…</div>
+  <div class="showcase-slots" id="showcaseSlots">
+    <div class="showcase-slot" data-slot="0" onclick="selectShowcaseSlot(0)"><span class="slot-plus">+</span></div>
+    <div class="showcase-slot" data-slot="1" onclick="selectShowcaseSlot(1)"><span class="slot-plus">+</span></div>
+    <div class="showcase-slot" data-slot="2" onclick="selectShowcaseSlot(2)"><span class="slot-plus">+</span></div>
+    <div class="showcase-slot" data-slot="3" onclick="selectShowcaseSlot(3)"><span class="slot-plus">+</span></div>
   </div>
 </div>
 
-<script src="/badges-system.js"></script>
-<script src="/mobile.js"></script>
+<!-- BADGE SECTIONS -->
+<div class="page" id="badgePage">
+  <div class="loading-wrap">
+    <div class="spinner"></div>
+    <div>Loading your vault…</div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal" onclick="closeModal(event)">
+  <div class="modal-card" id="modalCard">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div id="modalInner"></div>
+    <img class="modal-watermark" src="/assets/logo/ledgr-icon.png" alt="">
+  </div>
+</div>
+
 <script>
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
-const BS   = window.BadgeSystem;
 
-let currentFilter = 'all';
-let statsObj      = null;
-let extraObj      = null;
-let unlockedMap   = {};
-let freshIds      = [];
+// Auth
+const _raw = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+const _t = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+if (!_raw || !_t) { window.location.replace('/login/'); throw 0; }
+let _me;
+try { _me = JSON.parse(_raw); } catch(e) { window.location.replace('/login/'); throw 0; }
+const ME_ID = _me.userId || _me.id || '';
+const ME_USERNAME = _me.username || _me.name || '';
 
-// ── Rarity colours (used in JS) ──────────────────────────────────
-const RC = {
-  common:    { color:'#94a3b8', label:'COMMON'    },
-  rare:      { color:'#38bdf8', label:'RARE'       },
-  epic:      { color:'#b89fff', label:'EPIC'       },
-  legendary: { color:'#fbbf24', label:'LEGENDARY'  },
-};
+function authHdr() { return { 'Authorization': 'Bearer ' + _t }; }
+function logout() { ['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k)); window.location.href='/'; }
 
-// ── Filter ───────────────────────────────────────────────────────
-function setFilter(r, el) {
-  currentFilter = r;
-  document.querySelectorAll('.rt').forEach(function(b){ b.classList.remove('active'); });
-  el.classList.add('active');
-  renderGrid();
+// ── BADGE DEFINITIONS ─────────────────────────────────────────────────────────
+const BADGES = [
+  // CAREER
+  { id:'first-blood',    cat:'career',    icon:'🩸', name:'First Blood',    rarity:'common',    desc:'Your first verified win pick.',              req:'1 win',          reward:'Profile badge',         check: d => d.wins>=1,                          progress: d => ({cur:d.wins,max:1}) },
+  { id:'apprentice',     cat:'career',    icon:'📋', name:'Apprentice',     rarity:'common',    desc:'10 picks posted.',                           req:'10 picks',       reward:'Starter tag',           check: d => d.picks>=10,                        progress: d => ({cur:d.picks,max:10}) },
+  { id:'veteran',        cat:'career',    icon:'🎖️', name:'Veteran',        rarity:'rare',      desc:'100 picks posted.',                          req:'100 picks',      reward:'Veteran border',        check: d => d.picks>=100,                       progress: d => ({cur:d.picks,max:100}) },
+  { id:'grinder',        cat:'career',    icon:'⚙️', name:'Grinder',        rarity:'rare',      desc:'500 picks posted.',                          req:'500 picks',      reward:'Grinder aura',          check: d => d.picks>=500,                       progress: d => ({cur:d.picks,max:500}) },
+  { id:'machine',        cat:'career',    icon:'🤖', name:'Machine',        rarity:'epic',      desc:'1000 picks posted.',                         req:'1000 picks',     reward:'Machine name effect',   check: d => d.picks>=1000,                      progress: d => ({cur:d.picks,max:1000}) },
+  { id:'immortal',       cat:'career',    icon:'♾️', name:'Immortal',       rarity:'legendary', desc:'5000 picks posted.',                         req:'5000 picks',     reward:'Immortal ring + aura',  check: d => d.picks>=5000,                      progress: d => ({cur:d.picks,max:5000}) },
+  // STREAKS
+  { id:'heat-check',     cat:'streak',    icon:'🌡️', name:'Heat Check',     rarity:'common',    desc:'3 consecutive wins.',                        req:'3 win streak',   reward:'Streak tag',            check: d => d.bestStreak>=3,                    progress: d => ({cur:Math.min(d.bestStreak,3),max:3}) },
+  { id:'on-fire',        cat:'streak',    icon:'🔥', name:'On Fire',        rarity:'common',    desc:'5 consecutive wins.',                        req:'5 win streak',   reward:'Fire emoji border',     check: d => d.bestStreak>=5,                    progress: d => ({cur:Math.min(d.bestStreak,5),max:5}) },
+  { id:'demon-mode',     cat:'streak',    icon:'😈', name:'Demon Mode',     rarity:'rare',      desc:'10 consecutive wins.',                       req:'10 win streak',  reward:'Demon aura',            check: d => d.bestStreak>=10,                   progress: d => ({cur:Math.min(d.bestStreak,10),max:10}) },
+  { id:'unstoppable',    cat:'streak',    icon:'🌪️', name:'Unstoppable',    rarity:'epic',      desc:'15 consecutive wins.',                       req:'15 win streak',  reward:'Unstoppable ring',      check: d => d.bestStreak>=15,                   progress: d => ({cur:Math.min(d.bestStreak,15),max:15}) },
+  { id:'mythic-run',     cat:'streak',    icon:'⚡', name:'Mythic Run',     rarity:'epic',      desc:'20 consecutive wins.',                       req:'20 win streak',  reward:'Mythic streak effect',  check: d => d.bestStreak>=20,                   progress: d => ({cur:Math.min(d.bestStreak,20),max:20}) },
+  { id:'god-mode',       cat:'streak',    icon:'👁️', name:'God Mode',       rarity:'legendary', desc:'30 consecutive wins.',                       req:'30 win streak',  reward:'God Mode title + aura', check: d => d.bestStreak>=30,                   progress: d => ({cur:Math.min(d.bestStreak,30),max:30}) },
+  // PROFIT
+  { id:'green-day',      cat:'profit',    icon:'💚', name:'Green Day',      rarity:'common',    desc:'+10 units profit total.',                    req:'+10u profit',    reward:'Green accent',          check: d => d.pnl>=10,                          progress: d => ({cur:Math.max(0,d.pnl),max:10}) },
+  { id:'money-printer',  cat:'profit',    icon:'🖨️', name:'Money Printer',  rarity:'rare',      desc:'+100 units profit total.',                   req:'+100u profit',   reward:'Printer tag',           check: d => d.pnl>=100,                         progress: d => ({cur:Math.max(0,d.pnl),max:100}) },
+  { id:'cash-machine',   cat:'profit',    icon:'💰', name:'Cash Machine',   rarity:'epic',      desc:'+500 units profit total.',                   req:'+500u profit',   reward:'Cash Machine aura',     check: d => d.pnl>=500,                         progress: d => ({cur:Math.max(0,d.pnl),max:500}) },
+  { id:'whale',          cat:'profit',    icon:'🐋', name:'Whale',          rarity:'legendary', desc:'+1000 units profit total.',                  req:'+1000u profit',  reward:'Whale ring + glow',     check: d => d.pnl>=1000,                        progress: d => ({cur:Math.max(0,d.pnl),max:1000}) },
+  { id:'empire-builder', cat:'profit',    icon:'🏛️', name:'Empire Builder', rarity:'mythic',    desc:'+5000 units profit. A true empire.',         req:'+5000u profit',  reward:'Empire title + effects',check: d => d.pnl>=5000,                        progress: d => ({cur:Math.max(0,d.pnl),max:5000}) },
+  // ROI
+  { id:'sharp-mind',     cat:'roi',       icon:'🧠', name:'Sharp Mind',     rarity:'rare',      desc:'10% ROI (min 20 picks).',                    req:'10% ROI 20+picks',reward:'Sharp tag',            check: d => d.roi>=10&&d.picks>=20,             progress: d => ({cur:Math.min(d.roi,10),max:10,secondary:d.picks+'/20'}) },
+  { id:'elite-edge',     cat:'roi',       icon:'🎯', name:'Elite Edge',     rarity:'epic',      desc:'20% ROI with minimum 30 picks.',             req:'20% ROI 30+picks',reward:'Elite Edge border',    check: d => d.roi>=20&&d.picks>=30,             progress: d => ({cur:Math.min(d.roi,20),max:20,secondary:d.picks+'/30'}) },
+  { id:'market-breaker', cat:'roi',       icon:'📉', name:'Market Breaker', rarity:'epic',      desc:'30% ROI with minimum 40 picks.',             req:'30% ROI 40+picks',reward:'Market Breaker aura',  check: d => d.roi>=30&&d.picks>=40,             progress: d => ({cur:Math.min(d.roi,30),max:30,secondary:d.picks+'/40'}) },
+  { id:'untouchable',    cat:'roi',       icon:'🔱', name:'Untouchable',    rarity:'legendary', desc:'50% ROI with minimum 50 picks.',             req:'50% ROI 50+picks',reward:'Untouchable gold ring', check: d => d.roi>=50&&d.picks>=50,            progress: d => ({cur:Math.min(d.roi,50),max:50,secondary:d.picks+'/50'}) },
+  // CONSISTENCY
+  { id:'steady-hand',    cat:'consistency',icon:'✋', name:'Steady Hand',    rarity:'common',    desc:'Profitable over 7 consecutive days.',        req:'7 profitable days',reward:'Steady tag',         check: d => d.profDays>=7,                      progress: d => ({cur:Math.min(d.profDays,7),max:7}) },
+  { id:'reliable',       cat:'consistency',icon:'🛡️', name:'Reliable',       rarity:'rare',      desc:'Profitable over 30 consecutive days.',       req:'30 profitable days',reward:'Reliable border',   check: d => d.profDays>=30,                     progress: d => ({cur:Math.min(d.profDays,30),max:30}) },
+  { id:'rock-solid',     cat:'consistency',icon:'🪨', name:'Rock Solid',     rarity:'epic',      desc:'Profitable over 90 consecutive days.',       req:'90 profitable days',reward:'Rock Solid ring',   check: d => d.profDays>=90,                     progress: d => ({cur:Math.min(d.profDays,90),max:90}) },
+  { id:'iron-discipline',cat:'consistency',icon:'⚔️', name:'Iron Discipline',rarity:'legendary', desc:'Profitable over 180 consecutive days.',      req:'180 profitable days',reward:'Iron aura + title', check: d => d.profDays>=180,                   progress: d => ({cur:Math.min(d.profDays,180),max:180}) },
+  // UNDERDOG
+  { id:'hunter',         cat:'underdog',  icon:'🎣', name:'Hunter',         rarity:'common',    desc:'10 wins at odds 2.5+.',                      req:'10 underdog wins', reward:'Hunter tag',         check: d => d.underdogWins>=10,                 progress: d => ({cur:Math.min(d.underdogWins,10),max:10}) },
+  { id:'wolf',           cat:'underdog',  icon:'🐺', name:'Wolf',           rarity:'rare',      desc:'50 wins at odds 2.5+.',                      req:'50 underdog wins', reward:'Wolf border',        check: d => d.underdogWins>=50,                 progress: d => ({cur:Math.min(d.underdogWins,50),max:50}) },
+  { id:'predator',       cat:'underdog',  icon:'🦅', name:'Predator',       rarity:'epic',      desc:'100 wins at odds 2.5+.',                     req:'100 underdog wins',reward:'Predator aura',      check: d => d.underdogWins>=100,                progress: d => ({cur:Math.min(d.underdogWins,100),max:100}) },
+  { id:'monster',        cat:'underdog',  icon:'👹', name:'Monster',        rarity:'legendary', desc:'250 wins at odds 2.5+.',                     req:'250 underdog wins',reward:'Monster ring + glow', check: d => d.underdogWins>=250,               progress: d => ({cur:Math.min(d.underdogWins,250),max:250}) },
+  // CLV
+  { id:'line-reader',    cat:'clv',       icon:'📖', name:'Line Reader',    rarity:'rare',      desc:'Positive CLV average (min 10 picks).',       req:'+CLV 10+ picks', reward:'CLV tag',              check: d => d.clvAvg>0&&d.picks>=10,            progress: d => ({cur:d.picks,max:10}) },
+  { id:'market-reader',  cat:'clv',       icon:'📊', name:'Market Reader',  rarity:'epic',      desc:'Positive CLV maintained over 30 picks.',     req:'+CLV 30+ picks', reward:'Market Reader border',  check: d => d.clvAvg>0&&d.picks>=30,           progress: d => ({cur:d.picks,max:30}) },
+  { id:'clv-master',     cat:'clv',       icon:'🔮', name:'CLV Master',     rarity:'epic',      desc:'Top 5% CLV across the entire platform.',     req:'Top 5% CLV',     reward:'CLV Master aura',       check: d => d.clvTop5,                          progress: d => ({cur:d.clvTop5?5:0,max:5}) },
+  { id:'vegas-nightmare',cat:'clv',       icon:'🃏', name:'Vegas Nightmare', rarity:'legendary', desc:'Top 1% CLV across the entire platform.',    req:'Top 1% CLV',     reward:'Vegas title + gold ring', check: d => d.clvTop1,                        progress: d => ({cur:d.clvTop1?1:0,max:1}) },
+  // PRESTIGE
+  { id:'diamond-soul',   cat:'prestige',  icon:'💎', name:'Diamond Soul',   rarity:'epic',      desc:'Reach Diamond division.',                    req:'Diamond division',reward:'Diamond ring',         check: d => ['diamond','elite','legendary'].includes(d.division), progress: d => ({cur:d.divIndex,max:4}) },
+  { id:'elite-blood',    cat:'prestige',  icon:'🔴', name:'Elite Blood',    rarity:'legendary', desc:'Reach Elite division.',                      req:'Elite division', reward:'Elite blood ring',      check: d => ['elite','legendary'].includes(d.division),           progress: d => ({cur:d.divIndex,max:5}) },
+  { id:'the-legendary',  cat:'prestige',  icon:'👑', name:'The Legendary',  rarity:'mythic',    desc:'Reach Legendary division — the pinnacle.',   req:'Legendary div',  reward:'Full Legendary effects', check: d => d.division==='legendary',          progress: d => ({cur:d.divIndex,max:6}) },
+  { id:'verified-elite', cat:'prestige',  icon:'✅', name:'Verified Elite', rarity:'legendary', desc:'Top 1% of all tipsters on LEDGR.',            req:'Top 1% rank',    reward:'Verified Elite tag',    check: d => d.isTop1,                           progress: d => ({cur:d.isTop1?1:0,max:1}) },
+  { id:'hall-of-fame',   cat:'prestige',  icon:'🏆', name:'Hall of Fame',   rarity:'mythic',    desc:'Inducted into the LEDGR Hall of Fame.',      req:'HOF induction',  reward:'HOF crown + eternal ring',check: d => false,                            progress: d => ({cur:0,max:1}) },
+  // SEASONAL
+  { id:'season-champ',   cat:'seasonal',  icon:'🎖️', name:'Season Champion',rarity:'legendary', desc:'Win any season on LEDGR.',                   req:'Win a season',   reward:'Champion crown',        check: d => d.isSeasonChamp,                    progress: d => ({cur:d.isSeasonChamp?1:0,max:1}) },
+  { id:'summer-champ',   cat:'seasonal',  icon:'☀️', name:'Summer Champion',rarity:'epic',      desc:'Win the summer season.',                     req:'Win summer',     reward:'Summer glow',           check: d => false,                              progress: d => ({cur:0,max:1}) },
+  { id:'top10-season',   cat:'seasonal',  icon:'🔟', name:'Top 10 Season',  rarity:'rare',      desc:'Finish top 10 in any season.',               req:'Top 10 season',  reward:'Top 10 tag',            check: d => d.seasonTop10,                      progress: d => ({cur:d.seasonTop10?1:0,max:1}) },
+  { id:'founding-season',cat:'seasonal',  icon:'🌱', name:'Founding Season',rarity:'epic',      desc:'Participated in Season 1.',                  req:'Season 1 member',reward:'Founding badge',        check: d => d.foundingSeason,                   progress: d => ({cur:d.foundingSeason?1:0,max:1}) },
+  // SECRET
+  { id:'ice-cold',       cat:'secret',    icon:'🥶', name:'Ice Cold',       rarity:'epic',      desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.lossStreak8,                      progress: d => ({cur:0,max:1}), secret:true },
+  { id:'comeback-king',  cat:'secret',    icon:'👊', name:'Comeback King',  rarity:'legendary', desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.comebackKing,                     progress: d => ({cur:0,max:1}), secret:true },
+  { id:'night-owl',      cat:'secret',    icon:'🦉', name:'Night Owl',      rarity:'rare',      desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.nightOwl,                         progress: d => ({cur:0,max:1}), secret:true },
+  { id:'against-the-world',cat:'secret', icon:'🌍', name:'Against The World',rarity:'epic',    desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.tenConsecUnderdog,                progress: d => ({cur:0,max:1}), secret:true },
+  { id:'the-oracle',     cat:'secret',    icon:'🔯', name:'The Oracle',     rarity:'legendary', desc:'???',                                        req:'???',            reward:'Hidden',                check: d => false,                              progress: d => ({cur:0,max:1}), secret:true },
+  { id:'ghost-mode',     cat:'secret',    icon:'👻', name:'Ghost Mode',     rarity:'rare',      desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.ghostMode,                        progress: d => ({cur:0,max:1}), secret:true },
+  // LEGACY
+  { id:'the-origin',     cat:'legacy',    icon:'🌌', name:'The Origin',     rarity:'legendary', desc:'Among the first 1000 users on LEDGR.',       req:'First 1000 users',reward:'Origin ring',         check: d => d.isOrigin,                         progress: d => ({cur:d.isOrigin?1:0,max:1}) },
+  { id:'early-sharp',    cat:'legacy',    icon:'⭐', name:'Early Sharp',    rarity:'epic',      desc:'Active tipster before Season 2.',            req:'Pre-Season 2',   reward:'Early Sharp border',    check: d => d.earlySharp,                       progress: d => ({cur:d.earlySharp?1:0,max:1}) },
+  { id:'season-zero',    cat:'legacy',    icon:'0️⃣', name:'Season Zero',    rarity:'mythic',    desc:'Active before Season 1 even began.',         req:'Pre-Season 1',   reward:'Season Zero eternal ring',check: d => d.seasonZero,                    progress: d => ({cur:d.seasonZero?1:0,max:1}) },
+  { id:'founding-member',cat:'legacy',    icon:'🏗️', name:'Founding Member',rarity:'legendary', desc:'Registered within the first 30 days of LEDGR.',req:'First 30 days',reward:'Founder crown',       check: d => d.foundingMember,                   progress: d => ({cur:d.foundingMember?1:0,max:1}) },
+];
+
+const RARITY_ORDER = ['common','rare','epic','legendary','mythic'];
+const RARITY_PCT = { common:45, rare:18, epic:6, legendary:1.2, mythic:0.3 };
+
+const DIV_MAP = { bronze:0, silver:1, gold:2, platinum:3, diamond:4, elite:5, legendary:6 };
+const DIV_COLORS = { bronze:'#b47850', silver:'#94a3b8', gold:'#fbbf24', platinum:'#38bdf8', diamond:'#b89fff', elite:'#e879a0', legendary:'#fbbf24' };
+
+// Showcase
+let showcaseIds = JSON.parse(localStorage.getItem('ledgr_badge_showcase') || '["","","",""]');
+while (showcaseIds.length < 4) showcaseIds.push('');
+let selectingSlot = -1;
+let allUnlocked = new Set();
+let computedData = {};
+
+function saveShowcase() { localStorage.setItem('ledgr_badge_showcase', JSON.stringify(showcaseIds)); }
+
+function selectShowcaseSlot(i) {
+  selectingSlot = i;
+  document.querySelectorAll('.showcase-slot').forEach((el,j) => el.classList.toggle('selecting', j===i));
+  document.querySelectorAll('.badge-card').forEach(el => el.style.outline = allUnlocked.has(el.dataset.id) ? '2px solid rgba(123,44,255,0.5)' : '');
+  // scroll to badges
+  document.getElementById('badgePage').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ── Progress summary ──────────────────────────────────────────────
-function updateProgress() {
-  if (!statsObj) return;
-  const total    = BS.BADGES.length;
-  const unlocked = BS.BADGES.filter(function(b){ return unlockedMap[b.id]; }).length;
-  const pct      = total ? ((unlocked/total)*100).toFixed(0) : 0;
-
-  document.getElementById('progressWrap').style.display = 'block';
-  document.getElementById('progUnlocked').textContent = unlocked;
-  document.getElementById('progTotal').textContent     = total;
-  document.getElementById('progFill').style.width      = pct + '%';
-  document.getElementById('progSub').textContent =
-    unlocked + ' unlocked · ' + (total - unlocked) + ' remaining';
-
-  // Per-rarity breakdown
-  const rarityRow = document.getElementById('progRarityRow');
-  rarityRow.innerHTML = Object.keys(RC).map(function(r) {
-    const rBadges    = BS.BADGES.filter(function(b){ return b.rarity === r; });
-    const rUnlocked  = rBadges.filter(function(b){ return unlockedMap[b.id]; }).length;
-    return '<div class="prog-r-item">' +
-      '<span class="prog-r-dot" style="background:'+RC[r].color+'"></span>' +
-      '<span style="color:'+RC[r].color+';font-weight:700">'+rUnlocked+'/'+rBadges.length+'</span>' +
-      '<span style="color:var(--mu)">'+RC[r].label+'</span>' +
-    '</div>';
-  }).join('');
+function renderShowcase() {
+  document.querySelectorAll('.showcase-slot').forEach((slot, i) => {
+    const id = showcaseIds[i];
+    const b = id ? BADGES.find(x=>x.id===id) : null;
+    if (b) {
+      slot.classList.add('has-badge');
+      slot.style.borderColor = rarityColor(b.rarity);
+      slot.innerHTML = `<span class="slot-icon">${b.icon}</span><span class="slot-name">${b.name}</span>`;
+    } else {
+      slot.classList.remove('has-badge');
+      slot.style.borderColor = '';
+      slot.innerHTML = '<span class="slot-plus">+</span>';
+    }
+  });
 }
 
-// ── Render badge grid ─────────────────────────────────────────────
-function renderGrid() {
-  if (!statsObj) return;
-  const grid = document.getElementById('badgesGrid');
+function rarityColor(r) {
+  return { common:'var(--c-common)', rare:'var(--c-rare)', epic:'var(--c-epic)', legendary:'var(--c-legendary)', mythic:'#ff6ac1' }[r] || 'var(--mu)';
+}
 
-  const RARITIES_ORDER = ['common','rare','epic','legendary'];
-  let badges = currentFilter === 'all'
-    ? BS.BADGES
-    : BS.BADGES.filter(function(b){ return b.rarity === currentFilter; });
-
-  if (!badges.length) {
-    grid.innerHTML = '<div class="empty-state">No badges in this category.</div>';
-    return;
+// Particles
+function buildParticles(color) {
+  const wrap = document.getElementById('particlesWrap');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `left:${Math.random()*100}%;bottom:${Math.random()*20-10}%;--dur:${10+Math.random()*10}s;--delay:${-Math.random()*12}s;--drift:${(Math.random()-0.5)*60}px;background:${color}`;
+    wrap.appendChild(p);
   }
-
-  let html = '';
-
-  if (currentFilter === 'all') {
-    RARITIES_ORDER.forEach(function(r) {
-      const rBadges = badges.filter(function(b){ return b.rarity === r; });
-      if (!rBadges.length) return;
-      const rc = RC[r];
-      html += '<div class="rarity-section-lbl">' +
-        '<span style="color:' + rc.color + '">' + rc.label + '</span>' +
-      '</div>';
-      rBadges.forEach(function(b){ html += cardHTML(b); });
-    });
-  } else {
-    badges.forEach(function(b){ html += cardHTML(b); });
-  }
-
-  grid.innerHTML = html;
-
-  // Animate progress bars after render
-  setTimeout(function() {
-    grid.querySelectorAll('.bg-prog-fill[data-pct]').forEach(function(el) {
-      el.style.width = el.getAttribute('data-pct') + '%';
-    });
-  }, 60);
 }
 
-function cardHTML(b) {
-  const unlocked = !!unlockedMap[b.id];
-  const isFresh  = freshIds.indexOf(b.id) !== -1;
-  const rc       = RC[b.rarity] || RC.common;
-  const prog     = b.prog(statsObj, extraObj);
-  const pct      = prog.max > 0 ? Math.min(100, Math.round((prog.cur / prog.max) * 100)) : 0;
-
-  const cardCls = 'bg-card r-' + b.rarity + (unlocked ? ' bg-unlocked' : ' bg-locked');
-  const tipText = b.tip || b.req;
-
-  let footer = '';
-  if (unlocked) {
-    footer = '<span class="bg-earned-tag">✅ EARNED' + (isFresh ? ' — NEW!' : '') + '</span>';
-  } else {
-    footer =
-      '<span class="bg-locked-tag">🔒 LOCKED</span>' +
-      '<div class="bg-prog">' +
-        '<div class="bg-prog-row"><span>Progress</span><span>' + prog.cur + ' / ' + prog.max + '</span></div>' +
-        '<div class="bg-prog-track">' +
-          '<div class="bg-prog-fill" data-pct="' + pct + '" style="width:0%;background:' + rc.color + '"></div>' +
-        '</div>' +
-      '</div>';
-  }
-
-  // Click handler: replay unlock anim for unlocked, otherwise noop
-  const clickAttr = unlocked
-    ? 'onclick="replayAnim(\'' + b.id + '\')"'
-    : '';
-
-  return '<div class="' + cardCls + '" data-bs-tip="' + tipText + '" ' + clickAttr + '>' +
-    '<div class="bg-corner-glow"></div>' +
-    '<div class="bg-icon-wrap">' +
-      '<span class="bg-icon">' + b.icon + '</span>' +
-      (!unlocked ? '<span class="bg-lock-icon">🔒</span>' : '') +
-    '</div>' +
-    '<span class="bg-rarity-pill">' + RC[b.rarity].label + '</span>' +
-    '<div class="bg-name">' + b.name + '</div>' +
-    '<div class="bg-desc">' + b.desc + '</div>' +
-    '<div class="bg-req">' + b.req + '</div>' +
-    footer +
-  '</div>';
-}
-
-// Replay animation when user clicks an earned badge
-function replayAnim(id) {
-  const badge = BS.BADGES.find(function(b){ return b.id === id; });
-  if (badge) BS.playUnlockAnim(badge);
-}
-
-// ── Load data ─────────────────────────────────────────────────────
+// Main load
 async function loadBadges() {
-  const ud = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
-  if (!ud) {
-    document.getElementById('badgesGrid').innerHTML =
-      '<div class="empty-state">Log in to see your badge collection.<br><br>' +
-      '<a href="/login" style="color:var(--ac)">Log in →</a></div>';
-    return;
-  }
-
-  let user;
-  try { user = JSON.parse(ud); } catch(e) { return; }
-
-  let picks = [], followers = 0, divisionName = 'BRONZE';
-  let isSeasonChampion = false, seasonBestFinish = 999;
-  let leaderboardRank  = 999;
-
   try {
-    // Fetch picks + leaderboard data in parallel
-    const [picksRes, followRes] = await Promise.all([
-      fetch(API + '/picks', { cache:'no-store' }),
-      fetch(API + '/followers/' + user.id, { cache:'no-store' }).catch(function(){ return null; })
+    const [picksRes, rankingRes] = await Promise.all([
+      fetch(API + '/picks?username=' + encodeURIComponent(ME_USERNAME), { headers: authHdr() }),
+      fetch(API + '/rankings/' + encodeURIComponent(ME_USERNAME), { headers: authHdr() }),
     ]);
 
-    const allPicks = await picksRes.json();
-    picks = Array.isArray(allPicks) ? allPicks.filter(function(p){ return p.userId === user.id; }) : [];
+    let picks = [];
+    let rm = null;
 
-    if (followRes && followRes.ok) {
-      const fd = await followRes.json();
-      followers = fd.count || 0;
+    if (picksRes.ok) { try { picks = await picksRes.json(); } catch(e){} }
+    if (Array.isArray(picks) && picks.data) picks = picks.data;
+    if (!Array.isArray(picks)) picks = [];
+
+    if (rankingRes.ok) { try { rm = await rankingRes.json(); } catch(e){} }
+
+    // Compute data
+    const d = computeBadgeData(picks, rm);
+    computedData = d;
+
+    // Division theme
+    const div = d.division || 'bronze';
+    const divColor = DIV_COLORS[div] || '#7B2CFF';
+    document.documentElement.style.setProperty('--div-color', divColor);
+
+    // Hero
+    document.getElementById('heroSubtitle').textContent = (div.toUpperCase()) + ' · BUILD YOUR LEGEND';
+    buildParticles(divColor);
+    document.getElementById('heroBgGlow').style.background = `radial-gradient(ellipse 60% 55% at 50% 40%,${divColor},transparent 70%)`;
+
+    // Compute unlocked
+    BADGES.forEach(b => { if (b.check(d)) allUnlocked.add(b.id); });
+
+    // Stats
+    const total = BADGES.length;
+    const unlocked = allUnlocked.size;
+    const legendaryCount = BADGES.filter(b=>b.rarity==='legendary'&&allUnlocked.has(b.id)).length;
+    const epicCount = BADGES.filter(b=>b.rarity==='epic'&&allUnlocked.has(b.id)).length;
+    document.getElementById('hUnlocked').textContent = unlocked + ' / ' + total;
+    document.getElementById('hLegendary').textContent = legendaryCount;
+    document.getElementById('hEpic').textContent = epicCount;
+    document.getElementById('hCompletion').textContent = Math.round(unlocked/total*100) + '%';
+
+    // Bg badge: rarest unlocked
+    const rarestUnlocked = BADGES.filter(b=>allUnlocked.has(b.id)).sort((a,b)=>RARITY_ORDER.indexOf(b.rarity)-RARITY_ORDER.indexOf(a.rarity))[0];
+    if (rarestUnlocked) document.getElementById('heroBgBadge').textContent = rarestUnlocked.icon;
+
+    // Next unlock
+    const locked = BADGES.filter(b=>!allUnlocked.has(b.id)&&!b.secret);
+    const closest = locked.map(b => {
+      const p = b.progress(d);
+      const pct = p.max > 0 ? Math.min(100, Math.round(p.cur/p.max*100)) : 0;
+      return { b, pct, p };
+    }).sort((a,bb)=>bb.pct-a.pct)[0];
+    if (closest && closest.pct > 0) {
+      document.getElementById('heroNext').style.display = '';
+      document.getElementById('heroNextName').textContent = closest.b.name.toUpperCase();
+      const rem = closest.p.max - Math.min(closest.p.cur, closest.p.max);
+      document.getElementById('heroNextSub').textContent = closest.p.secondary || (rem + ' remaining');
+      setTimeout(() => { document.getElementById('heroNextFill').style.width = closest.pct + '%'; }, 300);
     }
 
-    // Compute leaderboard rank from all picks
-    if (Array.isArray(allPicks)) {
-      const tmap = {};
-      allPicks.forEach(function(p) {
-        if (!p.user) return;
-        const u = p.user.username;
-        if (!tmap[u]) tmap[u] = { pnl:0, stake:0 };
-        tmap[u].pnl   += p.pnl;
-        tmap[u].stake += p.stake;
-      });
-      const sorted = Object.entries(tmap).sort(function(a,b) {
-        const ra = a[1].stake > 0 ? (a[1].pnl/a[1].stake)*100 : 0;
-        const rb = b[1].stake > 0 ? (b[1].pnl/b[1].stake)*100 : 0;
-        return rb - ra;
-      });
-      const rank = sorted.findIndex(function([u]){ return u === user.username; });
-      leaderboardRank = rank >= 0 ? rank + 1 : 999;
-    }
+    // Render sections
+    renderAllSections(d);
+    renderShowcase();
 
-    // Try season data for champion/top3
-    try {
-      const seasonsRes = await fetch(API + '/seasons', { cache:'no-store' });
-      if (seasonsRes.ok) {
-        const seasons = await seasonsRes.json();
-        for (const s of seasons) {
-          if (s.champion && s.champion === user.username) {
-            isSeasonChampion = true;
-            seasonBestFinish = 1;
-          }
-        }
-        // Check per-season leaderboards for top3 finishes
-        for (const s of seasons) {
-          if (s.id && !s.isActive) {
-            try {
-              const lbRes = await fetch(API + '/seasons/' + s.id + '/leaderboard');
-              if (lbRes.ok) {
-                const results = await lbRes.json();
-                const myEntry = results.find(function(r){ return r.user && r.user.username === user.username; });
-                if (myEntry && myEntry.rank <= 3 && myEntry.rank < seasonBestFinish) {
-                  seasonBestFinish = myEntry.rank;
-                }
-              }
-            } catch(e) {}
-          }
-        }
-      }
-    } catch(e) {}
-
-  } catch(e) {
-    document.getElementById('badgesGrid').innerHTML =
-      '<div class="empty-state">Could not load badge data — try again shortly.</div>';
-    return;
+  } catch(err) {
+    document.getElementById('badgePage').innerHTML = `<div class="loading-wrap">Failed to load badges. <a href="" style="color:var(--ac)">Retry</a></div>`;
+    console.error(err);
   }
+}
 
-  // Compute stats
-  statsObj = BS.calcStats(picks);
+function computeBadgeData(picks, rm) {
+  const settled = picks.filter(p=>p.result&&p.result!=='pending'&&p.result!=='void');
+  const wins = settled.filter(p=>p.result==='win');
+  const losses = settled.filter(p=>p.result==='loss');
+  const pnl = (rm&&rm.totalPnl!=null)?rm.totalPnl:settled.reduce((s,p)=>{
+    const v=p.pnl!=null?parseFloat(p.pnl):(p.result==='win'?(parseFloat(p.odds-1)*parseFloat(p.stake||1)):-parseFloat(p.stake||1));
+    return s+v;
+  },0);
+  const roi = (rm&&rm.roi!=null)?rm.roi:0;
+  const clvAvg = (rm&&rm.clvAvg!=null)?rm.clvAvg:0;
+  const division = (rm&&rm.division)?rm.division.toLowerCase():'bronze';
+  const divIndex = DIV_MAP[division]||0;
 
-  // Division name using Divisions module if available
-  if (window.Divisions) {
-    const divObj = window.Divisions.get(picks);
-    divisionName  = divObj.name;
-    statsObj.divScore = divObj.score;
-  }
+  // Best streak
+  let bestStreak=0, cur=0;
+  [...settled].sort((a,b)=>new Date(a.createdAt||a.date)-new Date(b.createdAt||b.date)).forEach(p=>{
+    if(p.result==='win'){cur++;bestStreak=Math.max(bestStreak,cur);}
+    else if(p.result==='loss')cur=0;
+  });
 
-  extraObj = {
-    emailVerified   : !!(user.emailVerified || user.verified),
-    followers       : followers,
-    divisionName    : divisionName,
-    leaderboardRank : leaderboardRank,
-    accountAgeDays  : statsObj.accountAgeDays,
-    isSeasonChampion: isSeasonChampion,
-    seasonBestFinish: seasonBestFinish,
+  // Underdog wins
+  const underdogWins = wins.filter(p=>parseFloat(p.odds||0)>=2.5).length;
+
+  // Consecutive loss streak (for ice-cold: recover after 8 losses)
+  let maxLoss=0, curL=0;
+  settled.forEach(p=>{ if(p.result==='loss'){curL++;maxLoss=Math.max(maxLoss,curL);}else curL=0; });
+
+  // Profitable days streak (approximate)
+  const byDay={};
+  settled.forEach(p=>{
+    const d=(p.createdAt||p.date||'').slice(0,10);
+    if(!d)return;
+    const v=p.pnl!=null?parseFloat(p.pnl):(p.result==='win'?(parseFloat(p.odds-1)*parseFloat(p.stake||1)):-parseFloat(p.stake||1));
+    byDay[d]=(byDay[d]||0)+v;
+  });
+  const days=Object.entries(byDay).sort((a,b)=>a[0].localeCompare(b[0]));
+  let profDays=0,curPD=0;
+  days.forEach(([,v])=>{ if(v>0){curPD++;profDays=Math.max(profDays,curPD);}else curPD=0; });
+
+  // Night owl: picks between 00-04 local time
+  const nightPicks = wins.filter(p=>{
+    try{const h=new Date(p.createdAt||p.date).getHours();return h>=0&&h<4;}catch(e){return false;}
+  });
+
+  // 10 consecutive underdog wins
+  let consecUnder=0, maxConsecUnder=0;
+  wins.sort((a,b)=>new Date(a.createdAt||a.date)-new Date(b.createdAt||b.date));
+  // simplified: count underdog wins in sequence
+  settled.sort((a,b)=>new Date(a.createdAt||a.date)-new Date(b.createdAt||b.date)).forEach(p=>{
+    if(p.result==='win'&&parseFloat(p.odds||0)>=2.5){consecUnder++;}else{consecUnder=0;}
+    maxConsecUnder=Math.max(maxConsecUnder,consecUnder);
+  });
+
+  const rank = rm&&rm.rank?rm.rank:999999;
+  const totalTipsters = 1000; // estimate; would come from /rankings list
+
+  return {
+    picks: picks.length,
+    wins: wins.length,
+    losses: losses.length,
+    pnl,
+    roi,
+    clvAvg,
+    division,
+    divIndex,
+    bestStreak,
+    underdogWins,
+    profDays,
+    clvTop5: clvAvg>0&&picks.length>=10, // simplified
+    clvTop1: clvAvg>2&&picks.length>=50,
+    isTop1: rank<=Math.max(1,Math.round(totalTipsters*0.01)),
+    isSeasonChamp: false,
+    seasonTop10: false,
+    foundingSeason: false,
+    lossStreak8: maxLoss>=8,
+    comebackKing: false,
+    nightOwl: nightPicks.length>=5,
+    tenConsecUnderdog: maxConsecUnder>=10,
+    ghostMode: false,
+    isOrigin: false,
+    earlySharp: false,
+    seasonZero: false,
+    foundingMember: false,
   };
+}
 
-  unlockedMap = BS.checkAll(statsObj, extraObj);
+// Section configs
+const SECTIONS = [
+  { key:'featured',    label:'Featured — Rarest Earned', featured:true },
+  { key:'career',      label:'Career Badges' },
+  { key:'streak',      label:'Win Streak Badges' },
+  { key:'profit',      label:'Profit & ROI Badges' },
+  { key:'roi',         label:'ROI Badges' },
+  { key:'consistency', label:'Consistency Badges' },
+  { key:'underdog',    label:'Underdog Badges' },
+  { key:'clv',         label:'Consistency & CLV Badges' },
+  { key:'prestige',    label:'Prestige Badges' },
+  { key:'seasonal',    label:'Seasonal Badges' },
+  { key:'secret',      label:'Secret Badges' },
+  { key:'legacy',      label:'Legacy Badges' },
+];
 
-  // Detect fresh unlocks (not yet stored in v2 key)
-  const STORE_KEY = 'ledgr_earned_badges_v2';
-  let stored = [];
-  try { stored = JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); } catch(e) {}
-  freshIds = BS.BADGES.filter(function(b){
-    return unlockedMap[b.id] && stored.indexOf(b.id) === -1;
-  }).map(function(b){ return b.id; });
-
-  // Save all currently earned badges
-  const newStored = Array.from(new Set(
-    stored.concat(BS.BADGES.filter(function(b){ return unlockedMap[b.id]; }).map(function(b){ return b.id; }))
-  ));
-  localStorage.setItem(STORE_KEY, JSON.stringify(newStored));
-
-  // Show new-unlock CTA if applicable
-  if (freshIds.length) {
-    document.getElementById('newUnlockCta').style.display = 'flex';
-    document.getElementById('newUnlockCount').textContent = freshIds.length;
-    // Trigger animations with stagger
-    const order = { legendary:0, epic:1, rare:2, common:3 };
-    const freshBadges = BS.BADGES.filter(function(b){ return freshIds.indexOf(b.id) !== -1; });
-    freshBadges.sort(function(a,b){ return (order[a.rarity]||4) - (order[b.rarity]||4); });
-    let idx = 0;
-    function nextAnim() {
-      if (idx >= freshBadges.length) return;
-      BS.playUnlockAnim(freshBadges[idx++], nextAnim);
+function renderAllSections(d) {
+  let html = '';
+  SECTIONS.forEach((sec, si) => {
+    let badges;
+    if (sec.featured) {
+      // top 3 rarest unlocked
+      badges = BADGES.filter(b=>allUnlocked.has(b.id)).sort((a,b)=>RARITY_ORDER.indexOf(b.rarity)-RARITY_ORDER.indexOf(a.rarity)).slice(0,3);
+      if (!badges.length) return;
+    } else {
+      badges = BADGES.filter(b=>b.cat===sec.key);
     }
-    setTimeout(nextAnim, 1200);
+    if (!badges.length) return;
+
+    const unlockedInSec = badges.filter(b=>allUnlocked.has(b.id)).length;
+    const allComplete = unlockedInSec===badges.length;
+    const noneUnlocked = unlockedInSec===0&&!sec.featured;
+
+    if (si > 0) {
+      html += `<div class="section-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>`;
+    }
+
+    const collapseId = 'sec-' + sec.key;
+    html += `<div class="badge-section" id="${collapseId}${noneUnlocked?' collapsed':''}">`;
+    html += `<div class="badge-section-header" onclick="toggleSection('${collapseId}')">
+      <span class="badge-section-title">${sec.label}</span>
+      <span class="badge-section-count${allComplete?' complete':''}">
+        ${sec.featured?unlockedInSec+' shown':(allComplete?unlockedInSec+'/'+badges.length+' ✓':unlockedInSec+'/'+badges.length)}
+      </span>
+      <span class="badge-section-toggle" style="color:var(--mu)">▾</span>
+    </div>`;
+
+    if (sec.featured) {
+      html += `<div class="badge-grid-featured">`;
+      badges.forEach((b,i) => { html += renderBadgeCard(b, true, i, si); });
+      html += `</div>`;
+    } else {
+      html += `<div class="badge-grid">`;
+      badges.forEach((b,i) => { html += renderBadgeCard(b, false, i, si); });
+      html += `</div>`;
+    }
+
+    if (noneUnlocked) {
+      html += `<span class="show-toggle" onclick="toggleSection('${collapseId}')">Show locked (${badges.length})</span>`;
+    }
+
+    html += `</div>`;
+  });
+  document.getElementById('badgePage').innerHTML = html;
+}
+
+function renderBadgeCard(b, featured, idx, secIdx) {
+  const unlocked = allUnlocked.has(b.id);
+  const isSecret = b.secret && !unlocked;
+  const rarityClass = 'rarity-' + b.rarity;
+  const lockedClass = unlocked ? '' : ' locked';
+  const featuredClass = featured ? ' badge-card-featured' : '';
+  const delay = Math.min((secIdx * 80 + idx * 25), 600);
+
+  let orbits = '';
+  if (b.rarity === 'legendary' || b.rarity === 'mythic') {
+    const numOrbs = b.rarity === 'mythic' ? 8 : 6;
+    orbits = '<div class="orbit-ring">';
+    for (let i=0;i<numOrbs;i++) {
+      orbits += `<div class="orbit-dot" style="animation-delay:${(i/numOrbs)*4}s;animation-duration:${b.rarity==='mythic'?3:4}s"></div>`;
+    }
+    orbits += '</div>';
   }
 
-  updateProgress();
-  renderGrid();
+  return `<div class="badge-card${featuredClass} ${rarityClass}${lockedClass}"
+    data-id="${b.id}"
+    style="animation-delay:${delay}ms"
+    onclick="${selectingSlot>=0&&unlocked?`equipBadge('${b.id}')`:`openModal('${b.id}')`}">
+    ${!unlocked?'<span class="badge-lock-overlay">🔒</span>':''}
+    ${orbits}
+    <span class="badge-icon">${isSecret?'🔍':b.icon}</span>
+    <span class="badge-name">${isSecret?'???':b.name}</span>
+    <span class="badge-rarity-pill">${b.rarity.toUpperCase()}</span>
+  </div>`;
 }
 
-// ── Nav helpers ───────────────────────────────────────────────────
-function logout() {
-  ['ledgr_token','ledgr_user','token','user','username'].forEach(function(k){ localStorage.removeItem(k); });
-  window.location.href = '/';
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('collapsed');
 }
-function openSlideNav()  { document.getElementById('slideNav').classList.add('open'); document.getElementById('slideOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
-function closeSlideNav() { document.getElementById('slideNav').classList.remove('open'); document.getElementById('slideOverlay').classList.remove('open'); document.body.style.overflow=''; }
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+let currentModalBadge = null;
+
+function openModal(id) {
+  const b = BADGES.find(x=>x.id===id);
+  if (!b) return;
+  currentModalBadge = b;
+  const unlocked = allUnlocked.has(b.id);
+  const isSecret = b.secret && !unlocked;
+  const d = computedData;
+  const p = b.progress(d);
+  const pct = p.max>0?Math.min(100,Math.round(p.cur/p.max*100)):0;
+  const rarityColor = {common:'var(--c-common)',rare:'var(--c-rare)',epic:'var(--c-epic)',legendary:'var(--c-legendary)',mythic:'#ff6ac1'}[b.rarity];
+  const equipped = showcaseIds.includes(b.id);
+  const rarityPct = RARITY_PCT[b.rarity] || 5;
+
+  let inner = `
+    <span class="modal-icon" style="${b.rarity==='legendary'||b.rarity==='mythic'?'filter:drop-shadow(0 0 16px '+rarityColor+')':(b.rarity==='epic'?'filter:drop-shadow(0 0 10px '+rarityColor+')':'')}">${isSecret?'🔍':b.icon}</span>
+    <div class="modal-rarity" style="color:${rarityColor};border-color:${rarityColor}">${b.rarity.toUpperCase()}</div>
+    <div class="modal-name">${isSecret?'???':b.name}</div>
+    <div class="modal-desc">${isSecret?'Hidden achievement — the legend knows, the legend doesn\'t tell.':b.desc}</div>
+    <div class="modal-divider"></div>
+  `;
+
+  if (unlocked) {
+    inner += `<div class="modal-meta">
+      <div class="modal-meta-row"><span class="modal-meta-lbl">Unlocked</span><span class="modal-unlock-date">✓ Earned</span></div>
+      <div class="modal-meta-row"><span class="modal-meta-lbl">Rarity</span><span class="modal-pct">Only ${rarityPct}% of users own this</span></div>
+      ${b.reward?`<div class="modal-reward"><div class="modal-reward-lbl">Reward</div><div class="modal-reward-val">${b.reward}</div></div>`:''}
+    </div>
+    <button class="modal-equip-btn${equipped?' equipped':''}" onclick="toggleEquip('${b.id}')">
+      ${equipped ? '✓ Equipped in Showcase' : 'Equip to Showcase'}
+    </button>`;
+  } else if (isSecret) {
+    inner += `<div class="modal-secret">Some legends are discovered, not chased.</div>
+    <div class="modal-hint">Complete hidden requirements to unlock this badge.</div>`;
+  } else {
+    inner += `<div class="modal-meta">
+      <div class="modal-meta-row"><span class="modal-meta-lbl">Requirement</span><span class="modal-meta-val">${b.req}</span></div>
+      <div class="modal-meta-row"><span class="modal-meta-lbl">Progress</span><span class="modal-meta-val">${pct}%</span></div>
+      <div class="modal-progress-track"><div class="modal-progress-fill" id="modalFill" style="width:0%;background:${rarityColor}"></div></div>
+      ${p.secondary?`<div class="modal-meta-row" style="margin-top:4px"><span class="modal-meta-lbl">Also need</span><span class="modal-meta-val">${p.secondary}</span></div>`:''}
+      ${b.reward?`<div class="modal-reward" style="margin-top:10px"><div class="modal-reward-lbl">Reward (upon unlock)</div><div class="modal-reward-val">${b.reward}</div></div>`:''}
+    </div>`;
+  }
+
+  document.getElementById('modalInner').innerHTML = inner;
+  document.getElementById('modal').classList.add('open');
+  if (!unlocked && !isSecret) {
+    setTimeout(()=>{ const el=document.getElementById('modalFill'); if(el) el.style.width=pct+'%'; },100);
+  }
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal').classList.remove('open');
+  currentModalBadge = null;
+}
+
+function toggleEquip(id) {
+  if (showcaseIds.includes(id)) {
+    const i = showcaseIds.indexOf(id);
+    showcaseIds[i] = '';
+  } else {
+    const emptySlot = showcaseIds.indexOf('');
+    if (emptySlot >= 0) {
+      showcaseIds[emptySlot] = id;
+    } else {
+      showcaseIds[3] = id; // replace last
+    }
+  }
+  saveShowcase();
+  renderShowcase();
+  // re-open to update state
+  openModal(id);
+}
+
+function equipBadge(id) {
+  if (selectingSlot < 0 || !allUnlocked.has(id)) return;
+  showcaseIds[selectingSlot] = id;
+  saveShowcase();
+  renderShowcase();
+  // clear selection
+  selectingSlot = -1;
+  document.querySelectorAll('.showcase-slot').forEach(el => el.classList.remove('selecting'));
+  document.querySelectorAll('.badge-card').forEach(el => el.style.outline = '');
+}
+
+// Close modal on Escape
+document.addEventListener('keydown', e => { if (e.key==='Escape') closeModalDirect(); });
 
 loadBadges();
 </script>
-<script src="/brand-nav.js"></script>
 </body>
 </html>
