@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Archetype Vault</title>
+<meta name="description" content="Discover your betting DNA. 15 archetypes detected automatically from your pick history.">
+<meta property="og:title" content="LEDGR — Archetype Vault">
+<meta property="og:description" content="Your competitive identity, detected automatically from your betting history.">
+<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:url" content="https://getledgr.bet/archetypes">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c;--profile-accent:#7B2CFF}
+body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
+.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
+
+/* NAV */
+.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s ease;overflow-y:auto}
+.slide-nav.open{right:0}
+.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,.7);z-index:199;display:none}
+.slide-nav-overlay.open{display:block}
+.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
+.slide-nav-logo span{color:var(--ac)}
+.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer}
+.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
+.snl:hover{background:var(--acg)}
+.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
+.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
+.slide-nav-links{padding:12px 8px}
+.slide-nav-user{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
+.sn-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center}
+.sn-name{font-family:'DM Mono',monospace;font-size:12px;color:var(--mu2)}
+.slide-nav-logout{padding:0 16px 16px}
+.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
+.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:2}
+.not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
+.not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--mu)}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:72px}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,11vw,120px);letter-spacing:2px;line-height:.88;color:var(--tx);margin-bottom:16px}
+.hero-title span{color:var(--ac)}
+.hero-sub{font-size:15px;color:var(--mu2);line-height:1.7;max-width:520px;margin:0 auto 40px}
+
+/* CURRENT ARCHETYPE */
+.current-arch-wrap{margin-bottom:72px}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--mu);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--bd)}
+.current-card{border-radius:24px;padding:40px;position:relative;overflow:hidden;border:1px solid rgba(184,159,255,0.15)}
+.current-card::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(184,159,255,0.08),transparent 60%);pointer-events:none}
+.current-inner{display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center}
+.ca-icon{font-size:72px;line-height:1;filter:drop-shadow(0 0 20px currentColor)}
+.ca-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,64px);letter-spacing:3px;line-height:1;margin-bottom:8px}
+.ca-desc{font-size:14px;color:var(--mu2);line-height:1.6;margin-bottom:20px;max-width:480px}
+.ca-rarity{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;padding:5px 12px;border-radius:20px;border:1px solid;margin-bottom:16px}
+.ca-stats{display:flex;flex-direction:column;gap:8px;min-width:160px}
+.ca-stat-row{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.ca-stat-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px}
+.ca-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px}
+.ca-conf-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-top:16px}
+.ca-conf-fill{height:100%;border-radius:2px;transition:width .8s ease}
+.ca-undefined{text-align:center;padding:60px 40px}
+.ca-undefined-icon{font-size:64px;margin-bottom:20px;opacity:.3}
+.ca-undefined-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:var(--mu);margin-bottom:8px}
+.ca-undefined-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);line-height:1.7}
+
+/* ARCHETYPE GRID */
+.arch-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:72px}
+.arch-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:18px;padding:24px 20px;position:relative;transition:all .2s;overflow:hidden}
+.arch-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;pointer-events:none}
+.arch-card:hover{transform:translateY(-3px)}
+.arch-card.unlocked:hover{border-color:var(--bd2)}
+.arch-card.matched{border-color:rgba(184,159,255,0.3)}
+.arch-card.matched::before{opacity:1}
+.arch-card.is-primary{transform:translateY(-4px)}
+.arch-card.greyed{opacity:.45;filter:grayscale(80%)}
+.arch-match-badge{position:absolute;top:12px;right:12px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:20px;background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.2);color:var(--ac)}
+.arch-primary-badge{position:absolute;top:12px;right:12px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;border-radius:20px;color:#07060d}
+.arch-icon{font-size:36px;margin-bottom:14px;display:block;line-height:1}
+.arch-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;margin-bottom:6px}
+.arch-desc{font-size:11px;color:var(--mu2);line-height:1.55;font-family:'DM Mono',monospace;margin-bottom:12px}
+.arch-rarity{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px}
+.arch-lock{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:8px}
+.arch-conditions{list-style:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--bd)}
+.arch-conditions li{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu2);padding:2px 0 2px 10px;position:relative;line-height:1.4}
+.arch-conditions li::before{content:'·';position:absolute;left:0;color:var(--ac);opacity:.6}
+
+/* EVOLUTION PATH */
+.evolution-wrap{margin-bottom:72px}
+.evo-grid{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:16px;align-items:center}
+.evo-node{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;text-align:center}
+.evo-node.current{border-color:rgba(184,159,255,0.35);background:rgba(184,159,255,0.05)}
+.evo-icon{font-size:32px;margin-bottom:8px}
+.evo-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;margin-bottom:4px}
+.evo-pct{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)}
+.evo-arrow{font-size:20px;color:var(--mu);text-align:center}
+.evo-req{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);text-align:center;line-height:1.5;padding:8px}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.how-card{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px}
+.how-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:rgba(184,159,255,0.12);letter-spacing:2px;line-height:1;margin-bottom:8px}
+.how-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;margin-bottom:8px}
+.how-desc{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu2);line-height:1.6}
+
+/* SECTION HEADERS */
+.section-hd{margin-bottom:48px}
+.s-eyebrow{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px}
+.s-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,52px);letter-spacing:2px;color:var(--tx);margin-bottom:8px}
+.s-sub{font-size:13px;color:var(--mu2);line-height:1.6}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--gr);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.toast.show{transform:translateY(0);opacity:1}
+
+.loading-state{text-align:center;padding:80px 40px;font-family:'DM Mono',monospace;font-size:12px;color:var(--mu)}
+
+@media(max-width:768px){.current-inner{grid-template-columns:1fr;text-align:center}.ca-stats{min-width:unset}.evo-grid{grid-template-columns:1fr;gap:8px}.evo-arrow{transform:rotate(90deg)}}
+@media(max-width:600px){.arch-grid{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:64px}}
+</style>
+<link rel="stylesheet" href="/brand.css">
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="toast" id="toast"></div>
+
+<nav class="brand-nav">
+  <a href="/" class="logo">LEDG<span>R</span></a>
+  <div class="brand-nav-links">
+    <a href="/" class="brand-nav-link">Home</a>
+    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
+    <a href="/feed" class="brand-nav-link">Feed</a>
+    <a href="/analytics" class="brand-nav-link">Analytics</a>
+    <a href="/archetypes" class="brand-nav-link active">DNA</a>
+    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
+  </div>
+  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
+</nav>
+<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
+<div class="brand-slide-menu" id="brandSlideMenu">
+  <div class="brand-slide-header">
+    <span class="brand-slide-logo">LEDG<span>R</span></span>
+    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
+  </div>
+  <div class="brand-slide-links">
+    <a href="/dashboard" class="brand-snl">Post a Pick</a>
+    <a href="/archetypes" class="brand-snl">Archetype Vault</a>
+    <a href="/simulator" class="brand-snl">Simulator</a>
+    <a href="/compare" class="brand-snl">Compare Tipsters</a>
+    <a href="/badges" class="brand-snl">Badges</a>
+    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
+    <a href="/settings" class="brand-snl">Settings</a>
+    <a href="/notifications" class="brand-snl">Notifications</a>
+  </div>
+  <div id="brandSlideAuth"></div>
+</div>
+
+<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
+<div class="slide-nav" id="slideNav">
+  <div class="slide-nav-header">
+    <div class="slide-nav-logo">LEDG<span>R</span></div>
+    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
+  </div>
+  <div class="slide-nav-user">
+    <div class="sn-av" id="snAv">??</div>
+    <div class="sn-name" id="snName">@username</div>
+  </div>
+  <div class="slide-nav-links">
+    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
+    <a href="/archetypes" class="snl"><span class="snl-icon">🧬</span><div class="snl-text">Archetype Vault</div></a>
+    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
+    <a href="/dashboard" class="snl"><span class="snl-icon">＋</span><div class="snl-text">Post a Pick</div></a>
+    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
+    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Settings</div></a>
+  </div>
+  <div class="slide-nav-logout">
+    <button class="snl-logout" onclick="logout()">Log Out</button>
+  </div>
+</div>
+
+<div class="not-logged" id="notLogged" style="display:none">
+  <h2>NOT LOGGED IN</h2>
+  <p style="color:var(--mu2)">Log in to see your betting DNA.</p>
+  <a href="/login" style="background:var(--ac);color:#07060d;padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:13px">Log In</a>
+</div>
+
+<div class="main" id="app" style="display:none">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Archetype Vault</div>
+    <div class="hero-title">BETTING<br><span>DNA</span></div>
+    <p class="hero-sub">Your competitive identity, detected automatically from your pick history. 15 archetypes. Only one is you.</p>
+  </div>
+
+  <!-- YOUR ARCHETYPE -->
+  <div class="current-arch-wrap">
+    <div class="section-label">Your Archetype</div>
+    <div id="currentArchetypeCard"><div class="current-card"><div class="loading-state">Analysing your picks…</div></div></div>
+  </div>
+
+  <!-- ALL ARCHETYPES -->
+  <div style="margin-bottom:72px">
+    <div class="section-hd">
+      <div class="s-eyebrow">All Archetypes</div>
+      <div class="s-title">THE VAULT</div>
+      <div class="s-sub">Full color = matched. Dimmed = within reach. Greyscale = not yet.</div>
+    </div>
+    <div class="arch-grid" id="archetypeGrid"><div class="loading-state">Loading…</div></div>
+  </div>
+
+  <!-- EVOLUTION PATH -->
+  <div class="evolution-wrap">
+    <div class="section-hd">
+      <div class="s-eyebrow">Evolution Path</div>
+      <div class="s-title">WHERE YOU'RE HEADING</div>
+      <div class="s-sub">Your two closest archetypes based on current trajectory.</div>
+    </div>
+    <div id="evolutionPath"><div class="loading-state">Computing path…</div></div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div>
+    <div class="section-hd">
+      <div class="s-eyebrow">Detection Logic</div>
+      <div class="s-title">HOW IT WORKS</div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <div class="how-title">DATA COLLECTION</div>
+        <div class="how-desc">Every pick you post is analysed — odds, result, timing, market, and volume all feed into the detection engine.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <div class="how-title">ARCHETYPE SCORING</div>
+        <div class="how-desc">Each of the 15 archetypes is scored 0–100 based on how closely your data matches its trigger conditions.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <div class="how-title">PRIMARY DETECTION</div>
+        <div class="how-desc">Your highest-scoring archetype becomes your primary identity. A score above 40 is required for detection.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <div class="how-title">EVOLUTION TRACKING</div>
+        <div class="how-desc">As your style evolves, your archetype updates automatically. The Hybrid emerges when three archetypes converge.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+
+const ARCHETYPES_DATA = [
+  {id:'sniper',      icon:'🎯', name:'The Sniper',    rarity:8.2,  color:'#34d399',
+   desc:'Elite precision. Few shots, lethal accuracy.',
+   conditions:['Picks < 30','ROI > 20%','Win rate > 65%'],
+   score(s){let p=0;if(s.picks>0&&s.picks<30)p+=33;if(s.roi>20)p+=34;if(s.winRate>65)p+=33;return p;}},
+  {id:'grinder',     icon:'⚒', name:'The Grinder',   rarity:12.1, color:'#b89fff',
+   desc:'Consistent. Relentless. Always profitable.',
+   conditions:['Picks > 100','ROI > 0%','Low variance'],
+   score(s){let p=0;if(s.picks>100)p+=40;if(s.roi>0)p+=30;if(!s.highVariance)p+=30;return p;}},
+  {id:'demon',       icon:'🔥', name:'The Demon',     rarity:4.1,  color:'#f87171',
+   desc:'Unstoppable momentum. Feeds on winning.',
+   conditions:['Current streak > 5','OR Best streak > 10'],
+   score(s){let p=0;if(s.currentStreak>5)p+=60;if(s.bestStreak>10)p+=40;return Math.min(100,p);}},
+  {id:'sharp',       icon:'🧠', name:'The Sharp',     rarity:3.8,  color:'#38bdf8',
+   desc:'Beats the market consistently. Vegas hates this profile.',
+   conditions:['Sharp score > 70','ROI > 5%'],
+   score(s){let p=0;if(s.sharpScore>70)p+=65;if(s.roi>5)p+=35;return p;}},
+  {id:'hunter',      icon:'🐺', name:'The Hunter',    rarity:6.4,  color:'#fbbf24',
+   desc:'Seeks value where others see risk.',
+   conditions:['Avg odds > 3.0','ROI > 0%','Picks > 10'],
+   score(s){let p=0;if(s.avgOdds>3.0)p+=45;if(s.roi>0)p+=30;if(s.picks>10)p+=25;return p;}},
+  {id:'storm',       icon:'⚡', name:'The Storm',     rarity:5.7,  color:'#818cf8',
+   desc:'High activity bursts. Surges when locked in.',
+   conditions:['Volume > 50 picks','Active streaks','ROI > 0%'],
+   score(s){let p=0;if(s.picks>50)p+=40;if(s.currentStreak>3)p+=30;if(s.roi>0)p+=30;return p;}},
+  {id:'kingmaker',   icon:'👑', name:'The Kingmaker', rarity:2.9,  color:'#f59e0b',
+   desc:'Others follow. Others profit. Leadership through performance.',
+   conditions:['Followers > 50','Win rate > 55%'],
+   score(s){let p=0;if(s.followers>50)p+=55;else if(s.followers>10)p+=20;if(s.winRate>55)p+=25;if(s.roi>0)p+=20;return p;}},
+  {id:'iceblood',    icon:'❄', name:'Iceblood',       rarity:4.5,  color:'#67e8f9',
+   desc:'Zero emotion. Pure process. Mechanical precision.',
+   conditions:['Low variance','Picks > 50','ROI > 5%'],
+   score(s){let p=0;if(!s.highVariance)p+=35;if(s.picks>50)p+=35;if(s.roi>5)p+=30;return p;}},
+  {id:'gambler',     icon:'🎲', name:'The Gambler',   rarity:9.3,  color:'#fb923c',
+   desc:'High risk appetite. Lives for the big hit.',
+   conditions:['Avg odds > 5.0','Picks > 20'],
+   score(s){let p=0;if(s.avgOdds>5.0)p+=65;else if(s.avgOdds>3.5)p+=25;if(s.picks>20)p+=35;return p;}},
+  {id:'reaper',      icon:'💀', name:'The Reaper',    rarity:3.2,  color:'#a78bfa',
+   desc:'Hunts massive odds. Patient. Deadly when strikes.',
+   conditions:['Avg odds > 4.0','ROI > 10%'],
+   score(s){let p=0;if(s.avgOdds>4.0)p+=55;else if(s.avgOdds>2.5)p+=20;if(s.roi>10)p+=45;return p;}},
+  {id:'night-owl',   icon:'🌙', name:'Night Owl',     rarity:5.1,  color:'#6366f1',
+   desc:'Sharpest when the world sleeps.',
+   conditions:['Most picks posted 22:00–04:00'],
+   score(s){return s.nightOwl?75:10;}},
+  {id:'shark',       icon:'🦈', name:'The Shark',     rarity:4.8,  color:'#22d3ee',
+   desc:'Low odds specialist. Surgical volume betting.',
+   conditions:['Avg odds < 1.7','Win rate > 72%','Picks > 30'],
+   score(s){let p=0;if(s.avgOdds>0&&s.avgOdds<1.7)p+=40;if(s.winRate>72)p+=35;if(s.picks>30)p+=25;return p;}},
+  {id:'ghost',       icon:'👻', name:'The Ghost',     rarity:2.1,  color:'#94a3b8',
+   desc:'Rare appearances. Maximum impact.',
+   conditions:['Picks < 15','ROI > 30%'],
+   score(s){let p=0;if(s.picks>0&&s.picks<15)p+=35;if(s.roi>30)p+=45;else if(s.roi>15)p+=20;return p;}},
+  {id:'diamond-mind',icon:'💎', name:'Diamond Mind',  rarity:1.8,  color:'#60a5fa',
+   desc:'Elite in every metric simultaneously.',
+   conditions:['Reliability > 80%','Picks > 50','ROI > 10%'],
+   score(s){let p=0;const rel=Math.min(100,(s.wins+s.losses)/50*100);if(rel>80)p+=35;if(s.picks>50)p+=30;if(s.roi>10)p+=35;return p;}},
+  {id:'hybrid',      icon:'🧬', name:'The Hybrid',    rarity:1.2,  color:'#e879f9',
+   desc:'Undefined. Unclassifiable. Uniquely dangerous.',
+   conditions:['Scores > 40% on 3+ archetypes simultaneously'],
+   score(s,all){const n=all?all.filter(x=>x.id!=='hybrid'&&x.sc>=40).length:0;return n>=3?80:0;}},
+];
+
+let user = null;
+let userStats = null;
+let primaryArchetype = null;
+let allScores = [];
+
+window.onload = () => {
+  const ud = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+  const tk = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+  if (!ud || !tk) { document.getElementById('notLogged').style.display='flex'; return; }
+  try { user = JSON.parse(ud); } catch(e) { user = {id:null,username:ud}; }
+  if (!user?.username) { document.getElementById('notLogged').style.display='flex'; return; }
+
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('snAv').textContent = user.username.slice(0,2).toUpperCase();
+  document.getElementById('snName').textContent = '@' + user.username;
+  document.getElementById('profileNavLink').textContent = '@' + user.username;
+
+  loadData();
+};
+
+async function loadData() {
+  try {
+    const r = await fetch(API + '/rankings/' + user.username);
+    if (!r.ok) throw new Error();
+    const data = await r.json();
+    const settled = (data.wins||0) + (data.losses||0);
+    userStats = {
+      picks: data.picks || data.totalPicks || 0,
+      wins: data.wins || 0,
+      losses: data.losses || 0,
+      roi: typeof data.roi === 'number' ? data.roi : parseFloat(data.roi) || 0,
+      winRate: settled > 0 ? Math.round((data.wins||0) / settled * 100) : 0,
+      currentStreak: data.currentStreak || 0,
+      bestStreak: data.bestStreak || 0,
+      sharpScore: data.sharpScore || 0,
+      avgOdds: data.avgOdds || 0,
+      followers: data.followers || 0,
+      highVariance: false,
+      nightOwl: false,
+    };
+  } catch(e) {
+    userStats = {picks:0,wins:0,losses:0,roi:0,winRate:0,currentStreak:0,bestStreak:0,sharpScore:0,avgOdds:0,followers:0,highVariance:false,nightOwl:false};
+  }
+
+  // Compute all scores
+  allScores = ARCHETYPES_DATA.map(a => ({
+    ...a,
+    sc: a.id === 'hybrid' ? 0 : a.score(userStats),
+  }));
+  const hybridA = ARCHETYPES_DATA.find(a => a.id === 'hybrid');
+  allScores.find(x => x.id === 'hybrid').sc = hybridA.score(userStats, allScores);
+
+  const sorted = [...allScores].sort((a, b) => b.sc - a.sc);
+  primaryArchetype = sorted[0].sc >= 40 ? sorted[0] : null;
+
+  renderCurrentCard(sorted);
+  renderGrid(sorted);
+  renderEvolution(sorted);
+}
+
+function renderCurrentCard(sorted) {
+  const el = document.getElementById('currentArchetypeCard');
+  const settled = userStats.wins + userStats.losses;
+
+  if (!primaryArchetype) {
+    el.innerHTML = `<div class="current-card">
+      <div class="ca-undefined">
+        <div class="ca-undefined-icon">🌑</div>
+        <div class="ca-undefined-title">UNDEFINED</div>
+        <div class="ca-undefined-sub">Post at least 5 settled picks for detection to begin.<br>Your betting DNA will emerge automatically.</div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const p = primaryArchetype;
+  const confidence = Math.round(p.sc);
+  const onlyPct = Math.round(p.rarity);
+
+  el.innerHTML = `<div class="current-card" style="background:linear-gradient(135deg,${p.color}08,transparent 60%),var(--s1);border-color:${p.color}33">
+    <div class="current-inner">
+      <div class="ca-icon" style="color:${p.color}">${p.icon}</div>
+      <div>
+        <div class="ca-rarity" style="color:${p.color};border-color:${p.color}44;background:${p.color}11">Only ${onlyPct}% of bettors</div>
+        <div class="ca-name" style="color:${p.color}">${p.name.toUpperCase()}</div>
+        <div class="ca-desc">${p.desc}</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-bottom:8px">Detected from: ${sorted.slice(0,3).map(x=>x.name).join(' · ')}</div>
+        <div class="ca-conf-bar"><div class="ca-conf-fill" style="width:${confidence}%;background:${p.color}"></div></div>
+      </div>
+      <div class="ca-stats">
+        <div class="ca-stat-row"><span class="ca-stat-lbl">WIN RATE</span><span class="ca-stat-val" style="color:${p.color}">${userStats.winRate}%</span></div>
+        <div class="ca-stat-row"><span class="ca-stat-lbl">ROI</span><span class="ca-stat-val" style="color:${userStats.roi>=0?'var(--gr)':'var(--rd)'}">${userStats.roi>=0?'+':''}${userStats.roi.toFixed(1)}%</span></div>
+        <div class="ca-stat-row"><span class="ca-stat-lbl">PICKS</span><span class="ca-stat-val">${userStats.picks}</span></div>
+        <div class="ca-stat-row"><span class="ca-stat-lbl">MATCH</span><span class="ca-stat-val" style="color:${p.color}">${confidence}%</span></div>
+      </div>
+    </div>
+    ${settled < 10 ? '<div style="margin-top:20px;padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:8px;font-family:\'DM Mono\',monospace;font-size:10px;color:var(--gold)">⚠ Post at least 10 settled picks for more accurate detection.</div>' : ''}
+  </div>`;
+}
+
+function renderGrid(sorted) {
+  const grid = document.getElementById('archetypeGrid');
+  const isPrimary = primaryArchetype?.id;
+
+  grid.innerHTML = sorted.map(a => {
+    const isP = a.id === isPrimary;
+    const sc = Math.round(a.sc);
+    const matched = sc >= 40;
+    const close = sc >= 20 && !matched;
+    const grey = sc < 20;
+
+    return `<div class="arch-card ${isP?'is-primary matched':(matched?'matched unlocked':(close?'unlocked':'greyed'))}" style="${isP?`background:${a.color}10;border-color:${a.color}44`:matched?`border-color:${a.color}33`:''}" >
+      ${isP ? `<div class="arch-primary-badge" style="background:${a.color}">YOUR DNA</div>` : sc>0?`<div class="arch-match-badge">${sc}%</div>`:''}
+      <div class="arch-icon">${a.icon}</div>
+      <div class="arch-name" style="${isP||matched?`color:${a.color}`:'color:var(--mu2)'}">${a.name}</div>
+      <div class="arch-desc">${a.desc}</div>
+      <div class="arch-rarity">${a.rarity}% of bettors</div>
+      ${isP || matched ? `<ul class="arch-conditions">${a.conditions.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
+      ${grey ? '<div class="arch-lock">🔒 Not yet matched</div>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderEvolution(sorted) {
+  const el = document.getElementById('evolutionPath');
+  if (!primaryArchetype) {
+    el.innerHTML = '<div class="loading-state">No archetype detected yet — keep posting picks.</div>';
+    return;
+  }
+  const others = sorted.filter(x => x.id !== primaryArchetype.id).slice(0, 2);
+  const p = primaryArchetype;
+
+  el.innerHTML = `<div class="evo-grid">
+    <div class="evo-node current" style="border-color:${p.color}44;background:${p.color}08">
+      <div class="evo-icon">${p.icon}</div>
+      <div class="evo-name" style="color:${p.color}">${p.name}</div>
+      <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
+    </div>
+    <div class="evo-arrow">→</div>
+    <div class="evo-node">
+      <div class="evo-icon">${others[0]?.icon||'?'}</div>
+      <div class="evo-name">${others[0]?.name||'—'}</div>
+      <div class="evo-pct">${others[0]?Math.round(others[0].sc)+'% match':'—'}</div>
+      <div class="evo-req">${others[0] ? others[0].conditions.slice(0,1).join('') : ''}</div>
+    </div>
+    <div class="evo-arrow">→</div>
+    <div class="evo-node">
+      <div class="evo-icon">${others[1]?.icon||'?'}</div>
+      <div class="evo-name">${others[1]?.name||'—'}</div>
+      <div class="evo-pct">${others[1]?Math.round(others[1].sc)+'% match':'—'}</div>
+      <div class="evo-req">${others[1] ? others[1].conditions.slice(0,1).join('') : ''}</div>
+    </div>
+  </div>`;
+}
+
+function showToast(msg,isErr){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.background=isErr?'#f87171':'#34d399';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
+}
+function logout(){['ledgr_user','ledgr_token','user','token'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');}
+function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');}
+function brandMenuToggle(){document.getElementById('brandOverlay').classList.toggle('active');document.getElementById('brandSlideMenu').classList.toggle('active');}
+</script>
+<script src="/brand-nav.js"></script>
+</body>
+</html>

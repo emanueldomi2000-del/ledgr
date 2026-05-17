@@ -1,4 +1,4 @@
-// LEDGR brand constants — import or include in any page
+// LEDGR brand constants
 const LEDGR_BRAND = {
   logoSrc:  '/assets/logo/ledgr-logo.svg',
   iconSrc:  '/assets/logo/ledgr-icon.png',
@@ -6,7 +6,7 @@ const LEDGR_BRAND = {
   logoHeight: { desktop: 32, mobile: 28 },
 };
 
-// Inject correct favicon if one isn't already set
+// Inject favicon if not already set
 (function injectFavicon() {
   if (!document.querySelector('link[rel="icon"]')) {
     const link = document.createElement('link');
@@ -17,11 +17,22 @@ const LEDGR_BRAND = {
   }
 })();
 
-// Replace any .logo <a> elements that still contain raw text (not an img)
-// Call after DOMContentLoaded if needed, or include at end of <body>
+// Apply saved profile theme color on every page
+(function applyProfileTheme() {
+  const theme = localStorage.getItem('ledgr_profile_theme');
+  if (theme) {
+    const r = document.documentElement;
+    r.style.setProperty('--profile-accent', theme);
+    r.style.setProperty('--profile-glow', theme + '59');
+    r.style.setProperty('--profile-highlight', theme + 'cc');
+    r.style.setProperty('--profile-card-border', theme);
+  }
+})();
+
+// Replace any .logo <a> elements that still contain raw text
 function patchLogoImages() {
   document.querySelectorAll('a.logo').forEach(a => {
-    if (a.querySelector('img.logo-img')) return; // already patched
+    if (a.querySelector('img.logo-img')) return;
     const img = document.createElement('img');
     img.src     = LEDGR_BRAND.logoSrc;
     img.alt     = LEDGR_BRAND.logoAlt;

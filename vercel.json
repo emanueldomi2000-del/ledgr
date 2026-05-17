@@ -22,6 +22,7 @@
     { "source": "/subscribe/success", "destination": "/subscribe/success/index.html" },
     { "source": "/subscribe/cancel", "destination": "/subscribe/cancel/index.html" },
     { "source": "/privacy", "destination": "/privacy/index.html" },
-    { "source": "/terms", "destination": "/terms/index.html" }
+    { "source": "/terms", "destination": "/terms/index.html" },
+    { "source": "/archetypes", "destination": "/archetypes/index.html" }
   ]
 }

@@ -5,22 +5,31 @@
 // Run this SQL migration once before deploying:
 //
 // CREATE TABLE IF NOT EXISTS profiles (
-//   id          INT AUTO_INCREMENT PRIMARY KEY,
-//   userId      INT NOT NULL UNIQUE,
-//   username    VARCHAR(50) NOT NULL,
-//   bio         TEXT,
-//   social_twitter   VARCHAR(50),
-//   social_instagram VARCHAR(50),
-//   archetype   VARCHAR(30),
-//   banner      VARCHAR(30),
-//   border      VARCHAR(30),
-//   theme       VARCHAR(20),
-//   fav_sports  JSON,
-//   avatar_b64  LONGTEXT,
-//   banner_b64  LONGTEXT,
-//   updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+//   id                  INT AUTO_INCREMENT PRIMARY KEY,
+//   userId              INT NOT NULL UNIQUE,
+//   username            VARCHAR(50) NOT NULL,
+//   bio                 TEXT,
+//   social_twitter      VARCHAR(50),
+//   social_instagram    VARCHAR(50),
+//   archetype           VARCHAR(30),   -- legacy, kept for compat
+//   banner              VARCHAR(30),   -- banner pack id
+//   border              VARCHAR(30),   -- border style id
+//   theme               VARCHAR(20),   -- theme color id (purple/gold/emerald/etc)
+//   fav_sports          JSON,
+//   avatar_b64          LONGTEXT,
+//   banner_b64          LONGTEXT,
+//   odds_format         VARCHAR(20) DEFAULT 'decimal',
+//   timezone            VARCHAR(50) DEFAULT 'UTC',
+//   hide_from_leaderboard BOOLEAN DEFAULT FALSE,
+//   updated_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 //   INDEX idx_username (username)
 // );
+//
+// Migration for existing tables (run once):
+// ALTER TABLE profiles
+//   ADD COLUMN odds_format VARCHAR(20) DEFAULT 'decimal',
+//   ADD COLUMN timezone VARCHAR(50) DEFAULT 'UTC',
+//   ADD COLUMN hide_from_leaderboard BOOLEAN DEFAULT FALSE;
 //
 // Replace `db`, `router`, and `requireAuth` with your actual instances.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -53,10 +62,11 @@ function _sanitizeHandle(handle) {
 }
 
 const VALID_ARCHETYPES  = new Set(['sniper','demon','grinder','sharp','value-hunter','lock-machine','ice-cold','profit-farmer','underdog-king','data-nerd','momentum-monster']);
-const VALID_BANNERS     = new Set(['default','purple-haze','cyber-teal','gold-rush','fire-wave','ice-storm','diamond','legend-aura']);
-const VALID_BORDERS     = new Set(['clean','pulse','gold','fire','diamond','legend']);
-const VALID_THEMES      = new Set(['default','gold','cyan','red','green','orange','pink','white']);
+const VALID_BANNERS     = new Set(['midnight','purple-fade','frost','carbon','dark-smoke','cosmic-nebula','diamond-storm','crimson-energy','electric-void','phantom-pulse','galaxy-motion','dragon-aura','eternal-flame','neon-rift','crown-energy','default','purple-haze','cyber-teal','gold-rush','fire-wave','ice-storm','diamond','legend-aura']);
+const VALID_BORDERS     = new Set(['none','clean','blue-ring','diamond-ring','cosmic','electric','inferno','royal','dragon','celestial','bronze-frame','silver-frame','gold-frame','diamond-frame','elite-frame','pulse','gold','fire','legend']);
+const VALID_THEMES      = new Set(['purple','gold','emerald','crimson','ice','ember','neon','platinum','default','cyan','red','green','orange','pink','white']);
 const VALID_SPORTS      = new Set(['Soccer','Basketball','Tennis','Football','Baseball','MMA/Boxing']);
+const VALID_ODDS_FORMAT = new Set(['decimal','american','fractional']);
 
 // ─── GET /profile/:username — public, no auth ────────────────────────────────
 router.get('/profile/:username', async (req, res) => {

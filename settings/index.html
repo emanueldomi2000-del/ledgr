@@ -1,39 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEDGR — Customize Profile</title>
-<meta name="description" content="Customize your LEDGR tipster profile — choose your archetype, banner, border style, and manage subscriptions.">
+<title>LEDGR — Profile Settings</title>
+<meta name="description" content="Customize your LEDGR tipster profile — banner, border, theme, and account settings.">
 <meta property="og:title" content="LEDGR — Profile Settings">
-<meta property="og:description" content="Customize your tipster profile, manage subscriptions, and configure your LEDGR presence.">
+<meta property="og:description" content="Customize your tipster profile and manage subscriptions.">
 <meta property="og:image" content="https://getledgr.bet/og-image.png">
 <meta property="og:url" content="https://getledgr.bet/settings">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Profile Settings">
-<meta name="twitter:description" content="Customize your tipster profile and manage subscriptions.">
 <meta name="twitter:image" content="https://getledgr.bet/og-image.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c}
+:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c;--profile-accent:#7B2CFF;--profile-glow:rgba(123,44,255,0.35)}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
-
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
-.logo span{color:var(--ac)}
-.nav-links{display:flex;gap:4px;align-items:center}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
-.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.nav-link.active{color:var(--ac)}
-.nav-btn{background:var(--ac);color:#07060d;border:none;padding:9px 20px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center}
-.nav-btn:hover{background:#cdb8ff;transform:translateY(-1px)}
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
 
 /* ── SLIDE NAV ── */
 .slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
@@ -58,22 +45,19 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 
 /* ── MAIN ── */
 .main{max-width:1120px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
-
-/* ── NOT LOGGED IN ── */
 .not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
 .not-logged h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:3px;color:var(--mu)}
-.not-logged p{color:var(--mu2);font-size:14px}
 
 /* ── PAGE HEADER ── */
-.page-header{margin-bottom:56px}
+.page-header{margin-bottom:48px}
 .page-eyebrow{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px}
 .page-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--mu)}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,9vw,90px);letter-spacing:1px;line-height:.88;color:var(--tx);margin-bottom:16px}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,9vw,88px);letter-spacing:1px;line-height:.88;color:var(--tx);margin-bottom:16px}
 .page-title span{color:var(--ac)}
 .page-sub{font-size:14px;color:var(--mu2);line-height:1.7;max-width:480px}
 
 /* ── LAYOUT ── */
-.settings-layout{display:grid;grid-template-columns:320px 1fr;gap:48px;align-items:start}
+.settings-layout{display:grid;grid-template-columns:300px 1fr;gap:48px;align-items:start}
 
 /* ── PREVIEW PANEL ── */
 .preview-panel{position:sticky;top:80px}
@@ -81,38 +65,227 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .preview-label::after{content:'';flex:1;height:1px;background:var(--bd)}
 .preview-card{background:var(--s1);border:1px solid var(--bd);border-radius:20px;overflow:hidden;transition:all .3s}
 .preview-banner{height:110px;transition:all .5s ease;position:relative;overflow:hidden}
-.preview-banner-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.06) 1px,transparent 1px);background-size:32px 32px;opacity:0;transition:opacity .4s}
 .preview-body{padding:0 20px 20px}
 .preview-av-wrap{position:relative;width:64px;height:64px;margin-top:-32px;margin-bottom:14px}
-.preview-av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;display:flex;align-items:center;justify-content:center;border:3px solid var(--bg);position:relative;z-index:1}
+.preview-av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;display:flex;align-items:center;justify-content:center;border:3px solid var(--bg);position:relative;z-index:1;overflow:hidden}
 .preview-av-ring{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(184,159,255,0.2);z-index:0;transition:all .3s}
-.preview-tags{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
-.v-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.2);color:var(--cyan);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;padding:3px 8px;border-radius:20px}
-.at-badge{display:none;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;border:1px solid;transition:all .3s}
-.preview-uname{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--tx);margin-bottom:10px}
-.preview-sports{display:flex;gap:4px;flex-wrap:wrap;min-height:20px}
+.preview-uname{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--tx);margin-bottom:8px}
+.preview-sports{display:flex;gap:4px;flex-wrap:wrap;min-height:20px;margin-bottom:8px}
 .sport-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu2)}
 .preview-tip{padding:10px 16px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px;border-top:1px solid var(--bd);line-height:1.5}
 
 /* ── SECTIONS ── */
 .settings-sections{display:flex;flex-direction:column;gap:0}
-.settings-section{padding-bottom:52px;margin-bottom:52px;border-bottom:1px solid var(--bd)}
+.settings-section{padding-bottom:48px;margin-bottom:48px;border-bottom:1px solid var(--bd)}
 .settings-section:last-of-type{border-bottom:none;margin-bottom:0}
 .section-header{display:flex;align-items:flex-start;gap:18px;margin-bottom:28px}
 .section-num{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:1;color:rgba(184,159,255,0.12);letter-spacing:2px;flex-shrink:0;margin-top:-4px}
 .section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--tx);margin-bottom:4px}
 .section-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:.5px;line-height:1.5}
+.id-section-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px}
 
-/* ── SUBSCRIPTION SECTIONS ── */
+/* ── UPLOAD ── */
+.upload-row{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:24px}
+.upload-zone{border:2px dashed rgba(184,159,255,.2);border-radius:12px;cursor:pointer;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
+.upload-zone:hover{border-color:rgba(184,159,255,.5);background:rgba(184,159,255,.03)}
+.upload-zone-av{width:96px;height:96px;border-radius:50%}
+.upload-zone-banner{width:100%;height:80px}
+.upload-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--mu);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;pointer-events:none;padding:8px;text-align:center}
+.upload-placeholder-icon{font-size:22px;line-height:1}
+.upload-img-av{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
+.upload-img-banner{width:100%;height:100%;object-fit:cover;pointer-events:none}
+.upload-remove{position:absolute;top:5px;right:5px;z-index:3;background:rgba(0,0,0,.72);border:none;border-radius:50%;width:22px;height:22px;display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;cursor:pointer;transition:background .2s}
+.upload-remove:hover{background:var(--rd)}
+
+/* ── THEME GRID ── */
+.theme-grid{display:flex;gap:14px;flex-wrap:wrap;padding-bottom:18px}
+.theme-dot{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .18s;position:relative;flex-shrink:0}
+.theme-dot:hover{transform:scale(1.1)}
+.theme-dot.active{border-color:rgba(255,255,255,.8);box-shadow:0 0 0 3px rgba(255,255,255,.12)}
+.theme-dot-name{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--mu);white-space:nowrap;font-family:'DM Mono',monospace;letter-spacing:.3px;pointer-events:none}
+
+/* ── BIO ── */
+.bio-wrap{position:relative;margin-bottom:18px}
+.bio-textarea{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:12px 14px 28px;resize:none;height:88px;outline:none;transition:border-color .2s;line-height:1.6}
+.bio-textarea:focus{border-color:var(--bd2)}
+.bio-counter{position:absolute;right:11px;bottom:9px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);pointer-events:none}
+.social-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.social-icon-wrap{width:36px;height:36px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.social-prefix{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);flex-shrink:0}
+.social-input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s}
+.social-input:focus{border-color:var(--bd2)}
+.social-input::placeholder{color:var(--mu)}
+
+/* ── BANNER PACKS ── */
+.bp-section-hd{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.bp-section-hd::after{content:'';flex:1;height:1px;background:var(--bd)}
+.bp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:16px}
+.bp-card{border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .18s;position:relative;background:var(--s1)}
+.bp-card:hover:not(.locked){transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.bp-card.selected{border-color:var(--ac)}
+.bp-card.locked{cursor:not-allowed;opacity:.55}
+.bp-preview{height:80px;position:relative;overflow:hidden}
+.bp-lock{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.bp-lock-icon{font-size:18px}
+.bp-lock-req{font-family:'DM Mono',monospace;font-size:8px;color:rgba(255,255,255,.65);letter-spacing:1px}
+.bp-info{padding:9px 12px;border-top:1px solid rgba(255,255,255,.04)}
+.bp-name{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:2px}
+.bp-tier-lbl{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:.5px}
+.bp-tier-lbl.basic{color:var(--mu)}
+.bp-tier-lbl.premium{color:var(--ac)}
+.bp-tier-lbl.legendary{color:var(--gold)}
+.bp-ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--ac);display:none;align-items:center;justify-content:center;font-size:10px;color:#07060d;font-weight:900;z-index:2}
+.bp-card.selected .bp-ck{display:flex}
+
+/* banner animated styles */
+.bp-midnight{background:linear-gradient(135deg,#0A0A0A,#1a1a2e)}
+.bp-purple-fade{background:linear-gradient(135deg,#0A0A0A,#2d1b69)}
+.bp-frost{background:linear-gradient(135deg,#0d1b2a,#1b2838 50%,#0d1b2a)}
+.bp-carbon{background:linear-gradient(135deg,#111,#222 50%,#111)}
+.bp-dark-smoke{background:linear-gradient(135deg,#0f0f0f,#1c1c1c)}
+.bp-cosmic-nebula{background:radial-gradient(ellipse at 30% 50%,#2d0b5a,#0f0525 60%,#000010);position:relative}
+.bp-cosmic-nebula::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,#0b1f50,transparent 65%);animation:bpCosmic 8s ease-in-out infinite alternate}
+.bp-diamond-storm{background:linear-gradient(135deg,#0d1b2a,#001a30);position:relative}
+.bp-diamond-storm::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 60%,rgba(56,189,248,0.15),transparent 60%);animation:bpDiamond 7s ease-in-out infinite alternate}
+.bp-crimson-energy{background:linear-gradient(135deg,#1a0008,#3a0010);position:relative}
+.bp-crimson-energy::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,rgba(255,51,85,0.2),transparent 60%);animation:bpCrimson 10s ease-in-out infinite alternate}
+.bp-electric-void{background:linear-gradient(135deg,#05000f,#140030);position:relative}
+.bp-electric-void::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,44,255,0.3),transparent 50%,rgba(123,44,255,0.1));animation:bpElectric 7s ease-in-out infinite alternate}
+.bp-phantom-pulse{background:linear-gradient(135deg,#0a0a0a,#181818);position:relative}
+.bp-phantom-pulse::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(184,159,255,0.12),transparent 55%);animation:bpPhantom 12s ease-in-out infinite}
+.bp-galaxy-motion{background:conic-gradient(from 0deg,#0a0520,#100830,#0a0520,#080420);position:relative}
+.bp-galaxy-motion::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(123,44,255,0.25),rgba(56,189,248,0.1) 40%,transparent 70%);animation:bpGalaxy 15s linear infinite}
+.bp-dragon-aura{background:linear-gradient(135deg,#1a0000,#2a0800,#0a0000);position:relative}
+.bp-dragon-aura::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 60%,rgba(220,38,38,0.25),rgba(245,158,11,0.1) 50%,transparent 70%);animation:bpDragon 10s ease-in-out infinite alternate}
+.bp-eternal-flame{background:linear-gradient(135deg,#1a0800,#2a1000,#0f0500);position:relative}
+.bp-eternal-flame::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,rgba(251,146,60,0.2),rgba(239,68,68,0.15));animation:bpFlame 8s ease-in-out infinite alternate}
+.bp-neon-rift{background:linear-gradient(135deg,#000510,#001a05);position:relative}
+.bp-neon-rift::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(52,211,153,0.15),transparent 45%,rgba(123,44,255,0.12));animation:bpNeon 12s ease-in-out infinite alternate}
+.bp-crown-energy{background:radial-gradient(ellipse at 50% 60%,#1a1000,#080400);position:relative}
+.bp-crown-energy::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,rgba(251,191,36,0.25),transparent 55%);animation:bpCrown 10s ease-in-out infinite}
+@keyframes bpCosmic{0%{opacity:.4}100%{opacity:1}}
+@keyframes bpDiamond{0%{opacity:.3}100%{opacity:.9}}
+@keyframes bpCrimson{0%{opacity:.4}100%{opacity:1}}
+@keyframes bpElectric{0%{opacity:.3}100%{opacity:.8}}
+@keyframes bpPhantom{0%,100%{opacity:.2}50%{opacity:.7}}
+@keyframes bpGalaxy{to{transform:rotate(360deg)}}
+@keyframes bpDragon{0%{opacity:.4}100%{opacity:1}}
+@keyframes bpFlame{0%{opacity:.4}100%{opacity:.9}}
+@keyframes bpNeon{0%{opacity:.3}100%{opacity:.85}}
+@keyframes bpCrown{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* ── BORDER GRID ── */
+.border-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.border-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:14px;padding:20px 10px 14px;cursor:pointer;transition:all .18s;text-align:center;position:relative}
+.border-card:hover:not(.b-locked){border-color:var(--bd2);transform:translateY(-2px)}
+.border-card.selected{border-color:var(--ac);background:var(--acg)}
+.border-card.b-locked{cursor:not-allowed;opacity:.55}
+.border-av-wrap{position:relative;width:44px;height:44px;margin:0 auto 12px}
+.border-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
+.border-ring{position:absolute;inset:-4px;border-radius:50%}
+.border-name{font-family:'DM Mono',monospace;font-size:8px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:3px}
+.border-tier{font-family:'DM Mono',monospace;font-size:7px;color:var(--mu);letter-spacing:.5px}
+.border-tier.rare{color:var(--cyan)}
+.border-tier.epic{color:var(--orange)}
+.border-tier.legendary{color:var(--gold)}
+.border-tier.rank{color:var(--ac)}
+.b-lock-overlay{position:absolute;top:6px;right:6px;font-size:10px;opacity:.6}
+
+/* border ring styles */
+.ring-clean{border:2px solid rgba(184,159,255,0.25)}
+.ring-blue{border:2px solid rgba(79,195,247,0.6);box-shadow:0 0 8px rgba(79,195,247,0.15)}
+.ring-diamond-ring{border:2px solid rgba(56,189,248,0.8);box-shadow:0 0 0 2px rgba(0,0,0,.3),0 0 0 4px rgba(56,189,248,0.2)}
+.ring-cosmic{border:2px dashed rgba(56,189,248,0.55);animation:cosmicSpin 6s linear infinite}
+@keyframes cosmicSpin{to{transform:rotate(360deg)}}
+.ring-electric{border:2px solid rgba(253,224,71,0.85);animation:electricPulse 2s ease-in-out infinite}
+@keyframes electricPulse{0%,100%{box-shadow:0 0 0 0 rgba(253,224,71,0);border-color:rgba(253,224,71,0.85)}50%{box-shadow:0 0 12px 3px rgba(253,224,71,0.3);border-color:rgba(255,255,255,0.95)}}
+.ring-inferno{background:conic-gradient(from 0deg,#ff6b00,#ff3500,#ff6b00,#ffaa00,#ff6b00);animation:spinRing 3s linear infinite}
+.ring-royal{background:conic-gradient(from 0deg,#f59e0b,#fbbf24,#f59e0b,#d97706,#f59e0b);animation:spinRing 4s linear infinite}
+.ring-dragon{background:conic-gradient(from 0deg,#dc2626,#f59e0b,#dc2626,#7f1d1d,#dc2626);animation:spinRing 5s linear infinite}
+.ring-celestial{border:2px solid rgba(139,92,246,0.65);animation:celestialGlow 3s ease-in-out infinite}
+@keyframes celestialGlow{0%,100%{box-shadow:0 0 0 0 rgba(139,92,246,0)}50%{box-shadow:0 0 18px 4px rgba(139,92,246,0.4)}}
+.ring-bronze{border:2px solid #cd7f32;box-shadow:0 0 8px rgba(205,127,50,0.25)}
+.ring-silver{border:2px solid #c0c0c0;box-shadow:0 0 8px rgba(192,192,192,0.2)}
+.ring-gold{border:2px solid rgba(251,191,36,0.75);box-shadow:0 0 10px rgba(251,191,36,0.2)}
+.ring-diamond-frame{border:2px solid rgba(56,189,248,0.75);animation:diamondRing 2.5s ease-in-out infinite}
+@keyframes diamondRing{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0)}50%{box-shadow:0 0 14px 3px rgba(56,189,248,0.25)}}
+.ring-elite{background:conic-gradient(from 0deg,#f59e0b,#b89fff,#34d399,#38bdf8,#f87171,#f59e0b);animation:spinRing 4s linear infinite}
+@keyframes spinRing{to{transform:rotate(360deg)}}
+
+/* ── PREFERENCES ── */
+.pref-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--bd)}
+.pref-row:last-child{border:none}
+.pref-label{font-size:13px;font-weight:600;color:var(--tx)}
+.pref-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:3px}
+.toggle-wrap{position:relative;width:40px;height:22px;flex-shrink:0}
+.toggle-wrap input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--s2);border:1px solid var(--bd);border-radius:11px;cursor:pointer;transition:background .2s}
+.toggle-wrap input:checked+.toggle-track{background:var(--ac);border-color:var(--ac)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.toggle-wrap input:checked~.toggle-thumb{transform:translateX(18px)}
+.pref-select{background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:11px;padding:7px 12px;outline:none;cursor:pointer;transition:border-color .2s}
+.pref-select:focus{border-color:var(--bd2)}
+
+/* ── BETTING DNA ── */
+.dna-loading{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);text-align:center;padding:32px;line-height:1.8}
+.dna-card{background:var(--s2);border:1px solid rgba(184,159,255,0.15);border-radius:16px;padding:24px;position:relative;overflow:hidden}
+.dna-card.has-archetype{border-color:rgba(var(--dna-rgb,123,44,255),0.3)}
+.dna-card::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;background:radial-gradient(circle,rgba(184,159,255,0.06),transparent 70%);pointer-events:none}
+.dna-top{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+.dna-icon{font-size:40px;line-height:1;flex-shrink:0}
+.dna-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;line-height:1;margin-bottom:4px}
+.dna-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:.5px}
+.dna-conf-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.dna-conf-lbl{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
+.dna-conf-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px}
+.dna-bar-wrap{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.dna-bar-fill{height:100%;border-radius:2px;transition:width .6s ease;background:linear-gradient(90deg,var(--profile-accent,#7B2CFF),rgba(184,159,255,0.6))}
+.dna-section-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.dna-reasons{list-style:none;margin-bottom:20px}
+.dna-reasons li{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2);padding:4px 0 4px 14px;position:relative;line-height:1.4}
+.dna-reasons li::before{content:'•';position:absolute;left:0;color:var(--ac);opacity:.6}
+.dna-evolution{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.dna-evo-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--bd);border-radius:8px}
+.dna-evo-icon{font-size:16px}
+.dna-evo-name{flex:1;font-size:12px;font-weight:600;color:var(--tx)}
+.dna-evo-pct{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu2)}
+.dna-link{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);text-decoration:none;letter-spacing:.5px;transition:opacity .2s;margin-top:4px}
+.dna-link:hover{opacity:.7}
+.dna-warning{margin-top:12px;padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold)}
+
+/* ── ACCOUNT ── */
+.acct-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--bd)}
+.acct-row:last-child{border:none}
+.acct-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.acct-val{font-size:13px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:6px}
+.acct-verified{font-size:10px;color:var(--gr)}
+.acct-btn{background:transparent;border:1px solid var(--bd);color:var(--mu2);border-radius:8px;padding:7px 14px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s}
+.acct-btn:hover{border-color:var(--bd2);color:var(--tx)}
+.danger-zone{margin-top:24px;padding:20px;background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.15);border-radius:12px}
+.danger-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--rd);margin-bottom:8px}
+.danger-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);line-height:1.6;margin-bottom:14px}
+.danger-btn{background:transparent;border:1px solid rgba(248,113,113,0.35);color:var(--rd);border-radius:8px;padding:9px 18px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s}
+.danger-btn:hover{background:rgba(248,113,113,0.08)}
+
+/* ── BADGE SHOWCASE ── */
+.badge-showcase{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.badge-slot{background:var(--s2);border:1.5px dashed rgba(184,159,255,0.15);border-radius:12px;padding:16px 8px;text-align:center;cursor:pointer;transition:all .18s}
+.badge-slot:hover{border-color:var(--bd2);background:var(--acg)}
+.badge-slot-icon{font-size:24px;margin-bottom:6px}
+.badge-slot-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px}
+.badges-link{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--ac);text-decoration:none}
+.badges-link:hover{opacity:.7}
+
+/* ── SUBSCRIPTIONS ── */
 .sub-row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--bd)}
 .sub-row:last-child{border:none}
 .sub-av{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0}
 .sub-info{flex:1;min-width:0}
-.sub-name{font-weight:700;font-size:13px;color:var(--tx);cursor:pointer;transition:color .15s}.sub-name:hover{color:var(--ac)}
+.sub-name{font-weight:700;font-size:13px;color:var(--tx);cursor:pointer;transition:color .15s}
+.sub-name:hover{color:var(--ac)}
 .sub-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:2px}
 .sub-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px}
 .sub-badge.active{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--gr)}
-.sub-badge.cancelled{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:var(--rd)}
 .sub-cancel-btn{background:transparent;border:1px solid rgba(248,113,113,.25);color:var(--rd);border-radius:6px;padding:6px 14px;font-size:11px;cursor:pointer;font-family:'DM Mono',monospace;transition:all .2s;white-space:nowrap}
 .sub-cancel-btn:hover{background:rgba(248,113,113,.08)}
 .sub-empty{text-align:center;padding:32px;font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);line-height:1.8}
@@ -125,104 +298,27 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 .price-save-btn{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
 .price-save-btn:hover{background:#cdb8ff}
 
-/* ── ARCHETYPE GRID ── */
-.archetype-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
-.archetype-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:14px;padding:18px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
-.archetype-card::after{content:'';position:absolute;inset:0;opacity:0;transition:opacity .2s;pointer-events:none}
-.archetype-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
-.archetype-card.selected{transform:translateY(-2px)}
-.archetype-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;background:var(--ac);color:#07060d;font-size:9px;font-weight:900;display:none;align-items:center;justify-content:center;font-family:'Syne',sans-serif;flex-shrink:0}
-.archetype-card.selected .archetype-check{display:flex}
-.archetype-icon{font-size:30px;margin-bottom:12px;display:block;line-height:1}
-.archetype-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;margin-bottom:6px;color:var(--tx)}
-.archetype-desc{font-size:10px;color:var(--mu2);line-height:1.55;font-family:'DM Mono',monospace}
-
-/* ── BANNER GRID ── */
-.banner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
-.banner-card{border-radius:12px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:all .18s;position:relative;background:var(--s1)}
-.banner-card:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-.banner-card.selected{border-color:var(--ac)}
-.banner-prev{height:72px;position:relative}
-.banner-prev-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(184,159,255,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,0.08) 1px,transparent 1px);background-size:20px 20px;opacity:.6}
-.banner-info{padding:10px 12px;border-top:1px solid rgba(255,255,255,0.04)}
-.banner-name{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:2px}
-.banner-tier{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:.5px}
-.banner-ck{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:var(--ac);display:none;align-items:center;justify-content:center;font-size:10px;color:#07060d;font-weight:900}
-.banner-card.selected .banner-ck{display:flex}
-
-/* ── BORDER GRID ── */
-.border-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
-.border-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:14px;padding:22px 12px 16px;cursor:pointer;transition:all .18s;text-align:center;position:relative}
-.border-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
-.border-card.selected{border-color:var(--ac);background:var(--acg)}
-.border-av-wrap{position:relative;width:48px;height:48px;margin:0 auto 14px}
-.border-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:14px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
-.border-ring{position:absolute;inset:-4px;border-radius:50%}
-.border-name{font-family:'DM Mono',monospace;font-size:9px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:3px}
-.border-tier{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
-
-/* ── BORDER RING STYLES ── */
-.ring-clean{border:2px solid rgba(184,159,255,0.2)}
-.ring-pulse{border:2px solid rgba(184,159,255,0.45);animation:ringPulse 2s ease-in-out infinite}
-@keyframes ringPulse{0%,100%{box-shadow:0 0 0 0 rgba(184,159,255,0)}50%{box-shadow:0 0 0 6px rgba(184,159,255,0.12)}}
-.ring-gold{border:2px solid rgba(251,191,36,0.7);box-shadow:0 0 10px rgba(251,191,36,0.18),0 0 20px rgba(251,191,36,0.06)}
-.ring-fire{background:conic-gradient(from 0deg,#ff6b00,#ff3500,#ff6b00,#ffaa00,#ff6b00);animation:spinRing 3s linear infinite}
-.ring-diamond{border:2px solid rgba(56,189,248,0.7);animation:diamondRing 2s ease-in-out infinite}
-@keyframes diamondRing{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0);border-color:rgba(56,189,248,0.7)}50%{box-shadow:0 0 0 6px rgba(56,189,248,0.1);border-color:rgba(56,189,248,1)}}
-.ring-legend{background:conic-gradient(from 0deg,#f59e0b,#b89fff,#34d399,#38bdf8,#f87171,#f59e0b);animation:spinRing 4s linear infinite}
-@keyframes spinRing{to{transform:rotate(360deg)}}
+/* ── SAVE ── */
+.save-wrap{padding:8px 0 52px}
+.save-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:14px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:4px;cursor:pointer;transition:all .25s;margin-bottom:14px;position:relative;overflow:hidden}
+.save-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent 60%);pointer-events:none}
+.save-btn:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 14px 40px rgba(184,159,255,0.22)}
+.save-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);text-align:center;letter-spacing:.5px}
 
 /* ── SPORTS ── */
 .sports-grid{display:flex;flex-wrap:wrap;gap:10px}
 .sport-toggle{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border:1.5px solid var(--bd);border-radius:12px;cursor:pointer;transition:all .18s;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--mu2);letter-spacing:.5px;user-select:none}
-.sport-toggle:hover{border-color:var(--bd2);color:var(--tx);transform:translateY(-1px)}
+.sport-toggle:hover{border-color:var(--bd2);color:var(--tx)}
 .sport-toggle.selected{border-color:var(--ac);color:var(--ac);background:var(--acg)}
 .sport-toggle-icon{font-size:16px}
-
-/* ── SAVE ── */
-.save-wrap{padding-top:8px}
-.save-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:14px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:4px;cursor:pointer;transition:all .25s;margin-bottom:14px;position:relative;overflow:hidden}
-.save-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.12),transparent 60%);pointer-events:none}
-.save-btn:hover{background:#cdb8ff;transform:translateY(-2px);box-shadow:0 14px 40px rgba(184,159,255,0.22)}
-.save-btn:active{transform:translateY(0)}
-.save-hint{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);text-align:center;letter-spacing:.5px;line-height:1.7}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--gr);color:#07060d;padding:12px 24px;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:320px}
 .toast.show{transform:translateY(0);opacity:1}
 
-/* ── IDENTITY SECTION ── */
-.upload-row{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:24px}
-.upload-zone{border:2px dashed rgba(184,159,255,.2);border-radius:12px;cursor:pointer;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
-.upload-zone:hover{border-color:rgba(184,159,255,.5);background:rgba(184,159,255,.03)}
-.upload-zone-av{width:96px;height:96px;border-radius:50%}
-.upload-zone-banner{width:100%;height:80px}
-.upload-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--mu);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;pointer-events:none;padding:8px;text-align:center}
-.upload-placeholder-icon{font-size:22px;line-height:1}
-.upload-img-av{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
-.upload-img-banner{width:100%;height:100%;object-fit:cover;pointer-events:none}
-.upload-remove{position:absolute;top:5px;right:5px;z-index:3;background:rgba(0,0,0,.72);border:none;border-radius:50%;width:22px;height:22px;display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;cursor:pointer;transition:background .2s}
-.upload-remove:hover{background:var(--rd)}
-.theme-grid{display:flex;gap:14px;flex-wrap:wrap;padding-bottom:18px}
-.theme-dot{width:36px;height:36px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:all .18s;position:relative;flex-shrink:0}
-.theme-dot:hover{transform:scale(1.1)}
-.theme-dot.active{border-color:rgba(255,255,255,.8);box-shadow:0 0 0 3px rgba(255,255,255,.12)}
-.theme-dot-name{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--mu);white-space:nowrap;font-family:'DM Mono',monospace;letter-spacing:.3px;pointer-events:none}
-.bio-wrap{position:relative;margin-bottom:18px}
-.bio-textarea{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:12px 14px 28px;resize:none;height:88px;outline:none;transition:border-color .2s;line-height:1.6}
-.bio-textarea:focus{border-color:var(--bd2)}
-.bio-counter{position:absolute;right:11px;bottom:9px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);pointer-events:none}
-.social-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.social-icon-wrap{width:36px;height:36px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.social-prefix{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);flex-shrink:0}
-.social-input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:'DM Mono',monospace;font-size:12px;padding:9px 12px;outline:none;transition:border-color .2s}
-.social-input:focus{border-color:var(--bd2)}
-.social-input::placeholder{color:var(--mu)}
-.id-section-lbl{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:8px}
-
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{grid-template-columns:1fr}.preview-panel{position:relative;top:0}}
-@media(max-width:600px){.mobile-menu-btn{display:block}.nav-links{display:none}.nav-btn{display:none}.archetype-grid{grid-template-columns:repeat(2,1fr)}.banner-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}}
+@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}}
 </style>
 <link rel="stylesheet" href="/brand.css">
 </head>
@@ -237,7 +333,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
     <a href="/feed" class="brand-nav-link">Feed</a>
     <a href="/analytics" class="brand-nav-link">Analytics</a>
-    <a href="/community" class="brand-nav-link">Community</a>
+    <a href="/archetypes" class="brand-nav-link">DNA</a>
     <a href="/home" class="brand-nav-link active" id="profileNavLink">Profile</a>
   </div>
   <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
@@ -253,6 +349,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/simulator" class="brand-snl">Simulator</a>
     <a href="/compare" class="brand-snl">Compare Tipsters</a>
     <a href="/badges" class="brand-snl">Badges</a>
+    <a href="/archetypes" class="brand-snl">Archetype Vault</a>
     <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
     <a href="/progress" class="brand-snl">Progress</a>
     <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
@@ -277,6 +374,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
     <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
     <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
+    <a href="/archetypes" class="snl"><span class="snl-icon">🧬</span><div class="snl-text">Archetype Vault</div></a>
     <a href="/news" class="snl"><span class="snl-icon">📰</span><div class="snl-text">Sports Intel</div></a>
     <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
     <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
@@ -285,7 +383,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
     <a href="/dashboard" class="snl"><span class="snl-icon">＋</span><div class="snl-text">Post a Pick</div></a>
     <a href="/notifications" class="snl"><span class="snl-icon">🔔</span><div class="snl-text">Notifications</div></a>
-    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Customize Profile</div></a>
+    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Settings</div></a>
   </div>
   <div class="slide-nav-logout">
     <button class="snl-logout" onclick="logout()">Log Out</button>
@@ -296,7 +394,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
   <div class="not-logged" id="notLogged" style="display:none">
     <h2>NOT LOGGED IN</h2>
     <p style="color:var(--mu2)">You need an account to customize your profile.</p>
-    <a href="/login" class="nav-btn" style="text-decoration:none;margin-top:8px">Log In</a>
+    <a href="/login" style="background:var(--ac);color:#07060d;border:none;padding:10px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:13px;margin-top:8px;display:inline-block">Log In</a>
   </div>
 
   <div id="app" style="display:none">
@@ -307,77 +405,71 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     </div>
 
     <div class="settings-layout">
+
       <!-- LIVE PREVIEW -->
       <div class="preview-panel">
         <div class="preview-label">Live Preview</div>
         <div class="preview-card">
-          <div class="preview-banner" id="previewBanner">
-            <div class="preview-banner-grid" id="previewBannerGrid"></div>
-          </div>
+          <div class="preview-banner" id="previewBanner"></div>
           <div class="preview-body">
             <div class="preview-av-wrap">
               <div class="preview-av-ring" id="previewRing"></div>
               <div class="preview-av" id="previewAv">??</div>
             </div>
-            <div class="preview-tags">
-              <span class="v-tag">✓ VERIFIED</span>
-              <span class="at-badge" id="previewArchBadge"></span>
-            </div>
             <div class="preview-uname" id="previewUname">@username</div>
             <div class="preview-sports" id="previewSports"></div>
           </div>
-          <div class="preview-tip">Your customization shows on your own profile view. Backend sync will make it visible to others.</div>
+          <div class="preview-tip">Customization visible across your profile · synced on Save.</div>
         </div>
       </div>
 
-      <!-- SETTINGS -->
+      <!-- SETTINGS SECTIONS -->
       <div class="settings-sections">
 
-        <!-- 00 PROFILE IDENTITY -->
+        <!-- 01 IDENTITY -->
         <section class="settings-section">
           <div class="section-header">
-            <div class="section-num">00</div>
+            <div class="section-num">01</div>
             <div>
-              <div class="section-title">PROFILE IDENTITY</div>
-              <div class="section-sub">Avatar photo, banner image, theme color, bio and social links.</div>
+              <div class="section-title">IDENTITY</div>
+              <div class="section-sub">Avatar, banner, bio and social links.</div>
             </div>
           </div>
 
-          <!-- Avatar + Banner uploads -->
           <div class="upload-row">
             <div>
               <span class="id-section-lbl">Avatar Photo</span>
               <div class="upload-zone upload-zone-av" id="avZone">
                 <input type="file" id="avInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2" onchange="handleAvUpload(this)">
-                <div class="upload-placeholder" id="avPlaceholder">
-                  <span class="upload-placeholder-icon">📷</span>
-                  <span>Upload</span>
-                </div>
+                <div class="upload-placeholder" id="avPlaceholder"><span class="upload-placeholder-icon">📷</span><span>Upload</span></div>
                 <img class="upload-img-av" id="avPreviewImg" style="display:none" alt="">
                 <button class="upload-remove" id="avRemove" onclick="removeAvatar(event)">✕</button>
               </div>
             </div>
             <div>
-              <span class="id-section-lbl">Banner Image <span style="color:var(--mu);font-size:8px">— recommended 1200×300px</span></span>
-              <div class="upload-zone upload-zone-banner" id="bannerImgZone" style="width:100%">
+              <span class="id-section-lbl">Banner Image <span style="color:var(--mu);font-size:8px">— 1200×300px recommended</span></span>
+              <div class="upload-zone upload-zone-banner" id="bannerImgZone">
                 <input type="file" id="bannerImgInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2" onchange="handleBannerImgUpload(this)">
-                <div class="upload-placeholder" id="bannerImgPlaceholder">
-                  <span class="upload-placeholder-icon">🖼️</span>
-                  <span>Upload banner image</span>
-                </div>
+                <div class="upload-placeholder" id="bannerImgPlaceholder"><span class="upload-placeholder-icon">🖼️</span><span>Upload banner</span></div>
                 <img class="upload-img-banner" id="bannerImgPreview" style="display:none" alt="">
                 <button class="upload-remove" id="bannerImgRemove" onclick="removeBannerImg(event)">✕</button>
               </div>
             </div>
           </div>
 
-          <!-- Theme color -->
-          <div style="margin-bottom:32px">
-            <span class="id-section-lbl">Profile Theme Color</span>
-            <div class="theme-grid" id="themeGrid"></div>
+          <div style="margin-bottom:24px">
+            <span class="id-section-lbl">Banner Pack <span style="color:var(--mu);font-size:8px">— used when no custom image is uploaded</span></span>
+
+            <div class="bp-section-hd" style="margin-top:8px">Basic — Free</div>
+            <div class="bp-grid" id="bannerGridBasic"></div>
+
+            <div class="bp-section-hd">Premium — Animated</div>
+            <div class="bp-grid" id="bannerGridPremium"></div>
+
+            <div class="bp-section-hd">Legendary — Elite+</div>
+            <div class="bp-grid" id="bannerGridLegendary"></div>
           </div>
 
-          <!-- Bio -->
           <div>
             <span class="id-section-lbl">Bio <span style="color:var(--mu);font-size:8px">— max 160 chars</span></span>
             <div class="bio-wrap">
@@ -386,7 +478,6 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
             </div>
           </div>
 
-          <!-- Social links -->
           <div>
             <span class="id-section-lbl">Social Links</span>
             <div class="social-row">
@@ -402,52 +493,159 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
           </div>
         </section>
 
-        <!-- 01 ARCHETYPE -->
-        <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">01</div>
-            <div>
-              <div class="section-title">BETTOR ARCHETYPE</div>
-              <div class="section-sub">Your identity. The lens through which you bet. Choose one.</div>
-            </div>
-          </div>
-          <div class="archetype-grid" id="archetypeGrid"></div>
-        </section>
-
-        <!-- 02 BANNER -->
+        <!-- 02 COSMETICS -->
         <section class="settings-section">
           <div class="section-header">
             <div class="section-num">02</div>
             <div>
-              <div class="section-title">PROFILE BANNER</div>
-              <div class="section-sub">The backdrop that sets the scene. Higher tiers unlock rarer banners.</div>
+              <div class="section-title">COSMETICS</div>
+              <div class="section-sub">Theme color, avatar border, and badge showcase.</div>
             </div>
           </div>
-          <div class="banner-grid" id="bannerGrid"></div>
+
+          <div style="margin-bottom:32px">
+            <span class="id-section-lbl">Profile Theme Color</span>
+            <div class="theme-grid" id="themeGrid"></div>
+          </div>
+
+          <div style="margin-bottom:32px">
+            <span class="id-section-lbl">Avatar Border</span>
+            <div class="border-grid" id="borderGrid"></div>
+          </div>
+
+          <div>
+            <span class="id-section-lbl">Favorite Sports</span>
+            <div class="sports-grid" id="sportsGrid"></div>
+          </div>
+
+          <div style="margin-top:28px">
+            <span class="id-section-lbl">Badge Showcase <span style="color:var(--mu);font-size:8px">— 4 featured badges</span></span>
+            <div class="badge-showcase" id="badgeShowcase">
+              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 1</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 2</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 3</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 4</div></div>
+            </div>
+            <a href="/badges" class="badges-link">Manage badges →</a>
+            <div style="margin-top:12px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)">More cosmetics coming soon — Seasonal shop launching Season 4</div>
+          </div>
         </section>
 
-        <!-- 03 BORDER -->
+        <!-- 03 PREFERENCES -->
         <section class="settings-section">
           <div class="section-header">
             <div class="section-num">03</div>
             <div>
-              <div class="section-title">AVATAR BORDER</div>
-              <div class="section-sub">The aura around your avatar. Let it speak before you do.</div>
+              <div class="section-title">PREFERENCES</div>
+              <div class="section-sub">Notifications, privacy, odds format, and timezone.</div>
             </div>
           </div>
-          <div class="border-grid" id="borderGrid"></div>
+
+          <div class="pref-row">
+            <div>
+              <div class="pref-label">Push Notifications</div>
+              <div class="pref-sub">Get alerts for wins, streaks, and followed tipsters</div>
+            </div>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="prefNotifications" onchange="savePref('notifications',this.checked)">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+
+          <div class="pref-row">
+            <div>
+              <div class="pref-label">Hide from Leaderboard</div>
+              <div class="pref-sub">Your profile won't appear in public rankings</div>
+            </div>
+            <label class="toggle-wrap">
+              <input type="checkbox" id="prefHideLeaderboard" onchange="savePref('hideFromLeaderboard',this.checked)">
+              <div class="toggle-track"></div>
+              <div class="toggle-thumb"></div>
+            </label>
+          </div>
+
+          <div class="pref-row">
+            <div>
+              <div class="pref-label">Odds Format</div>
+              <div class="pref-sub">How odds are displayed across the platform</div>
+            </div>
+            <select class="pref-select" id="prefOddsFormat" onchange="savePref('oddsFormat',this.value)">
+              <option value="decimal">Decimal (2.50)</option>
+              <option value="american">American (+150)</option>
+              <option value="fractional">Fractional (3/2)</option>
+            </select>
+          </div>
+
+          <div class="pref-row">
+            <div>
+              <div class="pref-label">Timezone</div>
+              <div class="pref-sub">For accurate pick timestamps</div>
+            </div>
+            <select class="pref-select" id="prefTimezone" onchange="savePref('timezone',this.value)" style="max-width:180px">
+              <option value="UTC">UTC</option>
+              <option value="Europe/London">London</option>
+              <option value="Europe/Paris">Paris / Berlin</option>
+              <option value="Europe/Dublin">Dublin</option>
+              <option value="America/New_York">New York</option>
+              <option value="America/Chicago">Chicago</option>
+              <option value="America/Denver">Denver</option>
+              <option value="America/Los_Angeles">Los Angeles</option>
+              <option value="Australia/Sydney">Sydney</option>
+              <option value="Asia/Tokyo">Tokyo</option>
+              <option value="Asia/Dubai">Dubai</option>
+            </select>
+          </div>
         </section>
 
-        <!-- 04 SPORTS -->
+        <!-- 04 BETTING DNA -->
         <section class="settings-section">
           <div class="section-header">
             <div class="section-num">04</div>
             <div>
-              <div class="section-title">FAVORITE SPORTS</div>
-              <div class="section-sub">What you live to bet on. Shown on your profile as sport icons.</div>
+              <div class="section-title">BETTING DNA</div>
+              <div class="section-sub">Your competitive identity, detected automatically from your pick history.</div>
             </div>
           </div>
-          <div class="sports-grid" id="sportsGrid"></div>
+          <div id="dnaContent"><div class="dna-loading">Loading your DNA…</div></div>
+        </section>
+
+        <!-- 05 ACCOUNT -->
+        <section class="settings-section">
+          <div class="section-header">
+            <div class="section-num">05</div>
+            <div>
+              <div class="section-title">ACCOUNT</div>
+              <div class="section-sub">Email, username and security settings.</div>
+            </div>
+          </div>
+
+          <div class="acct-row">
+            <div>
+              <div class="acct-label">Email</div>
+              <div class="acct-val" id="acctEmail">—<span class="acct-verified">✓ Verified</span></div>
+            </div>
+          </div>
+          <div class="acct-row">
+            <div>
+              <div class="acct-label">Username</div>
+              <div class="acct-val" id="acctUsername">—</div>
+            </div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)">Cannot be changed</div>
+          </div>
+          <div class="acct-row">
+            <div>
+              <div class="acct-label">Password</div>
+              <div class="acct-val">••••••••</div>
+            </div>
+            <button class="acct-btn" onclick="showToast('Password reset sent to your email')">Change Password</button>
+          </div>
+
+          <div class="danger-zone">
+            <div class="danger-title">⚠ DANGER ZONE</div>
+            <div class="danger-sub">Deleting your account is permanent. All picks, stats, and followers will be removed. This action cannot be undone.</div>
+            <button class="danger-btn" onclick="confirmDeleteAccount()">Delete Account</button>
+          </div>
         </section>
 
         <!-- SAVE -->
@@ -456,10 +654,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
           <div class="save-hint">Synced to backend · Visible across all your devices</div>
         </div>
 
-        <!-- 05 MY SUBSCRIPTIONS -->
-        <section class="settings-section" style="margin-top:52px">
+        <!-- MY SUBSCRIPTIONS -->
+        <section class="settings-section" style="margin-top:8px">
           <div class="section-header">
-            <div class="section-num">05</div>
+            <div class="section-num">06</div>
             <div>
               <div class="section-title">MY SUBSCRIPTIONS</div>
               <div class="section-sub">Tipsters you are currently subscribed to</div>
@@ -468,10 +666,10 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
           <div id="mySubscriptions"><div class="sub-empty">Loading…</div></div>
         </section>
 
-        <!-- 06 MY SUBSCRIBERS -->
+        <!-- MY SUBSCRIBERS -->
         <section class="settings-section">
           <div class="section-header">
-            <div class="section-num">06</div>
+            <div class="section-num">07</div>
             <div>
               <div class="section-title">MY SUBSCRIBERS</div>
               <div class="section-sub">Users subscribed to your premium picks</div>
@@ -490,7 +688,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
             <input type="number" class="price-input" id="subPrice" min="1" max="500" value="10">
             <button class="price-save-btn" onclick="saveSubPrice()">Save Price</button>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:8px;letter-spacing:.5px">Price is set per your profile · new subscribers see this amount at checkout</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:8px">Price is set per your profile · new subscribers see this amount at checkout</div>
         </section>
 
       </div>
@@ -499,60 +697,243 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 </div>
 
 <script>
-const ARCHETYPES=[
-  {id:'sniper',icon:'🎯',name:'The Sniper',desc:'Precision over volume. Every pick is deliberate and lethal.',color:'#34d399'},
-  {id:'demon',icon:'😈',name:'The Demon',desc:'Ruthless. Aggressive. Built to dominate the books.',color:'#f87171'},
-  {id:'grinder',icon:'⚙️',name:'The Grinder',desc:'Consistency is the weapon. Volume is the strategy.',color:'#b89fff'},
-  {id:'sharp',icon:'📐',name:'The Sharp',desc:'Beats the close. CLV is the only true measure.',color:'#38bdf8'},
-  {id:'value-hunter',icon:'💎',name:'The Value Hunter',desc:'Spots odds the market has not caught up to yet.',color:'#fbbf24'},
-  {id:'lock-machine',icon:'🔒',name:'The Lock Machine',desc:'High confidence, low variance. Favorites are the play.',color:'#94a3b8'},
-  {id:'ice-cold',icon:'🧊',name:'The Ice Cold',desc:'Unshakeable. Never tilts. Ice in the veins.',color:'#38bdf8'},
-  {id:'profit-farmer',icon:'🌾',name:'The Profit Farmer',desc:'Patient. Methodical. Steady returns, season after season.',color:'#34d399'},
-  {id:'underdog-king',icon:'👑',name:'The Underdog King',desc:'Lives for the long shot. Thrives at +300 and beyond.',color:'#fbbf24'},
-  {id:'data-nerd',icon:'📊',name:'The Data Nerd',desc:'Every pick backed by models, trends, and hard numbers.',color:'#b89fff'},
-  {id:'momentum-monster',icon:'🔥',name:'The Momentum Monster',desc:'Rides hot streaks. Doubles down when running hot.',color:'#fb923c'},
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+
+/* ── DATA ── */
+const THEMES = [
+  {id:'purple',   name:'Purple',   color:'#7B2CFF'},
+  {id:'gold',     name:'Gold',     color:'#FFD700'},
+  {id:'emerald',  name:'Emerald',  color:'#00E5A0'},
+  {id:'crimson',  name:'Crimson',  color:'#FF3355'},
+  {id:'ice',      name:'Ice',      color:'#4FC3F7'},
+  {id:'ember',    name:'Ember',    color:'#FF6B35'},
+  {id:'neon',     name:'Neon',     color:'#E040FB'},
+  {id:'platinum', name:'Platinum', color:'#FFFFFF'},
 ];
 
-const THEMES=[
-  {id:'default', name:'Purple', color:'#b89fff'},
-  {id:'gold',    name:'Gold',   color:'#fbbf24'},
-  {id:'cyan',    name:'Cyan',   color:'#38bdf8'},
-  {id:'red',     name:'Red',    color:'#f87171'},
-  {id:'green',   name:'Green',  color:'#34d399'},
-  {id:'orange',  name:'Orange', color:'#fb923c'},
-  {id:'pink',    name:'Pink',   color:'#f472b6'},
-  {id:'white',   name:'White',  color:'#f0edff'},
+const BANNER_PACKS = [
+  {id:'midnight',      name:'MIDNIGHT',      tier:'basic',    divReq:null,       cssClass:'bp-midnight'},
+  {id:'purple-fade',   name:'PURPLE FADE',   tier:'basic',    divReq:null,       cssClass:'bp-purple-fade'},
+  {id:'frost',         name:'FROST',         tier:'basic',    divReq:null,       cssClass:'bp-frost'},
+  {id:'carbon',        name:'CARBON',        tier:'basic',    divReq:null,       cssClass:'bp-carbon'},
+  {id:'dark-smoke',    name:'DARK SMOKE',    tier:'basic',    divReq:null,       cssClass:'bp-dark-smoke'},
+  {id:'cosmic-nebula', name:'COSMIC NEBULA', tier:'premium',  divReq:'Silver',   cssClass:'bp-cosmic-nebula'},
+  {id:'diamond-storm', name:'DIAMOND STORM', tier:'premium',  divReq:'Gold',     cssClass:'bp-diamond-storm'},
+  {id:'crimson-energy',name:'CRIMSON ENERGY',tier:'premium',  divReq:'Gold',     cssClass:'bp-crimson-energy'},
+  {id:'electric-void', name:'ELECTRIC VOID', tier:'premium',  divReq:'Platinum', cssClass:'bp-electric-void'},
+  {id:'phantom-pulse', name:'PHANTOM PULSE', tier:'premium',  divReq:'Platinum', cssClass:'bp-phantom-pulse'},
+  {id:'galaxy-motion', name:'GALAXY MOTION', tier:'legendary',divReq:'Diamond',  cssClass:'bp-galaxy-motion'},
+  {id:'dragon-aura',   name:'DRAGON AURA',   tier:'legendary',divReq:'Diamond',  cssClass:'bp-dragon-aura'},
+  {id:'eternal-flame', name:'ETERNAL FLAME', tier:'legendary',divReq:'Elite',    cssClass:'bp-eternal-flame'},
+  {id:'neon-rift',     name:'NEON RIFT',      tier:'legendary',divReq:'Elite',    cssClass:'bp-neon-rift'},
+  {id:'crown-energy',  name:'CROWN ENERGY',  tier:'legendary',divReq:'Legend',   cssClass:'bp-crown-energy'},
 ];
 
-const BANNERS=[
-  {id:'default',name:'VOID GRID',gradient:'linear-gradient(135deg,#0c0a1a,#15122a,#1a1040)',tier:'Free',grid:true},
-  {id:'purple-haze',name:'PURPLE HAZE',gradient:'linear-gradient(135deg,#1a0530,#2d1060,#0a0720)',tier:'Free',grid:false},
-  {id:'cyber-teal',name:'CYBER TEAL',gradient:'linear-gradient(135deg,#041a1a,#0a3028,#021520)',tier:'Free',grid:false},
-  {id:'gold-rush',name:'GOLD RUSH',gradient:'linear-gradient(135deg,#1a1000,#3a2000,#1a0800)',tier:'Silver+',grid:false},
-  {id:'fire-wave',name:'FIRE WAVE',gradient:'linear-gradient(135deg,#1a0500,#3a1000,#200400)',tier:'Gold+',grid:false},
-  {id:'ice-storm',name:'ICE STORM',gradient:'linear-gradient(135deg,#00101a,#001a30,#000a1a)',tier:'Platinum+',grid:false},
-  {id:'diamond',name:'DIAMOND',gradient:'linear-gradient(135deg,#0a0520,#1a0a40,#050a28)',tier:'Diamond+',grid:false},
-  {id:'legend-aura',name:'LEGEND AURA',gradient:'linear-gradient(135deg,#1a0a00,#180030,#001a10)',tier:'Legend',grid:false},
+const DIV_ORDER = ['Bronze','Silver','Gold','Platinum','Diamond','Elite','Legend'];
+
+const BORDERS = [
+  {id:'none',          name:'NONE',      tier:'common',   divReq:null,      ring:''},
+  {id:'clean',         name:'CLEAN',     tier:'common',   divReq:null,      ring:'ring-clean'},
+  {id:'blue-ring',     name:'BLUE',      tier:'common',   divReq:null,      ring:'ring-blue'},
+  {id:'diamond-ring',  name:'DIAMOND',   tier:'rare',     divReq:'Silver',  ring:'ring-diamond-ring'},
+  {id:'cosmic',        name:'COSMIC',    tier:'rare',     divReq:'Silver',  ring:'ring-cosmic'},
+  {id:'electric',      name:'ELECTRIC',  tier:'epic',     divReq:'Gold',    ring:'ring-electric'},
+  {id:'inferno',       name:'INFERNO',   tier:'epic',     divReq:'Gold',    ring:'ring-inferno'},
+  {id:'royal',         name:'ROYAL',     tier:'legendary',divReq:'Diamond', ring:'ring-royal'},
+  {id:'dragon',        name:'DRAGON',    tier:'legendary',divReq:'Diamond', ring:'ring-dragon'},
+  {id:'celestial',     name:'CELESTIAL', tier:'legendary',divReq:'Diamond', ring:'ring-celestial'},
+  {id:'bronze-frame',  name:'BRONZE',    tier:'rank',     divReq:'Bronze',  ring:'ring-bronze'},
+  {id:'silver-frame',  name:'SILVER',    tier:'rank',     divReq:'Silver',  ring:'ring-silver'},
+  {id:'gold-frame',    name:'GOLD',      tier:'rank',     divReq:'Gold',    ring:'ring-gold'},
+  {id:'diamond-frame', name:'DIAMOND+',  tier:'rank',     divReq:'Diamond', ring:'ring-diamond-frame'},
+  {id:'elite-frame',   name:'ELITE',     tier:'rank',     divReq:'Elite',   ring:'ring-elite'},
 ];
 
-const BORDERS=[
-  {id:'clean',name:'CLEAN',desc:'Minimal. Timeless.',ring:'ring-clean',tier:''},
-  {id:'pulse',name:'PULSE',desc:'Soft animated glow.',ring:'ring-pulse',tier:''},
-  {id:'gold',name:'GOLD RING',desc:'Bold. Premium.',ring:'ring-gold',tier:'Silver+'},
-  {id:'fire',name:'FIRE RING',desc:'Burning. Intense.',ring:'ring-fire',tier:'Gold+'},
-  {id:'diamond',name:'DIAMOND',desc:'Crystal shimmer.',ring:'ring-diamond',tier:'Diamond+'},
-  {id:'legend',name:'LEGEND GLOW',desc:'Mythic rainbow aura.',ring:'ring-legend',tier:'Legend'},
+const SPORTS = ['Soccer','Basketball','Tennis','Football','Baseball','MMA/Boxing'];
+const SPORT_ICONS = {'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
+
+const ARCHETYPES_DATA = [
+  {id:'sniper',      icon:'🎯', name:'The Sniper',    rarity:8.2,  color:'#34d399',
+   conditions:['Picks < 30','ROI > 20%','Win rate > 65%'],
+   score(s){let p=0;if(s.picks>0&&s.picks<30)p+=33;if(s.roi>20)p+=34;if(s.winRate>65)p+=33;return p;}},
+  {id:'grinder',     icon:'⚒', name:'The Grinder',   rarity:12.1, color:'#b89fff',
+   conditions:['Picks > 100','ROI > 0%','Consistent variance'],
+   score(s){let p=0;if(s.picks>100)p+=40;if(s.roi>0)p+=30;if(!s.highVariance)p+=30;return p;}},
+  {id:'demon',       icon:'🔥', name:'The Demon',     rarity:4.1,  color:'#f87171',
+   conditions:['Current streak > 5','OR Best streak > 10'],
+   score(s){let p=0;if(s.currentStreak>5)p+=60;if(s.bestStreak>10)p+=40;return Math.min(100,p);}},
+  {id:'sharp',       icon:'🧠', name:'The Sharp',     rarity:3.8,  color:'#38bdf8',
+   conditions:['Sharp score > 70','Positive ROI > 5%'],
+   score(s){let p=0;if(s.sharpScore>70)p+=65;if(s.roi>5)p+=35;return p;}},
+  {id:'hunter',      icon:'🐺', name:'The Hunter',    rarity:6.4,  color:'#fbbf24',
+   conditions:['Avg odds > 3.0','ROI > 0%','Picks > 10'],
+   score(s){let p=0;if(s.avgOdds>3.0)p+=45;if(s.roi>0)p+=30;if(s.picks>10)p+=25;return p;}},
+  {id:'storm',       icon:'⚡', name:'The Storm',     rarity:5.7,  color:'#818cf8',
+   conditions:['Volume > 50','Active streaks','ROI > 0%'],
+   score(s){let p=0;if(s.picks>50)p+=40;if(s.currentStreak>3)p+=30;if(s.roi>0)p+=30;return p;}},
+  {id:'kingmaker',   icon:'👑', name:'The Kingmaker', rarity:2.9,  color:'#f59e0b',
+   conditions:['Followers > 50','Win rate > 55%'],
+   score(s){let p=0;if(s.followers>50)p+=55;else if(s.followers>10)p+=20;if(s.winRate>55)p+=25;if(s.roi>0)p+=20;return p;}},
+  {id:'iceblood',    icon:'❄', name:'Iceblood',       rarity:4.5,  color:'#67e8f9',
+   conditions:['Low variance','Picks > 50','ROI > 5%'],
+   score(s){let p=0;if(!s.highVariance)p+=35;if(s.picks>50)p+=35;if(s.roi>5)p+=30;return p;}},
+  {id:'gambler',     icon:'🎲', name:'The Gambler',   rarity:9.3,  color:'#fb923c',
+   conditions:['Avg odds > 5.0','Picks > 20'],
+   score(s){let p=0;if(s.avgOdds>5.0)p+=65;else if(s.avgOdds>3.5)p+=25;if(s.picks>20)p+=35;return p;}},
+  {id:'reaper',      icon:'💀', name:'The Reaper',    rarity:3.2,  color:'#a78bfa',
+   conditions:['Avg odds > 4.0','ROI > 10%'],
+   score(s){let p=0;if(s.avgOdds>4.0)p+=55;else if(s.avgOdds>2.5)p+=20;if(s.roi>10)p+=45;return p;}},
+  {id:'night-owl',   icon:'🌙', name:'Night Owl',     rarity:5.1,  color:'#6366f1',
+   conditions:['Most picks posted 22:00–04:00'],
+   score(s){return s.nightOwl?75:10;}},
+  {id:'shark',       icon:'🦈', name:'The Shark',     rarity:4.8,  color:'#22d3ee',
+   conditions:['Avg odds < 1.7','Win rate > 72%','Picks > 30'],
+   score(s){let p=0;if(s.avgOdds>0&&s.avgOdds<1.7)p+=40;if(s.winRate>72)p+=35;if(s.picks>30)p+=25;return p;}},
+  {id:'ghost',       icon:'👻', name:'The Ghost',     rarity:2.1,  color:'#94a3b8',
+   conditions:['Picks < 15','ROI > 30%'],
+   score(s){let p=0;if(s.picks>0&&s.picks<15)p+=35;if(s.roi>30)p+=45;else if(s.roi>15)p+=20;return p;}},
+  {id:'diamond-mind',icon:'💎', name:'Diamond Mind',  rarity:1.8,  color:'#60a5fa',
+   conditions:['Reliability > 80%','Picks > 50','ROI > 10%'],
+   score(s){let p=0;const rel=Math.min(100,(s.wins+s.losses)/50*100);if(rel>80)p+=35;if(s.picks>50)p+=30;if(s.roi>10)p+=35;return p;}},
+  {id:'hybrid',      icon:'🧬', name:'The Hybrid',    rarity:1.2,  color:'#e879f9',
+   conditions:['Scores > 40% on 3+ archetypes simultaneously'],
+   score(s,all){const n=all?all.filter(x=>x.id!=='hybrid'&&x.s>=40).length:0;return n>=3?80:0;}},
 ];
 
-const SPORTS=['Soccer','Basketball','Tennis','Football','Baseball','MMA/Boxing'];
-const SPORT_ICONS={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
+/* ── STATE ── */
+let user = null;
+let userDiv = null; // computed division string
+let config = {
+  theme:'purple', profileTheme:'#7B2CFF', bannerPack:'midnight',
+  border:'clean', favSports:[], bio:'', social:{twitter:'',instagram:''},
+  oddsFormat:'decimal', timezone:'UTC',
+  hideFromLeaderboard:false, notifications:false
+};
+let pendingAvatar = undefined;
+let pendingBanner = undefined;
+let currentAvatarB64 = null;
+let currentBannerB64 = null;
 
-let user=null;
-let config={archetype:null,banner:'default',border:'clean',favSports:[]};
-let pendingAvatar=undefined;
-let pendingBanner=undefined;
-let currentAvatarB64=null;
-let currentBannerB64=null;
+/* ── DIVISION FROM SCORE ── */
+function scoreToDiv(score){
+  if(score>=90)return'Legend';if(score>=75)return'Elite';if(score>=60)return'Diamond';
+  if(score>=45)return'Platinum';if(score>=30)return'Gold';if(score>=15)return'Silver';
+  return'Bronze';
+}
+function divUnlocked(divReq){
+  if(!divReq)return true;
+  const user_idx=DIV_ORDER.indexOf(userDiv||'Bronze');
+  const req_idx=DIV_ORDER.indexOf(divReq);
+  return user_idx>=req_idx;
+}
+
+/* ── RENDER BANNER PACKS ── */
+function renderBannerPacks(){
+  ['basic','premium','legendary'].forEach(tier=>{
+    const id=tier==='basic'?'bannerGridBasic':tier==='premium'?'bannerGridPremium':'bannerGridLegendary';
+    const grid=document.getElementById(id);
+    if(!grid)return;
+    const packs=BANNER_PACKS.filter(b=>b.tier===tier);
+    grid.innerHTML=packs.map(b=>{
+      const locked=!divUnlocked(b.divReq);
+      const sel=config.bannerPack===b.id;
+      return`<div class="bp-card${sel?' selected':''}${locked?' locked':''}" onclick="selectBannerPack('${b.id}',${locked})" id="bp_${b.id}">
+        <div class="bp-preview ${b.cssClass}">
+          <div class="bp-ck">✓</div>
+          ${locked?`<div class="bp-lock"><div class="bp-lock-icon">🔒</div><div class="bp-lock-req">${b.divReq}+</div></div>`:''}
+        </div>
+        <div class="bp-info">
+          <div class="bp-name">${b.name}</div>
+          <div class="bp-tier-lbl ${tier}">${tier.toUpperCase()}</div>
+        </div>
+      </div>`;
+    }).join('');
+  });
+}
+
+function selectBannerPack(id,locked){
+  if(locked){showToast('DIVISION LOCKED',true);return;}
+  config.bannerPack=id;
+  document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.id==='bp_'+id));
+  applyPreview();
+}
+
+/* ── RENDER BORDERS ── */
+function renderBorders(){
+  const grid=document.getElementById('borderGrid');
+  grid.innerHTML=BORDERS.map(b=>{
+    const locked=!divUnlocked(b.divReq);
+    const sel=config.border===b.id;
+    return`<div class="border-card${sel?' selected':''}${locked?' b-locked':''}" onclick="selectBorder('${b.id}',${locked})" id="brd_${b.id}">
+      ${locked?'<div class="b-lock-overlay">🔒</div>':''}
+      <div class="border-av-wrap">
+        ${b.ring?`<div class="border-ring ${b.ring}"></div>`:''}
+        <div class="border-av">ME</div>
+      </div>
+      <div class="border-name">${b.name}</div>
+      <div class="border-tier ${b.tier}">${locked?(b.divReq+'+'):(b.tier.toUpperCase())}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectBorder(id,locked){
+  if(locked){showToast('DIVISION LOCKED',true);return;}
+  config.border=id;
+  document.querySelectorAll('.border-card').forEach(c=>c.classList.toggle('selected',c.id==='brd_'+id));
+  applyPreview();
+}
+
+/* ── RENDER SPORTS ── */
+function renderSports(){
+  const grid=document.getElementById('sportsGrid');
+  grid.innerHTML=SPORTS.map(s=>`<div class="sport-toggle${config.favSports.includes(s)?' selected':''}" onclick="toggleSport('${s}')" id="spt_${s.replace('/','_')}">
+    <span class="sport-toggle-icon">${SPORT_ICONS[s]}</span>${s}
+  </div>`).join('');
+}
+
+function toggleSport(s){
+  if(config.favSports.includes(s)){config.favSports=config.favSports.filter(x=>x!==s);}
+  else if(config.favSports.length<4){config.favSports.push(s);}
+  else{showToast('MAX 4 SPORTS');return;}
+  renderSports();
+  applyPreview();
+}
+
+/* ── RENDER THEMES ── */
+function renderThemes(){
+  const grid=document.getElementById('themeGrid');
+  if(!grid)return;
+  grid.innerHTML=THEMES.map(t=>`<div class="theme-dot${config.theme===t.id?' active':''}" id="theme_${t.id}" style="background:${t.color}" onclick="selectTheme('${t.id}')" title="${t.name}"><span class="theme-dot-name">${t.name}</span></div>`).join('');
+}
+
+function selectTheme(id){
+  const t=THEMES.find(x=>x.id===id);if(!t)return;
+  config.theme=id;
+  config.profileTheme=t.color;
+  const root=document.documentElement;
+  root.style.setProperty('--profile-accent',t.color);
+  root.style.setProperty('--profile-glow',t.color+'59');
+  root.style.setProperty('--profile-highlight',t.color+'cc');
+  root.style.setProperty('--profile-card-border',t.color);
+  localStorage.setItem('ledgr_profile_theme',t.color);
+  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.id==='theme_'+id));
+  applyPreview();
+}
+
+/* ── PREVIEW ── */
+function applyPreview(){
+  const banner=BANNER_PACKS.find(b=>b.id===config.bannerPack)||BANNER_PACKS[0];
+  const border=BORDERS.find(b=>b.id===config.border)||BORDERS[1];
+  const prev=document.getElementById('previewBanner');
+  if(!currentBannerB64){
+    prev.className='preview-banner '+banner.cssClass;
+    prev.style.backgroundImage='';
+  }
+  const ring=document.getElementById('previewRing');
+  ring.className='preview-av-ring border-ring '+(border.ring||'');
+  const sEl=document.getElementById('previewSports');
+  sEl.innerHTML=config.favSports.map(s=>`<span class="sport-chip">${SPORT_ICONS[s]} ${s}</span>`).join('');
+}
 
 /* ── IMAGE COMPRESSION ── */
 async function compressImage(file,maxW,maxH,quality){
@@ -572,297 +953,10 @@ async function compressImage(file,maxW,maxH,quality){
   });
 }
 
-/* ── BACKEND PROFILE ── */
-async function fetchOwnProfile(){
-  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!token||!user)return;
-  try{
-    const r=await fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+token}});
-    if(!r.ok)return;
-    const data=await r.json();
-    if(data.archetype!=null)config.archetype=data.archetype;
-    if(data.banner)config.banner=data.banner;
-    if(data.border)config.border=data.border;
-    if(data.theme)config.theme=data.theme;
-    if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
-    if(data.bio!=null)config.bio=data.bio;
-    if(data.social_twitter!=null||data.social_instagram!=null)config.social={twitter:data.social_twitter||'',instagram:data.social_instagram||''};
-    const key=user.id||user.username;
-    if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
-    if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
-    localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
-    renderArchetypes();renderBanners();renderBorders();renderSports();renderThemes();loadIdentitySettings();applyPreview();
-  }catch(e){}
-}
-
-async function postProfile(){
-  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!token||!user||!user.id)return false;
-  const payload={
-    archetype:config.archetype||null,
-    banner:config.banner||'default',
-    border:config.border||'clean',
-    theme:config.theme||'default',
-    favSports:config.favSports||[],
-    bio:config.bio||'',
-    social:{twitter:(config.social&&config.social.twitter)||'',instagram:(config.social&&config.social.instagram)||''},
-  };
-  if(pendingAvatar!==undefined)payload.avatarB64=pendingAvatar;
-  if(pendingBanner!==undefined)payload.bannerB64=pendingBanner;
-  try{
-    const r=await fetch(API+'/profile',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify(payload)
-    });
-    if(r.ok){pendingAvatar=undefined;pendingBanner=undefined;}
-    return r.ok;
-  }catch(e){return false;}
-}
-
-/* ── INIT ── */
-window.onload=()=>{
-  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
-  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!ud||!tk){window.location.href='/login';return;}
-  try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
-  if(!user||!user.username){window.location.href='/login';return;}
-
-  document.getElementById('app').style.display='block';
-  document.getElementById('snAv').textContent=user.username.slice(0,2).toUpperCase();
-  document.getElementById('snName').textContent='@'+user.username;
-  document.getElementById('previewAv').textContent=user.username.slice(0,2).toUpperCase();
-  document.getElementById('previewUname').textContent='@'+user.username;
-
-  const saved=localStorage.getItem('ledgr_profile_'+user.username);
-  if(saved){try{config=JSON.parse(saved);}catch(e){}}
-
-  renderArchetypes();
-  renderBanners();
-  renderBorders();
-  renderSports();
-  renderThemes();
-  loadIdentitySettings();
-  applyPreview();
-
-  // Load saved price
-  const savedPrice=localStorage.getItem('ledgr_my_sub_price');
-  if(savedPrice)document.getElementById('subPrice').value=savedPrice;
-
-  // Load subscription data
-  loadMySubscriptions();
-  loadMySubscribers();
-  fetchOwnProfile();
-};
-
-const API='https://ledgr-backend-production-c132.up.railway.app';
-const AV_COLORS=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#0f766e,#14b8a6)'];
-function avC(u){let h=0;for(let i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))&0xffffffff;return AV_COLORS[Math.abs(h)%AV_COLORS.length];}
-
-async function loadMySubscriptions(){
-  const el=document.getElementById('mySubscriptions');
-  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!user||!token){el.innerHTML='<div class="sub-empty">Log in to see your subscriptions.</div>';return;}
-  try{
-    const r=await fetch(API+'/subscriptions/'+user.id,{headers:{Authorization:'Bearer '+token}});
-    const subs=await r.json();
-    if(!Array.isArray(subs)||!subs.length){
-      el.innerHTML='<div class="sub-empty">No active subscriptions.<br><a href="/leaderboard" style="color:var(--ac)">Browse tipsters →</a></div>';
-      return;
-    }
-    el.innerHTML=subs.map(s=>{
-      const uname=s.tipster?.username||'Unknown';
-      const end=s.currentPeriodEnd?new Date(s.currentPeriodEnd).toLocaleDateString('en-GB'):'—';
-      return`<div class="sub-row">
-        <div class="sub-av" style="background:${avC(uname)}">${uname.slice(0,2).toUpperCase()}</div>
-        <div class="sub-info">
-          <div class="sub-name" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</div>
-          <div class="sub-meta">€${(s.priceAmount/100).toFixed(0)}/mo · renews ${end}</div>
-        </div>
-        <span class="sub-badge active">● ACTIVE</span>
-        <button class="sub-cancel-btn" onclick="cancelSubscription('${s.id}',this)">Cancel</button>
-      </div>`;
-    }).join('');
-  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscriptions.</div>';}
-}
-
-async function cancelSubscription(subId,btn){
-  if(!confirm('Cancel this subscription? It will remain active until the end of the billing period.'))return;
-  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  btn.disabled=true;btn.textContent='Cancelling…';
-  try{
-    const r=await fetch(API+'/subscriptions/'+subId,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
-    const d=await r.json();
-    if(d.success){showToast('Subscription cancelled');loadMySubscriptions();}
-    else{showToast(d.error||'Error cancelling');btn.disabled=false;btn.textContent='Cancel';}
-  }catch(e){showToast('Connection error');btn.disabled=false;btn.textContent='Cancel';}
-}
-
-async function loadMySubscribers(){
-  const el=document.getElementById('mySubscribers');
-  const cardEl=document.getElementById('earningsCard');
-  const earningsEl=document.getElementById('earningsVal');
-  if(!user){el.innerHTML='<div class="sub-empty">Log in to see your subscribers.</div>';return;}
-  try{
-    const r=await fetch(API+'/subscribers/'+user.id);
-    const d=await r.json();
-    if(!d.count){
-      el.innerHTML='<div class="sub-empty">No subscribers yet.<br>Share your profile to grow your following.</div>';
-      return;
-    }
-    // Earnings estimate
-    const price=parseInt(localStorage.getItem('ledgr_my_sub_price')||'10');
-    const monthly=d.count*price;
-    earningsEl.textContent='€'+monthly;
-    cardEl.style.display='flex';
-
-    el.innerHTML=d.subscribers.map(s=>{
-      const uname=s.username||'Unknown';
-      return`<div class="sub-row">
-        <div class="sub-av" style="background:${avC(uname)}">${uname.slice(0,2).toUpperCase()}</div>
-        <div class="sub-info">
-          <div class="sub-name" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</div>
-          <div class="sub-meta">Active subscriber</div>
-        </div>
-        <span class="sub-badge active">● ACTIVE</span>
-      </div>`;
-    }).join('');
-  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscribers.</div>';}
-}
-
-function saveSubPrice(){
-  const price=parseInt(document.getElementById('subPrice').value)||10;
-  localStorage.setItem('ledgr_my_sub_price',price);
-  showToast('Price saved — €'+price+'/mo');
-  loadMySubscribers();
-}
-
-/* ── RENDER ARCHETYPES ── */
-function renderArchetypes(){
-  const grid=document.getElementById('archetypeGrid');
-  grid.innerHTML=ARCHETYPES.map(a=>{
-    const sel=config.archetype===a.id;
-    return`<div class="archetype-card${sel?' selected':''}" onclick="selectArchetype('${a.id}')" id="arch_${a.id}" style="${sel?`border-color:${a.color};background:${a.color}11`:''}" data-color="${a.color}">
-      <div class="archetype-check">✓</div>
-      <span class="archetype-icon">${a.icon}</span>
-      <div class="archetype-name" style="${sel?`color:${a.color}`:''}"> ${a.name}</div>
-      <div class="archetype-desc">${a.desc}</div>
-    </div>`;
-  }).join('');
-}
-
-function selectArchetype(id){
-  config.archetype=id;
-  document.querySelectorAll('.archetype-card').forEach(c=>{
-    const cid=c.id.replace('arch_','');const a=ARCHETYPES.find(x=>x.id===cid);
-    const sel=cid===id;
-    c.classList.toggle('selected',sel);
-    c.style.borderColor=sel?a.color:'';
-    c.style.background=sel?a.color+'11':'';
-    c.querySelector('.archetype-name').style.color=sel?a.color:'';
-  });
-  applyPreview();
-}
-
-/* ── RENDER BANNERS ── */
-function renderBanners(){
-  const grid=document.getElementById('bannerGrid');
-  grid.innerHTML=BANNERS.map(b=>`<div class="banner-card${config.banner===b.id?' selected':''}" onclick="selectBanner('${b.id}')" id="ban_${b.id}">
-    <div class="banner-prev" style="background:${b.gradient}">${b.grid?'<div class="banner-prev-grid"></div>':''}</div>
-    <div class="banner-ck">✓</div>
-    <div class="banner-info">
-      <div class="banner-name">${b.name}</div>
-      <div class="banner-tier">${b.tier}</div>
-    </div>
-  </div>`).join('');
-}
-
-function selectBanner(id){
-  config.banner=id;
-  document.querySelectorAll('.banner-card').forEach(c=>c.classList.toggle('selected',c.id==='ban_'+id));
-  applyPreview();
-}
-
-/* ── RENDER BORDERS ── */
-function renderBorders(){
-  const grid=document.getElementById('borderGrid');
-  grid.innerHTML=BORDERS.map(b=>`<div class="border-card${config.border===b.id?' selected':''}" onclick="selectBorder('${b.id}')" id="brd_${b.id}">
-    <div class="border-av-wrap">
-      <div class="border-ring ${b.ring}"></div>
-      <div class="border-av">ME</div>
-    </div>
-    <div class="border-name">${b.name}</div>
-    <div class="border-tier">${b.tier||'Free'}</div>
-  </div>`).join('');
-}
-
-function selectBorder(id){
-  config.border=id;
-  document.querySelectorAll('.border-card').forEach(c=>c.classList.toggle('selected',c.id==='brd_'+id));
-  applyPreview();
-}
-
-/* ── RENDER SPORTS ── */
-function renderSports(){
-  const grid=document.getElementById('sportsGrid');
-  grid.innerHTML=SPORTS.map(s=>`<div class="sport-toggle${config.favSports.includes(s)?' selected':''}" onclick="toggleSport('${s}')" id="spt_${s.replace('/','_')}">
-    <span class="sport-toggle-icon">${SPORT_ICONS[s]}</span>${s}
-  </div>`).join('');
-}
-
-function toggleSport(s){
-  if(config.favSports.includes(s)){config.favSports=config.favSports.filter(x=>x!==s);}
-  else if(config.favSports.length<4){config.favSports.push(s);}
-  else{showToast('MAX 4 SPORTS');return;}
-  document.querySelectorAll('.sport-toggle').forEach(el=>{
-    const sport=el.id.replace('spt_','').replace('_','/');
-    el.classList.toggle('selected',config.favSports.includes(sport));
-  });
-  applyPreview();
-}
-
-/* ── PREVIEW ── */
-function applyPreview(){
-  const banner=BANNERS.find(b=>b.id===config.banner)||BANNERS[0];
-  const border=BORDERS.find(b=>b.id===config.border)||BORDERS[0];
-  const arch=ARCHETYPES.find(a=>a.id===config.archetype);
-
-  document.getElementById('previewBanner').style.background=banner.gradient;
-  document.getElementById('previewBannerGrid').style.opacity=banner.grid?.6:0;
-
-  const ring=document.getElementById('previewRing');
-  ring.className='preview-av-ring border-ring '+border.ring;
-
-  const badge=document.getElementById('previewArchBadge');
-  if(arch){
-    badge.style.display='inline-flex';
-    badge.style.color=arch.color;
-    badge.style.borderColor=arch.color+'55';
-    badge.style.background=arch.color+'11';
-    badge.textContent=arch.icon+' '+arch.name.replace('The ','').toUpperCase();
-  }else{
-    badge.style.display='none';
-  }
-
-  const sportsEl=document.getElementById('previewSports');
-  sportsEl.innerHTML=config.favSports.map(s=>`<span class="sport-chip">${SPORT_ICONS[s]} ${s}</span>`).join('');
-}
-
-/* ── IDENTITY FUNCTIONS ── */
-function renderThemes(){
-  const grid=document.getElementById('themeGrid');
-  if(!grid)return;
-  grid.innerHTML=THEMES.map(t=>`<div class="theme-dot${(config.theme||'default')===t.id?' active':''}" id="theme_${t.id}" style="background:${t.color}" onclick="selectTheme('${t.id}')" title="${t.name}"><span class="theme-dot-name">${t.name}</span></div>`).join('');
-}
-
-function selectTheme(id){
-  config.theme=id;
-  document.querySelectorAll('.theme-dot').forEach(d=>d.classList.toggle('active',d.id==='theme_'+id));
-}
-
+/* ── UPLOAD HANDLERS ── */
 async function handleAvUpload(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>10*1024*1024){showToast('IMAGE TOO LARGE — max 10MB',true);return;}
+  if(file.size>10*1024*1024){showToast('IMAGE TOO LARGE',true);return;}
   const b64=await compressImage(file,400,400,0.82);
   if(!b64){showToast('IMAGE ERROR',true);return;}
   pendingAvatar=b64;currentAvatarB64=b64;
@@ -871,8 +965,7 @@ async function handleAvUpload(input){
   document.getElementById('avPreviewImg').style.display='block';
   document.getElementById('avPlaceholder').style.display='none';
   document.getElementById('avRemove').style.display='flex';
-  const prev=document.getElementById('previewAv');
-  prev.innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  document.getElementById('previewAv').innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
   showToast('AVATAR UPDATED — save to sync ✓');
 }
 
@@ -890,7 +983,7 @@ function removeAvatar(e){
 
 async function handleBannerImgUpload(input){
   const file=input.files[0];if(!file)return;
-  if(file.size>10*1024*1024){showToast('IMAGE TOO LARGE — max 10MB',true);return;}
+  if(file.size>10*1024*1024){showToast('IMAGE TOO LARGE',true);return;}
   const b64=await compressImage(file,1200,300,0.82);
   if(!b64){showToast('IMAGE ERROR',true);return;}
   pendingBanner=b64;currentBannerB64=b64;
@@ -899,10 +992,10 @@ async function handleBannerImgUpload(input){
   document.getElementById('bannerImgPreview').style.display='block';
   document.getElementById('bannerImgPlaceholder').style.display='none';
   document.getElementById('bannerImgRemove').style.display='flex';
-  const prev=document.getElementById('previewBanner');
-  prev.style.backgroundImage=`url(${b64})`;
-  prev.style.backgroundSize='cover';
-  prev.style.backgroundPosition='center';
+  const pv=document.getElementById('previewBanner');
+  pv.style.backgroundImage=`url(${b64})`;
+  pv.style.backgroundSize='cover';
+  pv.style.backgroundPosition='center';
   showToast('BANNER UPDATED — save to sync ✓');
 }
 
@@ -914,8 +1007,8 @@ function removeBannerImg(e){
   document.getElementById('bannerImgPreview').src='';
   document.getElementById('bannerImgPlaceholder').style.display='flex';
   document.getElementById('bannerImgRemove').style.display='none';
-  const prev=document.getElementById('previewBanner');
-  prev.style.backgroundImage='';prev.style.backgroundSize='';prev.style.backgroundPosition='';
+  const pv=document.getElementById('previewBanner');
+  pv.style.backgroundImage='';pv.style.backgroundSize='';pv.style.backgroundPosition='';
   applyPreview();showToast('BANNER REMOVED');
 }
 
@@ -926,34 +1019,286 @@ function updateBioCounter(){
   el.style.color=len>140?'var(--gold)':'var(--mu)';
 }
 
+/* ── PREFERENCES ── */
+function savePref(key,val){
+  config[key]=val;
+  localStorage.setItem('ledgr_pref_'+key,JSON.stringify(val));
+}
+
+function loadPrefs(){
+  ['notifications','hideFromLeaderboard'].forEach(k=>{
+    const v=localStorage.getItem('ledgr_pref_'+k);
+    if(v!==null){config[k]=JSON.parse(v);const el=document.getElementById('pref'+k.charAt(0).toUpperCase()+k.slice(1));if(el)el.checked=config[k];}
+  });
+  ['oddsFormat','timezone'].forEach(k=>{
+    const v=localStorage.getItem('ledgr_pref_'+k);
+    if(v){config[k]=JSON.parse(v);const el=document.getElementById('pref'+k.charAt(0).toUpperCase()+k.slice(1));if(el)el.value=config[k];}
+  });
+}
+
+/* ── BACKEND PROFILE ── */
+async function fetchOwnProfile(){
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token||!user)return;
+  try{
+    const r=await fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+token}});
+    if(!r.ok)return;
+    const data=await r.json();
+    if(data.banner)config.bannerPack=data.banner;
+    if(data.border)config.border=data.border;
+    if(data.theme){
+      const t=THEMES.find(x=>x.id===data.theme);
+      if(t){config.theme=data.theme;config.profileTheme=t.color;}
+    }
+    if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
+    if(data.bio!=null)config.bio=data.bio;
+    if(data.social_twitter!=null||data.social_instagram!=null)
+      config.social={twitter:data.social_twitter||'',instagram:data.social_instagram||''};
+    const key=user.id||user.username;
+    if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
+    if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
+    localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
+    renderThemes();renderBannerPacks();renderBorders();renderSports();loadIdentitySettings();applyPreview();
+  }catch(e){}
+}
+
+async function postProfile(){
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token||!user||!user.id)return false;
+  const payload={
+    banner:config.bannerPack||'midnight',
+    border:config.border||'clean',
+    theme:config.theme||'purple',
+    favSports:config.favSports||[],
+    bio:config.bio||'',
+    social:{twitter:(config.social&&config.social.twitter)||'',instagram:(config.social&&config.social.instagram)||''},
+  };
+  if(pendingAvatar!==undefined)payload.avatarB64=pendingAvatar;
+  if(pendingBanner!==undefined)payload.bannerB64=pendingBanner;
+  try{
+    const r=await fetch(API+'/profile',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify(payload)
+    });
+    if(r.ok){pendingAvatar=undefined;pendingBanner=undefined;}
+    return r.ok;
+  }catch(e){return false;}
+}
+
+/* ── IDENTITY LOAD ── */
 function loadIdentitySettings(){
   const key=user.id||user.username;
-  const av=localStorage.getItem('ledgr_avatar_'+key);
+  const av=currentAvatarB64||localStorage.getItem('ledgr_avatar_'+key);
   if(av){
     currentAvatarB64=av;
     document.getElementById('avPreviewImg').src=av;
     document.getElementById('avPreviewImg').style.display='block';
     document.getElementById('avPlaceholder').style.display='none';
     document.getElementById('avRemove').style.display='flex';
-    const prev=document.getElementById('previewAv');
-    prev.innerHTML=`<img src="${av}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    document.getElementById('previewAv').innerHTML=`<img src="${av}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
   }
-  const ban=localStorage.getItem('ledgr_banner_img_'+key);
+  const ban=currentBannerB64||localStorage.getItem('ledgr_banner_img_'+key);
   if(ban){
     currentBannerB64=ban;
     document.getElementById('bannerImgPreview').src=ban;
     document.getElementById('bannerImgPreview').style.display='block';
     document.getElementById('bannerImgPlaceholder').style.display='none';
     document.getElementById('bannerImgRemove').style.display='flex';
+    const pv=document.getElementById('previewBanner');
+    pv.style.backgroundImage=`url(${ban})`;
+    pv.style.backgroundSize='cover';
+    pv.style.backgroundPosition='center';
   }
-  if(config.bio){
-    document.getElementById('bioInput').value=config.bio;
-    updateBioCounter();
-  }
+  if(config.bio)document.getElementById('bioInput').value=config.bio;
+  updateBioCounter();
   if(config.social){
     if(config.social.twitter)document.getElementById('twitterInput').value=config.social.twitter;
     if(config.social.instagram)document.getElementById('instagramInput').value=config.social.instagram;
   }
+}
+
+/* ── ARCHETYPE DNA ── */
+async function fetchAndComputeDNA(){
+  const dnaEl=document.getElementById('dnaContent');
+  if(!dnaEl||!user?.username)return;
+  try{
+    const r=await fetch(API+'/rankings/'+user.username);
+    if(!r.ok)throw new Error();
+    const data=await r.json();
+    const settled=(data.wins||0)+(data.losses||0);
+    const stats={
+      picks:data.picks||data.totalPicks||0,
+      wins:data.wins||0,
+      losses:data.losses||0,
+      roi:typeof data.roi==='number'?data.roi:parseFloat(data.roi)||0,
+      winRate:settled>0?Math.round((data.wins||0)/settled*100):0,
+      currentStreak:data.currentStreak||0,
+      bestStreak:data.bestStreak||0,
+      sharpScore:data.sharpScore||0,
+      avgOdds:data.avgOdds||0,
+      followers:data.followers||0,
+      highVariance:false,
+      nightOwl:false,
+    };
+    // compute division from score
+    const s=Math.round((stats.roi/20)*40+(stats.winRate/70)*30+Math.min(stats.picks,100)/100*20+Math.min(10,stats.picks));
+    userDiv=scoreToDiv(s);
+    renderBannerPacks();renderBorders();
+
+    const scores=ARCHETYPES_DATA.map(a=>({id:a.id,s:a.id==='hybrid'?0:a.score(stats)}));
+    const hybridA=ARCHETYPES_DATA.find(a=>a.id==='hybrid');
+    scores.find(x=>x.id==='hybrid').s=hybridA.score(stats,scores);
+    const sorted=[...scores].sort((a,b)=>b.s-a.s);
+    const primary=ARCHETYPES_DATA.find(a=>a.id===sorted[0].id);
+    const top=sorted[0].s;
+
+    if(top<40){
+      dnaEl.innerHTML=`<div class="dna-card">
+        <div class="dna-top"><div class="dna-icon">🌑</div><div class="dna-info">
+          <div class="dna-name">UNDEFINED</div>
+          <div class="dna-label">Keep posting picks to unlock your identity</div>
+        </div></div>
+        <ul class="dna-reasons"><li>Post at least 5 settled picks</li><li>Your pattern will emerge automatically</li></ul>
+        <a href="/archetypes" class="dna-link">View all archetypes →</a>
+      </div>`;
+      return;
+    }
+
+    const evolution=sorted.slice(1,3).map(x=>({...ARCHETYPES_DATA.find(a=>a.id===x.id),s:x.s})).filter(x=>x.s>20);
+    const confidence=Math.round(top);
+
+    // Build reason list
+    const reasons=buildReasons(primary.id,stats);
+
+    dnaEl.innerHTML=`<div class="dna-card" style="--dna-rgb:${hexToRgb(primary.color)}">
+      <div class="dna-top">
+        <div class="dna-icon">${primary.icon}</div>
+        <div class="dna-info">
+          <div class="dna-name" style="color:${primary.color}">${primary.name.toUpperCase()}</div>
+          <div class="dna-label">Detected automatically · ${primary.rarity}% of bettors</div>
+        </div>
+      </div>
+      <div class="dna-conf-row">
+        <span class="dna-conf-lbl">Confidence</span>
+        <span class="dna-conf-val" style="color:${primary.color}">${confidence}%</span>
+      </div>
+      <div class="dna-bar-wrap"><div class="dna-bar-fill" style="width:${confidence}%;background:${primary.color}"></div></div>
+      <div class="dna-section-lbl">Detected because:</div>
+      <ul class="dna-reasons">${reasons.map(r=>`<li>${r}</li>`).join('')}</ul>
+      ${evolution.length?`<div class="dna-section-lbl">Possible evolution:</div>
+      <div class="dna-evolution">${evolution.map(e=>`<div class="dna-evo-row">
+        <span class="dna-evo-icon">${e.icon}</span>
+        <span class="dna-evo-name">${e.name}</span>
+        <span class="dna-evo-pct">${Math.round(e.s)}%</span>
+      </div>`).join('')}</div>`:''}
+      <a href="/archetypes" class="dna-link">View Archetype Vault →</a>
+    </div>
+    ${settled<10?'<div class="dna-warning">⚠ Post at least 10 settled picks for accurate DNA detection.</div>':''}`;
+  }catch(e){
+    dnaEl.innerHTML='<div class="dna-loading">Could not load stats — keep posting picks to unlock your DNA.</div>';
+  }
+}
+
+function buildReasons(id,s){
+  const map={
+    sniper:[s.picks<30&&'Select pick volume ('+s.picks+' total picks)',s.roi>20&&'ROI of '+s.roi.toFixed(1)+'%',s.winRate>65&&'Win rate of '+s.winRate+'%'],
+    demon:[s.currentStreak>5&&'Active streak of '+s.currentStreak+' wins 🔥',s.bestStreak>10&&'Best ever streak: '+s.bestStreak+' picks'],
+    sharp:[s.sharpScore>70&&'Sharp Score: '+s.sharpScore,s.roi>5&&'Consistent +ROI of '+s.roi.toFixed(1)+'%'],
+    grinder:[s.picks>100&&'High volume: '+s.picks+' total picks',s.roi>0&&'Positive ROI maintained'],
+    hunter:[s.avgOdds>3&&'Average odds: '+s.avgOdds.toFixed(2),s.roi>0&&'Profitable on longshots'],
+    iceblood:[!s.highVariance&&'Consistent low-variance approach',s.picks>50&&s.picks+' picks with steady returns',s.roi>5&&'ROI of '+s.roi.toFixed(1)+'%'],
+    shark:[s.avgOdds<1.7&&'Avg odds '+s.avgOdds.toFixed(2)+' — surgical low-odds betting',s.winRate>72&&'Win rate of '+s.winRate+'%'],
+    ghost:[s.picks<15&&'Rare picks — only '+s.picks+' posted',s.roi>30&&'Massive ROI of '+s.roi.toFixed(1)+'%'],
+    diamond_mind:[s.picks>50&&s.picks+' total picks',s.roi>10&&'ROI '+s.roi.toFixed(1)+'%'],
+  };
+  const key=id.replace('-','_');
+  return (map[key]||ARCHETYPES_DATA.find(a=>a.id===id)?.conditions||[]).filter(Boolean).slice(0,3);
+}
+
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return`${r},${g},${b}`;
+}
+
+/* ── SUBSCRIPTIONS ── */
+const AV_COLORS=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#0f766e,#14b8a6)'];
+function avC(u){let h=0;for(let i=0;i<u.length;i++)h=(h*31+u.charCodeAt(i))&0xffffffff;return AV_COLORS[Math.abs(h)%AV_COLORS.length];}
+
+async function loadMySubscriptions(){
+  const el=document.getElementById('mySubscriptions');
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!user||!token){el.innerHTML='<div class="sub-empty">Log in to see your subscriptions.</div>';return;}
+  try{
+    const r=await fetch(API+'/subscriptions/'+user.id,{headers:{Authorization:'Bearer '+token}});
+    const subs=await r.json();
+    if(!Array.isArray(subs)||!subs.length){
+      el.innerHTML='<div class="sub-empty">No active subscriptions.<br><a href="/leaderboard" style="color:var(--ac)">Browse tipsters →</a></div>';return;
+    }
+    el.innerHTML=subs.map(s=>{
+      const uname=s.tipster?.username||'Unknown';
+      const end=s.currentPeriodEnd?new Date(s.currentPeriodEnd).toLocaleDateString('en-GB'):'—';
+      return`<div class="sub-row">
+        <div class="sub-av" style="background:${avC(uname)}">${uname.slice(0,2).toUpperCase()}</div>
+        <div class="sub-info"><div class="sub-name" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</div>
+        <div class="sub-meta">€${(s.priceAmount/100).toFixed(0)}/mo · renews ${end}</div></div>
+        <span class="sub-badge active">● ACTIVE</span>
+        <button class="sub-cancel-btn" onclick="cancelSubscription('${s.id}',this)">Cancel</button>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscriptions.</div>';}
+}
+
+async function cancelSubscription(subId,btn){
+  if(!confirm('Cancel this subscription? It will remain active until the end of the billing period.'))return;
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  btn.disabled=true;btn.textContent='Cancelling…';
+  try{
+    const r=await fetch(API+'/subscriptions/'+subId,{method:'DELETE',headers:{Authorization:'Bearer '+token}});
+    const d=await r.json();
+    if(d.success){showToast('Subscription cancelled');loadMySubscriptions();}
+    else{showToast(d.error||'Error cancelling',true);btn.disabled=false;btn.textContent='Cancel';}
+  }catch(e){showToast('Connection error',true);btn.disabled=false;btn.textContent='Cancel';}
+}
+
+async function loadMySubscribers(){
+  const el=document.getElementById('mySubscribers');
+  const cardEl=document.getElementById('earningsCard');
+  const earningsEl=document.getElementById('earningsVal');
+  if(!user){el.innerHTML='<div class="sub-empty">Log in to see your subscribers.</div>';return;}
+  try{
+    const r=await fetch(API+'/subscribers/'+user.id);
+    const d=await r.json();
+    if(!d.count){el.innerHTML='<div class="sub-empty">No subscribers yet.<br>Share your profile to grow your following.</div>';return;}
+    const price=parseInt(localStorage.getItem('ledgr_my_sub_price')||'10');
+    earningsEl.textContent='€'+(d.count*price);
+    cardEl.style.display='flex';
+    el.innerHTML=d.subscribers.map(s=>{
+      const uname=s.username||'Unknown';
+      return`<div class="sub-row">
+        <div class="sub-av" style="background:${avC(uname)}">${uname.slice(0,2).toUpperCase()}</div>
+        <div class="sub-info"><div class="sub-name" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</div>
+        <div class="sub-meta">Active subscriber</div></div>
+        <span class="sub-badge active">● ACTIVE</span>
+      </div>`;
+    }).join('');
+  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscribers.</div>';}
+}
+
+function saveSubPrice(){
+  const price=parseInt(document.getElementById('subPrice').value)||10;
+  localStorage.setItem('ledgr_my_sub_price',price);
+  showToast('Price saved — €'+price+'/mo');
+  loadMySubscribers();
+}
+
+/* ── ACCOUNT ── */
+function confirmDeleteAccount(){
+  const c1=confirm('Are you sure you want to delete your account? This cannot be undone.');
+  if(!c1)return;
+  const c2=confirm('ALL your picks, stats, and followers will be permanently deleted. Type OK to confirm.');
+  if(!c2)return;
+  showToast('Contact support@getledgr.bet to complete account deletion.',true);
 }
 
 /* ── SAVE ── */
@@ -969,22 +1314,71 @@ async function saveProfile(){
   btn.textContent='SAVING…';btn.disabled=true;
   const ok=await postProfile();
   btn.disabled=false;
-  btn.textContent='✓ SAVED!';btn.style.background=ok?'var(--gr)':'var(--gold)';
-  setTimeout(()=>{btn.textContent='SAVE PROFILE';btn.style.background='';},2000);
+  btn.textContent=ok?'✓ SAVED!':'✓ SAVED LOCALLY';
+  btn.style.background=ok?'var(--gr)':'var(--gold)';
+  setTimeout(()=>{btn.textContent='SAVE PROFILE';btn.style.background='';},2200);
   showToast(ok?'PROFILE SYNCED ✓':'SAVED LOCALLY — backend offline');
 }
+
+/* ── INIT ── */
+window.onload=()=>{
+  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!ud||!tk){window.location.href='/login';return;}
+  try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
+  if(!user?.username){window.location.href='/login';return;}
+
+  document.getElementById('app').style.display='block';
+  document.getElementById('snAv').textContent=user.username.slice(0,2).toUpperCase();
+  document.getElementById('snName').textContent='@'+user.username;
+  document.getElementById('previewAv').textContent=user.username.slice(0,2).toUpperCase();
+  document.getElementById('previewUname').textContent='@'+user.username;
+  document.getElementById('acctUsername').textContent='@'+user.username;
+  if(user.email)document.getElementById('acctEmail').innerHTML=user.email+'<span class="acct-verified"> ✓ Verified</span>';
+
+  const saved=localStorage.getItem('ledgr_profile_'+user.username);
+  if(saved){try{const p=JSON.parse(saved);Object.assign(config,p);}catch(e){}}
+
+  // Apply saved theme immediately
+  if(config.profileTheme){
+    const root=document.documentElement;
+    root.style.setProperty('--profile-accent',config.profileTheme);
+    root.style.setProperty('--profile-glow',config.profileTheme+'59');
+  }
+
+  // Load saved sub price
+  const savedPrice=localStorage.getItem('ledgr_my_sub_price');
+  if(savedPrice)document.getElementById('subPrice').value=savedPrice;
+
+  loadPrefs();
+  renderThemes();
+  renderBannerPacks();
+  renderBorders();
+  renderSports();
+  loadIdentitySettings();
+  applyPreview();
+  loadMySubscriptions();
+  loadMySubscribers();
+  fetchOwnProfile();
+  fetchAndComputeDNA();
+};
 
 /* ── UTILS ── */
 function showToast(msg,isErr){
   const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.style.background=isErr?'var(--rd)':'var(--gr)';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+  t.textContent=msg;t.style.background=isErr?'var(--rd)':'var(--gr)';
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
 }
-function logout(){localStorage.removeItem('ledgr_user');localStorage.removeItem('ledgr_token');localStorage.removeItem('user');localStorage.removeItem('token');window.location.href='/';}
+function logout(){
+  ['ledgr_user','ledgr_token','user','token'].forEach(k=>localStorage.removeItem(k));
+  window.location.href='/';
+}
 function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
+function brandMenuToggle(){
+  document.getElementById('brandOverlay').classList.toggle('active');
+  document.getElementById('brandSlideMenu').classList.toggle('active');
+}
 </script>
 <script src="/brand-nav.js"></script>
 </body>
