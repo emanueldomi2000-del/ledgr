@@ -199,6 +199,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
     </div>
   </div>
 </div>
+<script src="/reliability.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let allPicks=[];
@@ -377,12 +378,14 @@ function runComparison(){
         <div class="battle-av" style="background:${colors[0]}">${userA.substring(0,2).toUpperCase()}</div>
         <div class="battle-username a">@${userA}</div>
         <div class="battle-sub">${sA.picks} picks · ${sA.wr}% WR</div>
+        ${window.sampleWarningHTML&&sA.picks<50?`<div style="margin-top:4px;text-align:center">${sampleWarningHTML(sA.picks)}</div>`:''}
       </div>
       <div class="battle-mid"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--mu)">VS</div></div>
       <div class="battle-side right ${winner===userB?'winner-b':''}">
         <div class="battle-av" style="background:${colors[3]};margin-left:auto">${userB.substring(0,2).toUpperCase()}</div>
         <div class="battle-username b">@${userB}</div>
         <div class="battle-sub">${sB.picks} picks · ${sB.wr}% WR</div>
+        ${window.sampleWarningHTML&&sB.picks<50?`<div style="margin-top:4px;text-align:center">${sampleWarningHTML(sB.picks)}</div>`:''}
       </div>
     </div>
     <div style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:20px;margin-bottom:16px">

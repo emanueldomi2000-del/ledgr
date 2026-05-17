@@ -432,6 +432,22 @@ select option{background:#15122a}
           </div>
         </div>
 
+        <div id="confHistory" style="display:none;margin:-8px 0 10px;padding:8px 10px;background:rgba(255,255,255,0.03);border:1px solid var(--bd);border-radius:6px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);line-height:1.8"></div>
+
+        <div class="form-group">
+          <label>Sportsbook <span style="color:var(--mu);font-size:9px;font-family:'DM Mono',monospace">(optional)</span></label>
+          <select id="sportsbookSel" onchange="updateBetSlip()" style="width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:7px;padding:9px 12px;color:var(--tx);font-size:13px;font-family:'DM Mono',monospace;cursor:pointer">
+            <option value="">— Select sportsbook —</option>
+            <option>Bet365</option>
+            <option>DraftKings</option>
+            <option>FanDuel</option>
+            <option>BetMGM</option>
+            <option>Caesars</option>
+            <option>Pinnacle</option>
+            <option>Other</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label>Reasoning <span style="color:var(--mu);font-size:9px;font-family:'DM Mono',monospace">(optional · max 200 chars)</span></label>
           <input type="text" id="pickReason" placeholder="Why this pick?" maxlength="200" oninput="updateBetSlip()">
@@ -455,6 +471,7 @@ select option{background:#15122a}
           <div class="bet-slip-row"><span class="bet-slip-key">Odds</span><span class="bet-slip-val" id="slipOdds">—</span></div>
           <div class="bet-slip-row"><span class="bet-slip-key">Stake</span><span class="bet-slip-val" id="slipStake">—</span></div>
           <div class="bet-slip-row"><span class="bet-slip-key">Confidence</span><span class="bet-slip-val" id="slipConf">—</span></div>
+          <div class="bet-slip-row" id="slipSbRow" style="display:none"><span class="bet-slip-key">Sportsbook</span><span class="bet-slip-val" id="slipSb" style="font-size:11px">—</span></div>
           <div class="bet-slip-row" id="slipReasonRow" style="display:none"><span class="bet-slip-key">Reason</span><span class="bet-slip-val" id="slipReason" style="max-width:65%;text-align:right;font-size:11px">—</span></div>
         </div>
 
@@ -490,7 +507,7 @@ select option{background:#15122a}
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null,currentSport='Soccer',currentDateOffset=0,currentLeague='all';
-let allFixtures=[],selectedFixture=null,currentStakeType='units',currentConf='medium',currentVis='public';
+let allFixtures=[],selectedFixture=null,currentStakeType='units',currentConf='medium',currentVis='public',currentSportsbook='';
 let homePlayers=[],awayPlayers=[],homeGK=[],awayGK=[],teamContext={},playerSelections={};
 let allMyPicks=[],currentPickFilter='all';
 
@@ -595,6 +612,9 @@ function updateBetSlip(){
   document.getElementById('slipConf').innerHTML=`<span class="conf-pill ${currentConf}">${cl[currentConf]}</span>`;
   if(reason){document.getElementById('slipReasonRow').style.display='flex';document.getElementById('slipReason').textContent=reason;}
   else{document.getElementById('slipReasonRow').style.display='none';}
+  currentSportsbook=document.getElementById('sportsbookSel')?.value||'';
+  const sbRow=document.getElementById('slipSbRow');const sbEl=document.getElementById('slipSb');
+  if(sbRow&&sbEl){if(currentSportsbook){sbRow.style.display='flex';sbEl.textContent=currentSportsbook;}else{sbRow.style.display='none';}}
 }
 
 // ── MARKETS ──
@@ -726,6 +746,7 @@ async function postPick(){
         market,odds,stake,result:'pending',pnl:0,
         stakeType:currentStakeType,
         confidence:currentConf,
+        sportsbook:currentSportsbook||null,
         reasoning:reason||null,
         isPublic:currentVis!=='premium',
         isPremium:currentVis==='premium'
@@ -748,6 +769,8 @@ async function postPick(){
       currentVis='public';
       document.querySelectorAll('.vis-btn').forEach(b=>b.classList.remove('active'));
       document.querySelector('.vis-btn.pub').classList.add('active');
+      // reset sportsbook
+      currentSportsbook='';const sbSel=document.getElementById('sportsbookSel');if(sbSel)sbSel.value='';
       teamContext={};playerSelections={};
       renderMarkets(currentSport);filterFixtures();loadPicks();
     }else{showToast('Error: '+(d.error||'Unknown'));}
@@ -803,7 +826,26 @@ async function loadPicks(){
     document.getElementById('statPnL').className='stat-val '+(tp>=0?'pos':'neg');
     drawROIChart(allMyPicks);
     renderMyPicks();
+    renderConfidenceHistory(allMyPicks);
   }catch(e){console.error(e);}
+}
+
+function renderConfidenceHistory(picks){
+  const el=document.getElementById('confHistory');
+  if(!el)return;
+  const settled=picks.filter(p=>p.result==='win'||p.result==='loss');
+  if(settled.length<5){el.style.display='none';return;}
+  const levels=['low','medium','high','max'];
+  const labels={low:'🔴 Low',medium:'🟡 Med',high:'🟢 High',max:'⚡ Max'};
+  const parts=levels.map(lvl=>{
+    const lp=settled.filter(p=>p.confidence===lvl);
+    if(!lp.length)return null;
+    const w=lp.filter(p=>p.result==='win').length;
+    return`${labels[lvl]}: <b style="color:var(--tx)">${lp.length} picks</b> · <b style="color:${w/lp.length>=0.5?'var(--gr)':'var(--rd)'}">${Math.round(w/lp.length*100)}% WR</b>`;
+  }).filter(Boolean);
+  if(!parts.length){el.style.display='none';return;}
+  el.style.display='block';
+  el.innerHTML='<span style="color:var(--mu2);font-weight:700">Conf. history: </span>'+parts.join(' &nbsp;·&nbsp; ');
 }
 
 function renderMyPicks(){
