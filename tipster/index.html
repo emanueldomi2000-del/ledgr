@@ -262,6 +262,17 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.9);backdrop-filter
 .pc-verified{position:absolute;bottom:10px;right:12px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);display:flex;align-items:center;gap:3px}
 .pc-reasoning{font-size:12px;color:var(--mu2);font-style:italic;margin-top:8px;padding-top:8px;border-top:1px solid var(--bd);line-height:1.5;font-family:'Barlow',sans-serif}
 
+/* ══ PREMIUM LOCK ══ */
+.pick-locked{overflow:hidden}
+.pick-locked-blur{pointer-events:none}
+.pick-lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;backdrop-filter:blur(8px);background:rgba(7,6,13,.6);border-radius:inherit;text-align:center;padding:16px}
+.plo-icon{font-size:28px;line-height:1}
+.plo-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:3px;color:var(--gold)}
+.plo-sub{font-size:11px;color:var(--mu2);font-family:'Barlow',sans-serif;max-width:200px}
+.plo-btn{display:inline-block;margin-top:4px;padding:7px 18px;background:var(--gold);color:#07060d;border-radius:20px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-decoration:none;transition:all .2s}
+.plo-btn:hover{background:#fcd34d;transform:translateY(-1px)}
+.pc-prem-badge{position:absolute;top:10px;left:12px;background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:20px}
+
 /* ══ PERFORMANCE PANEL ══ */
 .perf-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd);font-size:13px}
 .perf-row:last-child{border:none}
@@ -531,14 +542,48 @@ function renderPicks(){
     </div>`;
     return;
   }
+  // check subscription: own profile always unlocked; subscribers unlocked
+  const viewerRaw=localStorage.getItem('ledgr_user');
+  const viewer=viewerRaw?JSON.parse(viewerRaw):null;
+  const isOwn=viewer&&viewer.username===username;
+  const subStatus=localStorage.getItem('ledgr_subscription_status')||'free';
+  const isSubscriber=isOwn||subStatus==='premium'||subStatus==='pro';
+
   c.innerHTML=filtered.map((p,i)=>{
+    const isPrem=p.isPremium===true||p.isPremium==='true';
+    const locked=isPrem&&!isSubscriber;
     const resultCls=p.result==='win'?'win-card':p.result==='loss'?'loss-card':'pending-card';
     const resultBadge=p.result==='win'?'<span class="pc-result-badge pcr-win">WIN ✓</span>':p.result==='loss'?'<span class="pc-result-badge pcr-loss">LOSS</span>':'<span class="pc-result-badge pcr-pending">LIVE ●</span>';
     const pnlPos=p.pnl>0;const pnlNeg=p.pnl<0;
     const pnlHtml=p.result==='pending'?'':(pnlPos?`<span class="pc-pnl pos">+${p.pnl.toFixed(2)}u</span>`:pnlNeg?`<span class="pc-pnl neg">-${Math.abs(p.pnl).toFixed(2)}u</span>`:`<span class="pc-pnl zero">0u</span>`);
     const confHtml=p.confidence?`<span class="pc-conf ${p.confidence}">${confLabels[p.confidence]||p.confidence}</span>`:'';
     const dateStr=new Date(p.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short'});
+    if(locked){
+      return`<div class="pick-card ${resultCls} pick-locked" style="animation-delay:${i*28}ms">
+        <div class="pick-locked-blur">
+          <div class="pc-top">
+            <div><div class="pc-event">${p.event}</div></div>
+            <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+              <span class="pc-sport-pill">${sportIcon[p.sport]||'🎯'} ${p.sport}</span>
+              <span class="pc-date">${dateStr}</span>
+            </div>
+          </div>
+          <div class="pc-mid">
+            <div class="pc-market" style="filter:blur(5px);user-select:none">████████████</div>
+            <div class="pc-odds" style="filter:blur(4px);user-select:none">@&nbsp;?.??</div>
+          </div>
+          <div class="pc-bottom"><span class="pc-stake" style="filter:blur(3px);user-select:none">?u stake</span></div>
+        </div>
+        <div class="pick-lock-overlay">
+          <div class="plo-icon">🔒</div>
+          <div class="plo-title">PREMIUM PICK</div>
+          <div class="plo-sub">Subscribe to @${username} to unlock this pick</div>
+          <a href="/settings" class="plo-btn">Upgrade to Premium</a>
+        </div>
+      </div>`;
+    }
     return`<div class="pick-card ${resultCls}" style="animation-delay:${i*28}ms">
+      ${isPrem?'<span class="pc-prem-badge">🔒 PREMIUM</span>':''}
       ${resultBadge}
       <div class="pc-top">
         <div><div class="pc-event">${p.event}</div></div>

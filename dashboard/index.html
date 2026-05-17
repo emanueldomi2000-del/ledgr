@@ -124,6 +124,16 @@ select option{background:#15122a}
 .conf-pill.high{background:rgba(52,211,153,.1);color:var(--gr)}
 .conf-pill.max{background:var(--acg);color:var(--ac)}
 
+/* VISIBILITY TOGGLE */
+.vis-toggle{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.vis-btn{flex:1;padding:11px 10px;background:transparent;border:none;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--mu2);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;letter-spacing:.5px}
+.vis-btn:not(:last-child){border-right:1px solid var(--bd)}
+.vis-btn:hover{background:rgba(255,255,255,0.03);color:var(--tx)}
+.vis-btn.active.pub{background:rgba(52,211,153,.1);color:var(--gr)}
+.vis-btn.active.free{background:rgba(56,189,248,.1);color:var(--cyan)}
+.vis-btn.active.prem{background:rgba(251,191,36,.1);color:var(--gold)}
+.vis-label{font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:6px;display:block}
+
 .submit-btn{width:100%;padding:15px;background:var(--ac);color:#07060d;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;cursor:pointer;transition:all .2s;margin-top:4px}
 .submit-btn:hover{background:#cdb8ff;transform:translateY(-1px);box-shadow:0 8px 24px rgba(184,159,255,0.2)}
 .submit-btn:active{transform:translateY(0)}
@@ -424,6 +434,16 @@ select option{background:#15122a}
           <input type="text" id="pickReason" placeholder="Why this pick?" maxlength="200" oninput="updateBetSlip()">
         </div>
 
+        <!-- VISIBILITY TOGGLE -->
+        <div class="form-group">
+          <span class="vis-label">Visibility</span>
+          <div class="vis-toggle" id="visToggle">
+            <button class="vis-btn pub active" onclick="selectVis('public',this)" title="Visible to everyone">🌐 PUBLIC</button>
+            <button class="vis-btn free" onclick="selectVis('free',this)" title="Only logged-in free members">🔓 FREE ONLY</button>
+            <button class="vis-btn prem" onclick="selectVis('premium',this)" title="Premium subscribers only — blurred for others">🔒 PREMIUM</button>
+          </div>
+        </div>
+
         <!-- BET SLIP PREVIEW -->
         <div class="bet-slip" id="betSlip">
           <div class="bet-slip-title">📋 Bet Slip Preview</div>
@@ -467,7 +487,7 @@ select option{background:#15122a}
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null,currentSport='Soccer',currentDateOffset=0,currentLeague='all';
-let allFixtures=[],selectedFixture=null,currentStakeType='units',currentConf='medium';
+let allFixtures=[],selectedFixture=null,currentStakeType='units',currentConf='medium',currentVis='public';
 let homePlayers=[],awayPlayers=[],homeGK=[],awayGK=[],teamContext={},playerSelections={};
 let allMyPicks=[],currentPickFilter='all';
 
@@ -673,6 +693,12 @@ async function selectFixture(f){
   updateBetSlip();
 }
 
+function selectVis(vis,el){
+  currentVis=vis;
+  document.querySelectorAll('.vis-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
 // ── POST PICK ──
 async function postPick(){
   const market=document.getElementById('pickMarket').value.trim();
@@ -697,7 +723,9 @@ async function postPick(){
         market,odds,stake,result:'pending',pnl:0,
         stakeType:currentStakeType,
         confidence:currentConf,
-        reasoning:reason||null
+        reasoning:reason||null,
+        isPublic:currentVis!=='premium',
+        isPremium:currentVis==='premium'
       })
     });
     const d=await r.json();
@@ -713,6 +741,10 @@ async function postPick(){
       document.getElementById('pickStake').value='';
       document.getElementById('pickReason').value='';
       document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+      // reset visibility to public
+      currentVis='public';
+      document.querySelectorAll('.vis-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelector('.vis-btn.pub').classList.add('active');
       teamContext={};playerSelections={};
       renderMarkets(currentSport);filterFixtures();loadPicks();
     }else{showToast('Error: '+(d.error||'Unknown'));}
