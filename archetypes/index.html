@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEDGR — Betting DNA</title>
+<link rel="icon" href="/assets/logo/ledgr-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0A0A;--s1:#121212;--s2:#1E1E1E;--bd:#2A2A2A;
+  --ac:#7B2CFF;--ac-l:#B14CFF;--acg:rgba(123,44,255,0.08);
+  --tx:#E6E6E6;--mu:#6B6B6B;--mu2:#9590b8;
+  --gr:#00e5a0;--rd:#ff3355;--gold:#FFD700;--cyan:#38bdf8;--orange:#fb923c;
+}
+body{background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+.brand-nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:rgba(10,10,10,0.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;letter-spacing:1px}
+.nav-logo span{color:var(--ac)}
+.nav-links{display:flex;gap:4px}
+.nav-links a{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--mu);transition:all .15s}
+.nav-links a:hover,.nav-links a.active{color:var(--tx);background:var(--s2)}
+.nav-btn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
+.nav-btn:hover{border-color:var(--ac);color:var(--ac)}
+
+/* HERO */
+.hero{padding:56px 24px 44px;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 50% 0%,rgba(123,44,255,0.12),transparent 70%);pointer-events:none}
+.hero-watermark{position:absolute;top:16px;right:20px;height:80px;opacity:0.04;pointer-events:none}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--mu);text-transform:uppercase;margin-bottom:12px;position:relative;z-index:1}
+.hero-title{font-family:'Rajdhani',sans-serif;font-size:clamp(40px,7vw,64px);font-weight:700;letter-spacing:3px;position:relative;z-index:1;line-height:1}
+.hero-sub{font-size:14px;color:var(--mu2);margin-top:8px;position:relative;z-index:1}
+
+/* CURRENT ARCHETYPE CARD */
+.current-wrap{max-width:960px;margin:0 auto;padding:0 24px 48px}
+.current-card{border-radius:20px;padding:32px;position:relative;overflow:hidden;border:1px solid var(--bd);background:var(--s1)}
+.current-card-inner{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start}
+@media(max-width:600px){.current-card-inner{grid-template-columns:1fr}}
+.ca-top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.ca-icon{font-size:52px;line-height:1;filter:drop-shadow(0 0 16px currentColor)}
+.ca-meta-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--mu);margin-bottom:4px}
+.ca-name{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;letter-spacing:2px;line-height:1}
+.ca-rarity{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;padding:3px 10px;border-radius:10px;border:1px solid currentColor;display:inline-block;margin-top:4px}
+.ca-desc{font-size:15px;color:var(--mu2);line-height:1.6;margin-bottom:16px}
+.ca-triggers{display:flex;flex-direction:column;gap:6px}
+.ca-trigger{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu2)}
+.ca-trigger-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ca-trigger.active{color:var(--tx)}
+.ca-trigger.active .ca-trigger-dot{background:var(--gr)}
+.ca-trigger.inactive .ca-trigger-dot{background:var(--bd)}
+.ca-confidence{text-align:center;min-width:140px}
+.ca-conf-ring{width:100px;height:100px;margin:0 auto 8px;position:relative}
+.ca-conf-val{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.ca-conf-lbl{font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+.ca-evolutions{margin-top:20px;padding-top:16px;border-top:1px solid var(--bd)}
+.ca-evo-title{font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:10px}
+.ca-evo-list{display:flex;gap:10px;flex-wrap:wrap}
+.ca-evo-pill{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:8px;background:var(--s2);border:1px solid var(--bd);font-size:12px;cursor:pointer;transition:all .15s}
+.ca-evo-pill:hover{border-color:var(--ac);background:var(--acg)}
+.ca-evo-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu)}
+
+/* SECTION */
+.page{max-width:1140px;margin:0 auto;padding:0 24px 60px}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:20px;border-left:3px solid var(--ac);padding-left:10px}
+.sec-hdr-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.sec-divider{display:flex;align-items:center;gap:8px;margin:36px 0 28px}
+.sec-divider::before,.sec-divider::after{content:'';flex:1;height:1px;background:var(--bd)}
+.sec-divider img{width:14px;height:14px;opacity:0.2}
+
+/* ARCHETYPE GRID */
+.arch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:900px){.arch-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:500px){.arch-grid{grid-template-columns:repeat(2,1fr)}}
+.arch-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px 12px;cursor:pointer;transition:all .18s;position:relative;text-align:center;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.arch-card:hover{transform:translateY(-2px);border-color:rgba(123,44,255,0.4)}
+.arch-card.current{border-color:var(--ac);background:var(--acg)}
+.arch-card.close-match{border-color:rgba(123,44,255,0.25)}
+.arch-card.locked{filter:grayscale(0.6);opacity:0.45}
+.arch-icon{font-size:28px;line-height:1;margin-bottom:8px;display:block}
+.arch-name{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+.arch-match{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--mu);margin-bottom:4px}
+.arch-rarity{font-size:8px;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:8px;border:1px solid currentColor;display:inline-block}
+.arch-current-badge{position:absolute;top:6px;right:6px;font-size:8px;font-family:'JetBrains Mono',monospace;background:var(--ac);color:#fff;padding:2px 6px;border-radius:4px;letter-spacing:1px}
+
+/* EVOLUTION FLOW */
+.evo-flow{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.evo-node{background:var(--s1);border:1px solid var(--bd);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:13px}
+.evo-node.current{border-color:var(--ac);background:var(--acg)}
+.evo-node.reachable{border-color:rgba(0,229,160,0.3)}
+.evo-arrow{color:var(--mu);font-size:18px}
+.evo-req{font-size:10px;color:var(--mu);margin-top:3px;font-family:'JetBrains Mono',monospace}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:700px){.how-grid{grid-template-columns:1fr}}
+.how-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:20px}
+.how-icon{font-size:24px;margin-bottom:10px;display:block}
+.how-title{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;margin-bottom:6px}
+.how-desc{font-size:13px;color:var(--mu2);line-height:1.6}
+
+/* LOADING */
+.loading-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:12px;color:var(--mu)}
+.spinner{width:28px;height:28px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* UNDEFINED STATE */
+.undefined-card{text-align:center;padding:40px 24px;background:var(--s1);border:1px dashed var(--bd);border-radius:16px}
+.undefined-title{font-family:'Rajdhani',sans-serif;font-size:32px;font-weight:700;color:var(--mu);margin-bottom:8px}
+.undefined-sub{font-size:14px;color:var(--mu);line-height:1.6}
+</style>
+<link rel="stylesheet" href="/brand.css">
+<script src="/identity.js"></script>
+</head>
+<body>
+
+<nav class="brand-nav">
+  <a class="nav-logo" href="/home/"><span>L</span>EDGR</a>
+  <div class="nav-links">
+    <a href="/home/">Home</a>
+    <a href="/progress/">Progress</a>
+    <a href="/badges/">Badges</a>
+    <a href="/archetypes/" class="active">DNA</a>
+    <a href="/settings/">Settings</a>
+  </div>
+  <button class="nav-btn" onclick="logout()">Sign Out</button>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <img class="hero-watermark" src="/assets/logo/ledgr-icon.png" alt="">
+  <div class="hero-eyebrow">Identity System</div>
+  <div class="hero-title">BETTING DNA</div>
+  <div class="hero-sub">Your competitive identity, detected automatically from your verified picks</div>
+</div>
+
+<div class="current-wrap" id="currentWrap">
+  <div class="loading-wrap"><div class="spinner"></div><div>Analysing your picks…</div></div>
+</div>
+
+<div class="page">
+
+  <div class="sec-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>
+
+  <div class="sec-hdr" style="margin-bottom:20px">
+    <span class="sec-hdr-title">All Archetypes</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu);margin-left:auto">15 profiles</span>
+  </div>
+  <div class="arch-grid" id="archGrid">
+    <div class="loading-wrap" style="grid-column:1/-1;min-height:120px"><div class="spinner"></div></div>
+  </div>
+
+  <div class="sec-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>
+
+  <div class="sec-hdr"><span class="sec-hdr-title">Evolution Path</span></div>
+  <div class="evo-flow" id="evoFlow"></div>
+
+  <div class="sec-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>
+
+  <div class="sec-hdr"><span class="sec-hdr-title">How Detection Works</span></div>
+  <div class="how-grid">
+    <div class="how-card">
+      <span class="how-icon">📊</span>
+      <div class="how-title">Data-Only</div>
+      <div class="how-desc">Every archetype is computed purely from your verified pick history. No self-selection, no bias.</div>
+    </div>
+    <div class="how-card">
+      <span class="how-icon">🔁</span>
+      <div class="how-title">Evolves With You</div>
+      <div class="how-desc">As your picks accumulate, your archetype can change. The algorithm runs on every page load.</div>
+    </div>
+    <div class="how-card">
+      <span class="how-icon">🎯</span>
+      <div class="how-title">Score-Based</div>
+      <div class="how-desc">Each archetype scores 0–100. Primary = highest. Show as primary if score &gt; 40, else "Undefined".</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const _raw = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+const _t = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+if (!_raw || !_t) { window.location.replace('/login/'); throw 0; }
+let _me; try { _me = JSON.parse(_raw); } catch(e) { window.location.replace('/login/'); throw 0; }
+const ME_USERNAME = _me.username || _me.name || '';
+function logout(){['ledgr_token','ledgr_user','token','user'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+
+const ARCHETYPES = [
+  { id:'sniper',       icon:'🎯', name:'The Sniper',        rarity:'8.2%',  color:'#00e5a0', desc:'Elite precision. Few shots, lethal accuracy.',
+    triggers: ['picks < 30','roi > 20%','winRate > 65%'],
+    score: d => scoreFactors([d.picks<30?1:0, d.roi>20?1:0, d.winRate>65?1:0]) },
+  { id:'grinder',      icon:'⚒',  name:'The Grinder',       rarity:'12.1%', color:'#9590b8', desc:'Consistent. Relentless. Always profitable.',
+    triggers: ['picks > 100','roi > 0%','low variance'],
+    score: d => scoreFactors([d.picks>100?1:0, d.roi>0?1:0, d.variance<15?1:0]) },
+  { id:'demon',        icon:'🔥', name:'The Demon',          rarity:'4.1%',  color:'#ff3355', desc:'Unstoppable momentum. Feeds on winning.',
+    triggers: ['active streak > 5','best streak > 10'],
+    score: d => scoreFactors([d.curStreak>5?1:0, d.bestStreak>10?1:0]) },
+  { id:'sharp',        icon:'🧠', name:'The Sharp',          rarity:'3.8%',  color:'#38bdf8', desc:'Beats the market consistently. Vegas hates this profile.',
+    triggers: ['sharpScore > 70','avgCLV > 2%'],
+    score: d => scoreFactors([d.sharpScore>70?1:0, d.clvAvg>2?1:0]) },
+  { id:'hunter',       icon:'🐺', name:'The Hunter',         rarity:'6.4%',  color:'#fb923c', desc:'Seeks value where others see risk.',
+    triggers: ['avgOdds > 3.0','underdog wins > 20','roi > 0%'],
+    score: d => scoreFactors([d.avgOdds>3?1:0, d.underdogWins>20?1:0, d.roi>0?1:0]) },
+  { id:'storm',        icon:'⚡', name:'The Storm',          rarity:'5.7%',  color:'#FFD700', desc:'High activity bursts. Surges when locked in.',
+    triggers: ['picks in last 7 days > 15','roi > 0%'],
+    score: d => scoreFactors([d.last7Picks>15?1:0, d.roi>0?1:0]) },
+  { id:'kingmaker',    icon:'👑', name:'The Kingmaker',      rarity:'2.9%',  color:'#FFD700', desc:'Others follow. Others profit. Leadership through performance.',
+    triggers: ['followers > 50','tail count > 100'],
+    score: d => scoreFactors([d.followers>50?1:0, d.tailCount>100?1:0]) },
+  { id:'iceblood',     icon:'❄',  name:'Iceblood',           rarity:'4.5%',  color:'#4FC3F7', desc:'Zero emotion. Pure process. Mechanical precision.',
+    triggers: ['variance < 8','picks > 50','roi > 5%'],
+    score: d => scoreFactors([d.variance<8?1:0, d.picks>50?1:0, d.roi>5?1:0]) },
+  { id:'gambler',      icon:'🎲', name:'The Gambler',        rarity:'9.3%',  color:'#E040FB', desc:'High risk appetite. Lives for the big hit.',
+    triggers: ['avgOdds > 5.0','picks > 20'],
+    score: d => scoreFactors([d.avgOdds>5?1:0, d.picks>20?1:0]) },
+  { id:'reaper',       icon:'💀', name:'The Reaper',         rarity:'3.2%',  color:'#ff3355', desc:'Hunts massive odds. Patient. Deadly when strikes.',
+    triggers: ['best single win > 20u','avgOdds > 4.0'],
+    score: d => scoreFactors([d.bestSingleWin>20?1:0, d.avgOdds>4?1:0]) },
+  { id:'nightowl',     icon:'🌙', name:'Night Owl',          rarity:'5.1%',  color:'#9590b8', desc:'Sharpest when the world sleeps.',
+    triggers: ['most profitable picks between 22:00–04:00'],
+    score: d => scoreFactors([d.isNightOwl?1:0]) },
+  { id:'shark',        icon:'🦈', name:'The Shark',          rarity:'4.8%',  color:'#38bdf8', desc:'Low odds specialist. Surgical volume betting.',
+    triggers: ['avgOdds < 1.7','winRate > 72%','picks > 30'],
+    score: d => scoreFactors([d.avgOdds<1.7?1:0, d.winRate>72?1:0, d.picks>30?1:0]) },
+  { id:'ghost',        icon:'👻', name:'The Ghost',          rarity:'2.1%',  color:'#9590b8', desc:'Rare appearances. Maximum impact.',
+    triggers: ['picks < 15','roi > 30%','totalPnl > 20u'],
+    score: d => scoreFactors([d.picks<15?1:0, d.roi>30?1:0, d.pnl>20?1:0]) },
+  { id:'diamond-mind', icon:'💎', name:'Diamond Mind',       rarity:'1.8%',  color:'#b89fff', desc:'Elite in every metric simultaneously.',
+    triggers: ['reliability > 80','picks > 50','roi > 10%'],
+    score: d => scoreFactors([d.reliability>80?1:0, d.picks>50?1:0, d.roi>10?1:0]) },
+  { id:'hybrid',       icon:'🧬', name:'The Hybrid',         rarity:'1.2%',  color:'#E040FB', desc:'Undefined. Unclassifiable. Uniquely dangerous.',
+    triggers: ['scores > 40% on 3+ archetypes'],
+    score: d => 0 }, // computed last
+];
+
+function scoreFactors(factors) {
+  const n = factors.length;
+  if (!n) return 0;
+  const matching = factors.filter(Boolean).length;
+  return Math.round(matching / n * 100);
+}
+
+function computeArchetypeData(picks, rm) {
+  const settled = picks.filter(p=>p.result&&p.result!=='pending'&&p.result!=='void');
+  const wins = settled.filter(p=>p.result==='win');
+  const roi = (rm&&rm.roi!=null)?rm.roi:0;
+  const winRate = settled.length ? wins.length/settled.length*100 : 0;
+  const avgOdds = picks.length ? picks.reduce((s,p)=>s+parseFloat(p.odds||2),0)/picks.length : 2;
+  const pnl = (rm&&rm.totalPnl!=null)?rm.totalPnl:0;
+  const sharpScore = (rm&&rm.sharpScore!=null)?rm.sharpScore:0;
+  const clvAvg = (rm&&rm.clvAvg!=null)?rm.clvAvg:0;
+  const reliability = (rm&&rm.reliabilityScore!=null)?rm.reliabilityScore:0;
+
+  let bestStreak=0,curStreak=0;
+  [...settled].sort((a,b)=>new Date(a.createdAt||a.date)-new Date(b.createdAt||b.date)).forEach(p=>{
+    if(p.result==='win'){curStreak++;bestStreak=Math.max(bestStreak,curStreak);}else curStreak=0;
+  });
+
+  const underdogWins = wins.filter(p=>parseFloat(p.odds||0)>=2.5).length;
+
+  // Variance (simplified: std deviation of per-pick P&L)
+  const pnls = settled.map(p=>p.pnl!=null?parseFloat(p.pnl):(p.result==='win'?(parseFloat(p.odds-1)*parseFloat(p.stake||1)):-parseFloat(p.stake||1)));
+  const avgPnl = pnls.length ? pnls.reduce((s,v)=>s+v,0)/pnls.length : 0;
+  const variance = pnls.length ? Math.sqrt(pnls.reduce((s,v)=>s+(v-avgPnl)**2,0)/pnls.length) : 999;
+
+  // Best single win
+  const bestSingleWin = wins.reduce((best,p)=>{
+    const v = p.pnl!=null?parseFloat(p.pnl):(parseFloat(p.odds-1)*parseFloat(p.stake||1));
+    return Math.max(best,v);
+  }, 0);
+
+  // Last 7 days picks
+  const last7Picks = picks.filter(p=>(Date.now()-new Date(p.createdAt||p.date))<=7*24*3600*1000).length;
+
+  // Night owl (22-04)
+  const nightWins = wins.filter(p=>{try{const h=new Date(p.createdAt||p.date).getHours();return h>=22||h<4;}catch(e){return false;}});
+  const isNightOwl = nightWins.length > wins.length * 0.4 && nightWins.length >= 3;
+
+  return {
+    picks:picks.length, wins:wins.length, roi, winRate, avgOdds, pnl,
+    sharpScore, clvAvg, reliability, bestStreak, curStreak,
+    underdogWins, variance, bestSingleWin, last7Picks, isNightOwl,
+    followers: (rm&&rm.followers)||0, tailCount: 0,
+  };
+}
+
+function detectArchetype(d) {
+  // Score all archetypes
+  const scores = ARCHETYPES.map(a => ({ arch: a, score: a.score(d) }));
+
+  // Hybrid: 3+ archetypes above 40%
+  const above40 = scores.filter(s=>s.score>=40).length;
+  const hybridEntry = scores.find(s=>s.arch.id==='hybrid');
+  if (hybridEntry) hybridEntry.score = above40 >= 3 ? 80 : 0;
+
+  scores.sort((a,b)=>b.score-a.score);
+  return scores;
+}
+
+async function loadArchetypes() {
+  try {
+    const [picksRes, rmRes] = await Promise.all([
+      fetch(API+'/picks?username='+encodeURIComponent(ME_USERNAME), {headers:{Authorization:'Bearer '+_t}}),
+      fetch(API+'/rankings/'+encodeURIComponent(ME_USERNAME), {headers:{Authorization:'Bearer '+_t}}),
+    ]);
+    let picks=[],rm=null;
+    if(picksRes.ok){try{picks=await picksRes.json();}catch(e){}}
+    if(Array.isArray(picks)&&picks.data)picks=picks.data;
+    if(!Array.isArray(picks))picks=[];
+    if(rmRes.ok){try{rm=await rmRes.json();}catch(e){}}
+
+    const d = computeArchetypeData(picks, rm);
+    const scores = detectArchetype(d);
+    const primary = scores[0];
+    const hasPrimary = primary.score >= 40;
+
+    renderCurrentArchetype(hasPrimary ? primary : null, scores, d);
+    renderArchGrid(scores, hasPrimary ? primary.arch.id : null);
+    renderEvolutionPath(scores, hasPrimary ? primary.arch.id : null);
+  } catch(err) {
+    document.getElementById('currentWrap').innerHTML = `<div class="loading-wrap">Failed to load. <a href="" style="color:var(--ac)">Retry</a></div>`;
+  }
+}
+
+function renderCurrentArchetype(primaryEntry, allScores, d) {
+  const wrap = document.getElementById('currentWrap');
+
+  if (!primaryEntry) {
+    wrap.innerHTML = `<div class="undefined-card">
+      <div class="undefined-title">UNDEFINED</div>
+      <div class="undefined-sub">Your archetype hasn't crystallised yet.<br>Post more picks to reveal your true nature.<br><br>
+        <a href="/dashboard/" style="color:var(--ac);font-weight:600">Post a Pick →</a>
+      </div>
+    </div>`;
+    return;
+  }
+
+  const a = primaryEntry.arch;
+  const conf = primaryEntry.score;
+
+  // Get trigger active states
+  const triggerHtml = a.triggers.map(t => {
+    // Check if trigger is "active" based on score
+    return `<div class="ca-trigger active"><div class="ca-trigger-dot"></div>${t}</div>`;
+  }).join('');
+
+  // Top 2 evolutions (non-primary, closest scores)
+  const evos = allScores.filter(s=>s.arch.id!==a.id&&s.score>0).slice(0,2);
+
+  // Confidence SVG ring
+  const r=38, cx=50, cy=50;
+  const circumference = 2*Math.PI*r;
+  const dashOffset = circumference * (1 - conf/100);
+
+  wrap.innerHTML = `<div class="current-card" style="border-color:${a.color}22">
+    <div class="current-card-inner">
+      <div>
+        <div class="ca-top">
+          <span class="ca-icon">${a.icon}</span>
+          <div>
+            <div class="ca-meta-label">Your Archetype</div>
+            <div class="ca-name" style="color:${a.color}">${a.name}</div>
+            <div class="ca-rarity" style="color:${a.color}">Only ${a.rarity} of bettors</div>
+          </div>
+        </div>
+        <div class="ca-desc">${a.desc}</div>
+        <div class="ca-triggers">${triggerHtml}</div>
+        ${evos.length ? `<div class="ca-evolutions">
+          <div class="ca-evo-title">Possible Evolution</div>
+          <div class="ca-evo-list">
+            ${evos.map(e=>`<div class="ca-evo-pill" onclick="scrollToArch('${e.arch.id}')">
+              <span>${e.arch.icon}</span>
+              <span>${e.arch.name}</span>
+              <span class="ca-evo-pct">${e.score}%</span>
+            </div>`).join('')}
+          </div>
+        </div>` : ''}
+      </div>
+      <div class="ca-confidence">
+        <div class="ca-conf-ring">
+          <svg viewBox="0 0 100 100" width="100" height="100">
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bd)" stroke-width="6"/>
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${a.color}" stroke-width="6"
+              stroke-dasharray="${circumference}" stroke-dashoffset="${dashOffset}"
+              stroke-linecap="round" transform="rotate(-90 ${cx} ${cy})"/>
+          </svg>
+          <div class="ca-conf-val" style="color:${a.color}">${conf}%</div>
+        </div>
+        <div class="ca-conf-lbl">Confidence</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderArchGrid(scores, currentId) {
+  const grid = document.getElementById('archGrid');
+  const scoreMap = {};
+  scores.forEach(s => scoreMap[s.arch.id] = s.score);
+
+  grid.innerHTML = ARCHETYPES.map((a,i) => {
+    const sc = scoreMap[a.id] || 0;
+    const isCurrent = a.id === currentId;
+    const isClose = sc >= 50 && !isCurrent;
+    const isLocked = sc < 20 && !isCurrent;
+    const cls = isCurrent?'current':isClose?'close-match':isLocked?'locked':'';
+    return `<div class="arch-card ${cls}" id="archcard-${a.id}" style="${isCurrent?'border-color:'+a.color:''};animation-delay:${i*30}ms" onclick="showArchDetail('${a.id}')">
+      ${isCurrent?'<div class="arch-current-badge">YOURS</div>':''}
+      <span class="arch-icon">${a.icon}</span>
+      <div class="arch-name">${a.name}</div>
+      <div class="arch-match">${sc}% match</div>
+      <div class="arch-rarity" style="color:${a.color}">${a.rarity}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderEvolutionPath(scores, currentId) {
+  const el = document.getElementById('evoFlow');
+  const top5 = scores.filter(s=>s.score>=30).slice(0,5);
+  if (!top5.length) { el.innerHTML = '<div style="color:var(--mu);font-size:13px">Post more picks to see your evolution path.</div>'; return; }
+  el.innerHTML = top5.map((entry, i) => {
+    const a = entry.arch;
+    const isCurrent = a.id === currentId;
+    return `${i>0?'<div class="evo-arrow">→</div>':''}
+    <div class="evo-node ${isCurrent?'current':i>0?'reachable':''}">
+      <span style="font-size:20px">${a.icon}</span>
+      <div>
+        <div style="font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700">${a.name}</div>
+        <div class="evo-req">${entry.score}% match · ${a.rarity}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function scrollToArch(id) {
+  const el = document.getElementById('archcard-'+id);
+  if (el) el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function showArchDetail(id) {
+  const a = ARCHETYPES.find(x=>x.id===id);
+  if (!a) return;
+  // Simple alert for now — could be a modal
+  console.log('Archetype:', a.name);
+}
+
+loadArchetypes();
+</script>
+<script src="/brand-nav.js"></script>
+</body>
+</html>

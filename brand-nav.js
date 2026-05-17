@@ -1,4 +1,6 @@
 /* LEDGR Brand Nav — shared across all pages */
+/* Load profile theme immediately */
+(function(){const t=localStorage.getItem('ledgr_profile_theme');if(t&&document.documentElement){document.documentElement.style.setProperty('--profile-accent',t);document.documentElement.style.setProperty('--profile-card-border',t);}})();
 
 function brandMenuToggle() {
   document.getElementById('brandSlideMenu').classList.toggle('open');
@@ -35,6 +37,7 @@ function brandNavInit() {
           ['Compare Tipsters','/compare'],
           ['Badges',          '/badges'],
           ['Progress',        '/progress'],
+          ['Archetypes',      '/archetypes'],
           ['Hall of Fame',    '/hall-of-fame'],
           ['News',            '/news'],
           ['Settings',        '/settings'],
