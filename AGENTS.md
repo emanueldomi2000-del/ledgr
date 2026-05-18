@@ -44,3 +44,32 @@ LEDGR IS NOT:
 - sportsbook
 - casino
 - gambling site
+After completing any feature:
+
+Update:
+
+- LEDGR_MASTER_STATE.md
+- LEDGR_BRAIN.md
+- BACKEND_ARCHITECTURE.md (if backend changed)
+
+Include:
+
+## Last Update
+
+Date:
+Completed:
+Modified files:
+Next task:
+Known risks:
+Before starting work:
+
+Read:
+- LEDGR_MASTER_STATE.md
+- LEDGR_BRAIN.md
+- LEDGR_UI_BRAIN.md
+- LAST_TASK.md
+
+After completing work:
+
+Update:
+- LAST_TASK.md

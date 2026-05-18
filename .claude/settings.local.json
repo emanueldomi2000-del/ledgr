@@ -6,7 +6,9 @@
       "Bash(git push *)",
       "PowerShell(New-Item *)",
       "Bash(git -C \"C:/Users/emanu/ledgr\" status)",
-      "Bash(git -C \"C:/Users/emanu/ledgr\" diff)"
+      "Bash(git -C \"C:/Users/emanu/ledgr\" diff)",
+      "Bash(cat \"C:\\\\Users\\\\emanu\\\\ledgr\\\\home\\\\index.html\")",
+      "Read(//tmp/**)"
     ]
   }
 }

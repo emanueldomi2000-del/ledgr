@@ -1,0 +1,565 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   LEDGR /app-components.css
+   Reusable UI components shared across all app pages.
+   Load AFTER /app-tokens.css.
+   Phase 2 — Foundation
+───────────────────────────────────────────────────────────────────────── */
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SHARED KEYFRAMES
+══════════════════════════════════════════════════════════════════════════ */
+
+@keyframes shimmer {
+  0%   { background-position: -400px 0 }
+  100% { background-position:  400px 0 }
+}
+
+@keyframes ringPulse {
+  0%, 100% { box-shadow: 0 0 0  0 rgba(56,189,248,0.00) }
+  50%       { box-shadow: 0 0 0  8px rgba(56,189,248,0.10) }
+}
+
+@keyframes diamondCrackle {
+  0%, 100% {
+    box-shadow:  0 0 0 0 rgba(56,189,248,0.00), 0 0 8px rgba(56,189,248,0.20);
+    border-color: rgba(56,189,248,0.60);
+  }
+  50% {
+    box-shadow:  0 0 0 6px rgba(56,189,248,0.08), 0 0 20px rgba(56,189,248,0.40);
+    border-color: rgba(56,189,248,1.00);
+  }
+}
+
+@keyframes conicSpin  { to { transform: rotate(360deg); } }
+
+@keyframes legendShimmer {
+  0%, 100% { background-position:   0% 50% }
+  50%       { background-position: 100% 50% }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 1   }
+  50%       { opacity: .65 }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1  }
+  50%       { opacity: .2 }
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes barShimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX( 100%); }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BACKGROUND UTILITIES
+══════════════════════════════════════════════════════════════════════════ */
+
+/* Film-grain noise overlay — add as first child of body */
+.app-noise {
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: .4;
+}
+
+/* Ambient radial glow from top-center — shared by most app pages */
+.bg-glow {
+  position: fixed;
+  top: -300px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 600px;
+  background: radial-gradient(ellipse, rgba(100,70,200,0.05), transparent 65%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SKELETON LOADER
+   Usage: <div class="skel" style="width:120px;height:14px"></div>
+══════════════════════════════════════════════════════════════════════════ */
+
+.skel {
+  display: inline-block;
+  border-radius: var(--r-sm, 6px);
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+.skel-text   { height: 12px; border-radius: 4px; }
+.skel-title  { height: 24px; border-radius: 4px; }
+.skel-avatar {
+  border-radius: 50%;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DIVISION BADGE PILLS
+   Usage: <span class="division-badge div-gold">🏆 GOLD</span>
+   Defined on: home, community, tipster, progress — canonical here.
+══════════════════════════════════════════════════════════════════════════ */
+
+.division-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill, 999px);
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all .3s;
+}
+
+.div-bronze   { background: rgba(180,120, 80,0.10); border: 1px solid rgba(180,120, 80,0.20); color: #b47850; }
+.div-silver   { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.20); color: #94a3b8; }
+.div-gold     { background: rgba(251,191, 36,0.08); border: 1px solid rgba(251,191, 36,0.22); color: var(--gold,   #fbbf24); }
+.div-platinum { background: rgba( 56,189,248,0.08); border: 1px solid rgba( 56,189,248,0.22); color: var(--cyan,   #38bdf8); }
+.div-diamond  { background: rgba(184,159,255,0.10); border: 1px solid rgba(184,159,255,0.22); color: var(--ac,     #b89fff); }
+.div-elite    { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.22); color: var(--rd,     #f87171); }
+.div-legend   { background: rgba(251,191, 36,0.10); border: 1px solid rgba(251,191, 36,0.30); color: var(--gold,   #fbbf24); }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AVATAR RINGS
+   Usage: <div class="avatar-ring ring-gold"></div> inside a position:relative avatar wrapper
+   Defined on: tipster, progress — canonical here.
+══════════════════════════════════════════════════════════════════════════ */
+
+.avatar-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.ring-bronze   { border: 2px solid rgba(180,120, 80,0.50); box-shadow: 0 0 12px rgba(180,120, 80,0.15); }
+.ring-silver   { border: 2px solid rgba(148,163,184,0.40); box-shadow: 0 0 12px rgba(148,163,184,0.10); }
+.ring-gold     {
+  border: 2px solid rgba(251,191,36,0.70);
+  box-shadow: 0 0 16px rgba(251,191,36,0.20), 0 0 32px rgba(251,191,36,0.06);
+}
+.ring-platinum { border: 2px solid rgba( 56,189,248,0.50); animation: ringPulse 2.5s ease-in-out infinite; }
+.ring-diamond  { border: 2px solid rgba( 56,189,248,0.80); animation: diamondCrackle 2s ease-in-out infinite; }
+
+.ring-elite::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #7B2CFF, #B14CFF, #f87171, #7B2CFF);
+  animation: conicSpin 3s linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+}
+
+.ring-legendary::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #fbbf24, #b89fff, #34d399, #38bdf8, #f87171, #fbbf24);
+  animation: conicSpin 4s linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+}
+
+/* Settings-defined border overrides */
+.ring-pulse {
+  border: 2px solid rgba(184,159,255,0.45) !important;
+  animation: ringPulse 2s ease-in-out infinite;
+}
+.ring-fire::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, #ff6b00, #ff3500, #ffaa00, #ff6b00);
+  animation: conicSpin 3s linear infinite;
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+          mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #fff calc(100% - 2px));
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DIVISION BANNERS (cinematic hero backgrounds)
+   Usage: <div class="profile-banner banner-gold"> ... </div>
+   The containing element must be position:relative for ::before/::after.
+   Defined on: tipster, progress — canonical here.
+══════════════════════════════════════════════════════════════════════════ */
+
+.banner-bronze    { background: linear-gradient(135deg, #1a0e08, #2d1a0a, #1a100c); }
+.banner-silver    { background: linear-gradient(135deg, #0e1018, #161b24, #0a0d14); }
+.banner-gold      { background: linear-gradient(135deg, #0d0900, #1f1500, #0a0800); }
+.banner-platinum  { background: linear-gradient(135deg, #00111a, #001f2e, #000d1a); }
+.banner-diamond   { background: linear-gradient(135deg, #080520, #10073a, #040918); }
+.banner-elite     { background: linear-gradient(135deg, #0a0420, #1a0840, #080318); }
+.banner-legendary { background: linear-gradient(135deg, #100500, #1a0030, #00100a); }
+
+.banner-gold::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(75deg,
+    rgba(251,191,36,0.04) 0px, transparent 80px, rgba(251,191,36,0.02) 160px
+  );
+  pointer-events: none;
+}
+
+.banner-platinum::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 100% at 50% 100%, rgba(56,189,248,0.08), transparent);
+  pointer-events: none;
+}
+
+.banner-diamond::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(1px 1px at 20% 30%, rgba( 56,189,248,0.60), transparent),
+    radial-gradient(1px 1px at 70% 20%, rgba(184,159,255,0.50), transparent),
+    radial-gradient(1px 1px at 40% 60%, rgba( 56,189,248,0.40), transparent),
+    radial-gradient(2px 2px at 80% 50%, rgba(184,159,255,0.60), transparent),
+    radial-gradient(2px 2px at 10% 70%, rgba( 56,189,248,0.30), transparent);
+  pointer-events: none;
+}
+
+.banner-elite::after {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  top: 50%; left: 50%;
+  margin: -300px;
+  background: conic-gradient(from 0deg,
+    rgba(123,44,255,0.12), transparent 30%,
+    rgba(184,159,255,0.08), transparent 70%,
+    rgba(123,44,255,0.12)
+  );
+  animation: conicSpin 12s linear infinite;
+  pointer-events: none;
+}
+
+.banner-legendary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg,
+    rgba(251,191, 36,0.06), rgba(184,159,255,0.06),
+    rgba( 52,211,153,0.04), rgba( 56,189,248,0.05),
+    rgba(251,191, 36,0.06)
+  );
+  background-size: 300% 300%;
+  animation: legendShimmer 8s ease infinite;
+  pointer-events: none;
+}
+
+/* Noise overlay for banners — add inside the banner div */
+.banner-noise {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Gradient fade from banner bottom into page background */
+.banner-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 120px;
+  background: linear-gradient(to top, var(--bg, #07060d) 0%, transparent 100%);
+  z-index: 2;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BUTTONS
+   Base class .btn — always combine with a modifier.
+══════════════════════════════════════════════════════════════════════════ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--r-sm, 6px);
+  font-family: var(--font-body, 'Syne', sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  text-decoration: none;
+  padding: 10px 20px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none !important; }
+
+/* Primary — vivid brand purple */
+.btn-primary { background: var(--ac-vivid, #7B2CFF); color: #fff; }
+.btn-primary:hover:not(:disabled) {
+  background: var(--ac-light, #B14CFF);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(123,44,255,0.35);
+}
+
+/* Soft — lavender tint surface */
+.btn-soft {
+  background: var(--acg,  rgba(184,159,255,0.07));
+  color:      var(--ac,   #b89fff);
+  border: 1px solid var(--bd, rgba(184,159,255,0.10));
+}
+.btn-soft:hover:not(:disabled) {
+  background: var(--acg2, rgba(184,159,255,0.14));
+  border-color: var(--bd2, rgba(184,159,255,0.20));
+}
+
+/* Ghost — transparent with border */
+.btn-ghost {
+  background: transparent;
+  color:  var(--mu2, #9590b8);
+  border: 1px solid var(--bd, rgba(184,159,255,0.10));
+}
+.btn-ghost:hover:not(:disabled) {
+  color: var(--tx, #f0edff);
+  border-color: var(--bd2, rgba(184,159,255,0.20));
+}
+
+/* Danger */
+.btn-danger {
+  background: transparent;
+  color:  var(--rd, #f87171);
+  border: 1px solid rgba(248,113,113,0.25);
+}
+.btn-danger:hover:not(:disabled) { background: rgba(248,113,113,0.06); }
+
+/* CTA — mono uppercase, used for "Post a Pick" style CTAs */
+.btn-cta {
+  background: var(--ac, #b89fff);
+  color: #07060d;
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border-radius: var(--r-md, 10px);
+  text-decoration: none;
+}
+.btn-cta:hover:not(:disabled) { background: #cdb8ff; transform: translateY(-1px); }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PANELS & CARDS
+══════════════════════════════════════════════════════════════════════════ */
+
+/* Generic surface panel */
+.panel {
+  background: var(--s1, #0c0a1a);
+  border: 1px solid var(--bd, rgba(184,159,255,0.10));
+  border-radius: var(--r-lg, 14px);
+  padding: var(--sp-lg, 24px);
+}
+
+/* Stat card — single metric display */
+.stat-card {
+  background: var(--s1, #0c0a1a);
+  border: 1px solid var(--bd, rgba(184,159,255,0.10));
+  border-radius: var(--r-lg, 14px);
+  padding: var(--sp-md, 16px) var(--sp-lg, 24px);
+  transition: background .2s;
+}
+.stat-card:hover { background: var(--s2, #15122a); }
+
+.stat-card-label {
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  font-size: 9px;
+  color: var(--mu, #6a6690);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.stat-card-value {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 32px;
+  letter-spacing: 1px;
+  line-height: 1;
+  color: var(--tx, #f0edff);
+}
+.stat-card-value.pos  { color: var(--gr,   #34d399); }
+.stat-card-value.neg  { color: var(--rd,   #f87171); }
+.stat-card-value.gold { color: var(--gold, #fbbf24); }
+.stat-card-value.ac   { color: var(--ac,   #b89fff); }
+
+/* Glow card — accent border on hover */
+.glow-card {
+  background: var(--s1, #0c0a1a);
+  border: 1px solid var(--bd, rgba(184,159,255,0.10));
+  border-radius: var(--r-lg, 14px);
+  padding: var(--sp-lg, 24px);
+  transition: border-color .25s, box-shadow .25s;
+}
+.glow-card:hover {
+  border-color: var(--bd2, rgba(184,159,255,0.20));
+  box-shadow: 0 0 24px rgba(184,159,255,0.08);
+}
+.glow-card-gold:hover {
+  border-color: rgba(251,191,36,0.35);
+  box-shadow: 0 0 24px rgba(251,191,36,0.10);
+}
+.glow-card-green:hover {
+  border-color: rgba(52,211,153,0.35);
+  box-shadow: 0 0 24px rgba(52,211,153,0.10);
+}
+
+/* Profile mini-card — used in slide nav, tipster preview strips */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: var(--sp-md, 16px) 20px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--bd, rgba(184,159,255,0.10));
+  transition: background .2s;
+}
+.profile-card:hover { background: rgba(255,255,255,0.025); }
+
+.profile-card-av {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #6d28d9, #b89fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 14px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.profile-card-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--tx, #f0edff);
+}
+.profile-card-sub {
+  font-size: 10px;
+  color: var(--mu, #6a6690);
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  margin-top: 2px;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BADGE PILLS
+   Two layers: achievement rarity (.badge-common etc.) and colour-family (.badge-pill-fire etc.)
+══════════════════════════════════════════════════════════════════════════ */
+
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--r-pill, 999px);
+  padding: 5px 14px;
+  font-size: 11px;
+  font-family: var(--font-body, 'Syne', sans-serif);
+  font-weight: 600;
+  transition: transform .2s;
+  cursor: default;
+}
+.badge-pill:hover { transform: translateY(-2px); }
+
+/* By colour family (tipster profile badges) */
+.badge-pill-fire    { background: rgba(251,146, 60,0.12); border: 1px solid rgba(251,146, 60,0.30); color: var(--orange, #fb923c); }
+.badge-pill-diamond { background: rgba( 56,189,248,0.10); border: 1px solid rgba( 56,189,248,0.25); color: var(--cyan,   #38bdf8); }
+.badge-pill-sharp   { background: rgba( 52,211,153,0.10); border: 1px solid rgba( 52,211,153,0.25); color: var(--gr,     #34d399); }
+.badge-pill-rising  { background: rgba(123, 44,255,0.10); border: 1px solid rgba(123, 44,255,0.25); color: var(--ac-light,#B14CFF); }
+.badge-pill-gold    { background: rgba(251,191, 36,0.10); border: 1px solid rgba(251,191, 36,0.28); color: var(--gold,   #fbbf24); }
+
+/* By rarity (badge vault / BadgeSystem v2) */
+.badge-common    { background: rgba(148,163,184,0.08); border: 1px solid rgba(148,163,184,0.20); color: var(--rarity-common,    #94a3b8); }
+.badge-rare      { background: rgba( 56,189,248,0.08); border: 1px solid rgba( 56,189,248,0.22); color: var(--rarity-rare,      #38bdf8); }
+.badge-epic      { background: rgba(184,159,255,0.10); border: 1px solid rgba(184,159,255,0.25); color: var(--rarity-epic,      #b89fff); }
+.badge-legendary { background: rgba(251,191, 36,0.10); border: 1px solid rgba(251,191, 36,0.30); color: var(--rarity-legendary, #fbbf24); }
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SECTION TITLE DIVIDER
+   Usage: <h2 class="sec-title">Stats</h2>
+══════════════════════════════════════════════════════════════════════════ */
+
+.sec-title {
+  font-family: var(--font-display, 'Bebas Neue', sans-serif);
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--tx, #f0edff);
+  border-left: 2px solid var(--ac, #b89fff);
+  padding-left: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sec-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--bd, rgba(184,159,255,0.10));
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LIVE / STATUS INDICATORS
+══════════════════════════════════════════════════════════════════════════ */
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gr, #34d399);
+  animation: blink 1.5s infinite;
+  flex-shrink: 0;
+}
+.live-dot-ac   { background: var(--ac,   #b89fff); }
+.live-dot-gold { background: var(--gold, #fbbf24); }
+.live-dot-rd   { background: var(--rd,   #f87171); }
+
+.live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(52,211,153,0.08);
+  border: 1px solid rgba(52,211,153,0.20);
+  border-radius: var(--r-pill, 999px);
+  padding: 5px 12px;
+  font-family: var(--font-mono, 'DM Mono', monospace);
+  font-size: 9px;
+  color: var(--gr, #34d399);
+  letter-spacing: 2px;
+  font-weight: 700;
+}

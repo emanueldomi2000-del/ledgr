@@ -15,23 +15,10 @@
 <meta name="twitter:title" content="LEDGR — Post a Pick">
 <meta name="twitter:description" content="Build your verified tipster record. Post picks, watch results auto-verified, climb the leaderboard.">
 <meta name="twitter:image" content="https://getledgr.bet/og-image.png">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filter:blur(24px);border-bottom:1px solid var(--bd);padding:0 32px;height:62px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
-.logo span{color:var(--ac)}
-.nav-r{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:8px 12px;border-radius:6px;transition:all .2s}
-.nav-link:hover{color:var(--tx);background:rgba(255,255,255,0.04)}
-.user-badge{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:pointer;transition:all .2s}
-.user-badge:hover{border-color:var(--bd2);color:var(--ac)}
-.logout-btn{background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:6px;padding:7px 14px;font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.logout-btn:hover{border-color:var(--rd);color:var(--rd)}
 
 .main{max-width:1200px;margin:0 auto;padding:32px 24px;position:relative;z-index:2}
 
@@ -45,7 +32,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,0.88);backdrop-filte
 
 .grid{display:grid;grid-template-columns:1fr 380px;gap:20px}
 .panel{background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:24px}
-.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ac);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--ac);margin-bottom:16px;display:flex;align-items:center;gap:10px;border-left:2px solid var(--ac);padding-left:10px}
 .panel-title::after{content:'';flex:1;height:1px;background:var(--bd)}
 
 /* FORM */
@@ -212,14 +199,8 @@ select option{background:#15122a}
 @media(max-width:900px){
   .grid{grid-template-columns:1fr}
   .stats{grid-template-columns:repeat(2,1fr)}
-  nav{padding:0 16px}
-  .nav-link{display:none}
 }
 @media(max-width:600px){
-  nav{height:52px;padding:0 12px}
-  .logo{font-size:20px;letter-spacing:4px}
-  .user-badge{padding:5px 10px;font-size:11px}
-  .logout-btn{padding:5px 10px;font-size:10px}
   .main{padding:16px 12px}
   .stats{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
   .stat{padding:12px}
@@ -325,28 +306,6 @@ select option{background:#15122a}
 .pp-fab:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(251,191,36,.45)}
 @media(max-width:900px){.parlay-panel{width:100%;right:-100%;top:52px;height:calc(100vh - 52px)}}
 
-/* MOBILE SLIDE NAV */
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1}
-.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto}
-.slide-nav.open{right:0}
-.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,0.7);z-index:199;display:none;backdrop-filter:blur(4px)}
-.slide-nav-overlay.open{display:block}
-.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
-.slide-nav-logo span{color:var(--ac)}
-.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:4px}
-.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
-.snl:hover{background:var(--acg)}
-.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
-.slide-nav-links{padding:12px 8px}
-.slide-nav-logout{padding:0 16px 16px}
-.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
-@media(max-width:600px){
-  .mobile-menu-btn{display:block}
-  .nav-r .user-badge,.nav-r .logout-btn{display:none}
-}
 @media(max-width:768px){
   /* Fixture search */
   .fixture-search{width:100%;min-height:48px;font-size:16px}
@@ -362,7 +321,6 @@ select option{background:#15122a}
   body{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
 }
 </style>
-<link rel="stylesheet" href="/brand.css">
 </head>
 <body>
 <div class="toast" id="toast"></div>
@@ -407,60 +365,6 @@ select option{background:#15122a}
 </div>
 <button class="pp-fab" id="ppFab" onclick="openParlayPanel()">🎰 <span id="ppFabCount">0</span>-LEG PARLAY ▸</button>
 
-<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
-<div class="slide-nav" id="slideNav">
-  <div class="slide-nav-header">
-    <div class="slide-nav-logo">LEDG<span>R</span></div>
-    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
-  </div>
-  <div class="slide-nav-links">
-    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
-    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
-    <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
-    <a href="/news" class="snl"><span class="snl-icon">📰</span><div class="snl-text">Sports Intel</div></a>
-    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
-    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
-    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
-    <a href="/progress" class="snl"><span class="snl-icon">🎮</span><div class="snl-text">Progression</div></a>
-    <a href="/community" class="snl"><span class="snl-icon">💬</span><div class="snl-text">Community Chat</div></a>
-  </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="logout()">Log Out</button>
-  </div>
-</div>
-
-  <nav class="brand-nav">
-    <a href="/" class="logo">LEDG<span>R</span></a>
-    <div class="brand-nav-links">
-      <a href="/" class="brand-nav-link">Home</a>
-      <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
-      <a href="/feed" class="brand-nav-link">Feed</a>
-      <a href="/analytics" class="brand-nav-link">Analytics</a>
-      <a href="/community" class="brand-nav-link">Community</a>
-      <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
-    </div>
-    <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
-  </nav>
-  <div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
-  <div class="brand-slide-menu" id="brandSlideMenu">
-    <div class="brand-slide-header">
-      <span class="brand-slide-logo">LEDG<span>R</span></span>
-      <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
-    </div>
-    <div class="brand-slide-links">
-      <a href="/dashboard" class="brand-snl">Post a Pick</a>
-      <a href="/simulator" class="brand-snl">Simulator</a>
-      <a href="/compare" class="brand-snl">Compare Tipsters</a>
-      <a href="/badges" class="brand-snl">Badges</a>
-      <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
-      <a href="/progress" class="brand-snl">Progress</a>
-      <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
-      <a href="/settings" class="brand-snl">Settings</a>
-      <a href="/notifications" class="brand-snl">Notifications</a>
-      <a href="/news" class="brand-snl">News</a>
-    </div>
-    <div id="brandSlideAuth"></div>
-  </div>
   <div class="main">
     <div class="stats">
       <div class="stat"><div class="stat-label">Total Picks</div><div class="stat-val" id="statTotal">0</div></div>
@@ -604,6 +508,7 @@ select option{background:#15122a}
   </div>
 </div>
 
+<script src="/app-nav.js"></script>
 <script src="/divisions.js"></script>
 <script src="/share.js"></script>
 <script src="/animations.js"></script>
@@ -670,21 +575,18 @@ const GENERIC=[
 
 // ── INIT ──
 window.onload=()=>{
+  AppNav.init({ active: 'dashboard' });
   const ud=localStorage.getItem('ledgr_user');
   const tk=localStorage.getItem('ledgr_token');
   if(!ud||!tk){window.location.href='/login';return;}
   user=JSON.parse(ud);
   document.getElementById('app').style.display='block';
-  document.getElementById('userBadge').textContent='@'+user.username;
   if(window.Push)window.Push.init();
   renderMarkets('Soccer');
   loadFixtures();
   loadPicks();
   setTimeout(startTutorial,800);
 };
-
-function logout(){localStorage.clear();window.location.href='/login';}
-function goToProfile(){if(user)window.location.href='/tipster?u='+user.username;}
 
 // ── SPORT / DATE / LEAGUE ──
 function selectSport(s,el){
@@ -1138,9 +1040,6 @@ function endTutorial(){
   o.style.display='none';
   document.getElementById('tutorial-spotlight').style.opacity='0';
 }
-
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');document.body.style.overflow='hidden';}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');document.body.style.overflow='';}
 
 // ── PARLAY ENGINE ─────────────────────────────────────────────
 let pickMode='single';

@@ -83,6 +83,21 @@ News
 
 ---
 
+## Project context files
+
+- LEDGR_BRAIN.md — full system architecture, formulas, schema, API endpoints
+- LEDGR_UI_BRAIN.md — full UI/UX audit: design systems, nav inconsistencies, migration plan
+
+---
+
+## Foundation files (Phase 2)
+
+- app-tokens.css — canonical design tokens: colors, spacing, radius, shadows, glows, typography, rarity, nav heights, brand.css bridge aliases
+- app-components.css — reusable components: division badges, avatar rings, division banners, skeleton loaders, buttons, panels, stat cards, glow cards, profile cards, badge pills, section titles, live indicators
+- app-nav.js — unified nav IIFE: desktop nav, mobile slide nav, auth state, active link, notification badge, user badge, AppNav API
+
+---
+
 ## Current known bugs
 
 1. Settings theme color not applying
@@ -101,21 +116,39 @@ News
 
 8. Navbar hierarchy weak
 
+9. ✅ FIXED — Feed + notifications: dual nav removed, single inline nav restored
+
+10. ✅ FIXED — Community: nav not sticky (position:relative → AppNav handles sticky)
+
+11. ✅ FIXED — Badges: .brand-nav renamed to .badges-top-nav, brand.css link removed
+
+12. Tipster/Progress/Badges: landing page fonts used on app pages
+
 ---
 
 ## Current phase
 
-PHASE 1
+PHASE 2
 
-Trust Foundation
+Design Foundation
 
 Current task:
 
-Fix grading reliability
+Style Alignment Phase complete
+
+Completed:
+
+All 6 target pages migrated to foundation files and style-aligned:
+- feed/index.html ✅
+- notifications/index.html ✅
+- dashboard/index.html ✅ (panel-title border-left accent added)
+- community/index.html ✅ (critical nav sticky bug fixed, brand.css removed)
+- home/index.html ✅ (full migration: div-* removed, section-head-row h2 + .section-head border-left accent added)
+- leaderboard/index.html ✅ (full migration)
 
 Next task:
 
-Identity system redesign
+Remaining app pages: analytics, tipster, compare, simulator, settings, progress, badges, hall-of-fame, news
 
 ---
 
