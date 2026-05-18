@@ -37,11 +37,16 @@
     '}',
 
     '.an-logo{',
-      'font-family:var(--font-display,"Bebas Neue",sans-serif);',
-      'font-size:26px;letter-spacing:6px;',
-      'color:var(--tx,#f0edff);text-decoration:none;flex-shrink:0;',
+      'display:flex;align-items:center;gap:8px;',
+      'text-decoration:none;flex-shrink:0;',
     '}',
-    '.an-logo span{color:var(--ac,#b89fff)}',
+    '.an-logo-img{width:24px;height:24px;object-fit:contain;flex-shrink:0}',
+    '.an-logo-wordmark{',
+      'font-family:var(--font-display,"Bebas Neue",sans-serif);',
+      'font-size:22px;letter-spacing:3px;',
+      'color:var(--tx,#f0edff);',
+    '}',
+    '.an-logo-wordmark .logo-accent{color:var(--ac,#b89fff)}',
 
     '.an-links{display:flex;gap:2px;align-items:center}',
 
@@ -127,10 +132,14 @@
       'flex-shrink:0;',
     '}',
     '.an-slide-logo{',
+      'display:flex;align-items:center;gap:8px;',
+    '}',
+    '.an-slide-logo img{width:20px;height:20px;object-fit:contain}',
+    '.an-slide-logo-text{',
       'font-family:var(--font-display,"Bebas Neue",sans-serif);',
       'font-size:20px;letter-spacing:5px;color:var(--tx,#f0edff);',
     '}',
-    '.an-slide-logo span{color:var(--ac,#b89fff)}',
+    '.an-slide-logo-text .logo-accent{color:var(--ac,#b89fff)}',
     '.an-slide-close{',
       'background:none;border:none;',
       'color:var(--mu,#6a6690);font-size:18px;',
@@ -218,6 +227,7 @@
     '@media(max-width:700px){',
       '.an-links,.an-user,.an-logout{display:none}',
       '.an-ham{display:block}',
+      '.an-logo-wordmark{display:none}',
     '}'
   ].join('');
 
@@ -375,8 +385,14 @@
       ? '<button class="an-slide-logout" onclick="window.AppNav.logout()">Log Out</button>'
       : '<a href="/login" class="an-slide-login">Sign In →</a>';
 
+    var logoHref = username ? '/home' : '/';
+    var logoHtml = '<a href="' + logoHref + '" class="an-logo">'
+      + '<img class="an-logo-img" src="/assets/logo/ledgr-icon.png" alt="LEDGR" loading="eager">'
+      + '<span class="an-logo-wordmark">LEDG<span class="logo-accent">R</span></span>'
+      + '</a>';
+
     return '<nav id="appNav">'
-      + '<a href="/" class="an-logo">LEDG<span>R</span></a>'
+      + logoHtml
       + '<div class="an-links">' + desktopLinks + ctaHtml + '</div>'
       + '<div class="an-right">' + rightHtml + '</div>'
       + '</nav>'
@@ -385,7 +401,7 @@
 
       + '<div id="appSlideNav">'
       + '<div class="an-slide-head">'
-      + '<span class="an-slide-logo">LEDG<span>R</span></span>'
+      + '<span class="an-slide-logo"><img src="/assets/logo/ledgr-icon.png" alt="LEDGR"><span class="an-slide-logo-text">LEDG<span class="logo-accent">R</span></span></span>'
       + '<button class="an-slide-close" onclick="window.AppNav.close()">✕</button>'
       + '</div>'
       + profileCard

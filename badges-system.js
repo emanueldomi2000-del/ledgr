@@ -489,6 +489,21 @@
     var newStored = stored.concat(fresh.map(function(b){return b.id;}));
     localStorage.setItem(STORE_KEY, JSON.stringify(newStored));
 
+    // Notify backend (fire-and-forget; idempotent server-side)
+    (function notifyBackend(badges) {
+      var raw = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
+      var tk  = localStorage.getItem('ledgr_token') || localStorage.getItem('token') || '';
+      if (!raw || !tk) return;
+      var rarityNum = { common: 2, rare: 2, epic: 3, legendary: 4 };
+      badges.forEach(function(b) {
+        fetch('https://ledgr-backend-production-c132.up.railway.app/notifications/badge-unlock', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tk },
+          body: JSON.stringify({ badgeId: b.id, badgeName: b.name, badgeRarity: rarityNum[b.rarity] || 2 })
+        }).catch(function() {});
+      });
+    })(fresh);
+
     // Queue animations, highest rarity first
     var order = {legendary:0, epic:1, rare:2, common:3};
     fresh.sort(function(a,b){ return (order[a.rarity]||4) - (order[b.rarity]||4); });

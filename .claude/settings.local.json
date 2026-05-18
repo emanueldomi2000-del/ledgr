@@ -8,7 +8,15 @@
       "Bash(git -C \"C:/Users/emanu/ledgr\" status)",
       "Bash(git -C \"C:/Users/emanu/ledgr\" diff)",
       "Bash(cat \"C:\\\\Users\\\\emanu\\\\ledgr\\\\home\\\\index.html\")",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(node *)",
+      "Bash(grep -c 'font-family:'\\\\''Bebas\\\\|border-radius:50%' C:/Users/emanu/ledgr/__TRACKED_VAR__/index.html)",
+      "Bash(bash *)",
+      "Bash(grep -n \"font-family:\\\\\\\\\\\\\\\\'\" leaderboard/index.html)",
+      "Bash(python3 *)",
+      "Bash(git checkout *)",
+      "Bash(del *)",
+      "Bash(grep -m1 '\\\\.main{' /c/Users/emanu/ledgr/__TRACKED_VAR__/index.html)"
     ]
   }
 }

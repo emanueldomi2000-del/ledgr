@@ -82,16 +82,19 @@ router.get('/profile/:username', async (req, res) => {
     if (!rows.length) return res.json({});
     const p = rows[0];
     return res.json({
-      archetype:        p.archetype || null,
-      banner:           p.banner || 'default',
-      border:           p.border || 'clean',
-      theme:            p.theme || 'default',
-      fav_sports:       p.fav_sports ? (typeof p.fav_sports === 'string' ? JSON.parse(p.fav_sports) : p.fav_sports) : [],
-      bio:              p.bio || '',
-      social_twitter:   p.social_twitter || null,
-      social_instagram: p.social_instagram || null,
-      avatar_b64:       p.avatar_b64 || null,
-      banner_b64:       p.banner_b64 || null,
+      archetype:            p.archetype || null,
+      banner:               p.banner || 'default',
+      border:               p.border || 'clean',
+      theme:                p.theme || 'default',
+      fav_sports:           p.fav_sports ? (typeof p.fav_sports === 'string' ? JSON.parse(p.fav_sports) : p.fav_sports) : [],
+      bio:                  p.bio || '',
+      social_twitter:       p.social_twitter || null,
+      social_instagram:     p.social_instagram || null,
+      avatar_b64:           p.avatar_b64 || null,
+      banner_b64:           p.banner_b64 || null,
+      odds_format:          p.odds_format || 'decimal',
+      timezone:             p.timezone || 'UTC',
+      hide_from_leaderboard: !!p.hide_from_leaderboard,
     });
   } catch (e) {
     console.error('GET /profile error:', e);
@@ -107,7 +110,8 @@ router.post('/profile', requireAuth, async (req, res) => {
     return res.status(429).json({ error: 'Too many requests — wait a minute' });
   }
 
-  const { archetype, banner, border, theme, favSports, bio, social, avatarB64, bannerB64 } = req.body;
+  const { archetype, banner, border, theme, favSports, bio, social, avatarB64, bannerB64,
+          oddsFormat, timezone, hideFromLeaderboard } = req.body;
 
   // ── Size guards (before any DB work) ──
   if (avatarB64 != null && avatarB64.length > AVATAR_MAX_BYTES) {
@@ -126,6 +130,9 @@ router.post('/profile', requireAuth, async (req, res) => {
   const safeBio        = _sanitizeBio(bio);
   const safeTwitter    = _sanitizeHandle(social && social.twitter);
   const safeInstagram  = _sanitizeHandle(social && social.instagram);
+  const safeOddsFormat = VALID_ODDS_FORMAT.has(oddsFormat) ? oddsFormat : 'decimal';
+  const safeTZ         = (typeof timezone === 'string' && timezone.length > 0 && timezone.length <= 50) ? timezone : 'UTC';
+  const safeHideBoard  = !!hideFromLeaderboard;
 
   // avatarB64/bannerB64 key presence = "user explicitly changed this field"
   const avatarChanged = 'avatarB64' in req.body;
@@ -145,20 +152,25 @@ router.post('/profile', requireAuth, async (req, res) => {
     // Step 1: Upsert all non-image config fields
     await db.query(`
       INSERT INTO profiles
-        (userId, username, bio, social_twitter, social_instagram, archetype, banner, border, theme, fav_sports)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (userId, username, bio, social_twitter, social_instagram, archetype, banner, border, theme, fav_sports,
+         odds_format, timezone, hide_from_leaderboard)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
-        username         = VALUES(username),
-        bio              = VALUES(bio),
-        social_twitter   = VALUES(social_twitter),
-        social_instagram = VALUES(social_instagram),
-        archetype        = VALUES(archetype),
-        banner           = VALUES(banner),
-        border           = VALUES(border),
-        theme            = VALUES(theme),
-        fav_sports       = VALUES(fav_sports),
-        updated_at       = NOW()
-    `, [userId, username, safeBio, safeTwitter, safeInstagram, safeArchetype, safeBanner, safeBorder, safeTheme, JSON.stringify(safeSports)]);
+        username              = VALUES(username),
+        bio                   = VALUES(bio),
+        social_twitter        = VALUES(social_twitter),
+        social_instagram      = VALUES(social_instagram),
+        archetype             = VALUES(archetype),
+        banner                = VALUES(banner),
+        border                = VALUES(border),
+        theme                 = VALUES(theme),
+        fav_sports            = VALUES(fav_sports),
+        odds_format           = VALUES(odds_format),
+        timezone              = VALUES(timezone),
+        hide_from_leaderboard = VALUES(hide_from_leaderboard),
+        updated_at            = NOW()
+    `, [userId, username, safeBio, safeTwitter, safeInstagram, safeArchetype, safeBanner, safeBorder, safeTheme,
+        JSON.stringify(safeSports), safeOddsFormat, safeTZ, safeHideBoard]);
 
     // Step 2: Update images only if explicitly sent (null = clear, b64 = update)
     if (avatarChanged) {

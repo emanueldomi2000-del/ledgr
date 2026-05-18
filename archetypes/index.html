@@ -9,34 +9,14 @@
 <meta property="og:description" content="Your competitive identity, detected automatically from your betting history.">
 <meta property="og:image" content="https://getledgr.bet/og-image.png">
 <meta property="og:url" content="https://getledgr.bet/archetypes">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--s2:#15122a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171;--gold:#fbbf24;--cyan:#38bdf8;--orange:#fb923c;--profile-accent:#7B2CFF}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+:root{--profile-accent:#7B2CFF}
+body{background:var(--bg);color:var(--tx);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
-
-/* NAV */
-.slide-nav{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:200;transition:right .3s ease;overflow-y:auto}
-.slide-nav.open{right:0}
-.slide-nav-overlay{position:fixed;inset:0;background:rgba(7,6,13,.7);z-index:199;display:none}
-.slide-nav-overlay.open{display:block}
-.slide-nav-header{padding:20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.slide-nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--tx)}
-.slide-nav-logo span{color:var(--ac)}
-.slide-nav-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer}
-.snl{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:2px}
-.snl:hover{background:var(--acg)}
-.snl-icon{font-size:18px;width:24px;text-align:center;flex-shrink:0}
-.snl-text{font-size:13px;font-weight:600;color:var(--tx)}
-.slide-nav-links{padding:12px 8px}
-.slide-nav-user{padding:16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px}
-.sn-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;display:flex;align-items:center;justify-content:center}
-.sn-name{font-family:'DM Mono',monospace;font-size:12px;color:var(--mu2)}
-.slide-nav-logout{padding:0 16px 16px}
-.snl-logout{width:100%;background:transparent;border:1px solid var(--bd);color:var(--mu);border-radius:8px;padding:11px;font-size:12px;cursor:pointer;font-family:'Syne',sans-serif;transition:all .2s}
-.snl-logout:hover{border-color:var(--rd);color:var(--rd)}
 
 /* MAIN */
 .main{max-width:1100px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:2}
@@ -126,66 +106,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @media(max-width:768px){.current-inner{grid-template-columns:1fr;text-align:center}.ca-stats{min-width:unset}.evo-grid{grid-template-columns:1fr;gap:8px}.evo-arrow{transform:rotate(90deg)}}
 @media(max-width:600px){.arch-grid{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:64px}}
 </style>
-<link rel="stylesheet" href="/brand.css">
 </head>
 <body>
+<script src="/app-nav.js"></script>
 <div class="bg-glow"></div>
 <div class="toast" id="toast"></div>
-
-<nav class="brand-nav">
-  <a href="/" class="logo">LEDG<span>R</span></a>
-  <div class="brand-nav-links">
-    <a href="/" class="brand-nav-link">Home</a>
-    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
-    <a href="/feed" class="brand-nav-link">Feed</a>
-    <a href="/analytics" class="brand-nav-link">Analytics</a>
-    <a href="/archetypes" class="brand-nav-link active">DNA</a>
-    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
-  </div>
-  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
-</nav>
-<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
-<div class="brand-slide-menu" id="brandSlideMenu">
-  <div class="brand-slide-header">
-    <span class="brand-slide-logo">LEDG<span>R</span></span>
-    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
-  </div>
-  <div class="brand-slide-links">
-    <a href="/dashboard" class="brand-snl">Post a Pick</a>
-    <a href="/archetypes" class="brand-snl">Archetype Vault</a>
-    <a href="/simulator" class="brand-snl">Simulator</a>
-    <a href="/compare" class="brand-snl">Compare Tipsters</a>
-    <a href="/badges" class="brand-snl">Badges</a>
-    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
-    <a href="/settings" class="brand-snl">Settings</a>
-    <a href="/notifications" class="brand-snl">Notifications</a>
-  </div>
-  <div id="brandSlideAuth"></div>
-</div>
-
-<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
-<div class="slide-nav" id="slideNav">
-  <div class="slide-nav-header">
-    <div class="slide-nav-logo">LEDG<span>R</span></div>
-    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
-  </div>
-  <div class="slide-nav-user">
-    <div class="sn-av" id="snAv">??</div>
-    <div class="sn-name" id="snName">@username</div>
-  </div>
-  <div class="slide-nav-links">
-    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
-    <a href="/archetypes" class="snl"><span class="snl-icon">🧬</span><div class="snl-text">Archetype Vault</div></a>
-    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
-    <a href="/dashboard" class="snl"><span class="snl-icon">＋</span><div class="snl-text">Post a Pick</div></a>
-    <a href="/analytics" class="snl"><span class="snl-icon">📊</span><div class="snl-text">Analytics</div></a>
-    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
-    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Settings</div></a>
-  </div>
-  <div class="slide-nav-logout">
-    <button class="snl-logout" onclick="logout()">Log Out</button>
-  </div>
-</div>
 
 <div class="not-logged" id="notLogged" style="display:none">
   <h2>NOT LOGGED IN</h2>
@@ -339,9 +264,6 @@ window.onload = () => {
   if (!user?.username) { document.getElementById('notLogged').style.display='flex'; return; }
 
   document.getElementById('app').style.display = 'block';
-  document.getElementById('snAv').textContent = user.username.slice(0,2).toUpperCase();
-  document.getElementById('snName').textContent = '@' + user.username;
-  document.getElementById('profileNavLink').textContent = '@' + user.username;
 
   loadData();
 };
@@ -485,11 +407,7 @@ function showToast(msg,isErr){
   const t=document.getElementById('toast');t.textContent=msg;t.style.background=isErr?'#f87171':'#34d399';
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
 }
-function logout(){['ledgr_user','ledgr_token','user','token'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
-function openSlideNav(){document.getElementById('slideNav').classList.add('open');document.getElementById('slideOverlay').classList.add('open');}
-function closeSlideNav(){document.getElementById('slideNav').classList.remove('open');document.getElementById('slideOverlay').classList.remove('open');}
-function brandMenuToggle(){document.getElementById('brandOverlay').classList.toggle('active');document.getElementById('brandSlideMenu').classList.toggle('active');}
+AppNav.init({ active: 'analytics' });
 </script>
-<script src="/brand-nav.js"></script>
 </body>
 </html>

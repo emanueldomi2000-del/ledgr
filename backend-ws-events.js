@@ -284,18 +284,35 @@ async function emitPickGraded(db, pick, prevSnapshot) {
   const STREAK_THRESHOLDS = new Set([3, 5, 7, 10]);
   try {
     const [rows] = await db.query(
-      'SELECT currentStreak, streakType FROM user_rankings WHERE username = ? LIMIT 1',
+      'SELECT currentStreak, streakType, division FROM user_rankings WHERE username = ? LIMIT 1',
       [username]
     );
     if (rows.length) {
       const { currentStreak, streakType } = rows[0];
-      const prevStreak = prevSnapshot.streakType === 'win' ? prevSnapshot.streak : 0;
+      const prevStreak = prevSnapshot?.streakType === 'win' ? (prevSnapshot.currentStreak || 0) : 0;
       if (streakType === 'win' && STREAK_THRESHOLDS.has(currentStreak) && currentStreak > prevStreak) {
         await _emit(db, {
           type: 'streak_milestone',
           username,
           payload: { streak: currentStreak, division: prevSnapshot.division },
         });
+        // Unicast to each follower so they see it in their notification centre
+        if (pick.userId) {
+          try {
+            const [streakFollowers] = await db.query(
+              'SELECT followerId FROM follows WHERE followingId = ?',
+              [pick.userId]
+            );
+            for (const f of streakFollowers) {
+              await _emit(db, {
+                type: 'streak_milestone',
+                username,
+                targetUserId: f.followerId,
+                payload: { streak: currentStreak, division: rows[0].division || prevSnapshot.division, username },
+              });
+            }
+          } catch (_) {}
+        }
       }
 
       // 6. division_up — never emit division_down
@@ -350,7 +367,7 @@ async function emitPickGraded(db, pick, prevSnapshot) {
 
   // 8. milestone_pick — check pick count milestones
   const MILESTONES = [25, 50, 100, 200];
-  const prevPicks = prevSnapshot.picks || 0;
+  const prevPicks = prevSnapshot?.totalPicks || 0;
   try {
     const [rows] = await db.query(
       'SELECT totalPicks FROM user_rankings WHERE username = ? LIMIT 1',
@@ -365,6 +382,30 @@ async function emitPickGraded(db, pick, prevSnapshot) {
             username,
             payload: { count: m },
           });
+          // Personal unicast to the tipster
+          if (pick.userId) {
+            await _emit(db, {
+              type: 'milestone_pick',
+              username,
+              targetUserId: pick.userId,
+              payload: { count: m },
+            });
+            // Unicast to each follower
+            try {
+              const [mpFollowers] = await db.query(
+                'SELECT followerId FROM follows WHERE followingId = ?',
+                [pick.userId]
+              );
+              for (const f of mpFollowers) {
+                await _emit(db, {
+                  type: 'milestone_pick',
+                  username,
+                  targetUserId: f.followerId,
+                  payload: { count: m, username },
+                });
+              }
+            } catch (_) {}
+          }
           break; // only one milestone per grade
         }
       }
@@ -398,11 +439,12 @@ async function emitPickPosted(db, pick) {
         username: pick.username,
         targetUserId: row.followerId,
         payload: {
-          pickId: pick.id,
-          event:  pick.event,
-          market: pick.market,
-          odds:   parseFloat(pick.odds || 0),
-          sport:  pick.sport,
+          pickId:   pick.id,
+          event:    pick.event,
+          market:   pick.market,
+          odds:     parseFloat(pick.odds || 0),
+          sport:    pick.sport,
+          username: pick.username,  // included so user_notifications can display tipster name
         },
       });
     }
@@ -486,7 +528,45 @@ router.patch('/notifications/read-all', requireAuth, async (req, res) => {
   }
 });
 
-module.exports = { initLiveEvents, emitPickGraded, emitPickTailed, emitPickPosted };
+// ── Badge unlock ──────────────────────────────────────────────────────────────
+// Called from POST /notifications/badge-unlock (frontend fires this when BadgeSystem
+// detects a newly unlocked badge).  Idempotent — silently skips if the badge was
+// already recorded for this user.
+async function emitBadgeUnlock(db, userId, username, badgeId, badgeName, badgeRarity) {
+  try {
+    const [existing] = await db.query(
+      `SELECT id FROM user_notifications
+       WHERE userId = ? AND type = 'badge_unlock'
+       AND JSON_UNQUOTE(JSON_EXTRACT(payload, '$.badgeId')) = ? LIMIT 1`,
+      [userId, badgeId]
+    );
+    if (existing.length > 0) return;
+  } catch (_) {}
+  await _emit(db, {
+    type: 'badge_unlock',
+    username,
+    targetUserId: userId,
+    payload: { badgeId, badgeName, badgeRarity },
+  });
+}
+
+router.post('/notifications/badge-unlock', requireAuth, async (req, res) => {
+  const userId   = req.user.id;
+  const username = req.user.username;
+  const { badgeId, badgeName, badgeRarity } = req.body;
+  if (!badgeId || !badgeName) return res.status(400).json({ error: 'badgeId and badgeName required' });
+  if (typeof badgeRarity !== 'number' || badgeRarity < 1 || badgeRarity > 5)
+    return res.status(400).json({ error: 'badgeRarity must be 1–5' });
+  try {
+    await emitBadgeUnlock(db, userId, username, badgeId, badgeName, badgeRarity);
+    res.json({ success: true });
+  } catch (e) {
+    console.error('POST /notifications/badge-unlock error:', e);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+module.exports = { initLiveEvents, emitPickGraded, emitPickTailed, emitPickPosted, emitBadgeUnlock };
 
 // ── Usage example in app.js ───────────────────────────────────────────────────
 //
