@@ -315,7 +315,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-glow"></div>
 <div class="toast" id="toast"></div>
 <script src="/app-nav.js"></script>
-
+<script>AppNav.init({ active: 'tipster' });</script>
 
 <div class="main" id="mainContent">
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Loading profile...</div>
@@ -1077,7 +1077,6 @@ function initTipTriggers(){
   });
   document.addEventListener('click',function(){popup.style.display='none';},{passive:true});
 }
-  AppNav.init({ active: 'tipster' });
 </script>
 </body>
 </html>

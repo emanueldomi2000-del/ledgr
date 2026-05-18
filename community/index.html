@@ -122,6 +122,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <body>
 <div class="bg-glow"></div>
 <script src="/app-nav.js"></script>
+<script>AppNav.init({ active: 'community' });</script>
 
 <div class="chat-layout">
 
@@ -192,7 +193,6 @@ let onlineCounts = {};   // roomId → count (simulated from WS connections)
 
 // ── Auth ─────────────────────────────────────────────────────
 function init() {
-  AppNav.init({ active: 'community' });
   const ud = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
   const tk = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
   if (ud && tk) {

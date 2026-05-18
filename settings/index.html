@@ -25,7 +25,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
 
 /* ── MAIN ── */
-.main{max-width:1120px;margin:0 auto;padding:48px 24px 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
 .not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
 .not-logged h2{font-family:var(--font-display);font-size:48px;letter-spacing:3px;color:var(--mu)}
 
@@ -306,8 +306,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <body>
 <div class="bg-glow"></div>
 <div class="toast" id="toast"></div>
-
 <script src="/app-nav.js"></script>
+<script>AppNav.init({ active: 'settings' });</script>
 
 <div class="main">
   <div class="not-logged" id="notLogged" style="display:none">
@@ -1295,7 +1295,6 @@ function logout(){
 
 
 
-AppNav.init({active:'settings'});
 </script>
 
 </body>

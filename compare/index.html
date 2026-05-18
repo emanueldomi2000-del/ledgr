@@ -175,8 +175,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 <div class="bg-glow"></div>
-
 <script src="/app-nav.js"></script>
+<script>AppNav.init({active:'compare'});</script>
 
 <div class="main">
 
@@ -568,8 +568,6 @@ function runComparison() {
 }
 
 loadTipsters();
-
-AppNav.init({active:'compare'});
 </script>
 
 </body>

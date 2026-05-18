@@ -158,8 +158,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 <div class="bg-glow"></div>
-
 <script src="/app-nav.js"></script>
+<script>AppNav.init({active:'simulator'});</script>
 
 <div class="main">
 
@@ -496,8 +496,6 @@ function runSimulator() {
 }
 
 loadPicks();
-
-AppNav.init({active:'simulator'});
 </script>
 
 </body>

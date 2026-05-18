@@ -47,7 +47,7 @@ body::before{content:'';position:fixed;inset:0;
   pointer-events:none;z-index:0}
 
 /* ── MAIN ── */
-.main{max-width:1100px;margin:0 auto;padding:0 24px 100px;position:relative;z-index:2}
+.main{max-width:1100px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
 /* ── HERO BANNER ── */
@@ -286,6 +286,7 @@ body::before{content:'';position:fixed;inset:0;
 
 <!-- ═══ NAV ═══ -->
 <script src="/app-nav.js"></script>
+<script>AppNav.init({ active: 'hall-of-fame' });</script>
 
 <!-- ═══ MAIN ═══ -->
 <div class="main">
@@ -722,8 +723,6 @@ function renderWOF(allPicks, tipsters, seasons, byROI, byStreak, byCLV, bigOddsP
 }
 
 loadHOF();
-
-AppNav.init({active:'hall-of-fame'});
 </script>
 
 </body>

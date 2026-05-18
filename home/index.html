@@ -467,6 +467,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 <div class="bg-glow"></div>
+<script src="/app-nav.js"></script>
+<script>AppNav.init({ active: 'home' });</script>
 <div id="notLogged" class="not-logged" style="display:none">
   <h2>ACCESS DENIED</h2>
   <p>You need to log in.</p>
@@ -824,7 +826,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </div>
 </div><!-- /app -->
 
-<script src="/app-nav.js"></script>
 <script src="/ledgr-ws.js"></script>
 <script src="/divisions.js"></script>
 <script src="/flow.js"></script>
@@ -974,7 +975,6 @@ function initScrollFade(){
 }
 
 window.onload=()=>{
-  AppNav.init({ active: 'home' });
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
   if(!ud||!tk){window.location.href='/login';return;}
