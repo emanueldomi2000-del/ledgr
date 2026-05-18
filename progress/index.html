@@ -5,16 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — My Progress</title>
 <link rel="icon" href="/assets/logo/ledgr-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root {
-  --bg:#0A0A0A; --s1:#121212; --s2:#1E1E1E; --bd:#2A2A2A;
-  --ac:#7B2CFF; --ac-l:#B14CFF; --acg:rgba(123,44,255,0.08);
-  --tx:#E6E6E6; --mu:#6B6B6B; --mu2:#9590b8;
-  --gr:#00e5a0; --rd:#ff3355; --gold:#fbbf24; --cyan:#38bdf8; --orange:#fb923c;
-}
-body { background:var(--bg); color:var(--tx); font-family:'Barlow',sans-serif; min-height:100vh; overflow-x:hidden; }
+body { background:var(--bg); color:var(--tx); font-family:var(--font-body); min-height:100vh; overflow-x:hidden; }
 body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; opacity:0.3; }
 a { color:inherit; text-decoration:none; }
 
@@ -29,7 +25,7 @@ a { color:inherit; text-decoration:none; }
 
 /* Section title */
 .sec-title {
-  font-family:'Rajdhani',sans-serif; font-size:18px; font-weight:700;
+  font-family:var(--font-display); font-size:18px; font-weight:700;
   letter-spacing:0.08em; color:var(--tx);
   border-left:2px solid var(--ac); padding-left:10px;
   margin-bottom:20px; display:flex; align-items:center; gap:10px;
@@ -57,8 +53,8 @@ a { color:inherit; text-decoration:none; }
 .hero-noise { position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; }
 .hero-watermark { position:absolute; right:24px; top:50%; transform:translateY(-50%); height:120px; opacity:0.04; pointer-events:none; z-index:1; }
 .hero-inner { position:relative; z-index:2; display:flex; align-items:center; gap:28px; flex-wrap:wrap; }
-.hero-av { width:80px; height:80px; border-radius:50%; border:3px solid var(--bg); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; color:#fff; flex-shrink:0; position:relative; }
-.hero-av-ring { position:absolute; inset:-5px; border-radius:50%; }
+.hero-av { width:80px; height:80px; border-radius:var(--r-lg,14px); border:3px solid var(--bg); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:28px; font-weight:700; color:#fff; flex-shrink:0; position:relative; }
+.hero-av-ring { position:absolute; inset:-5px; border-radius:var(--r-lg,14px); }
 .hring-bronze { border:2px solid rgba(180,120,80,0.5); box-shadow:0 0 12px rgba(180,120,80,0.2); }
 .hring-silver { border:2px solid rgba(148,163,184,0.4); box-shadow:0 0 12px rgba(148,163,184,0.15); }
 .hring-gold { border:2px solid rgba(251,191,36,0.7); box-shadow:0 0 16px rgba(251,191,36,0.3); }
@@ -71,17 +67,17 @@ a { color:inherit; text-decoration:none; }
 @keyframes conicSpin { to{transform:rotate(360deg)} }
 
 .hero-center { flex:1; min-width:220px; }
-.hero-div-name { font-family:'Rajdhani',sans-serif; font-size:32px; font-weight:700; letter-spacing:2px; line-height:1; margin-bottom:4px; }
-.hero-elo-nums { font-family:'JetBrains Mono',monospace; font-size:13px; color:var(--mu2); margin-bottom:8px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
+.hero-div-name { font-family:var(--font-display); font-size:32px; font-weight:700; letter-spacing:2px; line-height:1; margin-bottom:4px; }
+.hero-elo-nums { font-family:var(--font-mono); font-size:13px; color:var(--mu2); margin-bottom:8px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
 .hero-bar-track { height:10px; background:rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; margin-bottom:6px; position:relative; }
 .hero-bar-fill { height:100%; border-radius:8px; transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1); position:relative; overflow:hidden; }
 .hero-bar-fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:barShimmer 2s linear infinite; }
 @keyframes barShimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
-.hero-bar-sub { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mu); margin-bottom:4px; }
-.hero-bar-week { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--gr); }
+.hero-bar-sub { font-family:var(--font-mono); font-size:11px; color:var(--mu); margin-bottom:4px; }
+.hero-bar-week { font-family:var(--font-mono); font-size:10px; color:var(--gr); }
 
 .hero-pills { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
-.hero-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700; letter-spacing:1px; white-space:nowrap; }
+.hero-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-family:var(--font-mono); font-size:10px; font-weight:700; letter-spacing:1px; white-space:nowrap; }
 .pill-streak { background:rgba(251,146,60,0.1); border:1px solid rgba(251,146,60,0.25); color:var(--orange); }
 .pill-rank { background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); color:var(--gold); }
 .pill-sharp-green { background:rgba(0,229,160,0.08); border:1px solid rgba(0,229,160,0.25); color:var(--gr); }
@@ -105,13 +101,13 @@ a { color:inherit; text-decoration:none; }
 .tl-body.tl-body-purple { border-color:rgba(123,44,255,0.2); }
 .tl-body.tl-body-gold { border-color:rgba(251,191,36,0.2); background:rgba(251,191,36,0.02); }
 .tl-body.tl-body-green { border-color:rgba(0,229,160,0.15); }
-.tl-title { font-family:'Rajdhani',sans-serif; font-size:15px; font-weight:700; letter-spacing:0.5px; color:var(--tx); margin-bottom:2px; }
-.tl-date { font-family:'JetBrains Mono',monospace; font-size:9px; color:var(--mu); letter-spacing:1px; }
+.tl-title { font-family:var(--font-display); font-size:15px; font-weight:700; letter-spacing:0.5px; color:var(--tx); margin-bottom:2px; }
+.tl-date { font-family:var(--font-mono); font-size:9px; color:var(--mu); letter-spacing:1px; }
 
 /* ── Next Unlocks ── */
 .unlock-item { margin-bottom:16px; }
-.unlock-label { font-family:'Barlow',sans-serif; font-size:13px; font-weight:600; color:var(--tx); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
-.unlock-prog-text { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--mu); }
+.unlock-label { font-family:var(--font-body); font-size:13px; font-weight:600; color:var(--tx); margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; }
+.unlock-prog-text { font-family:var(--font-mono); font-size:10px; color:var(--mu); }
 .unlock-track { height:8px; background:rgba(255,255,255,0.05); border-radius:6px; overflow:hidden; }
 .unlock-fill { height:100%; border-radius:6px; transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1); background:var(--ac); }
 .unlock-fill.fill-near { background:linear-gradient(90deg,var(--ac),var(--ac-l)); }
@@ -119,12 +115,12 @@ a { color:inherit; text-decoration:none; }
 /* ── Momentum Panel ── */
 .momentum-card { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; position:relative; overflow:hidden; }
 .momentum-bg-chart { position:absolute; inset:0; pointer-events:none; opacity:0.12; }
-.momentum-header { font-family:'Rajdhani',sans-serif; font-size:16px; font-weight:700; letter-spacing:1px; margin-bottom:16px; position:relative; z-index:1; }
+.momentum-header { font-family:var(--font-display); font-size:16px; font-weight:700; letter-spacing:1px; margin-bottom:16px; position:relative; z-index:1; }
 .momentum-stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; position:relative; z-index:1; margin-bottom:16px; }
 .mom-stat { background:var(--s2); border:1px solid var(--bd); border-radius:8px; padding:12px; }
-.mom-stat-val { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin-bottom:3px; }
-.mom-stat-lbl { font-family:'Barlow',sans-serif; font-size:10px; color:var(--mu); letter-spacing:1px; text-transform:uppercase; }
-.trend-row { display:flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; position:relative; z-index:1; }
+.mom-stat-val { font-family:var(--font-mono); font-size:20px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1; margin-bottom:3px; }
+.mom-stat-lbl { font-family:var(--font-body); font-size:10px; color:var(--mu); letter-spacing:1px; text-transform:uppercase; }
+.trend-row { display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:11px; position:relative; z-index:1; }
 
 /* ── Skill Radar ── */
 .radar-card { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; display:flex; flex-direction:column; align-items:center; }
@@ -132,13 +128,13 @@ a { color:inherit; text-decoration:none; }
 .radar-axis { stroke:var(--bd); stroke-width:1; }
 .radar-grid { stroke:rgba(255,255,255,0.04); stroke-width:1; fill:none; }
 .radar-polygon { transition:d 0.8s ease-out; }
-.radar-label { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; fill:var(--mu2); }
-.radar-value { font-family:'JetBrains Mono',monospace; font-size:10px; fill:var(--tx); }
+.radar-label { font-family:var(--font-display); font-size:12px; font-weight:700; fill:var(--mu2); }
+.radar-value { font-family:var(--font-mono); font-size:10px; fill:var(--tx); }
 
 /* ── Season ── */
 .season-hero { background:var(--s1); border:1px solid rgba(123,44,255,0.2); border-radius:12px; padding:24px; margin-bottom:16px; }
-.season-name { font-family:'Rajdhani',sans-serif; font-size:28px; font-weight:700; letter-spacing:3px; color:var(--tx); margin-bottom:4px; }
-.season-days { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mu); margin-bottom:16px; }
+.season-name { font-family:var(--font-display); font-size:28px; font-weight:700; letter-spacing:3px; color:var(--tx); margin-bottom:4px; }
+.season-days { font-family:var(--font-mono); font-size:11px; color:var(--mu); margin-bottom:16px; }
 .season-countdown-track { height:6px; background:rgba(255,255,255,0.05); border-radius:4px; overflow:hidden; margin-bottom:8px; }
 .season-countdown-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--ac),var(--ac-l)); }
 .rewards-row { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; margin-top:20px; }
@@ -149,8 +145,8 @@ a { color:inherit; text-decoration:none; }
 .rew-item.rew-locked { opacity:0.4; }
 @keyframes rewPulse { 0%,100%{box-shadow:0 0 0 0 rgba(123,44,255,0)} 50%{box-shadow:0 0 0 6px rgba(123,44,255,0.1)} }
 .rew-icon { font-size:20px; display:block; margin-bottom:6px; }
-.rew-div { font-family:'JetBrains Mono',monospace; font-size:7px; color:var(--mu); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
-.rew-label { font-family:'Barlow',sans-serif; font-size:9px; color:var(--mu2); line-height:1.4; }
+.rew-div { font-family:var(--font-mono); font-size:7px; color:var(--mu); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+.rew-label { font-family:var(--font-body); font-size:9px; color:var(--mu2); line-height:1.4; }
 
 /* ── Big Moments ── */
 .moments-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
@@ -158,9 +154,9 @@ a { color:inherit; text-decoration:none; }
 .moment-card:hover { border-color:rgba(123,44,255,0.3); box-shadow:0 4px 20px rgba(123,44,255,0.08); }
 .moment-watermark { position:absolute; top:12px; right:12px; width:24px; height:24px; opacity:0.08; }
 .moment-icon { font-size:24px; margin-bottom:8px; }
-.moment-value { font-family:'Rajdhani',sans-serif; font-size:48px; font-weight:700; line-height:1; margin-bottom:4px; }
-.moment-label { font-family:'Barlow',sans-serif; font-size:10px; color:var(--mu); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
-.moment-date { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--mu); }
+.moment-value { font-family:var(--font-display); font-size:48px; font-weight:700; line-height:1; margin-bottom:4px; }
+.moment-label { font-family:var(--font-body); font-size:10px; color:var(--mu); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+.moment-date { font-family:var(--font-mono); font-size:10px; color:var(--mu); }
 
 /* ── Animations ── */
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
@@ -183,49 +179,13 @@ a { color:inherit; text-decoration:none; }
   .hero-av { width:64px; height:64px; font-size:22px; }
 }
 </style>
-<link rel="stylesheet" href="/brand.css">
+
 </head>
 <body>
-<nav class="brand-nav">
-  <a href="/" class="logo">
-    <picture>
-      <source media="(max-width:768px)" srcset="/assets/logo/ledgr-icon.png">
-      <img src="/assets/logo/ledgr-logo.png" alt="LEDGR" height="36">
-    </picture>
-  </a>
-  <div class="brand-nav-links">
-    <a href="/home" class="brand-nav-link">Home</a>
-    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
-    <a href="/feed" class="brand-nav-link">Feed</a>
-    <a href="/analytics" class="brand-nav-link">Analytics</a>
-    <a href="/community" class="brand-nav-link">Community</a>
-    <a href="/home" class="brand-nav-link">Profile</a>
-  </div>
-  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
-</nav>
-<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
-<div class="brand-slide-menu" id="brandSlideMenu">
-  <div class="brand-slide-header">
-    <span class="brand-slide-logo">LEDG<span>R</span></span>
-    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
-  </div>
-  <div class="brand-slide-links">
-    <a href="/dashboard" class="brand-snl">Post a Pick</a>
-    <a href="/simulator" class="brand-snl">Simulator</a>
-    <a href="/compare" class="brand-snl">Compare Tipsters</a>
-    <a href="/badges" class="brand-snl">Badges</a>
-    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
-    <a href="/progress" class="brand-snl">Progress</a>
-    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
-    <a href="/settings" class="brand-snl">Settings</a>
-    <a href="/notifications" class="brand-snl">Notifications</a>
-    <a href="/news" class="brand-snl">News</a>
-  </div>
-  <div id="brandSlideAuth"></div>
-</div>
+<script src="/app-nav.js"></script>
 
 <div class="main" id="mainContent">
-  <div style="text-align:center;padding:80px;color:var(--mu);font-family:'JetBrains Mono',monospace;font-size:12px">Loading progress...</div>
+  <div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono);font-size:12px">Loading progress...</div>
 </div>
 
 <script src="/divisions.js"></script>
@@ -543,9 +503,9 @@ function buildHTML(d) {
       ${heroHTML}
       <div style="text-align:center;padding:60px 24px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-top:16px">
         <div style="font-size:48px;margin-bottom:16px">📋</div>
-        <div style="font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--tx);margin-bottom:8px">YOUR JOURNEY STARTS HERE</div>
-        <div style="font-size:14px;color:var(--mu);margin-bottom:24px;font-family:'Barlow',sans-serif">Every legend started with their first pick. Build your verified record.</div>
-        <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#fff;padding:12px 28px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:600;text-decoration:none">Post Your First Pick →</a>
+        <div style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--tx);margin-bottom:8px">YOUR JOURNEY STARTS HERE</div>
+        <div style="font-size:14px;color:var(--mu);margin-bottom:24px;font-family:var(--font-body)">Every legend started with their first pick. Build your verified record.</div>
+        <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#fff;padding:12px 28px;border-radius:8px;font-family:var(--font-body);font-size:14px;font-weight:600;text-decoration:none">Post Your First Pick →</a>
       </div>
     `;
   }
@@ -849,7 +809,7 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
   }).join('');
 
   const pastHTML = pastSeasons.length ? `
-    <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mu)">
+    <div style="margin-top:12px;font-family:var(--font-mono);font-size:10px;color:var(--mu)">
       ${pastSeasons.slice(0,3).map(s=>`<div style="padding:6px 0;border-bottom:1px solid var(--bd)">${s.name||'Past Season'} · ${s.champion?'Champion: @'+s.champion:'No champion'}</div>`).join('')}
     </div>
   ` : '';
@@ -871,6 +831,8 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
 
 loadProgress();
+
+AppNav.init({active:'progress'});
 </script>
 </body>
 </html>

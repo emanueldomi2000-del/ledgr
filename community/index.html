@@ -26,8 +26,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* SIDEBAR */
 .sidebar{width:230px;flex-shrink:0;background:var(--s1);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
 .sidebar-head{padding:16px 16px 10px;border-bottom:1px solid var(--bd);flex-shrink:0}
-.sidebar-title{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--mu2);margin-bottom:2px}
-.sidebar-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px}
+.sidebar-title{font-family:var(--font-display);font-size:14px;letter-spacing:3px;color:var(--mu2);margin-bottom:2px}
+.sidebar-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:1px}
 .rooms-list{flex:1;overflow-y:auto;padding:8px}
 .room-btn{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border:none;background:transparent;border-radius:10px;cursor:pointer;transition:all .15s;text-align:left;margin-bottom:2px}
 .room-btn:hover{background:rgba(255,255,255,0.04)}
@@ -36,18 +36,18 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .room-info{flex:1;min-width:0}
 .room-name{font-size:12px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .room-btn.active .room-name{color:var(--ac)}
-.room-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-top:1px}
-.room-online{display:inline-flex;align-items:center;gap:3px;font-family:'DM Mono',monospace;font-size:8px;color:var(--gr)}
+.room-count{font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:1px}
+.room-online{display:inline-flex;align-items:center;gap:3px;font-family:var(--font-mono);font-size:8px;color:var(--gr)}
 .online-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:blink 2s infinite;flex-shrink:0}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 
 /* MAIN CHAT AREA */
 .chat-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .chat-header{padding:14px 20px;border-bottom:1px solid var(--bd);background:rgba(7,6,13,0.6);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.chat-room-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;color:var(--tx)}
-.chat-room-sport{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;margin-top:2px}
+.chat-room-name{font-family:var(--font-display);font-size:18px;letter-spacing:3px;color:var(--tx)}
+.chat-room-sport{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;margin-top:2px}
 .chat-header-right{display:flex;align-items:center;gap:12px}
-.ws-status{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px}
+.ws-status{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px}
 .ws-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .ws-status.connected .ws-dot{background:var(--gr)}
 .ws-status.disconnected .ws-dot{background:var(--rd)}
@@ -58,27 +58,27 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .messages-wrap::-webkit-scrollbar{width:4px}.messages-wrap::-webkit-scrollbar-track{background:transparent}.messages-wrap::-webkit-scrollbar-thumb{background:rgba(184,159,255,0.12);border-radius:2px}
 .msg-group{display:flex;gap:10px;align-items:flex-start;padding:4px 0;border-radius:8px;transition:background .15s}
 .msg-group:hover{background:rgba(255,255,255,0.018)}
-.msg-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:12px;color:#fff;flex-shrink:0;margin-top:2px;cursor:pointer;transition:transform .15s}
+.msg-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;color:#fff;flex-shrink:0;margin-top:2px;cursor:pointer;transition:transform .15s}
 .msg-av:hover{transform:scale(1.08)}
 .msg-body{flex:1;min-width:0}
 .msg-meta{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
 .msg-user{font-weight:700;font-size:12px;color:var(--tx);cursor:pointer;transition:color .15s}.msg-user:hover{color:var(--ac)}
-.msg-div{font-family:'DM Mono',monospace;font-size:8px;padding:1px 6px;border-radius:10px;font-weight:700;letter-spacing:1px}
-.msg-time{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu)}
+.msg-div{font-family:var(--font-mono);font-size:8px;padding:1px 6px;border-radius:10px;font-weight:700;letter-spacing:1px}
+.msg-time{font-family:var(--font-mono);font-size:9px;color:var(--mu)}
 .msg-text{font-size:13px;color:var(--tx);line-height:1.55;word-break:break-word}
 .msg-text a{color:var(--ac);text-decoration:none}.msg-text a:hover{text-decoration:underline}
 
 /* System messages */
-.msg-system{text-align:center;padding:8px 0;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
-.msg-day-divider{text-align:center;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;padding:12px 0 4px;position:relative}
+.msg-system{text-align:center;padding:8px 0;font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:1px}
+.msg-day-divider{text-align:center;font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;padding:12px 0 4px;position:relative}
 .msg-day-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--bd)}
 .msg-day-divider span{background:var(--bg);padding:0 12px;position:relative}
-.empty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--mu);font-family:'DM Mono',monospace;font-size:12px;gap:8px;text-align:center}
+.empty-chat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--mu);font-family:var(--font-mono);font-size:12px;gap:8px;text-align:center}
 .empty-chat .icon{font-size:36px;opacity:.4}
 
 /* INPUT */
 .input-area{padding:14px 20px;border-top:1px solid var(--bd);background:rgba(7,6,13,0.6);display:flex;align-items:flex-end;gap:10px;flex-shrink:0}
-.msg-input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font-family:'Syne',sans-serif;font-size:13px;padding:10px 14px;outline:none;resize:none;min-height:42px;max-height:120px;transition:border-color .2s;line-height:1.45}
+.msg-input{flex:1;background:var(--s2);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font-family:var(--font-body);font-size:13px;padding:10px 14px;outline:none;resize:none;min-height:42px;max-height:120px;transition:border-color .2s;line-height:1.45}
 .msg-input:focus{border-color:var(--bd2)}
 .msg-input::placeholder{color:var(--mu)}
 .send-btn{background:var(--ac);color:#07060d;border:none;border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .15s;flex-shrink:0}
@@ -87,9 +87,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* Not-logged-in */
 .not-logged-chat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:40px;text-align:center;flex:1}
-.not-logged-chat h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--mu)}
-.not-logged-chat p{font-family:'DM Mono',monospace;font-size:11px;color:var(--mu);line-height:1.7}
-.login-cta{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:12px 28px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:all .2s}.login-cta:hover{background:#cdb8ff}
+.not-logged-chat h2{font-family:var(--font-display);font-size:28px;letter-spacing:2px;color:var(--mu)}
+.not-logged-chat p{font-family:var(--font-mono);font-size:11px;color:var(--mu);line-height:1.7}
+.login-cta{background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:12px 28px;font-family:var(--font-display);font-size:15px;letter-spacing:2px;cursor:pointer;transition:all .2s}.login-cta:hover{background:#cdb8ff}
 
 @media(max-width:700px){
   .sidebar{width:64px}
@@ -120,6 +120,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </style>
 </head>
 <body>
+<div class="bg-glow"></div>
 <script src="/app-nav.js"></script>
 
 <div class="chat-layout">
@@ -131,7 +132,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="sidebar-sub">Choose a channel</div>
     </div>
     <div class="rooms-list" id="roomsList">
-      <div style="padding:16px;text-align:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--mu)">Loading…</div>
+      <div style="padding:16px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mu)">Loading…</div>
     </div>
   </div>
 

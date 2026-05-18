@@ -5,56 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LEDGR — Sports Intel</title>
 <meta name="description" content="Live sports news, injury tracker, lineup reports and trending topics for sharp bettors.">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#07060d;--s1:#0c0a1a;--s2:#15122a;
-  --bd:rgba(184,159,255,.1);--bd2:rgba(184,159,255,.2);
-  --ac:#b89fff;--acg:rgba(184,159,255,.08);
-  --tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;
-  --gr:#34d399;--rd:#f87171;--gold:#fbbf24;--orange:#fb923c;--cyan:#38bdf8;
-  /* sport colors */
-  --c-soccer:#34d399;--c-basketball:#f87171;--c-football:#38bdf8;
-  --c-tennis:#fbbf24;--c-mma:#fb923c;--c-general:#b89fff;
-}
-body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;overflow-x:hidden}
+:root{--c-soccer:#34d399;--c-basketball:#f87171;--c-football:#38bdf8;--c-tennis:#fbbf24;--c-mma:#fb923c;--c-general:#b89fff}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.35}
-
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter:blur(28px);border-bottom:1px solid var(--bd);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:6px;color:var(--tx);text-decoration:none}
-.logo span{color:var(--ac)}
-.nav-links{display:flex;gap:2px;align-items:center}
-.nav-link{color:var(--mu2);font-size:12px;font-weight:500;text-decoration:none;padding:7px 12px;border-radius:6px;transition:all .2s}
-.nav-link:hover{color:var(--tx)}
-.nav-link.active{color:var(--gr)}
-.user-badge{background:transparent;border:1px solid var(--bd);border-radius:8px;padding:7px 14px;font-size:12px;font-family:'DM Mono',monospace;color:var(--mu2);cursor:pointer;transition:all .2s}
-.user-badge:hover{color:var(--ac);border-color:var(--bd2)}
-.logout-btn{background:transparent;border:none;color:var(--mu);padding:7px 10px;font-size:11px;cursor:pointer;font-family:'Syne';transition:color .2s}
-.logout-btn:hover{color:var(--rd)}
-.mobile-menu-btn{display:none;background:none;border:none;color:var(--mu2);font-size:20px;cursor:pointer}
-
-/* ── SLIDE NAV ── */
-.slide-nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:90;opacity:0;pointer-events:none;transition:opacity .25s}
-.slide-nav-overlay.open{opacity:1;pointer-events:all}
-.slide-nav{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:91;transition:right .3s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column}
-.slide-nav.open{right:0}
-.slide-nav-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;border-bottom:1px solid var(--bd)}
-.slide-nav-close{background:none;border:none;color:var(--mu2);font-size:18px;cursor:pointer}
-.slide-nav-profile{display:flex;align-items:center;gap:12px;padding:16px 20px;cursor:pointer;border-bottom:1px solid var(--bd)}
-.snp-av{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#6d28d9,#b89fff);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue';font-size:14px;color:#fff}
-.snp-name{font-weight:700;font-size:13px;color:var(--tx)}
-.snp-sub{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
-.slide-nav-links{padding:12px 8px;flex:1;overflow-y:auto}
-.snl{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;text-decoration:none;transition:background .2s;margin-bottom:1px;color:var(--mu2);font-size:13px}
-.snl:hover{background:rgba(255,255,255,.04);color:var(--tx)}
-.snl-icon{font-size:16px;width:20px;text-align:center}
-.slide-nav-post{padding:12px 20px;border-top:1px solid var(--bd)}
-.snp-post-btn{display:block;text-align:center;background:var(--ac);color:#060508;text-decoration:none;border-radius:10px;padding:11px;font-family:'DM Mono',monospace;font-size:11px;font-weight:700;letter-spacing:2px}
-.slide-nav-logout{padding:12px 20px}
-.snl-logout{background:none;border:none;color:var(--mu);font-size:12px;cursor:pointer;font-family:'Syne';padding:4px 0;transition:color .2s}
-.snl-logout:hover{color:var(--rd)}
 
 /* ── MAIN ── */
 .main{max-width:1160px;margin:0 auto;padding:0 24px 80px;position:relative;z-index:2}
@@ -62,22 +18,22 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 /* ── HERO ── */
 .intel-hero{padding:40px 0 32px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--bd);margin-bottom:24px}
 .ih-left{}
-.ih-eyebrow{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ih-eyebrow{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
 .ih-live-dot{width:6px;height:6px;border-radius:50%;background:var(--gr);animation:live-pulse 1.6s ease-in-out infinite}
 @keyframes live-pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(52,211,153,0)}}
-.ih-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,88px);letter-spacing:4px;line-height:.9;
+.ih-title{font-family:var(--font-display);font-size:clamp(26px,3vw,34px);letter-spacing:4px;line-height:.9;
   background:linear-gradient(180deg,#f0edff 0%,var(--gr) 130%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.ih-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-top:10px}
+.ih-sub{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-top:10px}
 .ih-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.ih-updated{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px}
-.ih-refresh-btn{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:8px;padding:8px 14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gr);cursor:pointer;transition:all .2s;letter-spacing:1px}
+.ih-updated{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:1px}
+.ih-refresh-btn{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);border-radius:8px;padding:8px 14px;font-family:var(--font-mono);font-size:10px;color:var(--gr);cursor:pointer;transition:all .2s;letter-spacing:1px}
 .ih-refresh-btn:hover{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.4)}
-.ih-countdown{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:5px 10px}
+.ih-countdown{font-family:var(--font-mono);font-size:9px;color:var(--mu);background:var(--s1);border:1px solid var(--bd);border-radius:6px;padding:5px 10px}
 
 /* ── SPORT TABS ── */
 .sport-tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:16px;overflow-x:auto;scrollbar-width:none}
 .sport-tabs::-webkit-scrollbar{display:none}
-.st-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--mu2);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.st-tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--mu2);font-family:var(--font-mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:10px 18px;cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap;display:flex;align-items:center;gap:6px}
 .st-tab:hover{color:var(--tx)}
 .st-tab.active[data-sport="all"]{color:var(--ac);border-bottom-color:var(--ac)}
 .st-tab.active[data-sport="soccer"]{color:var(--c-soccer);border-bottom-color:var(--c-soccer)}
@@ -89,7 +45,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 
 /* ── CATEGORY FILTERS ── */
 .cat-bar{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
-.cat-btn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:6px 14px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu2);cursor:pointer;transition:all .18s;white-space:nowrap}
+.cat-btn{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:6px;padding:6px 14px;font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mu2);cursor:pointer;transition:all .18s;white-space:nowrap}
 .cat-btn:hover{color:var(--tx);border-color:rgba(255,255,255,.15)}
 .cat-btn.active{background:rgba(184,159,255,.12);border-color:var(--ac);color:var(--ac)}
 .cat-btn.active[data-cat="injury"]{background:rgba(248,113,113,.1);border-color:var(--rd);color:var(--rd)}
@@ -102,7 +58,7 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 
 /* ── NEWS FEED ── */
 .feed-section{}
-.feed-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.feed-title{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .feed-title::after{content:'';flex:1;height:1px;background:var(--bd)}
 .news-cards{display:flex;flex-direction:column;gap:10px}
 
@@ -113,17 +69,17 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 .nc-img-placeholder{width:80px;height:80px;border-radius:8px;background:var(--s2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;opacity:.4}
 .nc-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 .nc-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.nc-source{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
+.nc-source{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:1px;text-transform:uppercase}
 .nc-dot{width:3px;height:3px;border-radius:50%;background:var(--mu);flex-shrink:0}
-.nc-time{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
-.nc-sport-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;font-weight:700}
-.nc-cat-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;font-weight:700;border:1px solid currentColor;opacity:.8}
+.nc-time{font-family:var(--font-mono);font-size:8px;color:var(--mu)}
+.nc-sport-tag{font-family:var(--font-mono);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;font-weight:700}
+.nc-cat-tag{font-family:var(--font-mono);font-size:7px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;font-weight:700;border:1px solid currentColor;opacity:.8}
 .nc-headline{font-size:13px;font-weight:700;line-height:1.45;color:var(--tx);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nc-desc{font-size:11px;color:var(--mu2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .nc-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
-.nc-read{font-family:'DM Mono',monospace;font-size:9px;color:var(--nc-color,var(--ac));letter-spacing:1px;opacity:.8}
+.nc-read{font-family:var(--font-mono);font-size:9px;color:var(--nc-color,var(--ac));letter-spacing:1px;opacity:.8}
 .nc:hover .nc-read{opacity:1}
-.nc-byline{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);font-style:italic}
+.nc-byline{font-family:var(--font-mono);font-size:8px;color:var(--mu);font-style:italic}
 
 /* Injury category label colors */
 .tag-soccer{background:rgba(52,211,153,.12);color:var(--c-soccer);border-color:rgba(52,211,153,.3)}
@@ -140,15 +96,15 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 /* Empty / Error */
 .feed-empty{text-align:center;padding:48px 20px;color:var(--mu)}
 .feed-empty .icon{font-size:36px;display:block;margin-bottom:12px;opacity:.5}
-.feed-empty h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--mu2);margin-bottom:6px}
-.feed-empty p{font-size:11px;font-family:'DM Mono',monospace;line-height:1.7;max-width:300px;margin:0 auto}
+.feed-empty h3{font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:var(--mu2);margin-bottom:6px}
+.feed-empty p{font-size:11px;font-family:var(--font-mono);line-height:1.7;max-width:300px;margin:0 auto}
 
 /* ── SIDEBAR ── */
 .news-sidebar{display:flex;flex-direction:column;gap:16px}
 .sidebar-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;overflow:hidden}
 .sc-head{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
-.sc-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px}
-.sc-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);background:rgba(255,255,255,.05);border-radius:10px;padding:2px 7px}
+.sc-title{font-family:var(--font-display);font-size:16px;letter-spacing:2px}
+.sc-count{font-family:var(--font-mono);font-size:9px;color:var(--mu);background:rgba(255,255,255,.05);border-radius:10px;padding:2px 7px}
 .sc-body{padding:12px}
 
 /* ── INJURY TRACKER ── */
@@ -157,20 +113,20 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 .inj-card:last-child{margin-bottom:0}
 .inj-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
 .inj-headline{font-size:11.5px;font-weight:600;line-height:1.4;color:var(--tx);flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.inj-status{font-family:'DM Mono',monospace;font-size:8px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:4px;flex-shrink:0;white-space:nowrap}
+.inj-status{font-family:var(--font-mono);font-size:8px;font-weight:700;letter-spacing:1px;padding:3px 7px;border-radius:4px;flex-shrink:0;white-space:nowrap}
 .status-out{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.35);color:var(--rd)}
 .status-doubtful{background:rgba(251,146,60,.15);border:1px solid rgba(251,146,60,.35);color:var(--orange)}
 .status-questionable{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--gold)}
 .status-day-to-day{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:var(--cyan)}
 .status-injured{background:rgba(184,159,255,.1);border:1px solid rgba(184,159,255,.25);color:var(--ac)}
 .inj-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.inj-impact{font-family:'DM Mono',monospace;font-size:7px;font-weight:700;letter-spacing:1.5px;padding:2px 6px;border-radius:3px}
+.inj-impact{font-family:var(--font-mono);font-size:7px;font-weight:700;letter-spacing:1.5px;padding:2px 6px;border-radius:3px}
 .impact-high{background:rgba(248,113,113,.12);color:var(--rd)}
 .impact-medium{background:rgba(251,146,60,.1);color:var(--orange)}
 .impact-low{background:rgba(52,211,153,.1);color:var(--gr)}
-.inj-return{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
-.inj-sport-tag{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;padding:1px 5px;border-radius:3px}
-.inj-bet-note{font-size:9px;color:var(--mu2);font-family:'DM Mono',monospace;margin-top:4px;padding-top:5px;border-top:1px solid rgba(255,255,255,.05)}
+.inj-return{font-family:var(--font-mono);font-size:8px;color:var(--mu)}
+.inj-sport-tag{font-family:var(--font-mono);font-size:7px;letter-spacing:1px;padding:1px 5px;border-radius:3px}
+.inj-bet-note{font-size:9px;color:var(--mu2);font-family:var(--font-mono);margin-top:4px;padding-top:5px;border-top:1px solid rgba(255,255,255,.05)}
 
 /* ── LINEUP NEWS ── */
 .lineup-card{padding:12px;border-radius:10px;background:rgba(52,211,153,.03);border:1px solid rgba(52,211,153,.12);margin-bottom:8px;cursor:pointer;text-decoration:none;display:block;color:inherit;transition:border-color .2s}
@@ -178,13 +134,13 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
 .lineup-card:last-child{margin-bottom:0}
 .lc-headline{font-size:11.5px;font-weight:600;line-height:1.4;color:var(--tx);margin-bottom:4px}
 .lc-meta{display:flex;gap:8px;align-items:center}
-.lc-time{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu)}
-.lc-new{font-family:'DM Mono',monospace;font-size:7px;background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:var(--gr);padding:1px 5px;border-radius:3px;letter-spacing:1px}
+.lc-time{font-family:var(--font-mono);font-size:8px;color:var(--mu)}
+.lc-new{font-family:var(--font-mono);font-size:7px;background:rgba(52,211,153,.15);border:1px solid rgba(52,211,153,.3);color:var(--gr);padding:1px 5px;border-radius:3px;letter-spacing:1px}
 
 /* ── TRENDING TOPICS ── */
 .trending-section .sc-title{color:var(--gold)}
 .topic-cloud{display:flex;flex-wrap:wrap;gap:6px;padding:12px}
-.topic-tag{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:5px 12px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px}
+.topic-tag{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:5px 12px;font-family:var(--font-mono);font-size:9px;color:var(--mu2);cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:5px}
 .topic-tag:hover{color:var(--tx);border-color:rgba(255,255,255,.18)}
 .topic-count{font-size:8px;opacity:.6;font-weight:700}
 
@@ -206,72 +162,13 @@ nav{position:sticky;top:0;z-index:50;background:rgba(7,6,13,.92);backdrop-filter
   .nc-img,.nc-img-placeholder{width:60px;height:60px}
 }
 </style>
-<link rel="stylesheet" href="/brand.css">
+
 </head>
 <body>
-
-<!-- SLIDE NAV -->
-<div class="slide-nav-overlay" id="slideOverlay" onclick="closeSlideNav()"></div>
-<div class="slide-nav" id="slideNav">
-  <div class="slide-nav-header">
-    <span style="font-family:'Bebas Neue';font-size:20px;letter-spacing:4px">LEDG<span style="color:#b89fff">R</span></span>
-    <button class="slide-nav-close" onclick="closeSlideNav()">✕</button>
-  </div>
-  <div class="slide-nav-profile" onclick="goToProfile();closeSlideNav()">
-    <div class="snp-av" id="slideAvatar">?</div>
-    <div><div class="snp-name" id="slideName">@—</div><div class="snp-sub">View your profile →</div></div>
-  </div>
-  <div class="slide-nav-links">
-    <a href="/home" class="snl"><span class="snl-icon">🏠</span><div class="snl-text">Home</div></a>
-    <a href="/leaderboard" class="snl"><span class="snl-icon">🏆</span><div class="snl-text">Leaderboard</div></a>
-    <a href="/hall-of-fame" class="snl"><span class="snl-icon">🏛️</span><div class="snl-text">Hall of Fame</div></a>
-    <a href="/news" class="snl" style="color:var(--gr)"><span class="snl-icon">📰</span><div class="snl-text">Sports Intel</div></a>
-    <a href="/feed" class="snl"><span class="snl-icon">🔴</span><div class="snl-text">Live Feed</div></a>
-    <a href="/compare" class="snl"><span class="snl-icon">⚖️</span><div class="snl-text">Compare</div></a>
-    <a href="/simulator" class="snl"><span class="snl-icon">📈</span><div class="snl-text">Simulator</div></a>
-    <a href="/badges" class="snl"><span class="snl-icon">🏅</span><div class="snl-text">Badges</div></a>
-    <a href="/progress" class="snl"><span class="snl-icon">🎮</span><div class="snl-text">Progression</div></a>
-    <a href="/community" class="snl"><span class="snl-icon">💬</span><div class="snl-text">Community</div></a>
-    <a href="/dashboard" class="snl"><span class="snl-icon">＋</span><div class="snl-text">Post a Pick</div></a>
-    <a href="/settings" class="snl"><span class="snl-icon">⚙️</span><div class="snl-text">Settings</div></a>
-  </div>
-  <div class="slide-nav-post"><a href="/dashboard" class="snp-post-btn">＋ POST A PICK</a></div>
-  <div class="slide-nav-logout"><button class="snl-logout" onclick="logout()">Log Out</button></div>
-</div>
+<div class="bg-glow"></div>
 
 <!-- NAV -->
-<nav class="brand-nav">
-  <a href="/" class="logo">LEDG<span>R</span></a>
-  <div class="brand-nav-links">
-    <a href="/" class="brand-nav-link">Home</a>
-    <a href="/leaderboard" class="brand-nav-link">Leaderboard</a>
-    <a href="/feed" class="brand-nav-link">Feed</a>
-    <a href="/analytics" class="brand-nav-link">Analytics</a>
-    <a href="/community" class="brand-nav-link">Community</a>
-    <a href="/home" class="brand-nav-link" id="profileNavLink">Profile</a>
-  </div>
-  <button class="brand-hamburger" onclick="brandMenuToggle()">&#9776;</button>
-</nav>
-<div class="brand-overlay" id="brandOverlay" onclick="brandMenuToggle()"></div>
-<div class="brand-slide-menu" id="brandSlideMenu">
-  <div class="brand-slide-header">
-    <span class="brand-slide-logo">LEDG<span>R</span></span>
-    <button class="brand-slide-close" onclick="brandMenuToggle()">&#10005;</button>
-  </div>
-  <div class="brand-slide-links">
-    <a href="/dashboard" class="brand-snl">Post a Pick</a>
-    <a href="/simulator" class="brand-snl">Simulator</a>
-    <a href="/compare" class="brand-snl">Compare Tipsters</a>
-    <a href="/badges" class="brand-snl">Badges</a>
-    <a href="/hall-of-fame" class="brand-snl">Hall of Fame</a>
-    <a href="/progress" class="brand-snl">Progress</a>
-    <a href="/become-a-tipster" class="brand-snl">Become a Tipster</a>
-    <a href="/settings" class="brand-snl">Settings</a>
-    <a href="/notifications" class="brand-snl">Notifications</a>
-    <a href="/news" class="brand-snl">News</a>
-  </div>
-  <div id="brandSlideAuth"></div>
-</div>
+<script src="/app-nav.js"></script>
 
 <!-- MAIN -->
 <div class="main">
@@ -380,8 +277,8 @@ let countdownInterval = null, refreshInterval = null;
 // ── Helpers ────────────────────────────────────────────────────
 function logout() { localStorage.clear(); window.location.href = '/login'; }
 function goToProfile() { const u = localStorage.getItem('username'); if (u) window.location.href = '/tipster?u=' + u; }
-function openSlideNav() { document.getElementById('slideNav').classList.add('open'); document.getElementById('slideOverlay').classList.add('open'); }
-function closeSlideNav() { document.getElementById('slideNav').classList.remove('open'); document.getElementById('slideOverlay').classList.remove('open'); }
+
+
 
 (function() {
   const u = localStorage.getItem('username');
@@ -633,7 +530,7 @@ async function loadNews(force = false) {
       <span class="icon">📡</span>
       <h3>FEED UNAVAILABLE</h3>
       <p>Could not load sports news right now.<br>
-      <button onclick="loadNews(true)" style="margin-top:12px;background:rgba(184,159,255,.1);border:1px solid var(--bd2);color:var(--ac);padding:8px 16px;border-radius:8px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;letter-spacing:1px">↻ TRY AGAIN</button></p>
+      <button onclick="loadNews(true)" style="margin-top:12px;background:rgba(184,159,255,.1);border:1px solid var(--bd2);color:var(--ac);padding:8px 16px;border-radius:8px;font-family:var(--font-mono);font-size:10px;cursor:pointer;letter-spacing:1px">↻ TRY AGAIN</button></p>
     </div>`;
     document.getElementById('injuryFeed').innerHTML = '<div style="color:var(--mu);font-family:\'DM Mono\',monospace;font-size:10px;padding:8px;text-align:center">—</div>';
     document.getElementById('lineupFeed').innerHTML = '<div style="color:var(--mu);font-family:\'DM Mono\',monospace;font-size:10px;padding:8px;text-align:center">—</div>';
@@ -688,7 +585,9 @@ function setCat(cat, el) {
 
 // ── Boot ──────────────────────────────────────────────────────
 loadNews(false);
+
+AppNav.init({active:'news'});
 </script>
-<script src="/brand-nav.js"></script>
+
 </body>
 </html>

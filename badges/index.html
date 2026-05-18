@@ -8,7 +8,9 @@
 <meta property="og:title" content="LEDGR — Badge Vault">
 <meta property="og:description" content="Build your legend. Earn rare badges for streaks, ROI, CLV, and prestige milestones.">
 <meta name="twitter:card" content="summary_large_image">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -21,19 +23,19 @@
   /* division */
   --div-color:#7B2CFF;
 }
-body{background:var(--bg);color:var(--tx);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--tx);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 
 /* ── NAV ── */
 .badges-top-nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:60px;background:rgba(10,10,10,0.9);backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:200}
-.nav-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;letter-spacing:1px;display:flex;align-items:center;gap:8px}
+.nav-logo{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:1px;display:flex;align-items:center;gap:8px}
 .nav-logo span{color:var(--ac)}
 .nav-logo img{height:26px;width:auto}
 .nav-links{display:flex;gap:4px}
 .nav-links a{padding:6px 12px;border-radius:6px;font-size:13px;font-weight:500;color:var(--mu);transition:all .15s}
 .nav-links a:hover,.nav-links a.active{color:var(--tx);background:var(--s2)}
 .nav-right{display:flex;gap:8px;align-items:center}
-.nav-btn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer;font-family:'Barlow',sans-serif;transition:all .15s}
+.nav-btn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;border:1px solid var(--bd);background:transparent;color:var(--mu);cursor:pointer;font-family:var(--font-body);transition:all .15s}
 .nav-btn:hover{border-color:var(--ac);color:var(--ac)}
 
 /* ── HERO ── */
@@ -45,24 +47,24 @@ a{color:inherit;text-decoration:none}
 .particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--div-color);opacity:0.15;animation:floatUp var(--dur,12s) var(--delay,0s) linear infinite}
 @keyframes floatUp{0%{transform:translateY(100vh) translateX(0);opacity:0.15}100%{transform:translateY(-60px) translateX(var(--drift,20px));opacity:0}}
 @keyframes bgSpin{to{transform:scale(6) rotate(360deg)}}
-.hero-title{font-family:'Rajdhani',sans-serif;font-size:clamp(42px,8vw,72px);font-weight:700;letter-spacing:4px;line-height:1;position:relative;z-index:2}
+.hero-title{font-family:var(--font-display);font-size:clamp(42px,8vw,72px);font-weight:700;letter-spacing:4px;line-height:1;position:relative;z-index:2}
 .hero-subtitle{font-size:14px;color:var(--mu2);margin-top:6px;font-weight:500;letter-spacing:1px;position:relative;z-index:2}
 .hero-stats{display:flex;align-items:center;gap:0;margin-top:24px;background:rgba(18,18,18,0.7);border:1px solid var(--bd);border-radius:10px;overflow:hidden;position:relative;z-index:2;backdrop-filter:blur(8px)}
-.hero-stat{padding:12px 22px;font-family:'JetBrains Mono',monospace;font-size:12px}
+.hero-stat{padding:12px 22px;font-family:var(--font-mono);font-size:12px}
 .hero-stat-val{font-size:16px;font-weight:700;display:block;color:var(--tx)}
 .hero-stat-lbl{color:var(--mu);font-size:10px;margin-top:1px}
 .hero-stat+.hero-stat{border-left:1px solid var(--bd)}
 .hero-next{margin-top:20px;background:rgba(18,18,18,0.75);border:1px solid var(--bd);border-radius:10px;padding:14px 22px;min-width:280px;max-width:380px;position:relative;z-index:2;backdrop-filter:blur(8px)}
-.hero-next-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
-.hero-next-name{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.hero-next-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:6px;font-family:var(--font-mono)}
+.hero-next-name{font-family:var(--font-display);font-size:16px;font-weight:700;margin-bottom:8px}
 .hero-next-track{height:5px;background:var(--s2);border-radius:3px;overflow:hidden}
 .hero-next-fill{height:100%;background:var(--div-color);border-radius:3px;transition:width 1.2s ease-out}
-.hero-next-sub{font-size:11px;color:var(--mu);margin-top:5px;font-family:'JetBrains Mono',monospace}
+.hero-next-sub{font-size:11px;color:var(--mu);margin-top:5px;font-family:var(--font-mono)}
 
 /* ── SHOWCASE ── */
 .showcase-wrap{max-width:1140px;margin:0 auto 0;padding:32px 24px 0}
 .sec-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.sec-header-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--mu)}
+.sec-header-title{font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--mu)}
 .sec-header::after{content:'';flex:1;height:1px;background:var(--bd)}
 .sec-header-img{width:14px;height:14px;opacity:0.25}
 .showcase-slots{display:flex;gap:12px;flex-wrap:wrap}
@@ -71,7 +73,7 @@ a{color:inherit;text-decoration:none}
 .showcase-slot.has-badge{border-style:solid}
 .showcase-slot .slot-plus{font-size:20px;color:var(--bd)}
 .showcase-slot .slot-icon{font-size:28px;line-height:1}
-.showcase-slot .slot-name{font-size:8px;font-family:'JetBrains Mono',monospace;color:var(--mu);margin-top:3px;text-align:center;padding:0 4px;line-height:1.2}
+.showcase-slot .slot-name{font-size:8px;font-family:var(--font-mono);color:var(--mu);margin-top:3px;text-align:center;padding:0 4px;line-height:1.2}
 .showcase-slot.selecting{border-color:var(--ac);background:var(--acg);animation:slotPulse 1s ease infinite}
 @keyframes slotPulse{0%,100%{box-shadow:0 0 0 0 rgba(123,44,255,0)}50%{box-shadow:0 0 0 4px rgba(123,44,255,0.2)}}
 
@@ -81,8 +83,8 @@ a{color:inherit;text-decoration:none}
 /* ── SECTION ── */
 .badge-section{margin-bottom:40px}
 .badge-section-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;border-left:3px solid var(--ac);padding-left:10px;cursor:pointer}
-.badge-section-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-.badge-section-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);margin-left:auto}
+.badge-section-title{font-family:var(--font-display);font-size:17px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.badge-section-count{font-family:var(--font-mono);font-size:11px;color:var(--mu);margin-left:auto}
 .badge-section-count.complete{color:var(--gr)}
 .badge-section-toggle{font-size:11px;color:var(--mu);white-space:nowrap}
 .section-divider{display:flex;align-items:center;gap:8px;margin:32px 0 28px}
@@ -108,19 +110,19 @@ a{color:inherit;text-decoration:none}
 .badge-lock-overlay{position:absolute;top:8px;right:8px;font-size:11px;opacity:0.5}
 .badge-icon{font-size:36px;line-height:1;position:relative;z-index:1}
 .badge-card-featured .badge-icon{font-size:48px}
-.badge-name{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;text-align:center;line-height:1.2}
+.badge-name{font-family:var(--font-display);font-size:13px;font-weight:700;text-align:center;line-height:1.2}
 .badge-card-featured .badge-name{font-size:16px}
-.badge-rarity-pill{font-size:8px;font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;padding:2px 7px;border-radius:10px;border:1px solid currentColor;font-weight:700;text-transform:uppercase}
+.badge-rarity-pill{font-size:8px;font-family:var(--font-mono);letter-spacing:1.5px;padding:2px 7px;border-radius:10px;border:1px solid currentColor;font-weight:700;text-transform:uppercase}
 
 /* rarity treatments */
-.rarity-common .badge-rarity-pill{color:var(--c-common);border-color:var(--c-common)}
+.rarity-common .badge-rarity-pill{color:var(--rarity-common);border-color:var(--rarity-common)}
 .rarity-rare{box-shadow:0 0 12px rgba(79,195,247,0.3);border-color:#4FC3F7}
-.rarity-rare .badge-rarity-pill{color:var(--c-rare);border-color:var(--c-rare)}
+.rarity-rare .badge-rarity-pill{color:var(--rarity-rare);border-color:var(--rarity-rare)}
 .rarity-epic{box-shadow:0 0 16px rgba(123,44,255,0.4);border-color:rgba(123,44,255,0.5)}
-.rarity-epic .badge-rarity-pill{color:var(--c-epic);border-color:var(--c-epic)}
+.rarity-epic .badge-rarity-pill{color:var(--rarity-epic);border-color:var(--rarity-epic)}
 .rarity-legendary{box-shadow:0 0 24px rgba(255,215,0,0.4);border-color:rgba(255,215,0,0.5);animation:legendGlow 3s ease infinite}
 @keyframes legendGlow{0%,100%{box-shadow:0 0 24px rgba(255,215,0,0.4)}50%{box-shadow:0 0 36px rgba(255,215,0,0.6)}}
-.rarity-legendary .badge-rarity-pill{color:var(--c-legendary);border-color:var(--c-legendary)}
+.rarity-legendary .badge-rarity-pill{color:var(--rarity-legendary);border-color:var(--rarity-legendary)}
 .rarity-mythic{border-color:transparent;animation:mythicBorder 8s linear infinite,legendGlow 2s ease infinite}
 @keyframes mythicBorder{0%{border-color:hsl(0,80%,60%)}14%{border-color:hsl(51,80%,60%)}28%{border-color:hsl(102,80%,60%)}42%{border-color:hsl(153,80%,60%)}56%{border-color:hsl(204,80%,60%)}70%{border-color:hsl(255,80%,60%)}84%{border-color:hsl(306,80%,60%)}100%{border-color:hsl(360,80%,60%)}}
 .rarity-mythic .badge-rarity-pill{animation:mythicText 8s linear infinite;border-color:transparent}
@@ -147,11 +149,11 @@ a{color:inherit;text-decoration:none}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;transition:color .15s}
 .modal-close:hover{color:var(--tx)}
 .modal-icon{font-size:72px;line-height:1;margin-bottom:12px;display:block}
-.modal-rarity{font-size:9px;font-family:'JetBrains Mono',monospace;letter-spacing:2px;padding:3px 10px;border-radius:10px;border:1px solid currentColor;display:inline-block;margin-bottom:10px}
-.modal-name{font-family:'Rajdhani',sans-serif;font-size:28px;font-weight:700;margin-bottom:6px}
+.modal-rarity{font-size:9px;font-family:var(--font-mono);letter-spacing:2px;padding:3px 10px;border-radius:10px;border:1px solid currentColor;display:inline-block;margin-bottom:10px}
+.modal-name{font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:6px}
 .modal-desc{font-size:14px;color:var(--mu2);line-height:1.6;margin-bottom:16px}
 .modal-divider{height:1px;background:var(--bd);margin:16px 0}
-.modal-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mu);text-align:left;display:flex;flex-direction:column;gap:8px}
+.modal-meta{font-family:var(--font-mono);font-size:11px;color:var(--mu);text-align:left;display:flex;flex-direction:column;gap:8px}
 .modal-meta-row{display:flex;justify-content:space-between;align-items:center}
 .modal-meta-lbl{color:var(--mu);font-size:10px;letter-spacing:1px}
 .modal-meta-val{color:var(--tx)}
@@ -159,14 +161,14 @@ a{color:inherit;text-decoration:none}
 .modal-progress-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
 .modal-secret{color:var(--mu);font-style:italic;font-size:13px;margin:12px 0}
 .modal-hint{font-size:11px;color:var(--mu);border:1px dashed var(--bd);border-radius:6px;padding:8px 12px;margin-top:8px;text-align:center;font-style:italic}
-.modal-equip-btn{width:100%;margin-top:14px;padding:10px;border-radius:8px;border:1px solid var(--ac);background:var(--acg);color:var(--ac);font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s}
+.modal-equip-btn{width:100%;margin-top:14px;padding:10px;border-radius:8px;border:1px solid var(--ac);background:var(--acg);color:var(--ac);font-family:var(--font-display);font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s}
 .modal-equip-btn:hover{background:var(--ac);color:#fff}
 .modal-equip-btn.equipped{background:rgba(0,229,160,0.1);border-color:var(--gr);color:var(--gr)}
 .modal-watermark{position:absolute;bottom:12px;right:14px;width:28px;height:28px;opacity:0.06}
 .modal-unlock-date{color:var(--gr);font-size:11px}
 .modal-pct{color:var(--mu);font-size:11px}
 .modal-reward{background:rgba(123,44,255,0.06);border:1px solid rgba(123,44,255,0.2);border-radius:6px;padding:8px 12px;text-align:left;margin-top:8px}
-.modal-reward-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:3px;font-family:'JetBrains Mono',monospace}
+.modal-reward-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:3px;font-family:var(--font-mono)}
 .modal-reward-val{font-size:13px;color:var(--ac-l)}
 
 /* ── LOADING ── */
@@ -176,30 +178,14 @@ a{color:inherit;text-decoration:none}
 
 /* ── UTILS ── */
 .collapsed .badge-grid,.collapsed .badge-grid-featured{display:none}
-.show-toggle{font-size:12px;color:var(--ac);cursor:pointer;margin-top:6px;display:inline-block;font-family:'Barlow',sans-serif;font-weight:500}
+.show-toggle{font-size:12px;color:var(--ac);cursor:pointer;margin-top:6px;display:inline-block;font-family:var(--font-body);font-weight:500}
 .show-toggle:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 
-<nav class="badges-top-nav">
-  <a class="nav-logo" href="/home/">
-    <picture>
-      <source srcset="/assets/logo/ledgr-logo.png" type="image/png">
-      <span><span>L</span>EDGR</span>
-    </picture>
-  </a>
-  <div class="nav-links">
-    <a href="/home/">Home</a>
-    <a href="/feed/">Feed</a>
-    <a href="/leaderboard/">Ranks</a>
-    <a href="/progress/">Progress</a>
-    <a href="/badges/" class="active">Badges</a>
-  </div>
-  <div class="nav-right">
-    <button class="nav-btn" onclick="logout()">Sign Out</button>
-  </div>
-</nav>
+<script src="/app-nav.js"></script>
+
 
 <!-- HERO -->
 <div class="hero" id="hero">
@@ -214,7 +200,7 @@ a{color:inherit;text-decoration:none}
   <div class="hero-stats" id="heroStats">
     <div class="hero-stat"><span class="hero-stat-val" id="hUnlocked">—</span><div class="hero-stat-lbl">Unlocked</div></div>
     <div class="hero-stat"><span class="hero-stat-val" id="hLegendary" style="color:var(--gold)">—</span><div class="hero-stat-lbl">Legendary</div></div>
-    <div class="hero-stat"><span class="hero-stat-val" id="hEpic" style="color:var(--c-epic)">—</span><div class="hero-stat-lbl">Epic</div></div>
+    <div class="hero-stat"><span class="hero-stat-val" id="hEpic" style="color:var(--rarity-epic)">—</span><div class="hero-stat-lbl">Epic</div></div>
     <div class="hero-stat"><span class="hero-stat-val" id="hCompletion" style="color:var(--ac)">—</span><div class="hero-stat-lbl">Completion</div></div>
   </div>
 
@@ -230,7 +216,7 @@ a{color:inherit;text-decoration:none}
 <div class="showcase-wrap">
   <div class="sec-header">
     <span class="sec-header-title">Your Showcase</span>
-    <img class="sec-header-img" src="/assets/logo/ledgr-icon.png" alt="">
+    
   </div>
   <div class="showcase-slots" id="showcaseSlots">
     <div class="showcase-slot" data-slot="0" onclick="selectShowcaseSlot(0)"><span class="slot-plus">+</span></div>
@@ -379,7 +365,7 @@ function renderShowcase() {
 }
 
 function rarityColor(r) {
-  return { common:'var(--c-common)', rare:'var(--c-rare)', epic:'var(--c-epic)', legendary:'var(--c-legendary)', mythic:'#ff6ac1' }[r] || 'var(--mu)';
+  return { common:'var(--rarity-common)', rare:'var(--rarity-rare)', epic:'var(--rarity-epic)', legendary:'var(--rarity-legendary)', mythic:'#ff6ac1' }[r] || 'var(--mu)';
 }
 
 // Particles
@@ -587,7 +573,7 @@ function renderAllSections(d) {
     const noneUnlocked = unlockedInSec===0&&!sec.featured;
 
     if (si > 0) {
-      html += `<div class="section-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>`;
+      html += `<div class="section-divider"></div>`;
     }
 
     const collapseId = 'sec-' + sec.key;
@@ -667,7 +653,7 @@ function openModal(id) {
   const d = computedData;
   const p = b.progress(d);
   const pct = p.max>0?Math.min(100,Math.round(p.cur/p.max*100)):0;
-  const rarityColor = {common:'var(--c-common)',rare:'var(--c-rare)',epic:'var(--c-epic)',legendary:'var(--c-legendary)',mythic:'#ff6ac1'}[b.rarity];
+  const rarityColor = {common:'var(--rarity-common)',rare:'var(--rarity-rare)',epic:'var(--rarity-epic)',legendary:'var(--rarity-legendary)',mythic:'#ff6ac1'}[b.rarity];
   const equipped = showcaseIds.includes(b.id);
   const rarityPct = RARITY_PCT[b.rarity] || 5;
 
@@ -749,6 +735,8 @@ function equipBadge(id) {
 document.addEventListener('keydown', e => { if (e.key==='Escape') closeModalDirect(); });
 
 loadBadges();
+
+AppNav.init({active:'badges'});
 </script>
 </body>
 </html>
