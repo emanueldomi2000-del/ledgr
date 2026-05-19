@@ -1,22 +1,21 @@
 /**
  * LEDGR /app-nav.js
- * Unified app navigation system — desktop nav + mobile slide nav.
+ * Unified app navigation — desktop bar + identity cluster + mobile slide nav.
  * Self-contained IIFE. No external dependencies.
- * Requires /app-tokens.css CSS vars for best results (has hardcoded fallbacks).
  *
  * Usage:
  *   <script src="/app-nav.js"></script>
  *   <script>AppNav.init({ active: 'feed' });</script>
  *
  * API:
- *   AppNav.init({ active, showCta })  — render and inject nav into page
+ *   AppNav.init({ active, showCta })  — render and inject nav
  *   AppNav.open()                     — open slide nav
  *   AppNav.close()                    — close slide nav
- *   AppNav.logout()                   — clear all auth keys and redirect to /
+ *   AppNav.logout()                   — clear auth keys and redirect to /
  *   AppNav.goToProfile()              — navigate to /tipster?u=username
- *   AppNav.setNotifBadge(count)       — update notification badge count
- *
- * Phase 2 — Foundation
+ *   AppNav.setNotifBadge(count)       — update bell badge count
+ *   AppNav.toggleDropdown(evt)        — toggle identity dropdown
+ *   AppNav.closeDropdown()            — close identity dropdown
  */
 (function () {
   'use strict';
@@ -29,22 +28,18 @@
       'z-index:var(--nav-z,50);',
       'height:var(--nav-h,60px);',
       'display:flex;align-items:center;justify-content:space-between;',
-      'padding:0 32px;',
+      'padding:0 28px;',
       'background:rgba(7,6,13,0.92);',
       'backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);',
       'border-bottom:1px solid var(--bd,rgba(184,159,255,0.10));',
       'flex-shrink:0;',
     '}',
 
-    '.an-logo{',
-      'display:flex;align-items:center;gap:8px;',
-      'text-decoration:none;flex-shrink:0;',
-    '}',
+    '.an-logo{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}',
     '.an-logo-img{width:24px;height:24px;object-fit:contain;flex-shrink:0}',
     '.an-logo-wordmark{',
       'font-family:var(--font-display,"Bebas Neue",sans-serif);',
-      'font-size:22px;letter-spacing:3px;',
-      'color:var(--tx,#f0edff);',
+      'font-size:22px;letter-spacing:3px;color:var(--tx,#f0edff);',
     '}',
     '.an-logo-wordmark .logo-accent{color:var(--ac,#b89fff)}',
 
@@ -53,47 +48,91 @@
     '.an-link{',
       'color:var(--mu2,#9590b8);font-size:12px;font-weight:500;',
       'text-decoration:none;padding:7px 12px;border-radius:6px;',
-      'transition:all .2s;',
-      'font-family:var(--font-body,"Syne",sans-serif);',
+      'transition:all .2s;font-family:var(--font-body,"Syne",sans-serif);',
     '}',
     '.an-link:hover{color:var(--tx,#f0edff);background:rgba(255,255,255,0.04)}',
     '.an-link.active{color:var(--ac,#b89fff);background:var(--acg,rgba(184,159,255,0.07))}',
 
-    '.an-cta{',
+    /* Post Pick — accented nav link */
+    '.an-link.an-link-post{',
       'background:var(--ac,#b89fff);color:#07060d;',
-      'border:none;padding:8px 18px;border-radius:6px;',
-      'font-size:12px;font-weight:700;cursor:pointer;',
-      'font-family:var(--font-body,"Syne",sans-serif);',
-      'transition:all .2s;text-decoration:none;',
-      'display:inline-flex;align-items:center;margin-left:6px;',
+      'font-weight:700;margin-left:4px;',
     '}',
-    '.an-cta:hover{background:#cdb8ff;transform:translateY(-1px)}',
+    '.an-link.an-link-post:hover{background:#cdb8ff;color:#07060d}',
+    '.an-link.an-link-post.active{background:var(--ac,#b89fff);color:#07060d}',
 
-    '.an-right{display:flex;align-items:center;gap:4px;flex-shrink:0}',
+    '.an-right{display:flex;align-items:center;gap:8px;flex-shrink:0}',
 
-    '.an-user{',
+    /* Identity cluster */
+    '.an-identity{display:flex;align-items:center;gap:6px;position:relative}',
+
+    /* Bell button */
+    '.an-bell{',
+      'position:relative;background:transparent;border:none;',
+      'width:34px;height:34px;border-radius:8px;',
+      'display:flex;align-items:center;justify-content:center;',
+      'color:var(--mu2,#9590b8);font-size:15px;cursor:pointer;',
+      'transition:all .2s;text-decoration:none;flex-shrink:0;',
+    '}',
+    '.an-bell:hover{color:var(--tx,#f0edff);background:rgba(255,255,255,0.04)}',
+    '.an-bell-badge{',
+      'position:absolute;top:3px;right:3px;',
+      'background:var(--rd,#f87171);color:#fff;',
+      'font-family:var(--font-mono,"DM Mono",monospace);',
+      'font-size:8px;font-weight:700;',
+      'min-width:14px;height:14px;border-radius:999px;',
+      'display:none;align-items:center;justify-content:center;',
+      'padding:0 3px;line-height:1;pointer-events:none;',
+    '}',
+
+    /* User dropdown button */
+    '.an-user-btn{',
       'background:transparent;',
       'border:1px solid var(--bd,rgba(184,159,255,0.10));',
-      'border-radius:8px;padding:7px 14px;',
+      'border-radius:8px;padding:6px 12px;',
       'font-size:12px;font-family:var(--font-mono,"DM Mono",monospace);',
-      'color:var(--mu2,#9590b8);cursor:pointer;transition:all .2s;',
+      'color:var(--mu2,#9590b8);cursor:pointer;',
+      'display:flex;align-items:center;gap:6px;',
+      'transition:all .2s;white-space:nowrap;',
     '}',
-    '.an-user:hover{color:var(--ac,#b89fff);border-color:var(--bd2,rgba(184,159,255,0.20))}',
+    '.an-user-btn:hover{color:var(--ac,#b89fff);border-color:rgba(184,159,255,0.25)}',
+    '.an-user-btn.open{color:var(--ac,#b89fff);border-color:rgba(184,159,255,0.25)}',
+    '.an-user-caret{font-size:9px;opacity:0.5;transition:transform .2s;line-height:1}',
+    '.an-user-btn.open .an-user-caret{transform:rotate(180deg)}',
 
-    '.an-logout{',
-      'background:transparent;border:none;',
-      'color:var(--mu,#6a6690);padding:7px 10px;',
-      'font-size:11px;cursor:pointer;',
-      'font-family:var(--font-body,"Syne",sans-serif);transition:color .2s;',
+    /* Dropdown panel */
+    '.an-dropdown{',
+      'position:absolute;top:calc(100% + 8px);right:0;',
+      'background:var(--s1,#0c0a1a);',
+      'border:1px solid var(--bd,rgba(184,159,255,0.10));',
+      'border-radius:12px;min-width:176px;',
+      'box-shadow:0 16px 48px rgba(0,0,0,0.6);',
+      'z-index:400;overflow:hidden;',
+      'display:none;padding:4px 0;',
     '}',
-    '.an-logout:hover{color:var(--rd,#f87171)}',
+    '.an-dropdown.open{display:block;animation:anDropIn .15s ease}',
+    '@keyframes anDropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}',
 
+    '.an-dd-item{',
+      'display:flex;align-items:center;gap:10px;',
+      'padding:9px 16px;text-decoration:none;',
+      'color:var(--mu2,#9590b8);',
+      'font-size:12px;font-family:var(--font-body,"Syne",sans-serif);',
+      'transition:background .12s,color .12s;cursor:pointer;',
+      'border:none;background:none;width:100%;text-align:left;box-sizing:border-box;',
+    '}',
+    '.an-dd-item:hover{background:rgba(255,255,255,0.04);color:var(--tx,#f0edff)}',
+    '.an-dd-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0;opacity:0.7}',
+    '.an-dd-sep{height:1px;background:var(--bd,rgba(184,159,255,0.10));margin:3px 0}',
+    '.an-dd-logout:hover{color:var(--rd,#f87171)!important}',
+
+    /* Hamburger */
     '.an-ham{',
       'display:none;background:none;border:none;',
       'color:var(--mu2,#9590b8);font-size:20px;cursor:pointer;padding:4px 8px;',
     '}',
 
-    /* Notification badge dot */
+    /* Notification dot (kept for compat with any page-level badge elements) */
     '.an-notif-dot{',
       'display:inline-flex;align-items:center;justify-content:center;',
       'background:var(--rd,#f87171);color:#fff;',
@@ -131,9 +170,7 @@
       'border-bottom:1px solid var(--bd,rgba(184,159,255,0.10));',
       'flex-shrink:0;',
     '}',
-    '.an-slide-logo{',
-      'display:flex;align-items:center;gap:8px;',
-    '}',
+    '.an-slide-logo{display:flex;align-items:center;gap:8px}',
     '.an-slide-logo img{width:20px;height:20px;object-fit:contain}',
     '.an-slide-logo-text{',
       'font-family:var(--font-display,"Bebas Neue",sans-serif);',
@@ -147,28 +184,6 @@
     '}',
     '.an-slide-close:hover{color:var(--tx,#f0edff)}',
 
-    /* Profile card inside slide nav */
-    '.an-slide-profile{',
-      'display:flex;align-items:center;gap:12px;',
-      'padding:16px 20px;cursor:pointer;',
-      'border-bottom:1px solid var(--bd,rgba(184,159,255,0.10));',
-      'flex-shrink:0;transition:background .2s;',
-    '}',
-    '.an-slide-profile:hover{background:rgba(255,255,255,0.025)}',
-    '.an-slide-av{',
-      'width:36px;height:36px;border-radius:8px;',
-      'background:linear-gradient(135deg,#6d28d9,#b89fff);',
-      'display:flex;align-items:center;justify-content:center;',
-      'font-family:var(--font-display,"Bebas Neue",sans-serif);',
-      'font-size:14px;color:#fff;flex-shrink:0;',
-    '}',
-    '.an-slide-pname{font-weight:700;font-size:13px;color:var(--tx,#f0edff)}',
-    '.an-slide-psub{',
-      'font-size:10px;color:var(--mu,#6a6690);',
-      'font-family:var(--font-mono,"DM Mono",monospace);margin-top:2px;',
-    '}',
-
-    /* Links list */
     '.an-slide-links{',
       'padding:10px 8px;flex:1;overflow-y:auto;',
       'scrollbar-width:thin;scrollbar-color:rgba(184,159,255,0.15) transparent;',
@@ -190,6 +205,12 @@
     '.an-snl-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}',
     '.an-snl-text{flex:1}',
 
+    /* Divider inside slide nav between primary and secondary links */
+    '.an-snl-divider{',
+      'height:1px;background:var(--bd,rgba(184,159,255,0.10));',
+      'margin:6px 14px;',
+    '}',
+
     /* Post a Pick CTA strip */
     '.an-slide-post{',
       'padding:12px 20px;',
@@ -206,7 +227,6 @@
     '}',
     '.an-post-cta:hover{background:#cdb8ff}',
 
-    /* Footer: logout or sign in */
     '.an-slide-footer{padding:10px 20px 16px;flex-shrink:0}',
     '.an-slide-logout{',
       'background:none;border:none;',
@@ -225,28 +245,32 @@
 
     /* Responsive */
     '@media(max-width:700px){',
-      '.an-links,.an-user,.an-logout{display:none}',
+      '.an-links{display:none}',
       '.an-ham{display:block}',
       '.an-logo-wordmark{display:none}',
+      '.an-user-btn{display:none}',
     '}'
   ].join('');
 
   // ── NAV LINK CONFIG ───────────────────────────────────────────────────────
-  // desktopVisible = true → shown in the top bar's .an-links
+  // desktopVisible = true  → shown in the top bar .an-links
+  // desktopVisible = false → slide menu only
   var NAV_LINKS = [
+    // ── PRIMARY — desktop bar ────────────────────────────────────────────────
     { href: '/home',         label: 'Home',         desktopLabel: 'Home',        icon: '🏠',  key: 'home',         desktopVisible: true  },
     { href: '/leaderboard',  label: 'Leaderboard',  desktopLabel: 'Leaderboard', icon: '🏆',  key: 'leaderboard',  desktopVisible: true  },
     { href: '/feed',         label: 'Live Feed',    desktopLabel: 'Feed',        icon: '🔴',  key: 'feed',         desktopVisible: true  },
     { href: '/analytics',    label: 'Analytics',    desktopLabel: 'Analytics',   icon: '📊',  key: 'analytics',    desktopVisible: true  },
     { href: '/community',    label: 'Community',    desktopLabel: 'Community',   icon: '💬',  key: 'community',    desktopVisible: true  },
-    { href: '/dashboard',    label: 'Post a Pick',                               icon: '＋',  key: 'dashboard',    desktopVisible: false },
-    { href: '/notifications',label: 'Notifications',                             icon: '🔔',  key: 'notifications',desktopVisible: false },
+    { href: '/dashboard',    label: 'Post a Pick',  desktopLabel: 'Post Pick',   icon: '＋',  key: 'dashboard',    desktopVisible: true  },
+    // ── SECONDARY — slide menu only ──────────────────────────────────────────
     { href: '/progress',     label: 'Progress',                                  icon: '🎮',  key: 'progress',     desktopVisible: false },
     { href: '/badges',       label: 'Badges',                                    icon: '🏅',  key: 'badges',       desktopVisible: false },
-    { href: '/compare',      label: 'Compare',                                   icon: '⚖️',  key: 'compare',      desktopVisible: false },
+    { href: '/archetypes',   label: 'Archetypes',                                icon: '⚡',  key: 'archetypes',   desktopVisible: false },
     { href: '/simulator',    label: 'Simulator',                                 icon: '📈',  key: 'simulator',    desktopVisible: false },
-    { href: '/news',         label: 'Sports Intel',                              icon: '📰',  key: 'news',         desktopVisible: false },
+    { href: '/compare',      label: 'Compare',                                   icon: '⚖️',  key: 'compare',      desktopVisible: false },
     { href: '/hall-of-fame', label: 'Hall of Fame',                              icon: '🏛️', key: 'hall-of-fame', desktopVisible: false },
+    { href: '/news',         label: 'Sports Intel',                              icon: '📰',  key: 'news',         desktopVisible: false },
     { href: '/settings',     label: 'Settings',                                  icon: '⚙️',  key: 'settings',     desktopVisible: false }
   ];
 
@@ -265,7 +289,7 @@
   function _unreadCount() {
     try {
       var items = JSON.parse(localStorage.getItem('ledgr_notifications') || '[]');
-      return items.filter(function (n) { return !n.readAt; }).length;
+      return items.filter(function (n) { return !n.read; }).length;
     } catch (e) { return 0; }
   }
 
@@ -291,6 +315,7 @@
     if (nav) nav.classList.add('open');
     if (ov)  ov.classList.add('open');
     document.body.style.overflow = 'hidden';
+    _closeDropdown();
   }
 
   function _close() {
@@ -308,6 +333,27 @@
     }
   }
 
+  function _toggleDropdown(evt) {
+    if (evt) evt.stopPropagation();
+    var btn = document.getElementById('appNavUserBtn');
+    var dd  = document.getElementById('appNavDropdown');
+    if (!btn || !dd) return;
+    if (dd.classList.contains('open')) {
+      dd.classList.remove('open');
+      btn.classList.remove('open');
+    } else {
+      dd.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  function _closeDropdown() {
+    var btn = document.getElementById('appNavUserBtn');
+    var dd  = document.getElementById('appNavDropdown');
+    if (btn) btn.classList.remove('open');
+    if (dd)  dd.classList.remove('open');
+  }
+
   function _setNotifBadge(count) {
     var badges = document.querySelectorAll('.an-notif-badge');
     for (var i = 0; i < badges.length; i++) {
@@ -322,7 +368,7 @@
   }
 
   // ── HTML BUILDER ──────────────────────────────────────────────────────────
-  function _buildHTML(active, user, showCta) {
+  function _buildHTML(active, user) {
     var username = user ? _esc(user.username) : null;
     var unread   = _unreadCount();
 
@@ -330,53 +376,71 @@
     var desktopLinks = NAV_LINKS
       .filter(function (l) { return l.desktopVisible; })
       .map(function (l) {
-        var isActive = active === l.key;
-        return '<a href="' + l.href + '" class="an-link' + (isActive ? ' active' : '') + '">'
+        var isActive   = active === l.key;
+        var extraClass = l.key === 'dashboard' ? ' an-link-post' : '';
+        return '<a href="' + l.href + '" class="an-link' + extraClass + (isActive ? ' active' : '') + '">'
           + _esc(l.desktopLabel || l.label)
           + '</a>';
       }).join('');
 
-    /* Desktop CTA (hide when already on dashboard) */
-    var ctaHtml = (showCta && active !== 'dashboard')
-      ? '<a href="/dashboard" class="an-cta">Post a Pick</a>'
-      : '';
-
-    /* Right side: user badge + logout + hamburger */
+    /* Right side: identity cluster + hamburger */
     var rightHtml = '';
     if (username) {
-      rightHtml += '<button class="an-user" id="appNavUser" onclick="window.AppNav.goToProfile()">@' + username + '</button>';
-      rightHtml += '<button class="an-logout" onclick="window.AppNav.logout()">Out</button>';
+      var badgeDisplay = unread > 0 ? 'inline-flex' : 'none';
+      var badgeText    = unread > 99 ? '99+' : String(unread);
+      var profileHref  = '/tipster?u=' + encodeURIComponent(user.username);
+
+      rightHtml +=
+        '<div class="an-identity">'
+
+        /* Bell */
+        + '<a href="/notifications" class="an-bell" title="Notifications">'
+        + '🔔'
+        + '<span class="an-bell-badge an-notif-badge" style="display:' + badgeDisplay + '">' + badgeText + '</span>'
+        + '</a>'
+
+        /* User dropdown button */
+        + '<div style="position:relative">'
+        + '<button class="an-user-btn" id="appNavUserBtn" onclick="window.AppNav.toggleDropdown(event)">'
+        + '@' + username
+        + '<span class="an-user-caret">▾</span>'
+        + '</button>'
+
+        /* Dropdown panel */
+        + '<div class="an-dropdown" id="appNavDropdown">'
+        + '<a class="an-dd-item" href="' + profileHref + '" onclick="window.AppNav.closeDropdown()"><span class="an-dd-icon">👤</span>Profile</a>'
+        + '<a class="an-dd-item" href="/progress" onclick="window.AppNav.closeDropdown()"><span class="an-dd-icon">🎮</span>Progress</a>'
+        + '<a class="an-dd-item" href="/badges" onclick="window.AppNav.closeDropdown()"><span class="an-dd-icon">🏅</span>Badges</a>'
+        + '<a class="an-dd-item" href="/archetypes" onclick="window.AppNav.closeDropdown()"><span class="an-dd-icon">⚡</span>Archetypes</a>'
+        + '<a class="an-dd-item" href="/settings" onclick="window.AppNav.closeDropdown()"><span class="an-dd-icon">⚙️</span>Settings</a>'
+        + '<div class="an-dd-sep"></div>'
+        + '<button class="an-dd-item an-dd-logout" onclick="window.AppNav.logout()"><span class="an-dd-icon">↪</span>Log Out</button>'
+        + '</div>'
+        + '</div>'
+
+        + '</div>';
     }
     rightHtml += '<button class="an-ham" id="appNavHam" onclick="window.AppNav.open()">&#9776;</button>';
 
-    /* Slide nav profile card */
-    var profileCard = '';
-    if (username) {
-      profileCard = '<div class="an-slide-profile" onclick="window.AppNav.goToProfile();window.AppNav.close()">'
-        + '<div class="an-slide-av" id="appNavAvatar">' + _initials(user.username) + '</div>'
-        + '<div>'
-        + '<div class="an-slide-pname" id="appNavSlideName">@' + username + '</div>'
-        + '<div class="an-slide-psub">View your profile →</div>'
-        + '</div>'
-        + '</div>';
-    }
+    /* Slide nav links — primary first, then divider, then secondary; exclude dashboard (CTA at bottom) */
+    var primaryLinks  = NAV_LINKS.filter(function (l) { return l.desktopVisible && l.key !== 'dashboard'; });
+    var secondaryLinks = NAV_LINKS.filter(function (l) { return !l.desktopVisible; });
 
-    /* Slide nav links — full canonical list */
-    var slideLinks = NAV_LINKS.map(function (l) {
+    var slideLinks = primaryLinks.map(function (l) {
       var isActive = active === l.key;
-
-      /* Notification badge */
-      var badgeHtml = '';
-      if (l.key === 'notifications') {
-        var display = unread > 0 ? 'inline-flex' : 'none';
-        var count   = unread > 99 ? '99+' : String(unread);
-        badgeHtml = '<span class="an-notif-dot an-notif-badge" style="display:' + display + '">' + count + '</span>';
-      }
-
       return '<a href="' + l.href + '" class="an-snl' + (isActive ? ' active' : '') + '" onclick="window.AppNav.close()">'
         + '<span class="an-snl-icon">' + l.icon + '</span>'
         + '<span class="an-snl-text">' + _esc(l.label) + '</span>'
-        + badgeHtml
+        + '</a>';
+    }).join('');
+
+    slideLinks += '<div class="an-snl-divider"></div>';
+
+    slideLinks += secondaryLinks.map(function (l) {
+      var isActive = active === l.key;
+      return '<a href="' + l.href + '" class="an-snl' + (isActive ? ' active' : '') + '" onclick="window.AppNav.close()">'
+        + '<span class="an-snl-icon">' + l.icon + '</span>'
+        + '<span class="an-snl-text">' + _esc(l.label) + '</span>'
         + '</a>';
     }).join('');
 
@@ -393,7 +457,7 @@
 
     return '<nav id="appNav">'
       + logoHtml
-      + '<div class="an-links">' + desktopLinks + ctaHtml + '</div>'
+      + '<div class="an-links">' + desktopLinks + '</div>'
       + '<div class="an-right">' + rightHtml + '</div>'
       + '</nav>'
 
@@ -404,7 +468,6 @@
       + '<span class="an-slide-logo"><img src="/assets/logo/ledgr-icon.png" alt="LEDGR"><span class="an-slide-logo-text">LEDG<span class="logo-accent">R</span></span></span>'
       + '<button class="an-slide-close" onclick="window.AppNav.close()">✕</button>'
       + '</div>'
-      + profileCard
       + '<div class="an-slide-links">' + slideLinks + '</div>'
       + '<div class="an-slide-post"><a href="/dashboard" class="an-post-cta" onclick="window.AppNav.close()">＋ POST A PICK</a></div>'
       + '<div class="an-slide-footer">' + footerHtml + '</div>'
@@ -413,14 +476,11 @@
 
   // ── INIT ──────────────────────────────────────────────────────────────────
   function _init(opts) {
-    /* Guard against double-init */
     if (document.getElementById('appNav')) return;
 
     opts = opts || {};
-    var active  = opts.active  || '';
-    var showCta = opts.showCta !== false; /* default true */
+    var active = opts.active || '';
 
-    /* Inject CSS into <head> once */
     if (!document.getElementById('app-nav-css')) {
       var style = document.createElement('style');
       style.id  = 'app-nav-css';
@@ -429,9 +489,7 @@
     }
 
     var user = _readUser();
-    var html = _buildHTML(active, user, showCta);
-
-    /* Prepend to <body> before all existing content */
+    var html = _buildHTML(active, user);
     document.body.insertAdjacentHTML('afterbegin', html);
 
     /* Back-compat: sync any #userBadge element already in page HTML */
@@ -439,16 +497,27 @@
       var legacy = document.getElementById('userBadge');
       if (legacy) legacy.textContent = '@' + user.username;
     }
+
+    /* Close dropdown on outside click */
+    document.addEventListener('click', function (e) {
+      var dd  = document.getElementById('appNavDropdown');
+      var btn = document.getElementById('appNavUserBtn');
+      if (!dd || !dd.classList.contains('open')) return;
+      if (btn && btn.contains(e.target)) return;
+      if (!dd.contains(e.target)) _closeDropdown();
+    });
   }
 
   // ── PUBLIC API ────────────────────────────────────────────────────────────
   window.AppNav = {
-    init:          _init,
-    open:          _open,
-    close:         _close,
-    logout:        _logout,
-    goToProfile:   _goToProfile,
-    setNotifBadge: _setNotifBadge
+    init:           _init,
+    open:           _open,
+    close:          _close,
+    logout:         _logout,
+    goToProfile:    _goToProfile,
+    setNotifBadge:  _setNotifBadge,
+    toggleDropdown: _toggleDropdown,
+    closeDropdown:  _closeDropdown
   };
 
 }());

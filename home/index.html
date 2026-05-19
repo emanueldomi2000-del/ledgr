@@ -25,7 +25,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .main{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
 
 /* ══ HERO ══ */
-.hero{padding:40px 0 0;margin-bottom:48px}
+.hero{padding:32px 0 0;margin-bottom:16px}
 .hero-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px;animation:fadeSlideUp .5s ease both}
 
 .hero-tagline{font-family:var(--font-display);font-size:clamp(26px,3vw,34px);letter-spacing:3px;line-height:1.1;color:var(--tx);animation:fadeSlideUp .6s .05s ease both;opacity:0;animation-fill-mode:forwards}
@@ -50,7 +50,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
 /* ══ STATS ══ */
-.stats-wrap{padding:48px 0 40px;border-bottom:1px solid var(--bd)}
+.stats-wrap{padding:24px 0 32px;border-bottom:1px solid var(--bd)}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
 .stat{padding:0 28px;border-right:1px solid var(--bd);cursor:default}
 .stat:first-child{padding-left:0}
@@ -62,7 +62,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .sparkline{width:100%;height:20px;margin-top:6px}
 
 /* ══ RISING ══ */
-.section-block{padding:44px 0 0}
+.section-block{padding:28px 0 0}
 .section-head-row{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
 .section-head-row h2{font-family:var(--font-display);font-size:22px;letter-spacing:3px;color:var(--tx);border-left:2px solid var(--ac);padding-left:10px}
 .section-head-row span{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px}
@@ -81,7 +81,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .rising-card:hover .rc-arrow{transform:translate(4px,-4px)}
 
 /* ══ MVP STRIP — rich ══ */
-.mvp-wrap{padding:44px 0 0}
+.mvp-wrap{padding:28px 0 0}
 .mvp-card{background:linear-gradient(135deg,rgba(251,191,36,0.07),rgba(251,191,36,0.02) 60%,transparent);border:1px solid rgba(251,191,36,0.12);border-radius:16px;padding:22px 24px;cursor:pointer;transition:all .25s;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
 .mvp-card:hover{border-color:rgba(251,191,36,0.22);background:linear-gradient(135deg,rgba(251,191,36,0.11),rgba(251,191,36,0.04) 60%,transparent);transform:translateY(-2px);box-shadow:0 8px 32px rgba(251,191,36,0.08)}
 .mvp-av{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#b45309,#f59e0b);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:#fff;flex-shrink:0;position:relative}
@@ -100,7 +100,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .mvp-card:hover .mvp-arrow{transform:translateX(4px)}
 
 /* ══ HOT BAR — live feel ══ */
-.hot-wrap{background:var(--s1);margin:44px -24px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
+.hot-wrap{background:var(--s1);margin:24px -24px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd)}
 .hot-bar{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);padding:0 24px}
 .hot-item{padding:20px 24px;display:flex;align-items:center;gap:14px;border-right:1px solid var(--bd);cursor:default;transition:background .2s;position:relative}
 .hot-item:hover{background:rgba(255,255,255,0.02)}
@@ -118,7 +118,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .hot-live::before{content:'';width:4px;height:4px;background:var(--gr);border-radius:50%;display:inline-block;animation:blink 1.5s infinite}
 
 /* ══ POST CTA ══ */
-.post-cta-wrap{padding:44px 0 0}
+.post-cta-wrap{display:none}
 .post-cta{background:linear-gradient(135deg,rgba(184,159,255,0.09),rgba(100,70,200,0.04));border-radius:16px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px;text-decoration:none;transition:all .25s;border:1px solid rgba(184,159,255,0.1);position:relative;overflow:hidden}
 .post-cta::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,159,255,0.04),transparent);opacity:0;transition:opacity .3s}
 .post-cta:hover{border-color:rgba(184,159,255,0.22);transform:translateY(-2px);box-shadow:0 8px 32px rgba(184,159,255,0.08)}
@@ -129,7 +129,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .post-cta:hover .post-cta-btn{box-shadow:0 6px 28px rgba(184,159,255,0.35);transform:scale(1.03)}
 
 /* ══ MAIN GRID ══ */
-.main-grid-wrap{padding:40px 0 60px}
+.main-grid-wrap{padding:24px 0 60px}
 .main-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
 
 /* ══ QUICK ACTIONS ══ */
@@ -342,7 +342,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .animated{animation:countUp .5s ease both}
 .fade-in{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease}
 .fade-in.visible{opacity:1;transform:translateY(0)}
-.hero-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start;padding:32px 0 0;margin-bottom:48px}
+.hero-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start;padding:20px 0 0;margin-bottom:20px}
 .hero-identity{display:flex;flex-direction:column;gap:12px;animation:fadeSlideUp .7s .15s ease both;opacity:0;animation-fill-mode:forwards}
 .identity-card{background:linear-gradient(135deg,rgba(184,159,255,0.07),rgba(100,70,200,0.03));border:1px solid rgba(184,159,255,0.12);border-radius:20px;padding:22px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .identity-card:hover{border-color:rgba(184,159,255,0.22);transform:translateY(-3px);box-shadow:0 16px 48px rgba(184,159,255,0.1)}
@@ -483,7 +483,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="hero">
 <div class="hero-eyebrow" id="heroEyebrow">YOUR RECORD</div>
     <div id="heroArchHero"></div>
-    <div class="hero-tagline" id="heroTagline">THE STREAK<br><span class="ac">CONTINUES<span class="dim">.</span></span></div>
     <div class="hero-meta">
       <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
       <div id="streakPill" style="display:none" class="streak-pill">🔥 <span id="streakText"></span></div>
@@ -571,7 +570,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
   <!-- ══════════════ RECORDS OF THE DAY ══════════════ -->
   <div class="records-wrap fade-in" id="recordsWrap">
-    <div class="records-eyebrow">RECORDS OF THE DAY</div>
+    <div class="records-eyebrow">RECENT RECORDS</div>
     <div class="records-grid">
       <div class="rec-day rc-win"><span class="rd-icon rd-empty">⚡</span><div class="rd-label">BIGGEST WIN TODAY</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
       <div class="rec-day rc-streak"><span class="rd-icon rd-empty">🔥</span><div class="rd-label">HOTTEST STREAK</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
@@ -666,14 +665,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- LEFT COLUMN -->
       <div>
         <!-- QUICK ACTIONS -->
-        <div class="qa-grid" style="margin-bottom:28px">
+        <div class="qa-grid" style="margin-bottom:20px">
           <a href="/leaderboard" class="qa-btn"><div class="qa-icon">🏆</div><div class="qa-label">LEADERBOARD</div></a>
           <a href="/community" class="qa-btn"><div class="qa-icon">💬</div><div class="qa-label">COMMUNITY</div></a>
           <a href="/simulator" class="qa-btn"><div class="qa-icon">📈</div><div class="qa-label">SIMULATOR</div></a>
         </div>
 
         <!-- COMMUNITY CHAT PREVIEW -->
-        <div class="fade-in" style="margin-bottom:28px">
+        <div class="fade-in" style="margin-bottom:20px">
           <div class="section-head-row">
             <div style="display:flex;align-items:center;gap:8px">
               <h2>Community Chat</h2>
@@ -687,7 +686,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         </div>
 
         <!-- TRENDING PICKS -->
-        <div style="margin-bottom:28px" class="fade-in">
+        <div style="margin-bottom:20px" class="fade-in">
           <div class="section-head">TRENDING PICKS</div>
           <div class="picks-grid" id="trendingPicksGrid"><div class="empty">Loading...</div></div>
         </div>
@@ -702,16 +701,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- RIGHT PANEL -->
       <div class="panel fade-in">
         <div class="panel-title">TOP TIPSTERS</div>
-        <div class="streak-panel">
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:16px">🔥</span>
-            <div>
-              <div style="font-size:12px;font-weight:700;color:var(--tx)">Daily Streak</div>
-              <div style="font-size:10px;color:var(--mu);font-family:var(--font-mono)" id="loginStreakCount2">—</div>
-            </div>
-          </div>
-          <div class="ls-days" id="loginStreakDays2"></div>
-        </div>
         <div id="miniLeaderboard">
           <div style="display:flex;flex-direction:column">
             <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)"><span class="skel" style="width:32px;height:32px;border-radius:8px;flex-shrink:0"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px"><span class="skel" style="width:90px;height:11px"></span><span class="skel" style="width:55px;height:9px"></span></div><span class="skel" style="width:36px;height:14px"></span></div>
@@ -840,12 +829,6 @@ const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;
 const AV_COLORS=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#7c3aed,#ec4899)'];
 const SPORT_ICON={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
-const HERO_TAGLINES=[
-  ['YOUR RECORD','SPEAKS<span class="dim">.</span>'],
-  ['THE STREAK','CONTINUES<span class="dim">.</span>'],
-  ['NO LUCK.','JUST EDGE<span class="dim">.</span>'],
-  ['VERIFIED.','UNDENIABLE<span class="dim">.</span>'],
-];
 
 /* ──── STATUS BADGE ENGINE ──── */
 function getPickBadges(pick,tipsterPicks){
@@ -987,15 +970,12 @@ window.onload=()=>{
   document.getElementById('slideName').textContent='@'+user.username;
   if(window.Push)window.Push.init();
 
-  const tl=HERO_TAGLINES[Math.floor(Math.random()*HERO_TAGLINES.length)];
   document.getElementById('heroEyebrow').textContent=user.username.toUpperCase()+'\'S RECORD';
-  document.getElementById('heroTagline').innerHTML=tl[0]+'<br><span class="ac">'+tl[1]+'</span>';
 
   // Online count set by WS; placeholder until connected
   document.getElementById('onlineCount').textContent='— online';
 
-  const streak=getLoginStreak();drawStreakDays(streak,'loginStreakDays2');
-  const lsc2=document.getElementById('loginStreakCount2');if(lsc2)lsc2.textContent=streak+(streak===1?' day':' days');
+  getLoginStreak();
 
   document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';
   window.addEventListener('resize',()=>{document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';});
@@ -1136,11 +1116,19 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   loadSeasonInfo(rank);
 }
 
+function _showOffSeason(){
+  const card=document.getElementById('seasonInfoCard');if(!card)return;
+  card.style.display='block';
+  document.getElementById('sidSeasonName').textContent='OFF SEASON';
+  document.getElementById('sidSeasonDays').textContent='Next season coming soon';
+  document.getElementById('sidSeasonRank').textContent='';
+}
 async function loadSeasonInfo(myRank){
   try{
     const r=await fetch(API+'/seasons/active',{cache:'no-store'});
-    if(!r.ok)return;
+    if(!r.ok){_showOffSeason();return;}
     const season=await r.json();
+    if(!season||!season.name){_showOffSeason();return;}
     const card=document.getElementById('seasonInfoCard');
     if(!card)return;
     card.style.display='block';
@@ -1153,7 +1141,7 @@ async function loadSeasonInfo(myRank){
     document.getElementById('sidSeasonDays').textContent=daysLeft>0?daysLeft+' days remaining':'Ending soon';
     document.getElementById('sidSeasonRank').textContent=myRank>0?'#'+myRank+' this season':'—';
     setTimeout(()=>{const bar=document.getElementById('sidSeasonBar');if(bar)bar.style.width=progress+'%';},600);
-  }catch(e){}
+  }catch(e){_showOffSeason();}
 }
 
 function renderStats(all){
@@ -1205,7 +1193,7 @@ function renderHeroArch(){
   if(!el)return;
   var u=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'{}');
   var arch=u.archetype||(u.settings&&u.settings.archetype);
-  if(!arch)return;
+  if(!arch){el.innerHTML='<a class="hero-arch" href="/archetypes" style="text-decoration:none;cursor:pointer"><span class="hero-arch-icon">⚡</span>SET YOUR ARCHETYPE →</a>';return;}
   var icons={Sharp:'🎯','Value Hunter':'⚡',Contrarian:'🔄',Momentum:'🔥',Statistical:'📊',Intuitive:'💡'};
   var icon=icons[arch]||'⚡';
   el.innerHTML='<div class="hero-arch"><span class="hero-arch-icon">'+icon+'</span>'+arch.toUpperCase()+'</div>';
@@ -1268,8 +1256,8 @@ function renderMatchup(all){
 function renderRecords(all){
   const wrap=document.getElementById('recordsWrap');
   if(!wrap)return;
-  const yesterday=Date.now()-86400000;
-  const todayAll=all.filter(p=>new Date(p.createdAt).getTime()>=yesterday);
+  const cutoff=Date.now()-172800000;
+  const todayAll=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff);
   const todayWins=todayAll.filter(p=>p.result==='win');
 
   // 1. Biggest win today
@@ -1307,7 +1295,7 @@ function renderRecords(all){
 
   const grid=wrap.querySelector('.records-grid');
   grid.innerHTML=
-    makeCard('rc-win','⚡','BIGGEST WIN TODAY',
+    makeCard('rc-win','⚡','BIGGEST WIN',
       bigWin?(bigWin.pnl>=0?'+':'')+bigWin.pnl.toFixed(1)+'u':null,
       bigWin?.user?.username,
       bigWin?((bigWin.event||'').slice(0,38)+' @ '+parseFloat(bigWin.odds).toFixed(2)):null,
@@ -1322,10 +1310,10 @@ function renderRecords(all){
       bigOdds?.user?.username,
       bigOdds?(bigOdds.event||'').slice(0,40):null,
       bigOdds?'/tipster?u='+bigOdds.user?.username:null)+
-    makeCard('rc-roi','📈','BEST ROI TODAY',
+    makeCard('rc-roi','📈','BEST ROI',
       roiUser?(roiVal>=0?'+':'')+roiVal.toFixed(1)+'%':null,
       roiUser,
-      roiUser?(dayMap[roiUser]?.n||0)+' picks today':null,
+      roiUser?(dayMap[roiUser]?.n||0)+' picks':null,
       roiUser?'/tipster?u='+roiUser:null);
 }
 
@@ -1435,13 +1423,14 @@ function renderTrending(all){
   const pending=all.filter(p=>p.result==='pending');const eCount={};pending.forEach(p=>{eCount[p.event]=(eCount[p.event]||0)+1;});
   const top=Object.entries(eCount).sort((a,b)=>b[1]-a[1])[0];
   if(top){document.getElementById('trendBacked').textContent=top[0].length>22?top[0].slice(0,20)+'…':top[0];document.getElementById('trendBackedSub').textContent=top[1]+' picks';}
-  const today=new Date().toDateString();const todayP=all.filter(p=>new Date(p.createdAt).toDateString()===today&&p.user);
+  else{document.getElementById('trendBacked').textContent='Quiet right now';document.getElementById('trendBackedSub').textContent='No live picks';}
+  const cutoff24=Date.now()-86400000;const todayP=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff24&&p.user);
   const tMap={};todayP.forEach(p=>{tMap[p.user.username]=(tMap[p.user.username]||0)+1;});
   const topT=Object.entries(tMap).sort((a,b)=>b[1]-a[1])[0];
-  if(topT){document.getElementById('trendTipster').textContent='@'+topT[0];document.getElementById('trendTipsterSub').textContent=topT[1]+' picks today';}else{document.getElementById('trendTipster').textContent='—';document.getElementById('trendTipsterSub').textContent='No picks today';}
+  if(topT){document.getElementById('trendTipster').textContent='@'+topT[0];document.getElementById('trendTipsterSub').textContent=topT[1]+' picks today';}else{document.getElementById('trendTipster').textContent='No activity yet';document.getElementById('trendTipsterSub').textContent='Check back later';}
   const rMap={};todayP.forEach(p=>{if(!rMap[p.user.username])rMap[p.user.username]={pnl:0,stake:0};rMap[p.user.username].pnl+=p.pnl;rMap[p.user.username].stake+=p.stake;});
   const topR=Object.entries(rMap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;})[0];
-  if(topR){const roi=topR[1].stake>0?((topR[1].pnl/topR[1].stake)*100).toFixed(1):0;document.getElementById('trendROI').textContent='@'+topR[0];document.getElementById('trendROISub').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';}else{document.getElementById('trendROI').textContent='—';document.getElementById('trendROISub').textContent='No data';}
+  if(topR){const roi=topR[1].stake>0?((topR[1].pnl/topR[1].stake)*100).toFixed(1):0;document.getElementById('trendROI').textContent='@'+topR[0];document.getElementById('trendROISub').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';}else{document.getElementById('trendROI').textContent='No data yet';document.getElementById('trendROISub').textContent='Pending results';}
 }
 
 function renderTrendingPicks(all){
@@ -1538,7 +1527,7 @@ function renderFeed(all){
       ${p.reasoning?`<div class="feed-reason">💭 ${p.reasoning}</div>`:''}
       <div class="feed-reactions">
         <button class="tail-pick-btn ${tails[p.id]?'tailed':''}" id="tailBtn_${p.id}" onclick="tailFeed('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',this,document.getElementById('tc_${p.id}'))">${tails[p.id]?'✓ tailed':'tail'}</button>
-        <span class="tail-count" id="tc_${p.id}">0 tailed</span>
+        <span class="tail-count" id="tc_${p.id}"></span>
         <button class="react-btn" onclick="toggleReact(this,'fire_${p.id}')">🔥 <span>0</span></button>
         <button class="react-btn" onclick="toggleReact(this,'mind_${p.id}')">🤯 <span>0</span></button>
         <button class="cmt-toggle-btn" onclick="toggleComments('${p.id}',this)">💬 <span id="cmt_count_${p.id}">${getCommentCount(p.id)}</span></button>
@@ -1670,7 +1659,7 @@ function shareToX(){
 /* ══ NOTIFICATIONS ══ */
 function getNotifs(){return JSON.parse(localStorage.getItem('ledgr_notifications')||'[]');}
 function saveNotifs(n){localStorage.setItem('ledgr_notifications',JSON.stringify(n));}
-function updateNotifBadge(){const n=getNotifs().filter(x=>!x.read).length;const b=document.getElementById('notifBadge');if(!b)return;if(n>0){b.style.display='flex';b.textContent=n>9?'9+':n;}else b.style.display='none';}
+function updateNotifBadge(){const n=getNotifs().filter(x=>!x.read).length;if(window.AppNav)window.AppNav.setNotifBadge(n);}
 function toggleNotifPanel(){
   const panel=document.getElementById('notifPanel');if(!panel)return;
   panel.classList.toggle('open');
