@@ -133,7 +133,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .main-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
 
 /* ══ QUICK ACTIONS ══ */
-.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:24px}
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
 .qa-btn{display:flex;align-items:center;gap:8px;padding:11px 14px;background:transparent;border:1px solid var(--bd);border-radius:10px;text-decoration:none;transition:all .2s}
 .qa-btn:hover{border-color:var(--bd2);background:rgba(255,255,255,0.03);transform:translateY(-2px)}
 .qa-icon{font-size:15px;flex-shrink:0}
@@ -402,7 +402,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .rc-roi:hover{border-color:rgba(251,191,36,.38);box-shadow:0 8px 28px rgba(251,191,36,.1)}
 .rc-roi .rd-label{color:var(--gold)}.rc-roi .rd-value{color:var(--gold);text-shadow:0 0 20px rgba(251,191,36,.3)}.rc-roi .rd-who{color:var(--gold)}
 @media(max-width:700px){.records-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:960px){.hero-layout{grid-template-columns:1fr;padding:40px 0 0}.hero-identity{display:none}}
+@media(max-width:960px){.hero-layout{grid-template-columns:1fr;padding:20px 0 0}}
 /* RESPONSIVE */
 @media(max-width:960px){.main-grid{grid-template-columns:1fr}nav{padding:0 16px}.nav-link{display:none}.matchup-grid{gap:12px}}
 @media(max-width:700px){
@@ -572,10 +572,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div class="records-wrap fade-in" id="recordsWrap">
     <div class="records-eyebrow">RECENT RECORDS</div>
     <div class="records-grid">
-      <div class="rec-day rc-win"><span class="rd-icon rd-empty">⚡</span><div class="rd-label">BIGGEST WIN TODAY</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
-      <div class="rec-day rc-streak"><span class="rd-icon rd-empty">🔥</span><div class="rd-label">HOTTEST STREAK</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
-      <div class="rec-day rc-odds"><span class="rd-icon rd-empty">💎</span><div class="rd-label">HIGHEST ODDS WIN</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
-      <div class="rec-day rc-roi"><span class="rd-icon rd-empty">📈</span><div class="rd-label">BEST ROI TODAY</div><div class="rd-value rd-empty" style="font-size:22px">Loading…</div></div>
+      <div class="rec-day rc-win rd-empty"><span class="rd-icon">⚡</span><div class="rd-label">BIGGEST WIN</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No activity in 48h</div></div>
+      <div class="rec-day rc-streak rd-empty"><span class="rd-icon">🔥</span><div class="rd-label">HOTTEST STREAK</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No active streak</div></div>
+      <div class="rec-day rc-odds rd-empty"><span class="rd-icon">💎</span><div class="rd-label">HIGHEST ODDS WIN</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No activity in 48h</div></div>
+      <div class="rec-day rc-roi rd-empty"><span class="rd-icon">📈</span><div class="rd-label">BEST ROI</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No activity in 48h</div></div>
     </div>
   </div>
 
@@ -586,9 +586,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <span>LAST 7 DAYS</span>
     </div>
     <div class="rising-grid" id="risingGrid">
-      <div class="rising-card heat1"><div class="empty">Loading...</div></div>
-      <div class="rising-card heat2"><div class="empty"></div></div>
-      <div class="rising-card heat3"><div class="empty"></div></div>
+      <div class="rising-card heat1"><span class="skel" style="width:80px;height:10px;display:block;margin-bottom:10px"></span><span class="skel" style="width:120px;height:20px;display:block;margin-bottom:10px"></span><span class="skel" style="width:60px;height:36px;display:block"></span></div>
+      <div class="rising-card heat2"><span class="skel" style="width:80px;height:10px;display:block;margin-bottom:10px"></span><span class="skel" style="width:120px;height:20px;display:block;margin-bottom:10px"></span><span class="skel" style="width:60px;height:36px;display:block"></span></div>
+      <div class="rising-card heat3"><span class="skel" style="width:80px;height:10px;display:block;margin-bottom:10px"></span><span class="skel" style="width:120px;height:20px;display:block;margin-bottom:10px"></span><span class="skel" style="width:60px;height:36px;display:block"></span></div>
     </div>
   </div>
 
@@ -664,11 +664,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
       <!-- LEFT COLUMN -->
       <div>
-        <!-- QUICK ACTIONS -->
-        <div class="qa-grid" style="margin-bottom:20px">
-          <a href="/leaderboard" class="qa-btn"><div class="qa-icon">🏆</div><div class="qa-label">LEADERBOARD</div></a>
-          <a href="/community" class="qa-btn"><div class="qa-icon">💬</div><div class="qa-label">COMMUNITY</div></a>
-          <a href="/simulator" class="qa-btn"><div class="qa-icon">📈</div><div class="qa-label">SIMULATOR</div></a>
+        <!-- COMMUNITY FEED -->
+        <div class="fade-in" style="margin-bottom:20px">
+          <div class="section-head">COMMUNITY FEED</div>
+          <div id="communityFeed"><div class="empty">Loading feed...</div></div>
+        </div>
+
+        <!-- TRENDING PICKS -->
+        <div style="margin-bottom:20px" class="fade-in">
+          <div class="section-head">TRENDING PICKS</div>
+          <div class="picks-grid" id="trendingPicksGrid"><div class="empty">Loading...</div></div>
         </div>
 
         <!-- COMMUNITY CHAT PREVIEW -->
@@ -685,16 +690,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </div>
 
-        <!-- TRENDING PICKS -->
-        <div style="margin-bottom:20px" class="fade-in">
-          <div class="section-head">TRENDING PICKS</div>
-          <div class="picks-grid" id="trendingPicksGrid"><div class="empty">Loading...</div></div>
-        </div>
-
-        <!-- COMMUNITY FEED -->
-        <div class="fade-in">
-          <div class="section-head">COMMUNITY FEED</div>
-          <div id="communityFeed"><div class="empty">Loading feed...</div></div>
+        <!-- QUICK ACTIONS -->
+        <div class="qa-grid fade-in">
+          <a href="/dashboard" class="qa-btn" style="border-color:rgba(184,159,255,0.2)"><div class="qa-icon">＋</div><div class="qa-label">POST PICK</div></a>
+          <a href="/compare" class="qa-btn"><div class="qa-icon">⚖</div><div class="qa-label">COMPARE</div></a>
+          <a href="/simulator" class="qa-btn"><div class="qa-icon">📈</div><div class="qa-label">SIMULATOR</div></a>
+          <a href="/progress" class="qa-btn"><div class="qa-icon">🎮</div><div class="qa-label">PROGRESS</div></a>
         </div>
       </div>
 
@@ -1094,8 +1095,8 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const idROI=document.getElementById('idROI');if(idROI){idROI.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
   const finalRank=rm&&rm.rank?rm.rank:rank;
   const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=finalRank>0?'#'+finalRank:'#—';
-  const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=finalStreak>0?finalStreak+'W 🔥':'—';
-  const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'—';
+  const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=finalStreak>0?finalStreak+'W 🔥':'None yet';
+  const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'0/100';
   const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
   if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
@@ -1173,7 +1174,7 @@ function renderProfileCard(all){
   const hsRank=document.getElementById('hsRank');if(hsRank)hsRank.textContent=rank>0?'#'+rank:'#—';
   const rawRel=getReliability(my).score;
   const {score}={score:rmPc?Math.round(rmPc.reliabilityScore):rawRel};
-  const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'—';
+  const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'0%';
   const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
   const div=rmPc&&rmPc.division&&D[rmPc.division]?D[rmPc.division]:getDivision(my);
   const db=document.getElementById('divisionBadge');
@@ -1202,7 +1203,7 @@ function renderMVP(all){
   const tMap={};
   all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;});
   const sorted=Object.values(tMap).filter(t=>t.picks.length>=3).sort((a,b)=>{const ra=a.stake>0?(a.pnl/a.stake)*100:0,rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;});
-  if(!sorted.length)return;
+  if(!sorted.length){const w=document.querySelector('.mvp-wrap');if(w)w.style.display='none';return;}
   const mvp=sorted[0];window._mvpUser=mvp.username;
   const roi=mvp.stake>0?((mvp.pnl/mvp.stake)*100).toFixed(1):'0';
   const {icons,streak}=getBadgeIcons(mvp.picks);
@@ -1232,7 +1233,7 @@ function renderMatchup(all){
   const tMap={};
   all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;});
   const sorted=Object.values(tMap).filter(t=>t.picks.length>=5).sort((a,b)=>{const ra=a.stake>0?(a.pnl/a.stake)*100:0,rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;});
-  if(sorted.length<2)return;
+  if(sorted.length<2){const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';return;}
   const t1=sorted[0],t2=sorted[1];
   const roi1=t1.stake>0?((t1.pnl/t1.stake)*100).toFixed(1):'0';const roi2=t2.stake>0?((t2.pnl/t2.stake)*100).toFixed(1):'0';
   const wins1=t1.picks.filter(p=>p.result==='win').length,losses1=t1.picks.filter(p=>p.result==='loss').length;
@@ -1289,7 +1290,7 @@ function renderRecords(all){
       <div class="rd-label">${label}</div>
       <div class="rd-value">${value||'—'}</div>
       ${who?`<div class="rd-who">@${who}</div>`:''}
-      <div class="rd-sub">${sub||'No data yet today'}</div>
+      <div class="rd-sub">${sub||'No activity in 48h'}</div>
     </a>`;
   }
 
@@ -1405,7 +1406,7 @@ function renderRising(all,rankingsTop5){
       ma?{tag:'📈 Most Active',name:'@'+ma.username,metric:ma.picks.length,metricSuffix:'',sub:'total picks',cls:'heat2',metricCls:'gr',u:ma.username}:null,
       rk?{tag:'💰 7-Day ROI',name:'@'+rk.username,metric:(()=>{const s=rk.recent.reduce((a,p)=>a+p.stake,0),p=rk.recent.reduce((a,p)=>a+p.pnl,0);return s>0?((p/s)*100).toFixed(1):0;})(),metricSuffix:'%',sub:'this week',cls:'heat3',metricCls:'ac',u:rk.username}:null
     ];
-    grid.innerHTML=cards.filter(Boolean).map(c=>`<div class="rising-card ${c.cls}" onclick="window.location.href='/tipster?u=${c.u}'"><div class="rc-tag">${c.tag}</div><div class="rc-name">${c.name}</div><div class="rc-metric ${c.metricCls}">${c.metric}${c.metricSuffix||''}</div><div class="rc-sub">${c.sub}</div><div class="rc-arrow">↗</div></div>`).join('')||'<div class="empty">Not enough data yet</div>';
+    grid.innerHTML=cards.filter(Boolean).map(c=>`<div class="rising-card ${c.cls}" onclick="window.location.href='/tipster?u=${c.u}'"><div class="rc-tag">${c.tag}</div><div class="rc-name">${c.name}</div><div class="rc-metric ${c.metricCls}">${c.metric}${c.metricSuffix||''}</div><div class="rc-sub">${c.sub}</div><div class="rc-arrow">↗</div></div>`).join('')||'<div class="empty">New tipsters are arriving — check back soon</div>';
     return;
   }
 

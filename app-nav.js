@@ -452,7 +452,7 @@
     var logoHref = username ? '/home' : '/';
     var logoHtml = '<a href="' + logoHref + '" class="an-logo">'
       + '<img class="an-logo-img" src="/assets/logo/ledgr-icon.png" alt="LEDGR" loading="eager">'
-      + '<span class="an-logo-wordmark">LEDG<span class="logo-accent">R</span></span>'
+      + '<span class="an-logo-wordmark"><span class="logo-accent">L</span>EDGR</span>'
       + '</a>';
 
     return '<nav id="appNav">'
@@ -465,7 +465,7 @@
 
       + '<div id="appSlideNav">'
       + '<div class="an-slide-head">'
-      + '<span class="an-slide-logo"><img src="/assets/logo/ledgr-icon.png" alt="LEDGR"><span class="an-slide-logo-text">LEDG<span class="logo-accent">R</span></span></span>'
+      + '<span class="an-slide-logo"><img src="/assets/logo/ledgr-icon.png" alt="LEDGR"><span class="an-slide-logo-text"><span class="logo-accent">L</span>EDGR</span></span>'
       + '<button class="an-slide-close" onclick="window.AppNav.close()">✕</button>'
       + '</div>'
       + '<div class="an-slide-links">' + slideLinks + '</div>'
