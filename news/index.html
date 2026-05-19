@@ -145,7 +145,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .topic-count{font-size:8px;opacity:.6;font-weight:700}
 
 /* ── SKELETON ── */
-@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 .skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s linear infinite;display:block}
 .skel-nc{height:110px;border-radius:12px;margin-bottom:10px}
 
@@ -155,9 +154,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .news-sidebar{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 }
 @media(max-width:640px){
-  nav{padding:0 16px}
-  .nav-link{display:none}
-  .mobile-menu-btn{display:block}
   .news-sidebar{grid-template-columns:1fr}
   .nc-img,.nc-img-placeholder{width:60px;height:60px}
 }
@@ -191,20 +187,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <!-- SPORT TABS -->
   <div class="sport-tabs" id="sportTabs">
     <button class="st-tab active" data-sport="all" onclick="setSport('all',this)">ALL <span class="st-count" id="cnt-all">—</span></button>
-    <button class="st-tab" data-sport="soccer" onclick="setSport('soccer',this)">⚽ SOCCER <span class="st-count" id="cnt-soccer">—</span></button>
-    <button class="st-tab" data-sport="basketball" onclick="setSport('basketball',this)">🏀 NBA <span class="st-count" id="cnt-basketball">—</span></button>
-    <button class="st-tab" data-sport="football" onclick="setSport('football',this)">🏈 NFL <span class="st-count" id="cnt-football">—</span></button>
-    <button class="st-tab" data-sport="tennis" onclick="setSport('tennis',this)">🎾 TENNIS <span class="st-count" id="cnt-tennis">—</span></button>
-    <button class="st-tab" data-sport="mma" onclick="setSport('mma',this)">🥊 MMA <span class="st-count" id="cnt-mma">—</span></button>
+    <button class="st-tab" data-sport="soccer" onclick="setSport('soccer',this)">SOCCER <span class="st-count" id="cnt-soccer">—</span></button>
+    <button class="st-tab" data-sport="basketball" onclick="setSport('basketball',this)">NBA <span class="st-count" id="cnt-basketball">—</span></button>
+    <button class="st-tab" data-sport="football" onclick="setSport('football',this)">NFL <span class="st-count" id="cnt-football">—</span></button>
+    <button class="st-tab" data-sport="tennis" onclick="setSport('tennis',this)">TENNIS <span class="st-count" id="cnt-tennis">—</span></button>
+    <button class="st-tab" data-sport="mma" onclick="setSport('mma',this)">MMA <span class="st-count" id="cnt-mma">—</span></button>
   </div>
 
   <!-- CATEGORY FILTERS -->
   <div class="cat-bar">
-    <button class="cat-btn active" data-cat="all" onclick="setCat('all',this)">📋 All News</button>
-    <button class="cat-btn" data-cat="injury" onclick="setCat('injury',this)">🤕 Injuries</button>
-    <button class="cat-btn" data-cat="transfer" onclick="setCat('transfer',this)">🔄 Transfers</button>
-    <button class="cat-btn" data-cat="lineup" onclick="setCat('lineup',this)">📋 Lineups</button>
-    <button class="cat-btn" data-cat="preview" onclick="setCat('preview',this)">🔮 Match Previews</button>
+    <button class="cat-btn active" data-cat="all" onclick="setCat('all',this)">All News</button>
+    <button class="cat-btn" data-cat="injury" onclick="setCat('injury',this)">Injuries</button>
+    <button class="cat-btn" data-cat="transfer" onclick="setCat('transfer',this)">Transfers</button>
+    <button class="cat-btn" data-cat="lineup" onclick="setCat('lineup',this)">Lineups</button>
+    <button class="cat-btn" data-cat="preview" onclick="setCat('preview',this)">Match Previews</button>
   </div>
 
   <!-- GRID -->
@@ -228,7 +224,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- Injury Tracker -->
       <div class="sidebar-card">
         <div class="sc-head">
-          <div class="sc-title" style="color:var(--rd)">🤕 INJURY TRACKER</div>
+          <div class="sc-title" style="color:var(--rd)">INJURY TRACKER</div>
           <div class="sc-count" id="injuryCount">—</div>
         </div>
         <div class="sc-body" id="injuryFeed">
@@ -241,7 +237,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- Lineup News -->
       <div class="sidebar-card">
         <div class="sc-head">
-          <div class="sc-title" style="color:var(--gr)">📋 LINEUP NEWS</div>
+          <div class="sc-title" style="color:var(--gr)">LINEUP NEWS</div>
           <div class="sc-count" id="lineupCount">—</div>
         </div>
         <div class="sc-body" id="lineupFeed">
@@ -253,7 +249,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- Trending Topics -->
       <div class="sidebar-card trending-section">
         <div class="sc-head">
-          <div class="sc-title">🔥 TRENDING</div>
+          <div class="sc-title">TRENDING</div>
           <div class="sc-count" id="trendCount">—</div>
         </div>
         <div class="topic-cloud" id="trendingCloud">
@@ -276,19 +272,6 @@ let allArticles = [], currentSport = 'all', currentCat = 'all';
 let countdownInterval = null, refreshInterval = null;
 
 // ── Helpers ────────────────────────────────────────────────────
-function logout() { localStorage.clear(); window.location.href = '/login'; }
-function goToProfile() { const u = localStorage.getItem('username'); if (u) window.location.href = '/tipster?u=' + u; }
-
-
-
-(function() {
-  const u = localStorage.getItem('username');
-  if (u) {
-    const ub = document.getElementById('userBadge'); if (ub) ub.textContent = '@' + u;
-    const sn = document.getElementById('slideName'); if (sn) sn.textContent = '@' + u;
-    const sa = document.getElementById('slideAvatar'); if (sa) sa.textContent = u[0].toUpperCase();
-  }
-})();
 
 function timeAgo(dateStr) {
   if (!dateStr) return '—';

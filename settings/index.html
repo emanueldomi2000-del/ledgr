@@ -48,8 +48,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .preview-banner{height:110px;transition:all .5s ease;position:relative;overflow:hidden}
 .preview-body{padding:0 20px 20px}
 .preview-av-wrap{position:relative;width:64px;height:64px;margin-top:-32px;margin-bottom:14px}
-.preview-av{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:22px;display:flex;align-items:center;justify-content:center;border:3px solid var(--bg);position:relative;z-index:1;overflow:hidden}
-.preview-av-ring{position:absolute;inset:-5px;border-radius:50%;border:2px solid rgba(184,159,255,0.2);z-index:0;transition:all .3s}
+.preview-av{width:64px;height:64px;border-radius:var(--r-lg,14px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:22px;display:flex;align-items:center;justify-content:center;border:3px solid var(--bg);position:relative;z-index:1;overflow:hidden}
+.preview-av-ring{position:absolute;inset:-5px;border-radius:var(--r-lg,14px);border:2px solid rgba(184,159,255,0.2);z-index:0;transition:all .3s}
 .preview-uname{font-family:var(--font-display);font-size:26px;letter-spacing:2px;color:var(--tx);margin-bottom:8px}
 .preview-sports{display:flex;gap:4px;flex-wrap:wrap;min-height:20px;margin-bottom:8px}
 .sport-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;background:var(--s2);border:1px solid var(--bd);border-radius:20px;font-family:var(--font-mono);font-size:9px;color:var(--mu2)}
@@ -69,11 +69,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .upload-row{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start;margin-bottom:24px}
 .upload-zone{border:2px dashed rgba(184,159,255,.2);border-radius:12px;cursor:pointer;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;transition:border-color .2s,background .2s}
 .upload-zone:hover{border-color:rgba(184,159,255,.5);background:rgba(184,159,255,.03)}
-.upload-zone-av{width:96px;height:96px;border-radius:50%}
+.upload-zone-av{width:96px;height:96px;border-radius:var(--r-lg,14px)}
 .upload-zone-banner{width:100%;height:80px}
 .upload-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:var(--mu);font-family:var(--font-mono);font-size:9px;letter-spacing:1px;pointer-events:none;padding:8px;text-align:center}
 .upload-placeholder-icon{font-size:22px;line-height:1}
-.upload-img-av{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
+.upload-img-av{width:100%;height:100%;object-fit:cover;border-radius:var(--r-lg,14px);pointer-events:none}
 .upload-img-banner{width:100%;height:100%;object-fit:cover;pointer-events:none}
 .upload-remove{position:absolute;top:5px;right:5px;z-index:3;background:rgba(0,0,0,.72);border:none;border-radius:50%;width:22px;height:22px;display:none;align-items:center;justify-content:center;font-size:10px;color:#fff;cursor:pointer;transition:background .2s}
 .upload-remove:hover{background:var(--rd)}
@@ -162,7 +162,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .border-card.selected{border-color:var(--ac);background:var(--acg)}
 .border-card.b-locked{cursor:not-allowed;opacity:.55}
 .border-av-wrap{position:relative;width:44px;height:44px;margin:0 auto 12px}
-.border-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
+.border-av{width:44px;height:44px;border-radius:var(--r-lg,14px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
 .border-ring{position:absolute;inset:-4px;border-radius:50%}
 .border-name{font-family:var(--font-mono);font-size:8px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:3px}
 .border-tier{font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:.5px}
@@ -308,6 +308,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="toast" id="toast"></div>
 <script src="/app-nav.js"></script>
 <script>AppNav.init({ active: 'settings' });</script>
+<script src="/push.js"></script>
 
 <div class="main">
   <div class="not-logged" id="notLogged" style="display:none">
@@ -360,7 +361,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <span class="id-section-lbl">Avatar Photo</span>
               <div class="upload-zone upload-zone-av" id="avZone">
                 <input type="file" id="avInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2" onchange="handleAvUpload(this)">
-                <div class="upload-placeholder" id="avPlaceholder"><span class="upload-placeholder-icon">📷</span><span>Upload</span></div>
+                <div class="upload-placeholder" id="avPlaceholder"><span class="upload-placeholder-icon">+</span><span>Upload</span></div>
                 <img class="upload-img-av" id="avPreviewImg" style="display:none" alt="">
                 <button class="upload-remove" id="avRemove" onclick="removeAvatar(event)">✕</button>
               </div>
@@ -369,7 +370,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <span class="id-section-lbl">Banner Image <span style="color:var(--mu);font-size:8px">— 1200×300px recommended</span></span>
               <div class="upload-zone upload-zone-banner" id="bannerImgZone">
                 <input type="file" id="bannerImgInput" accept="image/*" style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:2" onchange="handleBannerImgUpload(this)">
-                <div class="upload-placeholder" id="bannerImgPlaceholder"><span class="upload-placeholder-icon">🖼️</span><span>Upload banner</span></div>
+                <div class="upload-placeholder" id="bannerImgPlaceholder"><span class="upload-placeholder-icon">+</span><span>Upload banner</span></div>
                 <img class="upload-img-banner" id="bannerImgPreview" style="display:none" alt="">
                 <button class="upload-remove" id="bannerImgRemove" onclick="removeBannerImg(event)">✕</button>
               </div>
@@ -440,10 +441,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div style="margin-top:28px">
             <span class="id-section-lbl">Badge Showcase <span style="color:var(--mu);font-size:8px">— 4 featured badges</span></span>
             <div class="badge-showcase" id="badgeShowcase">
-              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 1</div></div>
-              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 2</div></div>
-              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 3</div></div>
-              <div class="badge-slot"><div class="badge-slot-icon">🏅</div><div class="badge-slot-label">SLOT 4</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">+</div><div class="badge-slot-label">SLOT 1</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">+</div><div class="badge-slot-label">SLOT 2</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">+</div><div class="badge-slot-label">SLOT 3</div></div>
+              <div class="badge-slot"><div class="badge-slot-icon">+</div><div class="badge-slot-label">SLOT 4</div></div>
             </div>
             <a href="/badges" class="badges-link">Manage badges →</a>
             <div style="margin-top:12px;font-family:var(--font-mono);font-size:9px;color:var(--mu)">More cosmetics coming soon — Seasonal shop launching Season 4</div>
@@ -466,7 +467,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <div class="pref-sub">Get alerts for wins, streaks, and followed tipsters</div>
             </div>
             <label class="toggle-wrap">
-              <input type="checkbox" id="prefNotifications" onchange="savePref('notifications',this.checked)">
+              <input type="checkbox" id="prefNotifications" onchange="handlePushToggle(this)">
               <div class="toggle-track"></div>
               <div class="toggle-thumb"></div>
             </label>
@@ -884,7 +885,7 @@ async function handleAvUpload(input){
   document.getElementById('avPreviewImg').style.display='block';
   document.getElementById('avPlaceholder').style.display='none';
   document.getElementById('avRemove').style.display='flex';
-  document.getElementById('previewAv').innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  document.getElementById('previewAv').innerHTML=`<img src="${b64}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r-lg,14px)">`;
   showToast('AVATAR UPDATED — save to sync ✓');
 }
 
@@ -1015,7 +1016,7 @@ function loadIdentitySettings(){
     document.getElementById('avPreviewImg').style.display='block';
     document.getElementById('avPlaceholder').style.display='none';
     document.getElementById('avRemove').style.display='flex';
-    document.getElementById('previewAv').innerHTML=`<img src="${av}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    document.getElementById('previewAv').innerHTML=`<img src="${av}" style="width:100%;height:100%;object-fit:cover;border-radius:var(--r-lg,14px)">`;
   }
   const ban=currentBannerB64||localStorage.getItem('ledgr_banner_img_'+key);
   if(ban){
@@ -1280,17 +1281,66 @@ window.onload=()=>{
   loadMySubscribers();
   fetchOwnProfile();
   fetchAndComputeDNA();
+  initPushToggle();
 };
+
+/* ── PUSH NOTIFICATIONS ── */
+async function initPushToggle(){
+  const el=document.getElementById('prefNotifications');
+  if(!el)return;
+  if(!window.Push||!Push.supported()){
+    el.disabled=true;
+    const sub=el.closest('.pref-row')&&el.closest('.pref-row').querySelector('.pref-sub');
+    if(sub)sub.textContent='Not supported in this browser';
+    return;
+  }
+  if(Notification.permission==='denied'){
+    el.disabled=true;el.checked=false;
+    const sub=el.closest('.pref-row')&&el.closest('.pref-row').querySelector('.pref-sub');
+    if(sub)sub.textContent='Blocked in browser — update site permissions to enable';
+    return;
+  }
+  await Push.init();
+  el.checked=Push.isSubscribed();
+}
+
+async function handlePushToggle(checkbox){
+  if(!window.Push)return;
+  const row=checkbox.closest('.pref-row');
+  const sub=row&&row.querySelector('.pref-sub');
+  const defaultSub='Get alerts for wins, streaks, and followed tipsters';
+  if(checkbox.checked){
+    checkbox.disabled=true;
+    if(sub)sub.textContent='Enabling…';
+    const result=await Push.subscribe();
+    checkbox.disabled=false;
+    if(result.success){
+      savePref('notifications',true);
+      if(sub)sub.textContent=defaultSub;
+      showToast('Push notifications enabled');
+    }else{
+      checkbox.checked=false;
+      if(result.error==='Permission denied'){
+        checkbox.disabled=true;
+        if(sub)sub.textContent='Blocked in browser — update site permissions to enable';
+        showToast('Notifications blocked — check browser settings',true);
+      }else{
+        if(sub)sub.textContent=defaultSub;
+        showToast(result.error||'Could not enable notifications',true);
+      }
+    }
+  }else{
+    await Push.unsubscribe();
+    savePref('notifications',false);
+    showToast('Push notifications disabled');
+  }
+}
 
 /* ── UTILS ── */
 function showToast(msg,isErr){
   const t=document.getElementById('toast');
   t.textContent=msg;t.style.background=isErr?'var(--rd)':'var(--gr)';
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
-}
-function logout(){
-  ['ledgr_user','ledgr_token','user','token'].forEach(k=>localStorage.removeItem(k));
-  window.location.href='/';
 }
 
 

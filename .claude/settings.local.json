@@ -16,7 +16,10 @@
       "Bash(python3 *)",
       "Bash(git checkout *)",
       "Bash(del *)",
-      "Bash(grep -m1 '\\\\.main{' /c/Users/emanu/ledgr/__TRACKED_VAR__/index.html)"
+      "Bash(grep -m1 '\\\\.main{' /c/Users/emanu/ledgr/__TRACKED_VAR__/index.html)",
+      "Bash(Get-Content \"C:\\\\Users\\\\emanu\\\\.claude\\\\projects\\\\C--Users-emanu-ledgr\\\\9ebcc8c0-4148-4e78-b073-c7c43105c7ce.jsonl\")",
+      "Bash(Select-Object -Last 100)",
+      "Bash(Out-String)"
     ]
   }
 }

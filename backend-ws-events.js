@@ -284,7 +284,7 @@ async function emitPickGraded(db, pick, prevSnapshot) {
   const STREAK_THRESHOLDS = new Set([3, 5, 7, 10]);
   try {
     const [rows] = await db.query(
-      'SELECT currentStreak, streakType, division FROM user_rankings WHERE username = ? LIMIT 1',
+      'SELECT ur.currentStreak, ur.streakType, ur.division, (SELECT COUNT(*)+1 FROM user_rankings u2 WHERE u2.elo > ur.elo) AS rank FROM user_rankings ur WHERE ur.username = ? LIMIT 1',
       [username]
     );
     if (rows.length) {

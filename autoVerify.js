@@ -311,7 +311,7 @@ async function applyGrade(db, pick, result, pnl, gradedBy, gradedNote, recalcUse
   let prevSnapshot = null;
   try {
     const [snapRows] = await db.query(
-      'SELECT division, currentStreak, streakType, totalPicks FROM user_rankings WHERE userId = ? LIMIT 1',
+      'SELECT ur.division, ur.currentStreak, ur.streakType, ur.totalPicks, (SELECT COUNT(*)+1 FROM user_rankings u2 WHERE u2.elo > ur.elo) AS rank FROM user_rankings ur WHERE ur.userId = ? LIMIT 1',
       [pick.userId]
     );
     prevSnapshot = snapRows[0] || null;

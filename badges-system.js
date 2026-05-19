@@ -21,7 +21,7 @@
   animation:bs-panel-in .55s cubic-bezier(.34,1.56,.64,1) both}
 @keyframes bs-panel-in{from{opacity:0;transform:scale(.55) translateY(28px)}to{opacity:1;transform:none}}
 
-.bs-overlay-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;
+.bs-overlay-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:4px;
   text-transform:uppercase;margin-bottom:20px;opacity:.65}
 
 .bs-ov-icon{font-size:72px;line-height:1;margin-bottom:18px;display:block;
@@ -29,14 +29,14 @@
 @keyframes bs-icon-pop{from{opacity:0;transform:scale(.2) rotate(-15deg)}to{opacity:1;transform:none}}
 
 .bs-ov-rarity-pill{display:inline-block;padding:3px 14px;border-radius:20px;
-  font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:2px;
+  font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:2px;
   text-transform:uppercase;margin-bottom:14px}
 
-.bs-ov-name{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:3px;
+.bs-ov-name{font-family:var(--font-display);font-size:30px;letter-spacing:3px;
   color:#f0edff;margin-bottom:8px}
 .bs-ov-desc{font-size:13px;color:#9590b8;line-height:1.65;margin-bottom:24px;
-  font-family:'Syne',sans-serif}
-.bs-ov-dismiss{font-family:'DM Mono',monospace;font-size:10px;color:#6a6690;letter-spacing:2px}
+  font-family:var(--font-body)}
+.bs-ov-dismiss{font-family:var(--font-mono);font-size:10px;color:#6a6690;letter-spacing:2px}
 
 /* Rarity-specific panel borders */
 .bs-panel.r-common   {border:1px solid rgba(148,163,184,.35)}
@@ -112,7 +112,7 @@
 
 /* Rarity pill */
 .bg-rarity-pill{display:inline-block;padding:2px 10px;border-radius:20px;
-  font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;
+  font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:1.5px;
   text-transform:uppercase;margin-bottom:10px}
 .r-common   .bg-rarity-pill{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8}
 .r-rare     .bg-rarity-pill{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.28);color:#38bdf8}
@@ -124,34 +124,51 @@
   50%     {text-shadow:0 0 10px rgba(251,191,36,.7)}
 }
 
-.bg-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:2px;
+.bg-name{font-family:var(--font-display);font-size:19px;letter-spacing:2px;
   color:#f0edff;margin-bottom:5px}
 .bg-desc{font-size:11.5px;color:#9590b8;line-height:1.6;margin-bottom:10px}
-.bg-req{font-size:10px;color:#6a6690;font-family:'DM Mono',monospace;font-style:italic;margin-bottom:12px}
+.bg-req{font-size:10px;color:#6a6690;font-family:var(--font-mono);font-style:italic;margin-bottom:12px}
 
 /* Status footer */
 .bg-earned-tag{display:inline-flex;align-items:center;gap:5px;
   background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);
-  color:#34d399;font-family:'DM Mono',monospace;font-size:9px;
+  color:#34d399;font-family:var(--font-mono);font-size:9px;
   padding:3px 10px;border-radius:20px}
 .bg-locked-tag{display:inline-flex;align-items:center;gap:5px;
   background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);
-  color:#6a6690;font-family:'DM Mono',monospace;font-size:9px;
+  color:#6a6690;font-family:var(--font-mono);font-size:9px;
   padding:3px 10px;border-radius:20px}
 
 /* Progress bar */
 .bg-prog{margin-top:10px}
 .bg-prog-row{display:flex;justify-content:space-between;
-  font-family:'DM Mono',monospace;font-size:9px;color:#6a6690;margin-bottom:4px}
+  font-family:var(--font-mono);font-size:9px;color:#6a6690;margin-bottom:4px}
 .bg-prog-track{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden}
 .bg-prog-fill{height:100%;border-radius:2px;transition:width 1.1s ease}
 
 /* ── Tooltip ── */
 .bs-tip-box{position:fixed;z-index:8000;max-width:220px;padding:9px 12px;
   background:#111027;border:1px solid rgba(184,159,255,.2);border-radius:10px;
-  font-family:'DM Mono',monospace;font-size:10px;color:#9590b8;line-height:1.6;
+  font-family:var(--font-mono);font-size:10px;color:#9590b8;line-height:1.6;
   pointer-events:none;opacity:0;transition:opacity .15s;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .bs-tip-box.show{opacity:1}
+
+/* Legendary icon rings */
+.bs-panel.r-legendary .bs-ov-icon{position:relative;display:inline-block}
+.bs-panel.r-legendary .bs-ov-icon::before,
+.bs-panel.r-legendary .bs-ov-icon::after{
+  content:'';position:absolute;border-radius:50%;pointer-events:none}
+.bs-panel.r-legendary .bs-ov-icon::before{
+  inset:-16px;border:1px solid rgba(251,191,36,.55);
+  animation:bs-ring-pulse 2s ease-in-out infinite}
+.bs-panel.r-legendary .bs-ov-icon::after{
+  inset:-28px;border:1px solid rgba(251,191,36,.28);
+  animation:bs-ring-pulse 2s ease-in-out infinite;animation-delay:-.8s}
+@keyframes bs-ring-pulse{
+  0%,100%{transform:scale(1);opacity:.8}
+  50%{transform:scale(1.1);opacity:.35}
+}
+@keyframes bs-legend-flash{0%{opacity:1}100%{opacity:0}}
 `;
     document.head.appendChild(s);
 
@@ -186,6 +203,14 @@
     rare:      { label:'RARE',      color:'#38bdf8', particles:12, colors:['#38bdf8','#7dd3fc','#0ea5e9','#06b6d4'] },
     epic:      { label:'EPIC',      color:'#b89fff', particles:18, colors:['#b89fff','#c4b5fd','#8b5cf6','#a78bfa','#7c3aed'] },
     legendary: { label:'LEGENDARY', color:'#fbbf24', particles:36, colors:['#fbbf24','#f59e0b','#fb923c','#f43f5e','#34d399','#38bdf8','#b89fff','#818cf8'] },
+  };
+
+  // ── Rarity-specific overlay headlines ───────────────────────────
+  var UNLOCK_LABELS = {
+    common:    'BADGE UNLOCKED',
+    rare:      'RARE ACHIEVEMENT',
+    epic:      'EPIC UNLOCK',
+    legendary: 'LEGENDARY ACHIEVEMENT',
   };
 
   // ── Badge definitions ────────────────────────────────────────────
@@ -402,13 +427,21 @@
   function playUnlockAnim(badge, onDismiss) {
     var r = RARITIES[badge.rarity] || RARITIES.common;
 
+    // Legendary: brief gold flash before panel appears
+    if (badge.rarity === 'legendary') {
+      var flash = document.createElement('div');
+      flash.style.cssText = 'position:fixed;inset:0;z-index:9998;background:rgba(251,191,36,.18);pointer-events:none;animation:bs-legend-flash .4s ease-out forwards';
+      document.body.appendChild(flash);
+      setTimeout(function(){ if (flash.parentNode) flash.remove(); }, 450);
+    }
+
     var overlay = document.createElement('div');
     overlay.className = 'bs-overlay';
 
     var panel = document.createElement('div');
     panel.className = 'bs-panel r-' + badge.rarity;
     panel.innerHTML =
-      '<div class="bs-overlay-lbl" style="color:'+r.color+'">BADGE UNLOCKED</div>' +
+      '<div class="bs-overlay-lbl" style="color:'+r.color+'">' + (UNLOCK_LABELS[badge.rarity] || 'BADGE UNLOCKED') + '</div>' +
       '<span class="bs-ov-icon">' + badge.icon + '</span>' +
       '<span class="bs-ov-rarity-pill r-' + badge.rarity + '" style="' +
         'background:rgba('+_hexToRgb(r.color)+',.12);' +
@@ -420,39 +453,48 @@
     overlay.appendChild(panel);
     document.body.appendChild(overlay);
 
-    // Spawn particles
+    // Particle burst — extracted for reuse by secondary burst
     var cx = window.innerWidth / 2;
     var cy = window.innerHeight / 2;
     var n  = r.particles;
 
-    for (var i = 0; i < n; i++) {
-      (function(idx) {
-        setTimeout(function() {
-          var angle  = (idx / n) * 360 + (Math.random() - .5) * (360 / n);
-          var dist   = 90 + Math.random() * (badge.rarity === 'legendary' ? 220 : badge.rarity === 'epic' ? 160 : 120);
-          var rad    = angle * Math.PI / 180;
-          var bx     = Math.cos(rad) * dist;
-          var by     = Math.sin(rad) * dist - 20;
-          var size   = badge.rarity === 'legendary' ? 5 + Math.random()*7 : 4 + Math.random()*5;
-          var color  = r.colors[idx % r.colors.length];
-          var dur    = .55 + Math.random() * .5;
-          var isSquare = badge.rarity === 'legendary' && Math.random() > .5;
+    function spawnBurst(count, startDelay) {
+      for (var i = 0; i < count; i++) {
+        (function(idx) {
+          setTimeout(function() {
+            var angle  = (idx / count) * 360 + (Math.random() - .5) * (360 / count);
+            var dist   = 90 + Math.random() * (badge.rarity === 'legendary' ? 220 : badge.rarity === 'epic' ? 160 : 120);
+            var rad    = angle * Math.PI / 180;
+            var bx     = Math.cos(rad) * dist;
+            var by     = Math.sin(rad) * dist - 20;
+            var size   = badge.rarity === 'legendary' ? 5 + Math.random()*7 : 4 + Math.random()*5;
+            var color  = r.colors[idx % r.colors.length];
+            var dur    = .55 + Math.random() * .5;
+            var isSquare = badge.rarity === 'legendary' && Math.random() > .5;
 
-          var p = document.createElement('div');
-          p.className = 'bs-particle' + (isSquare ? ' sq' : '');
-          p.style.cssText =
-            'left:'+(cx-size/2)+'px;top:'+(cy-size/2)+'px;' +
-            'width:'+size+'px;height:'+size+'px;' +
-            'background:'+color+';' +
-            'box-shadow:0 0 '+(size*1.5)+'px '+color+';' +
-            '--bx:'+bx.toFixed(1)+'px;--by:'+by.toFixed(1)+'px;' +
-            '--dur:'+dur.toFixed(2)+'s;' +
-            '--rot:'+(Math.random()>0.5?360:-360)+'deg;' +
-            'animation-delay:'+(Math.random()*0.12).toFixed(3)+'s';
-          document.body.appendChild(p);
-          setTimeout(function(){ p.remove(); }, (dur + .15) * 1000 + 200);
-        }, idx * (badge.rarity === 'legendary' ? 18 : 25));
-      })(i);
+            var p = document.createElement('div');
+            p.className = 'bs-particle' + (isSquare ? ' sq' : '');
+            p.style.cssText =
+              'left:'+(cx-size/2)+'px;top:'+(cy-size/2)+'px;' +
+              'width:'+size+'px;height:'+size+'px;' +
+              'background:'+color+';' +
+              'box-shadow:0 0 '+(size*1.5)+'px '+color+';' +
+              '--bx:'+bx.toFixed(1)+'px;--by:'+by.toFixed(1)+'px;' +
+              '--dur:'+dur.toFixed(2)+'s;' +
+              '--rot:'+(Math.random()>0.5?360:-360)+'deg;' +
+              'animation-delay:'+(Math.random()*0.12).toFixed(3)+'s';
+            document.body.appendChild(p);
+            setTimeout(function(){ p.remove(); }, (dur + .15) * 1000 + 200);
+          }, startDelay + idx * (badge.rarity === 'legendary' ? 18 : 25));
+        })(i);
+      }
+    }
+
+    spawnBurst(n, 0);
+
+    // Legendary: second wave at 1200ms for extended celebration
+    if (badge.rarity === 'legendary') {
+      setTimeout(function() { spawnBurst(Math.floor(n * 0.55), 0); }, 1200);
     }
 
     function dismiss() {
@@ -465,8 +507,7 @@
     }
 
     overlay.addEventListener('click', dismiss);
-    // Auto-dismiss after 6s for common, longer for rarer
-    var autoDur = {common:3500, rare:3500, epic:3500, legendary:3500}[badge.rarity] || 3500;
+    var autoDur = {common:3500, rare:4500, epic:5500, legendary:7000}[badge.rarity] || 3500;
     setTimeout(dismiss, autoDur);
   }
 

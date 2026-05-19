@@ -462,7 +462,30 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .recap-acts{display:flex;gap:8px}
 .recap-share-btn{flex:1;background:var(--ac);color:#060508;border:none;border-radius:10px;padding:11px;font-family:var(--font-display);font-size:15px;letter-spacing:1px;cursor:pointer;transition:opacity .2s}.recap-share-btn:hover{opacity:.85}
 .recap-dismiss-btn{padding:11px 16px;background:transparent;border:1px solid var(--bd2);border-radius:10px;color:var(--mu2);font-family:var(--font-display);font-size:15px;letter-spacing:1px;cursor:pointer;transition:all .2s}.recap-dismiss-btn:hover{color:var(--tx)}
-.hero-arch{display:inline-flex;align-items:center;gap:8px;background:rgba(184,159,255,0.08);border:1px solid rgba(184,159,255,0.15);border-radius:24px;padding:6px 14px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--ac);text-transform:uppercase;animation:fadeSlideUp .7s .1s ease both;opacity:0;animation-fill-mode:forwards;margin-top:14px;width:fit-content}.hero-arch-icon{font-size:11px;flex-shrink:0}
+.hero-arch{display:inline-flex;align-items:center;gap:8px;background:rgba(184,159,255,0.08);border:1px solid rgba(184,159,255,0.15);border-radius:24px;padding:6px 14px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--ac);text-transform:uppercase;animation:fadeSlideUp .7s .1s ease both,arch-float 4s 1.1s ease-in-out infinite;opacity:0;animation-fill-mode:forwards;margin-top:14px;width:fit-content}.hero-arch-icon{font-size:11px;flex-shrink:0}
+
+/* ══ PICK RESULT CARD ══ */
+.pr-card{position:fixed;right:-340px;bottom:100px;width:300px;background:var(--s1);border:1px solid var(--bd2);border-radius:16px;padding:18px 20px;z-index:600;transition:right .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 16px 48px rgba(0,0,0,.5);pointer-events:none}
+.pr-card.show{right:16px;pointer-events:auto}
+.pr-card.pr-win{border-color:rgba(52,211,153,.35);background:linear-gradient(135deg,rgba(52,211,153,.06),var(--s1))}
+.pr-card.pr-loss{border-color:rgba(248,113,113,.2);background:linear-gradient(135deg,rgba(248,113,113,.04),var(--s1))}
+.pr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.pr-result-label{font-family:var(--font-display);font-size:12px;letter-spacing:3px;opacity:.75}
+.pr-result-label.win{color:var(--gr)}.pr-result-label.loss{color:var(--rd)}
+.pr-pnl{font-family:var(--font-display);font-size:30px;line-height:1;letter-spacing:1px}
+.pr-pnl.win{color:var(--gr)}.pr-pnl.loss{color:var(--rd)}
+.pr-event{font-size:11px;color:var(--mu2);margin-top:6px;font-family:var(--font-mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-market{font-size:10px;color:var(--mu);font-family:var(--font-mono)}
+.pr-streak-chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;color:var(--orange);background:rgba(251,146,60,.08);border:1px solid rgba(251,146,60,.15);border-radius:20px;padding:3px 10px;margin-top:8px}
+.pr-broken-chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;color:var(--mu);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:3px 10px;margin-top:8px}
+
+/* ══ STREAK FIRE ENERGY ══ */
+.streak-pill.fire-3{box-shadow:0 0 14px rgba(251,146,60,.35);text-shadow:0 0 10px rgba(251,146,60,.5)}
+.streak-pill.fire-5{box-shadow:0 0 22px rgba(251,146,60,.55);text-shadow:0 0 14px rgba(251,146,60,.8);animation:pulse-glow 1.2s infinite,fire-flicker 2s ease-in-out infinite}
+@keyframes fire-flicker{0%,100%{color:var(--orange)}50%{color:#fbbf24}}
+
+/* ══ ARCHETYPE FLOAT ══ */
+@keyframes arch-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 </style>
 </head>
 <body>
@@ -484,7 +507,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="hero-eyebrow" id="heroEyebrow">YOUR RECORD</div>
     <div id="heroArchHero"></div>
     <div class="hero-meta">
-      <div class="division-badge div-bronze" id="divisionBadge">🥉 BRONZE</div>
+      <div class="division-badge div-bronze" id="divisionBadge"><span class="skel-inline" style="width:80px;height:14px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></div>
       <div id="streakPill" style="display:none" class="streak-pill">🔥 <span id="streakText"></span></div>
     </div>
     <div class="hero-sub">
@@ -502,8 +525,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="id-top">
       <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
       <div>
-        <div class="id-name" id="idName">@—</div>
-        <div class="id-division div-bronze" id="idDiv">🥉 BRONZE</div>
+        <div class="id-name" id="idName"><span class="skel-inline" style="width:90px;height:14px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></div>
+        <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:70px;height:12px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></div>
       </div>
     </div>
     <div class="id-stats">
@@ -516,7 +539,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="id-rank-bar">
       <span class="id-rank-lbl">Global rank</span>
       <div class="id-rank-track"><div class="id-rank-fill" id="idRankFill" style="width:0%"></div></div>
-      <span class="id-rank-num" id="idRankNum">#—</span>
+      <span class="id-rank-num" id="idRankNum"><span class="skel-inline" style="width:32px;height:12px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></span>
     </div>
     <div id="idFollowers" style="font-family:var(--font-mono);font-size:10px;color:var(--mu);text-align:center;padding:4px 0 0;letter-spacing:1px">— followers</div>
     <div id="idSubscriberCount" style="display:none;font-family:var(--font-mono);font-size:10px;color:var(--gr);text-align:center;padding:2px 0 0;letter-spacing:1px"></div>
@@ -814,10 +837,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
   </div>
 </div>
+<!-- PICK RESULT CARD -->
+<div id="prCard" class="pr-card"></div>
 </div><!-- /app -->
 
 <script src="/ledgr-ws.js"></script>
 <script src="/divisions.js"></script>
+<script src="/archetypes-dict.js"></script>
 <script src="/flow.js"></script>
 <script src="/animations.js"></script>
 <script src="/live.js"></script>
@@ -896,13 +922,13 @@ function getDivision(picks){
   const stake=picks.reduce((s,p)=>s+p.stake,0);const pnl=picks.reduce((s,p)=>s+p.pnl,0);
   const roi=stake>0?(pnl/stake)*100:0;const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
   const s=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
-  if(s>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'🐐'};
-  if(s>=80)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
-  if(s>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
-  if(s>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
-  if(s>=35)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
-  if(s>=20)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
-  return{name:'BRONZE',cls:'div-bronze',icon:'🥉'};
+  if(s>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'◉'};
+  if(s>=80)return{name:'ELITE',cls:'div-elite',icon:'⊕'};
+  if(s>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'✦'};
+  if(s>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⬡'};
+  if(s>=35)return{name:'GOLD',cls:'div-gold',icon:'★'};
+  if(s>=20)return{name:'SILVER',cls:'div-silver',icon:'◆'};
+  return{name:'BRONZE',cls:'div-bronze',icon:'▲'};
 }
 
 function getDNA(picks){
@@ -994,11 +1020,11 @@ async function loadChatPreview(){
   try{
     const rooms=await fetch(API+'/chat/rooms').then(r=>r.json());
     const general=rooms.find(r=>r.name==='General')||rooms[0];
-    if(!general){el.innerHTML='<div style="padding:20px;text-align:center;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">No rooms yet</div>';return;}
+    if(!general){el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">No rooms yet</div>';return;}
     const msgs=await fetch(API+'/chat/rooms/'+general.id+'/messages').then(r=>r.json());
     const last3=msgs.slice(-3);
     if(!last3.length){
-      el.innerHTML='<div style="padding:20px;text-align:center;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">No messages yet — <a href="/community" style="color:var(--ac)">be the first!</a></div>';
+      el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">No messages yet — <a href="/community" style="color:var(--ac)">be the first!</a></div>';
       return;
     }
     const avColors=['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#dc2626,#ef4444)','linear-gradient(135deg,#0f766e,#14b8a6)'];
@@ -1019,7 +1045,7 @@ async function loadChatPreview(){
       </div>`;
     }).join('')+`<a href="/community" style="display:block;text-align:center;padding:10px;font-family:var(--font-mono);font-size:9px;color:var(--ac);text-decoration:none;letter-spacing:1px">JOIN THE CONVERSATION →</a>`;
   }catch(e){
-    el.innerHTML='<div style="padding:20px;text-align:center;font-family:\'DM Mono\',monospace;font-size:11px;color:var(--mu)">Chat unavailable</div>';
+    el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">Chat unavailable</div>';
   }
 }
 
@@ -1078,7 +1104,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
     }
     if(window.Divisions){
       const rm2=window._myRankingMeta;
-      const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
+      const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};
       const avDiv=rm2&&rm2.division&&D[rm2.division]?D[rm2.division]:getDivision(myPicks);
       window.Divisions.applyGlow(av,avDiv);
     }
@@ -1097,7 +1123,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=finalRank>0?'#'+finalRank:'#—';
   const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=finalStreak>0?finalStreak+'W 🔥':'None yet';
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'0/100';
-  const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
+  const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
   if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
   const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
@@ -1157,7 +1183,7 @@ function renderStats(all){
   const hsR=document.getElementById('hsROI');if(hsR)hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
   const settled=[...my].filter(p=>p.result!=='pending').reverse();let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
   const hsS=document.getElementById('hsStreak');if(hsS)hsS.textContent=st>0?st+'W':'—';
-  if(st>=3){document.getElementById('streakPill').style.display='inline-flex';document.getElementById('streakText').textContent=st+' WIN STREAK';}
+  if(st>=3){const spEl=document.getElementById('streakPill');spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);document.getElementById('streakText').textContent=st+' WIN STREAK';}
   let cP=0,cS=0,w2=0,t2=0;const pA=[],rA=[],wA=[],pkA=[];
   my.forEach((p,i)=>{cP+=p.pnl;cS+=p.stake;if(p.result==='win')w2++;if(p.result!=='pending')t2++;pA.push(cP);rA.push(cS>0?(cP/cS)*100:0);wA.push(t2>0?(w2/t2)*100:0);pkA.push(i+1);});
   if(my.length>1){drawSparkline('sp0',pkA,true);drawSparkline('sp1',wA,parseFloat(wr)>=50);drawSparkline('sp2',rA,parseFloat(roi)>=0);drawSparkline('sp3',pA,pnl>=0);}
@@ -1175,7 +1201,7 @@ function renderProfileCard(all){
   const rawRel=getReliability(my).score;
   const {score}={score:rmPc?Math.round(rmPc.reliabilityScore):rawRel};
   const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'0%';
-  const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
+  const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};
   const div=rmPc&&rmPc.division&&D[rmPc.division]?D[rmPc.division]:getDivision(my);
   const db=document.getElementById('divisionBadge');
   if(db){
@@ -1193,11 +1219,17 @@ function renderHeroArch(){
   var el=document.getElementById('heroArchHero');
   if(!el)return;
   var u=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'{}');
-  var arch=u.archetype||(u.settings&&u.settings.archetype);
-  if(!arch){el.innerHTML='<a class="hero-arch" href="/archetypes" style="text-decoration:none;cursor:pointer"><span class="hero-arch-icon">⚡</span>SET YOUR ARCHETYPE →</a>';return;}
-  var icons={Sharp:'🎯','Value Hunter':'⚡',Contrarian:'🔄',Momentum:'🔥',Statistical:'📊',Intuitive:'💡'};
-  var icon=icons[arch]||'⚡';
-  el.innerHTML='<div class="hero-arch"><span class="hero-arch-icon">'+icon+'</span>'+arch.toUpperCase()+'</div>';
+  var username=u.username||u.user||u.name;
+  var profileCfg={};
+  if(username){try{profileCfg=JSON.parse(localStorage.getItem('ledgr_profile_'+username)||'{}');}catch(e){}}
+  var archKey=profileCfg.archetype||u.archetype||(u.settings&&u.settings.archetype);
+  if(!archKey){
+    el.innerHTML='<a class="hero-arch hero-arch-cta" href="/archetypes" style="text-decoration:none;cursor:pointer;opacity:.7">⚡ SET ARCHETYPE →</a>';
+    return;
+  }
+  var a=window.resolveArchetype?window.resolveArchetype(archKey):{icon:'⚡',name:'The Sharp',color:'#38bdf8'};
+  var label=a.name.replace(/^The\s+/i,'').toUpperCase();
+  el.innerHTML='<div class="hero-arch" style="color:'+a.color+'"><span class="hero-arch-icon">'+a.icon+'</span>'+label+'</div>';
 }
 function renderMVP(all){
   const tMap={};
@@ -1711,7 +1743,7 @@ function toggleComments(pid){
 function renderComments(pid){
   const wrap=document.getElementById('comments_'+pid);if(!wrap)return;
   const cmts=getComments(pid);const me=user?user.username:'anon';
-  wrap.innerHTML=(cmts.length?cmts.map(c=>`<div class="cmt-item"><div class="cmt-av">${c.user.slice(0,2).toUpperCase()}</div><div><div class="cmt-user">@${c.user}</div><div class="cmt-txt">${c.text}</div><div class="cmt-ts">${getTimeAgo(new Date(c.ts))}</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--mu);padding:4px 0;font-family:\'DM Mono\',monospace">No comments yet. Be first.</div>')+`<div class="cmt-form"><input class="cmt-input" id="ci_${pid}" placeholder="Add a comment..." maxlength="120" onkeydown="if(event.key==='Enter')postComment('${pid}')"><button class="cmt-send" onclick="postComment('${pid}')">→</button></div>`;
+  wrap.innerHTML=(cmts.length?cmts.map(c=>`<div class="cmt-item"><div class="cmt-av">${c.user.slice(0,2).toUpperCase()}</div><div><div class="cmt-user">@${c.user}</div><div class="cmt-txt">${c.text}</div><div class="cmt-ts">${getTimeAgo(new Date(c.ts))}</div></div></div>`).join(''):'<div style="font-size:10px;color:var(--mu);padding:4px 0;font-family:var(--font-mono)">No comments yet. Be first.</div>')+`<div class="cmt-form"><input class="cmt-input" id="ci_${pid}" placeholder="Add a comment..." maxlength="120" onkeydown="if(event.key==='Enter')postComment('${pid}')"><button class="cmt-send" onclick="postComment('${pid}')">→</button></div>`;
   setTimeout(()=>{const inp=document.getElementById('ci_'+pid);if(inp)inp.focus();},50);
 }
 function postComment(pid){
@@ -1778,6 +1810,56 @@ function exportWinCard(){
 }
 function _rrect(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();ctx.fill();}
 
+/* ── PERSONAL PICK RESULT MOMENTS ─────────────────────────── */
+var _prevStreak = 0;
+
+function showPersonalWin(payload) {
+  var card = document.getElementById('prCard');
+  if (!card) return;
+  var pnl = parseFloat(payload.pnl || 0);
+  var event = payload.event || '';
+  var market = payload.market || '';
+  var odds = parseFloat(payload.odds || 0);
+  var streak = parseInt(payload.streak || 0);
+  _prevStreak = streak;
+  card.className = 'pr-card pr-win';
+  card.innerHTML =
+    '<div class="pr-top">' +
+      '<span class="pr-result-label win">WIN</span>' +
+      '<span style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:1px">@ ' + (odds > 0 ? odds.toFixed(2) : '—') + '</span>' +
+    '</div>' +
+    '<div class="pr-pnl win">+' + pnl.toFixed(2) + 'u</div>' +
+    '<div class="pr-event">' + (event.length > 40 ? event.slice(0, 40) + '…' : event) + '</div>' +
+    (market ? '<div class="pr-market">' + market + '</div>' : '') +
+    (streak >= 3 ? '<div class="pr-streak-chip">🔥 ' + streak + '-WIN STREAK</div>' : '');
+  card.classList.add('show');
+  clearTimeout(card._to);
+  card._to = setTimeout(function() { card.classList.remove('show'); }, streak >= 5 ? 5000 : 4000);
+}
+
+function showPersonalLoss(payload) {
+  var card = document.getElementById('prCard');
+  if (!card) return;
+  var event = payload.event || '';
+  var market = payload.market || '';
+  var odds = parseFloat(payload.odds || 0);
+  var prev = _prevStreak;
+  _prevStreak = 0;
+  card.className = 'pr-card pr-loss';
+  card.innerHTML =
+    '<div class="pr-top">' +
+      '<span class="pr-result-label loss">LOSS</span>' +
+      '<span style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:1px">@ ' + (odds > 0 ? odds.toFixed(2) : '—') + '</span>' +
+    '</div>' +
+    '<div class="pr-pnl loss">—</div>' +
+    '<div class="pr-event">' + (event.length > 40 ? event.slice(0, 40) + '…' : event) + '</div>' +
+    (market ? '<div class="pr-market">' + market + '</div>' : '') +
+    (prev >= 3 ? '<div class="pr-broken-chip">' + prev + '-WIN RUN ENDED</div>' : '');
+  card.classList.add('show');
+  clearTimeout(card._to);
+  card._to = setTimeout(function() { card.classList.remove('show'); }, 3000);
+}
+
 /* ── WS INTEGRATION ─────────────────────────────────────────── */
 function subscribeWS(){
   if(!window.LedgrWS)return;
@@ -1791,9 +1873,9 @@ function subscribeWS(){
   window.LedgrWS.on('pick_result',function(ev){
     if(!window.LedgrWS.isVisible())return;
     const p=ev.payload||{};
-    if(p.result==='win')showToast('✅ Pick won: +'+(parseFloat(p.pnl||0)).toFixed(2)+'u');
-    else if(p.result==='loss')showToast('❌ Pick graded: lost');
-    else if(p.result==='push')showToast('🔄 Pick graded: push (stake returned)');
+    if(p.result==='win')showPersonalWin(p);
+    else if(p.result==='loss')showPersonalLoss(p);
+    else if(p.result==='push')showToast('Pick graded: push — stake returned');
   });
 
   // Personal: someone tailed my pick

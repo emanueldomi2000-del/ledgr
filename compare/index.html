@@ -9,15 +9,12 @@
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
-
-
+:root{--bl:#38bdf8}
 
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 
 /* ── MAIN ── */
 .main{max-width:1060px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-
 /* ── HERO ── */
 .cmp-hero{text-align:center;padding:40px 0 48px;position:relative}
 .cmp-hero-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:5px;text-transform:uppercase;margin-bottom:14px}
@@ -68,7 +65,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @keyframes bolt-flash{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.9)}}
 .vs-bolt:nth-child(3){animation-delay:.6s}
 .vs-text{font-family:var(--font-display);font-size:42px;letter-spacing:3px;color:var(--gold);text-shadow:0 0 24px rgba(251,191,36,.5);line-height:1}
-.battle-btn{background:linear-gradient(135deg,var(--ac),#7c3aed);color:#fff;border:none;border-radius:10px;padding:12px 16px;font-family:var(--font-display);font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .2s;white-space:nowrap;margin-top:8px;box-shadow:0 0 24px rgba(184,159,255,.2)}
+.battle-btn{background:linear-gradient(135deg,var(--ac),var(--ac-vivid));color:#fff;border:none;border-radius:10px;padding:12px 16px;font-family:var(--font-display);font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .2s;white-space:nowrap;margin-top:8px;box-shadow:0 0 24px rgba(184,159,255,.2)}
 .battle-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 32px rgba(184,159,255,.35)}
 .battle-btn:disabled{opacity:.35;cursor:not-allowed;background:var(--mu)}
 
@@ -156,13 +153,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .empty-state h3{font-family:var(--font-display);font-size:28px;letter-spacing:2px;color:var(--mu2);margin-bottom:8px}
 .empty-state p{font-size:13px;color:var(--mu2);line-height:1.7;max-width:380px;margin:0 auto}
 
-@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 .skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s linear infinite;display:inline-block}
 
 @media(max-width:800px){
-  nav{padding:0 16px}
-  .nav-link{display:none}
-  .mobile-menu-btn{display:block}
   .arena{grid-template-columns:1fr;gap:12px}
   .vs-zone{flex-direction:row;justify-content:center;padding-top:0;gap:12px}
   .battle-btn{margin-top:0}
@@ -192,7 +185,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <!-- Side A -->
     <div class="selector-side">
       <div class="selected-slot empty" id="slotA">
-        <div class="slot-empty-icon">👤</div>
+        <div class="slot-empty-icon">—</div>
         <div class="slot-empty-text">Select Tipster A</div>
       </div>
       <div class="tipster-search"><input type="search" placeholder="Search tipster..." id="searchA" oninput="filterGrid('A',this.value)"></div>
@@ -201,16 +194,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
     <!-- VS -->
     <div class="vs-zone">
-      <div class="vs-bolt">⚡</div>
+      <div class="vs-bolt">✦</div>
       <div class="vs-text">VS</div>
-      <div class="vs-bolt">⚡</div>
+      <div class="vs-bolt">✦</div>
       <button class="battle-btn" id="battleBtn" onclick="runComparison()" disabled>BATTLE →</button>
     </div>
 
     <!-- Side B -->
     <div class="selector-side">
       <div class="selected-slot empty" id="slotB">
-        <div class="slot-empty-icon">👤</div>
+        <div class="slot-empty-icon">—</div>
         <div class="slot-empty-text">Select Tipster B</div>
       </div>
       <div class="tipster-search"><input type="search" placeholder="Search tipster..." id="searchB" oninput="filterGrid('B',this.value)"></div>
@@ -230,15 +223,6 @@ const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135de
 let allPicks = [], allTipsters = [];
 let selectedA = null, selectedB = null;
 
-function logout() { localStorage.clear(); window.location.href = '/login'; }
-function goToProfile() { const u = localStorage.getItem('username'); if (u) window.location.href = '/tipster?u=' + u; }
-
-
-
-(function() {
-  const u = localStorage.getItem('username');
-  if (u) { const ub = document.getElementById('userBadge'); if (ub) ub.textContent = '@' + u; const sn = document.getElementById('slideName'); if (sn) sn.textContent = '@' + u; const sa = document.getElementById('slideAvatar'); if (sa) sa.textContent = u[0].toUpperCase(); }
-})();
 
 function calcStats(picks) {
   const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
@@ -326,7 +310,7 @@ function clearSlot(side) {
   else selectedB = null;
   const slot = document.getElementById('slot' + side);
   slot.className = 'selected-slot empty';
-  slot.innerHTML = `<div class="slot-empty-icon">👤</div><div class="slot-empty-text">Select Tipster ${side}</div>`;
+  slot.innerHTML = `<div class="slot-empty-icon">—</div><div class="slot-empty-text">Select Tipster ${side}</div>`;
   document.getElementById('battleBtn').disabled = true;
   renderGrid('A'); renderGrid('B');
 }
@@ -464,8 +448,8 @@ function runComparison() {
     <div class="verdict-wrap ${verdictBgClass[winnerSide]}">
       <div class="verdict-particles" id="vdConf"></div>
       ${winner !== 'TIE'
-        ? `<div class="verdict-label">🏆 WINNER BY ${Math.max(aWins, bWins)} CATEGORIES</div>
-           <div class="verdict-crown">👑</div>
+        ? `<div class="verdict-label">WINNER BY ${Math.max(aWins, bWins)} CATEGORIES</div>
+           <div class="verdict-crown">★</div>
            <div class="verdict-name ${verdictNameClass[winnerSide]}">@${winner}</div>
            <div class="verdict-margin">Beats @${winner === selectedA ? selectedB : selectedA} in ${Math.max(aWins, bWins)} of ${cats.length} head-to-head stats</div>
            <div class="verdict-stats">
@@ -473,14 +457,14 @@ function runComparison() {
              <div class="vd-st"><div class="vd-val">${winnerStats.wr.toFixed(0)}%</div><div class="vd-lbl">Win Rate</div></div>
              <div class="vd-st"><div class="vd-val" style="color:${winnerStats.pnl>=0?'var(--gr)':'var(--rd)'}">${winnerStats.pnl>=0?'+':'-'}€${Math.abs(winnerStats.pnl).toFixed(0)}</div><div class="vd-lbl">P&L</div></div>
              <div class="vd-st"><div class="vd-val">${winnerStats.picks}</div><div class="vd-lbl">Picks</div></div>
-             ${winnerStats.streak>=3?`<div class="vd-st"><div class="vd-val" style="color:var(--orange)">🔥 W${winnerStats.streak}</div><div class="vd-lbl">Streak</div></div>`:''}
+             ${winnerStats.streak>=3?`<div class="vd-st"><div class="vd-val" style="color:var(--orange)">W${winnerStats.streak}</div><div class="vd-lbl">Streak</div></div>`:''}
            </div>`
         : `<div class="verdict-label">RESULT</div>
            <div class="verdict-name" style="color:var(--mu2)">IT'S A TIE!</div>
            <div class="verdict-margin">Both tipsters tied across all ${cats.length} categories</div>`}
       <div class="verdict-actions">
         ${winner !== 'TIE' ? `<a href="/tipster?u=${winner}" class="va-btn va-btn-primary">View @${winner}'s Profile →</a>` : ''}
-        <button class="va-btn va-btn-secondary" onclick="shareComparison('${selectedA}','${selectedB}',${JSON.stringify(sA)},${JSON.stringify(sB)},'${winner}')">📸 Share as Image</button>
+        <button class="va-btn va-btn-secondary" onclick="shareComparison('${selectedA}','${selectedB}',${JSON.stringify(sA)},${JSON.stringify(sB)},'${winner}')">Share as Image</button>
       </div>
     </div>
 

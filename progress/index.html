@@ -200,13 +200,13 @@ const USER_ID  = _u ? _u.id : '';
 
 // ELO tier system
 const ELO_TIERS = [
-  { name:'BRONZE',    min:0,    max:1000, color:'#b47850', bannerCls:'hero-banner-bronze', ringCls:'hring-bronze', icon:'🥉' },
-  { name:'SILVER',    min:1000, max:1400, color:'#94a3b8', bannerCls:'hero-banner-silver', ringCls:'hring-silver', icon:'🥈' },
-  { name:'GOLD',      min:1400, max:1800, color:'#fbbf24', bannerCls:'hero-banner-gold',   ringCls:'hring-gold',   icon:'🏆' },
-  { name:'PLATINUM',  min:1800, max:2200, color:'#38bdf8', bannerCls:'hero-banner-platinum',ringCls:'hring-platinum',icon:'⚡' },
-  { name:'DIAMOND',   min:2200, max:2800, color:'#b89fff', bannerCls:'hero-banner-diamond', ringCls:'hring-diamond', icon:'💎' },
-  { name:'ELITE',     min:2800, max:3400, color:'#e879a0', bannerCls:'hero-banner-elite',   ringCls:'hring-elite',   icon:'🔱' },
-  { name:'LEGENDARY', min:3400, max:4000, color:'#fbbf24', bannerCls:'hero-banner-legendary',ringCls:'hring-legendary',icon:'🐐' },
+  { name:'BRONZE',    min:0,    max:1000, color:'#b47850', bannerCls:'hero-banner-bronze', ringCls:'hring-bronze', icon:'▲' },
+  { name:'SILVER',    min:1000, max:1400, color:'#94a3b8', bannerCls:'hero-banner-silver', ringCls:'hring-silver', icon:'◆' },
+  { name:'GOLD',      min:1400, max:1800, color:'#fbbf24', bannerCls:'hero-banner-gold',   ringCls:'hring-gold',   icon:'★' },
+  { name:'PLATINUM',  min:1800, max:2200, color:'#38bdf8', bannerCls:'hero-banner-platinum',ringCls:'hring-platinum',icon:'⬡' },
+  { name:'DIAMOND',   min:2200, max:2800, color:'#b89fff', bannerCls:'hero-banner-diamond', ringCls:'hring-diamond', icon:'✦' },
+  { name:'ELITE',     min:2800, max:3400, color:'#e879a0', bannerCls:'hero-banner-elite',   ringCls:'hring-elite',   icon:'⊕' },
+  { name:'LEGENDARY', min:3400, max:4000, color:'#fbbf24', bannerCls:'hero-banner-legendary',ringCls:'hring-legendary',icon:'◉' },
 ];
 
 function getEloTier(elo) {
@@ -764,13 +764,13 @@ function animateRadar() {
 
 function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
   const DIV_REWARDS = {
-    BRONZE:   { icon:'🥉', label:'Basic Badge', color:'#b47850' },
-    SILVER:   { icon:'🥈', label:'Profile Border', color:'#94a3b8' },
-    GOLD:     { icon:'🏆', label:'Gold Name', color:'#fbbf24' },
-    PLATINUM: { icon:'⚡', label:'Animated Ring', color:'#38bdf8' },
-    DIAMOND:  { icon:'💎', label:'Particle FX', color:'#b89fff' },
-    ELITE:    { icon:'🔱', label:'Elite Aura', color:'#e879a0' },
-    LEGENDARY:{ icon:'🐐', label:'HOF Entry', color:'#fbbf24' },
+    BRONZE:   { icon:'▲', label:'Basic Badge', color:'#b47850' },
+    SILVER:   { icon:'◆', label:'Profile Border', color:'#94a3b8' },
+    GOLD:     { icon:'★', label:'Gold Name', color:'#fbbf24' },
+    PLATINUM: { icon:'⬡', label:'Animated Ring', color:'#38bdf8' },
+    DIAMOND:  { icon:'✦', label:'Particle FX', color:'#b89fff' },
+    ELITE:    { icon:'⊕', label:'Elite Aura', color:'#e879a0' },
+    LEGENDARY:{ icon:'◉', label:'HOF Entry', color:'#fbbf24' },
   };
   const divOrder = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
   const currentDivIdx = divOrder.indexOf(divisionName);

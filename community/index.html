@@ -113,9 +113,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .room-name{font-size:11px}
   .room-count{display:none}
   /* Chat input — fixed above bottom nav */
-  .input-area{position:fixed;bottom:64px;left:0;right:0;padding:8px 16px;background:#121212;z-index:10;border-top:1px solid var(--bd)}
+  .input-area{position:fixed;bottom:var(--nav-h,60px);left:0;right:0;padding:8px 16px;background:#121212;z-index:10;border-top:1px solid var(--bd)}
   /* Messages scroll area */
-  .messages-wrap{height:calc(100dvh - 180px);flex:none;overflow-y:auto;padding-bottom:calc(64px + 58px + 8px)}
+  .messages-wrap{height:calc(100dvh - 180px);flex:none;overflow-y:auto;padding-bottom:calc(var(--nav-h,60px) + 58px + 8px)}
 }
 </style>
 </head>
@@ -154,7 +154,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
     <div class="messages-wrap" id="messagesWrap">
       <div class="empty-chat">
-        <div class="icon">💬</div>
+        <div class="icon">▷</div>
         <div>Select a room to start chatting</div>
       </div>
     </div>
@@ -180,10 +180,10 @@ const AV_COLORS = [
   'linear-gradient(135deg,#7c3aed,#ec4899)'
 ];
 const ROOM_ICONS = {
-  'General':'💬','Soccer':'⚽','NBA':'🏀','Tennis':'🎾',
-  'NFL':'🏈','MMA':'🥊','Picks Discussion':'📌'
+  'General':'▸','Soccer':'▸','NBA':'▸','Tennis':'▸',
+  'NFL':'▸','MMA':'▸','Picks Discussion':'▸'
 };
-const SPORT_EMOJIS = {Soccer:'⚽',Basketball:'🏀',Tennis:'🎾',Football:'🏈','MMA/Boxing':'🥊'};
+const SPORT_LABELS = {Soccer:'Soccer',Basketball:'Basketball',Tennis:'Tennis',Football:'Football','MMA/Boxing':'MMA/Boxing'};
 
 let user = null, token = null;
 let ws = null, wsReady = false;
@@ -266,17 +266,17 @@ async function loadRooms() {
     renderRooms();
     if (rooms.length) selectRoom(rooms[0]);
     else document.getElementById('roomsList').innerHTML =
-      '<div style="padding:16px;font-family:\'DM Mono\',monospace;font-size:10px;color:var(--mu)">No rooms yet</div>';
+      '<div style="padding:16px;font-family:var(--font-mono);font-size:10px;color:var(--mu)">No rooms yet</div>';
   } catch(e) {
     document.getElementById('roomsList').innerHTML =
-      '<div style="padding:16px;font-family:\'DM Mono\',monospace;font-size:10px;color:var(--rd)">Could not load rooms</div>';
+      '<div style="padding:16px;font-family:var(--font-mono);font-size:10px;color:var(--rd)">Could not load rooms</div>';
   }
 }
 
 function renderRooms() {
   const list = document.getElementById('roomsList');
   list.innerHTML = rooms.map(r => {
-    const icon  = ROOM_ICONS[r.name] || '💬';
+    const icon  = ROOM_ICONS[r.name] || '▸';
     const count = r._count?.messages || 0;
     const active = r.id === currentRoomId;
     return `<button class="room-btn ${active ? 'active' : ''}" data-room-id="${r.id}">
@@ -302,7 +302,7 @@ async function selectRoom(room) {
   renderRooms();
 
   document.getElementById('chatRoomName').textContent = room.name.toUpperCase();
-  const sport = room.sport ? (SPORT_EMOJIS[room.sport] || '') + ' ' + room.sport : 'General discussion';
+  const sport = room.sport ? (SPORT_LABELS[room.sport] || room.sport) : 'General discussion';
   document.getElementById('chatRoomSport').textContent = sport;
 
   // Enable input if logged in
@@ -330,7 +330,7 @@ async function selectRoom(room) {
     scrollToBottom(true);
   } catch(e) {
     document.getElementById('messagesWrap').innerHTML =
-      '<div class="empty-chat"><div class="icon">⚠️</div><div>Could not load messages.<br>Backend may be offline.</div></div>';
+      '<div class="empty-chat"><div class="icon">!</div><div>Could not load messages.<br>Backend may be offline.</div></div>';
   }
 }
 
@@ -369,7 +369,7 @@ function linkify(text) {
 function renderMessages(msgs) {
   const wrap = document.getElementById('messagesWrap');
   if (!msgs.length) {
-    wrap.innerHTML = '<div class="empty-chat"><div class="icon">💬</div><div>No messages yet.<br>Be the first to say something!</div></div>';
+    wrap.innerHTML = '<div class="empty-chat"><div class="icon">▷</div><div>No messages yet.<br>Be the first to say something!</div></div>';
     return;
   }
   let html = '';
@@ -471,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── Misc ──────────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0d0b18;border:1px solid rgba(184,159,255,0.2);color:#f0edff;padding:10px 20px;border-radius:10px;font-family:\'DM Mono\',monospace;font-size:11px;z-index:9000;animation:la-badge-anim 2.5s ease forwards';
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0d0b18;border:1px solid rgba(184,159,255,0.2);color:#f0edff;padding:10px 20px;border-radius:10px;font-family:var(--font-mono);font-size:11px;z-index:9000;animation:la-badge-anim 2.5s ease forwards';
   t.textContent = msg;
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2600);

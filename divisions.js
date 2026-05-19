@@ -104,13 +104,13 @@
   // ── Division definitions ─────────────────────────────────────────
   // Ordered highest→lowest for lookup
   const DEFS = [
-    { name:'LEGENDARY', icon:'🐐', cls:'div-legend',   wrapCls:'div-wrap-legendary', pillCls:'dv-pill-legendary', color:'#fbbf24', particles:6, partCls:'div-part-legend', min:92 },
-    { name:'ELITE',     icon:'🔱', cls:'div-elite',    wrapCls:'div-wrap-elite',     pillCls:'dv-pill-elite',     color:'#e879a0', particles:4, partCls:'div-part-elite',  min:80 },
-    { name:'DIAMOND',   icon:'💎', cls:'div-diamond',  wrapCls:'div-wrap-diamond',   pillCls:'dv-pill-diamond',   color:'#b89fff', particles:0,                             min:65 },
-    { name:'PLATINUM',  icon:'⚡', cls:'div-platinum', wrapCls:'div-wrap-platinum',  pillCls:'dv-pill-platinum',  color:'#38bdf8', particles:0,                             min:50 },
-    { name:'GOLD',      icon:'🏆', cls:'div-gold',     wrapCls:'div-wrap-gold',      pillCls:'dv-pill-gold',      color:'#fbbf24', particles:0,                             min:35 },
-    { name:'SILVER',    icon:'🥈', cls:'div-silver',   wrapCls:'div-wrap-silver',    pillCls:'dv-pill-silver',    color:'#94a3b8', particles:0,                             min:20 },
-    { name:'BRONZE',    icon:'🥉', cls:'div-bronze',   wrapCls:'div-wrap-bronze',    pillCls:'dv-pill-bronze',    color:'#b47850', particles:0,                             min:0  },
+    { name:'LEGENDARY', icon:'◉', cls:'div-legend',   wrapCls:'div-wrap-legendary', pillCls:'dv-pill-legendary', color:'#fbbf24', particles:6, partCls:'div-part-legend', min:92 },
+    { name:'ELITE',     icon:'⊕', cls:'div-elite',    wrapCls:'div-wrap-elite',     pillCls:'dv-pill-elite',     color:'#e879a0', particles:4, partCls:'div-part-elite',  min:80 },
+    { name:'DIAMOND',   icon:'✦', cls:'div-diamond',  wrapCls:'div-wrap-diamond',   pillCls:'dv-pill-diamond',   color:'#b89fff', particles:0,                             min:65 },
+    { name:'PLATINUM',  icon:'⬡', cls:'div-platinum', wrapCls:'div-wrap-platinum',  pillCls:'dv-pill-platinum',  color:'#38bdf8', particles:0,                             min:50 },
+    { name:'GOLD',      icon:'★', cls:'div-gold',     wrapCls:'div-wrap-gold',      pillCls:'dv-pill-gold',      color:'#fbbf24', particles:0,                             min:35 },
+    { name:'SILVER',    icon:'◆', cls:'div-silver',   wrapCls:'div-wrap-silver',    pillCls:'dv-pill-silver',    color:'#94a3b8', particles:0,                             min:20 },
+    { name:'BRONZE',    icon:'▲', cls:'div-bronze',   wrapCls:'div-wrap-bronze',    pillCls:'dv-pill-bronze',    color:'#b47850', particles:0,                             min:0  },
   ];
 
   // ── Score & division lookup ──────────────────────────────────────

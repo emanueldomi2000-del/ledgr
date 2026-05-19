@@ -321,6 +321,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Loading profile...</div>
 </div>
 <script src="/divisions.js"></script>
+<script src="/archetypes-dict.js"></script>
 <script src="/flow.js"></script>
 <script src="/archetypes.js"></script>
 <script src="/follows.js"></script>
@@ -565,13 +566,13 @@ function getDivision(picks){
   const roi=stake>0?(pnl/stake)*100:0;
   const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
   const score=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
-  if(score>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'🐐'};
-  if(score>=80)return{name:'ELITE',cls:'div-elite',icon:'🔱'};
-  if(score>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'💎'};
-  if(score>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⚡'};
-  if(score>=35)return{name:'GOLD',cls:'div-gold',icon:'🏆'};
-  if(score>=20)return{name:'SILVER',cls:'div-silver',icon:'🥈'};
-  return{name:'BRONZE',cls:'div-bronze',icon:'🥉'};
+  if(score>=92)return{name:'LEGENDARY',cls:'div-legend',icon:'◉'};
+  if(score>=80)return{name:'ELITE',cls:'div-elite',icon:'⊕'};
+  if(score>=65)return{name:'DIAMOND',cls:'div-diamond',icon:'✦'};
+  if(score>=50)return{name:'PLATINUM',cls:'div-platinum',icon:'⬡'};
+  if(score>=35)return{name:'GOLD',cls:'div-gold',icon:'★'};
+  if(score>=20)return{name:'SILVER',cls:'div-silver',icon:'◆'};
+  return{name:'BRONZE',cls:'div-bronze',icon:'▲'};
 }
 function getDNATags(picks){
   const tags=[];
@@ -589,19 +590,6 @@ function getDNATags(picks){
   if(avgOdds>=3.0&&picks.length>=10)tags.push({icon:'🎲',label:'Aggressive',cls:'aggressive'});
   return tags.slice(0,3);
 }
-const ARCHETYPES={
-  'sniper':{icon:'🎯',name:'The Sniper',color:'#34d399'},
-  'demon':{icon:'😈',name:'The Demon',color:'#f87171'},
-  'grinder':{icon:'⚙️',name:'The Grinder',color:'#b89fff'},
-  'sharp':{icon:'📐',name:'The Sharp',color:'#38bdf8'},
-  'value-hunter':{icon:'💎',name:'The Value Hunter',color:'#fbbf24'},
-  'lock-machine':{icon:'🔒',name:'The Lock Machine',color:'#94a3b8'},
-  'ice-cold':{icon:'🧊',name:'The Ice Cold',color:'#38bdf8'},
-  'profit-farmer':{icon:'🌾',name:'The Profit Farmer',color:'#34d399'},
-  'underdog-king':{icon:'👑',name:'The Underdog King',color:'#fbbf24'},
-  'data-nerd':{icon:'📊',name:'The Data Nerd',color:'#b89fff'},
-  'momentum-monster':{icon:'🔥',name:'The Momentum Monster',color:'#fb923c'},
-};
 
 function divisionRingCls(divName){
   const n=(divName||'').toUpperCase();
@@ -800,7 +788,7 @@ async function loadProfile(){
       ?`<div class="reliability-box"><div class="rel-score" style="color:var(--mu)">—</div><div><div class="rel-label">Reliability Score</div><div class="rel-needs">Need ${needsN} more picks to unlock</div></div></div>`
       :`<div class="reliability-box"><div class="rel-score" style="color:${color}">${score}</div><div><div class="rel-label">Reliability Score</div><div class="rel-bar"><div class="rel-fill" style="width:${score}%;background:${color}"></div></div><div class="rel-desc">${desc}</div></div></div>`;
 
-    const arch=profileCfg.archetype?ARCHETYPES[profileCfg.archetype]:null;
+    const arch=profileCfg.archetype&&window.resolveArchetype?window.resolveArchetype(profileCfg.archetype):null;
     const bannerGradient=BANNER_GRADIENTS[profileCfg.banner]||BANNER_GRADIENTS['default'];
     const borderRingCls=profileCfg.border==='pulse'?'ring-pulse':profileCfg.border==='gold'?'ring-gold':profileCfg.border==='fire'?'ring-fire':profileCfg.border==='diamond'?'ring-diamond':profileCfg.border==='legend'?'ring-legend':'';
     const favSports=profileCfg.favSports&&profileCfg.favSports.length?profileCfg.favSports:[];
@@ -815,7 +803,7 @@ async function loadProfile(){
 
     const divObj=rankingMeta&&rankingMeta.division
       ? (() => {
-          const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'🐐'},ELITE:{name:'ELITE',cls:'div-elite',icon:'🔱'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'💎'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⚡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'🏆'},SILVER:{name:'SILVER',cls:'div-silver',icon:'🥈'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'🥉'}};
+          const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};
           return D[rankingMeta.division] || getDivision(allPicks);
         })()
       : getDivision(allPicks);

@@ -198,7 +198,7 @@ body::before{content:'';position:fixed;inset:0;
 .legend-card:hover{background:#100d1c}
 .legend-rank{font-family:var(--font-display);font-size:52px;line-height:1;
   color:rgba(251,191,36,.1);margin-bottom:-10px}
-.legend-av{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;
+.legend-av{width:64px;height:64px;border-radius:var(--r-lg,14px);margin:0 auto 14px;
   display:flex;align-items:center;justify-content:center;
   font-family:var(--font-display);font-size:24px;color:#fff;
   box-shadow:0 0 24px rgba(251,191,36,.3)}
@@ -251,7 +251,6 @@ body::before{content:'';position:fixed;inset:0;
 .section-empty p{font-size:11px;font-family:var(--font-mono);line-height:1.7;max-width:340px;margin:0 auto}
 
 /* ── SKELETON ── */
-@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 .skel{border-radius:8px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s linear infinite}
 
 /* ── RESPONSIVE ── */
@@ -261,9 +260,6 @@ body::before{content:'';position:fixed;inset:0;
   .legend-grid{grid-template-columns:1fr 1fr}
 }
 @media(max-width:600px){
-  nav{padding:0 16px}
-  .nav-link{display:none}
-  .mobile-menu-btn{display:block}
   .sc-grid{grid-template-columns:1fr}
   .rec-grid{grid-template-columns:1fr}
   .legend-grid{grid-template-columns:1fr}
@@ -295,7 +291,7 @@ body::before{content:'';position:fixed;inset:0;
   <div class="hero-wrap">
     <div class="hero-particles" id="heroParticles"></div>
     <div class="hero-eyebrow">LEDGR · EST. 2024</div>
-    <div class="hero-crown">👑</div>
+    <div class="hero-crown">★</div>
     <div class="hero-title">HALL <span class="hero-of">OF</span><br>FAME</div>
     <div class="hero-sub">Where Legends Are Made</div>
     <div class="hero-divider"></div>
@@ -311,7 +307,7 @@ body::before{content:'';position:fixed;inset:0;
   <div class="mon-head">
     <div class="mon-head-line">
       <div class="mon-head-rule"></div>
-      <div class="mon-head-icon">👑</div>
+      <div class="mon-head-icon">★</div>
       <div class="mon-head-text">SEASON <span>CHAMPIONS</span></div>
       <div class="mon-head-rule"></div>
     </div>
@@ -327,7 +323,7 @@ body::before{content:'';position:fixed;inset:0;
   <div class="mon-head">
     <div class="mon-head-line">
       <div class="mon-head-rule"></div>
-      <div class="mon-head-icon">🏺</div>
+      <div class="mon-head-icon">◆</div>
       <div class="mon-head-text">ALL-TIME <span>RECORDS</span></div>
       <div class="mon-head-rule"></div>
     </div>
@@ -346,7 +342,7 @@ body::before{content:'';position:fixed;inset:0;
   <div class="mon-head">
     <div class="mon-head-line">
       <div class="mon-head-rule"></div>
-      <div class="mon-head-icon">🐐</div>
+      <div class="mon-head-icon">◉</div>
       <div class="mon-head-text">LEDGR <span>LEGENDS</span></div>
       <div class="mon-head-rule"></div>
     </div>
@@ -362,7 +358,7 @@ body::before{content:'';position:fixed;inset:0;
   <div class="mon-head">
     <div class="mon-head-line">
       <div class="mon-head-rule"></div>
-      <div class="mon-head-icon">📜</div>
+      <div class="mon-head-icon">▲</div>
       <div class="mon-head-text">WALL OF <span>FAME</span></div>
       <div class="mon-head-rule"></div>
     </div>
@@ -391,18 +387,6 @@ const AV_COLORS = [
 ];
 
 // ── Helpers ──────────────────────────────────────────────────
-function logout() { localStorage.clear(); window.location.href = '/login'; }
-function goToProfile() { const u = localStorage.getItem('username'); if (u) window.location.href = '/tipster?u=' + u; }
-
-
-
-(function initNav() {
-  const u = localStorage.getItem('username');
-  const ub = document.getElementById('userBadge');
-  const sn = document.getElementById('slideName');
-  const sa = document.getElementById('slideAvatar');
-  if (u) { if (ub) ub.textContent = '@' + u; if (sn) sn.textContent = '@' + u; if (sa) sa.textContent = u[0].toUpperCase(); }
-})();
 
 // ── Floating gold particles in hero ─────────────────────────
 (function spawnParticles() {
@@ -451,22 +435,22 @@ function calcStats(picks) {
 }
 
 function getDivTag(score) {
-  if (score >= 92) return '🐐 LEGENDARY';
-  if (score >= 80) return '🔱 ELITE';
-  if (score >= 65) return '💎 DIAMOND';
-  if (score >= 50) return '⚡ PLATINUM';
-  if (score >= 35) return '🏆 GOLD';
-  if (score >= 20) return '🥈 SILVER';
-  return '🥉 BRONZE';
+  if (score >= 92) return '◉ LEGENDARY';
+  if (score >= 80) return '⊕ ELITE';
+  if (score >= 65) return '✦ DIAMOND';
+  if (score >= 50) return '⬡ PLATINUM';
+  if (score >= 35) return '★ GOLD';
+  if (score >= 20) return '◆ SILVER';
+  return '▲ BRONZE';
 }
 
 function getBadges(s) {
   const b = [];
-  if (s.maxStreak >= 5) b.push('🔥');
-  if (s.roi >= 20 && s.picks >= 30) b.push('💎');
-  if (s.wr >= 60 && s.settled >= 20) b.push('🎯');
-  if (s.picks >= 100) b.push('👑');
-  if (s.avgCLV >= 3 && s.clvCount >= 10) b.push('⚡');
+  if (s.maxStreak >= 5) b.push('STREAK');
+  if (s.roi >= 20 && s.picks >= 30) b.push('ROI+');
+  if (s.wr >= 60 && s.settled >= 20) b.push('SHARP');
+  if (s.picks >= 100) b.push('VETERAN');
+  if (s.avgCLV >= 3 && s.clvCount >= 10) b.push('CLV+');
   return b;
 }
 

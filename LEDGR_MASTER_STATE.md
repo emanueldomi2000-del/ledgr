@@ -109,11 +109,11 @@ News
 
 3. ✅ FIXED (B3) — Tipster visual upgrade complete: archetype hero card, streak glow chip, subscribe primary CTA, trophy shelf, banner marks, win card prestige, momentum bar, breadcrumb navigation. ARCHETYPES dict upgraded to prestige system v2.
 
-4. Login/signup flow inconsistent
+4. ✅ FIXED (B4) — Register page (/register/) now matches /login/ flow: wake bar for cold-start UX, fetchWithTimeout (25s), AbortError handling, and consistent validation messages. Username regex validation also added.
 
 5. ✅ FIXED (B5) — autoVerify.js grading engine complete: MLB, push, void, admin override, settlement visibility. Schema migration: autoVerify-schema.sql. Deploy to Railway + run migration to activate.
 
-6. Push handling missing
+6. ✅ FIXED (B6) — Push notification toggle in settings now wired to Push.subscribe()/Push.unsubscribe(). push.js loaded on settings page. Toggle reflects actual browser subscription state on load. Handles: unsupported browser, permission denied, enable/disable with loading state + toast feedback.
 
 7. Void handling missing
 
@@ -231,7 +231,7 @@ Remaining (Sprint 2+):
 
 Production readiness: 93%.
 
-All trust chain fixes applied (WP-1 through WP-10, except rank_up/WP-9 deferred):
+All trust chain fixes applied (WP-1 through WP-10):
 - autoVerify.js: affectedRows guard, adminOverride, streakType in prevSnapshot ✅
 - backend-ws-events.js: division_up SELECT, streak/milestone prevSnapshot shape ✅
 - backend-picks-endpoints.js: WP-5 top-level fields, WP-8 dedup guard, per-user limit ✅
@@ -251,7 +251,7 @@ Phase 1 finalization complete: PHASE1_FINAL_REPORT.md written.
 5. **Community: fix mobile sidebar** (collapse to room selector on mobile)
 6. **News: add empty/error state**
 7. Smoke test: post pick → /admin/grading/run → verify grade + notification + rankings
-8. WP-9: add rank column to user_rankings, wire rank_up/rank_change events
+8. ✅ FIXED (WP-9) — rank_up/rank_change events wired: prevSnapshot query in autoVerify.js and rows query in backend-ws-events.js now include rank via COUNT(*)+1 subquery. No schema migration needed — rank computed at query time.
 9. B2: Archetypes manually selectable
 10. B6: Push notification delivery confirmation
 

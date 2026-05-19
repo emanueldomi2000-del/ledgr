@@ -1,75 +1,77 @@
 # LAST TASK
 
-Date: 2026-05-18
+Date: 2026-05-19
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Home Page Identity Conversion ✅ COMPLETE
+Current objective: Sprint 4 Remaining ✅ COMPLETE
 
 ---
 
-## Last completed: Home Page Identity Conversion
+## Last completed: Sprint 4 Remaining (B4 + B6 + WP-9)
 
-### Goal
-Convert the home page hero section from a marketing landing-page feel to match the application identity of tipster/leaderboard/profile pages. Same spacing rhythm, same card language, same profile hierarchy — no landing-page feeling.
+### B4 — Register page cold-start UX parity
 
----
+**File:** `register/index.html`
 
-### Changes made: home/index.html
-
-#### CSS changes
-
-1. **`.hero-tagline` font size**: `clamp(52px,8vw,100px)` → `clamp(26px,3vw,34px)`. This was the single biggest fix — the 100px Bebas Neue marketing headline was the entire source of the landing-page feeling. At 34px it reads as a dashboard section header/greeting, not a marketing shout.
-
-2. **`.hero-tagline` line metrics**: `line-height:.92;letter-spacing:2px` → `line-height:1.1;letter-spacing:3px` — tighter marketing leading replaced with legible app proportions.
-
-3. **`.hero-eyebrow::before`**: Removed the decorative horizontal line (`display:none`). That line (content:'', width:24px, height:1px) is a pure marketing page decoration — not used anywhere in the app pages.
-
-4. **`.hero` padding**: `padding:64px 0 0;margin-bottom:48px` → `padding:40px 0 0;margin-bottom:36px` — tighter spacing matching app rhythm.
-
-5. **`.hero-layout` padding**: `padding:64px 0 0;margin-bottom:48px` → `padding:32px 0 0;margin-bottom:36px` — outer container tightened.
-
-6. **`.hero-meta` top margin**: `margin-top:24px` → `margin-top:14px`
-
-7. **`.hero-sub` top margin**: `margin-top:16px` → `margin-top:10px`
-
-8. **Mobile override** `@media(max-width:480px)`: `.hero-tagline{font-size:44px}` → `.hero-tagline{font-size:28px}` — was overriding back to 44px on mobile, defeated the purpose.
-
-9. **Added `.hero-arch` CSS block** — archetype identity card styled same as tipster's `.arch-hero` but slightly more compact (16px icon, 15px name, same DM Mono descriptor pattern).
-
-#### HTML changes
-
-- Added `<div id="heroArchHero"></div>` between `.hero-meta` and `.hero-sub` — populated by JS when user has an archetype set.
-
-#### JS changes
-
-- Added `renderHeroArch()` function — reads archetype from `localStorage.getItem('ledgr_profile_'+user.username)`, renders the archetype identity card using the same ARCHETYPES dict as tipster (v2 names). Silently no-ops if no archetype set.
-- Called `renderHeroArch()` at the end of `renderProfileCard()` — runs after profile data has been loaded and cached to localStorage.
+Added to match `/login/` flow:
+- Wake bar HTML + CSS (amber cold-start indicator with animated fill)
+- `showWakeBar()` / `hideWakeBar()` functions
+- `fetchWithTimeout()` with 25s `AbortController` timeout
+- `AbortError` handler → "Server timeout — try again in a moment"
+- Network error handler → "Connection error — check your internet"
+- Username regex validation `^[a-zA-Z0-9_]+$` (was missing)
+- Validation messages normalized to match `/login/` ("Password min 6 characters", etc.)
+- Auth redirect guard now also cleans stale localStorage (JSON parse + id check)
 
 ---
 
-### Before/After summary
+### B6 — Push notification toggle wired to real Push API
 
-| Element | Before | After |
-|---------|--------|-------|
-| Hero tagline | `clamp(52px,8vw,100px)` Bebas Neue — landing page headline | `clamp(26px,3vw,34px)` — dashboard section greeting |
-| Eyebrow decoration | `::before` horizontal line (marketing) | Removed |
-| Hero padding | 64px top (hero-layout) + 64px (hero) | 32px + 40px — tighter app rhythm |
-| Archetype | Not shown on home page | `.hero-arch` card shown if set (icon + name + desc) |
-| Mobile tagline | 44px override (big marketing text) | 28px (app text) |
+**File:** `settings/index.html`
 
----
-
-### UX impact
-
-- **Identity consistency**: Users now move from Home → Tipster → Leaderboard and experience the same visual language throughout. The hero no longer reads as a different product.
-- **Profile hierarchy**: The home page now follows: eyebrow (context) → greeting (brand line, smaller) → division badge + streak → archetype card → performance stats. This mirrors the tipster profile hierarchy.
-- **Zero regression**: All IDs preserved (`heroEyebrow`, `heroTagline`, `divisionBadge`, `streakPill`, `streakText`, `hsROI`, `hsStreak`, `hsRank`, `hsRel`). All WS event handlers intact. All ceremonies (BigWin, division promotion, badge unlock) untouched.
+- Added `<script src="/push.js"></script>` to settings page
+- Changed toggle `onchange` from `savePref('notifications',this.checked)` → `handlePushToggle(this)`
+- Added `initPushToggle()` — called in `window.onload`:
+  - Calls `Push.init()` to register service worker
+  - Sets toggle checked state from `Push.isSubscribed()`
+  - Disables toggle + updates sub-text if `!Push.supported()`
+  - Disables toggle + updates sub-text if `Notification.permission === 'denied'`
+- Added `handlePushToggle(checkbox)`:
+  - **Enable path**: disables toggle, shows "Enabling…" in sub-text, calls `Push.subscribe()`, shows success/failure toast; if permission denied → disables toggle permanently with browser hint
+  - **Disable path**: calls `Push.unsubscribe()`, saves pref, shows toast
 
 ---
 
-### Next: Sprint 4 remaining
+### WP-9 — rank_up / rank_change events wired
 
-1. Login/signup flow consistency (B4)
-2. Push confirmation UX (B6)
-3. WP-9: rank column + rank_up/rank_change events (backend)
+**Files:** `autoVerify.js`, `backend-ws-events.js`
+
+No schema migration needed — rank computed via subquery at read time.
+
+**`autoVerify.js`** — prevSnapshot query:
+```sql
+SELECT ur.division, ur.currentStreak, ur.streakType, ur.totalPicks,
+  (SELECT COUNT(*)+1 FROM user_rankings u2 WHERE u2.elo > ur.elo) AS rank
+FROM user_rankings ur WHERE ur.userId = ? LIMIT 1
+```
+
+**`backend-ws-events.js`** — post-grade rows query:
+```sql
+SELECT ur.currentStreak, ur.streakType, ur.division,
+  (SELECT COUNT(*)+1 FROM user_rankings u2 WHERE u2.elo > ur.elo) AS rank
+FROM user_rankings ur WHERE ur.username = ? LIMIT 1
+```
+
+`rank_up` broadcast fires when `rankNow < prevSnapshot.rank && rankNow <= 20`.
+`rank_change` personal unicast fires to pick owner.
+
+---
+
+## Next tasks
+
+Phase 3 remaining work:
+1. B2: Archetypes manually selectable in settings (currently computed-only)
+2. B7: Void handling UX — user should see "VOID" state with explanation on their pick cards
+3. Deploy to Railway — run autoVerify-schema.sql migration if not yet applied
+4. Smoke test: post pick → /admin/grading/run → verify rank_up fires → push notification delivered
