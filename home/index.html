@@ -991,21 +991,22 @@ window.onload=()=>{
   try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
   if(!user||!user.username){window.location.href='/login';return;}
 
-  document.getElementById('app').style.display='block';
+  const _app=document.getElementById('app');if(_app)_app.style.display='block';
   const _ub=document.getElementById('userBadge');if(_ub)_ub.textContent='@'+user.username;
-  document.getElementById('slideAvatar').textContent=user.username.slice(0,2).toUpperCase();
-  document.getElementById('slideName').textContent='@'+user.username;
   if(window.Push)window.Push.init();
 
-  document.getElementById('heroEyebrow').textContent=user.username.toUpperCase()+'\'S RECORD';
+  const _ey=document.getElementById('heroEyebrow');if(_ey)_ey.textContent=user.username.toUpperCase()+'\'S RECORD';
 
   // Online count set by WS; placeholder until connected
-  document.getElementById('onlineCount').textContent='— online';
+  const _oc=document.getElementById('onlineCount');if(_oc)_oc.textContent='— online';
 
   getLoginStreak();
 
-  document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';
-  window.addEventListener('resize',()=>{document.getElementById('floatingPost').style.display=window.innerWidth<=600?'flex':'none';});
+  const _fp=document.getElementById('floatingPost');
+  if(_fp){
+    _fp.style.display=window.innerWidth<=600?'flex':'none';
+    window.addEventListener('resize',()=>{const fp=document.getElementById('floatingPost');if(fp)fp.style.display=window.innerWidth<=600?'flex':'none';});
+  }
 
   initScrollFade();
   updateNotifBadge();
@@ -1018,11 +1019,15 @@ async function loadChatPreview(){
   const el=document.getElementById('chatPreview');
   if(!el)return;
   try{
-    const rooms=await fetch(API+'/chat/rooms').then(r=>r.json());
+    const roomsRes=await fetch(API+'/chat/rooms').catch(()=>null);
+    if(!roomsRes||!roomsRes.ok){el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">Chat unavailable</div>';return;}
+    const rooms=await roomsRes.json().catch(()=>null);
+    if(!Array.isArray(rooms)){el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">Chat unavailable</div>';return;}
     const general=rooms.find(r=>r.name==='General')||rooms[0];
     if(!general){el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">No rooms yet</div>';return;}
-    const msgs=await fetch(API+'/chat/rooms/'+general.id+'/messages').then(r=>r.json());
-    const last3=msgs.slice(-3);
+    const msgsRes=await fetch(API+'/chat/rooms/'+general.id+'/messages').catch(()=>null);
+    const msgs=msgsRes&&msgsRes.ok?await msgsRes.json().catch(()=>null):null;
+    const last3=Array.isArray(msgs)?msgs.slice(-3):[];
     if(!last3.length){
       el.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">No messages yet — <a href="/community" style="color:var(--ac)">be the first!</a></div>';
       return;
@@ -1049,11 +1054,28 @@ async function loadChatPreview(){
   }
 }
 
+function _renderDataError(){
+  const dash='—';
+  ['statTotal','statWR','statROI','statPnL'].forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=dash;el.className='stat-val';}});
+  ['hsROI','hsStreak','hsRank','hsRel'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dash;});
+  ['idName','idROI','idRank','idStreak','idRel','idRankNum'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dash;});
+  const db=document.getElementById('divisionBadge');if(db)db.innerHTML='<span style="font-size:12px;color:var(--mu)">—</span>';
+  const feed=document.getElementById('communityFeed');if(feed)feed.innerHTML='<div class="empty">Could not load — <a href="" style="color:var(--ac)">Retry</a></div>';
+  const tp=document.getElementById('trendingPicksGrid');if(tp)tp.innerHTML='<div class="empty">—</div>';
+  const rg=document.getElementById('risingGrid');if(rg)rg.innerHTML='<div class="empty" style="font-family:var(--font-mono);font-size:11px;color:var(--mu);padding:20px;text-align:center;grid-column:1/-1">—</div>';
+  const lb=document.getElementById('miniLeaderboard');if(lb)lb.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">—</div>';
+  const mv=document.querySelector('.mvp-wrap');if(mv)mv.style.display='none';
+  const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';
+  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">—</div>';
+}
+
 async function loadData(){
+  const ctrl=new AbortController();
+  const abort=setTimeout(()=>ctrl.abort(),25000);
   try{
     const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
     const [picksRes,profileRes,rankingRes,rankingsListRes]=await Promise.all([
-      fetch(API+'/picks',{cache:'no-store'}),
+      fetch(API+'/picks',{cache:'no-store',signal:ctrl.signal}).catch(()=>null),
       user&&user.username
         ?fetch(API+'/profile/'+user.username,{headers:token?{Authorization:'Bearer '+token}:{}}).catch(()=>null)
         :Promise.resolve(null),
@@ -1062,9 +1084,11 @@ async function loadData(){
         :Promise.resolve(null),
       fetch(API+'/rankings?limit=5',{cache:'no-store'}).catch(()=>null)
     ]);
-    if(!picksRes.ok)throw new Error('err');
-    const all=await picksRes.json();
-    if(!Array.isArray(all))throw new Error('invalid');
+    clearTimeout(abort);
+    if(!picksRes||!picksRes.ok){_renderDataError();return;}
+    let all;
+    try{all=await picksRes.json();}catch(e){_renderDataError();return;}
+    if(!Array.isArray(all)){_renderDataError();return;}
     if(profileRes&&profileRes.ok){
       try{
         const prof=await profileRes.json();
@@ -1081,7 +1105,6 @@ async function loadData(){
         }
       }catch(e){}
     }
-    // Cache ranking metadata for use in render functions
     if(rankingRes&&rankingRes.ok){
       try{window._myRankingMeta=await rankingRes.json();}catch(e){}
     }
@@ -1090,7 +1113,7 @@ async function loadData(){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
     renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all,rankingsTop5);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderRecords(all);
-  }catch(e){document.getElementById('communityFeed').innerHTML='<div class="empty">Syncing feed...</div>';}
+  }catch(e){clearTimeout(abort);_renderDataError();}
 }
 function renderIdentityPanel(myPicks,rank,totalTipsters){
   if(!user)return;
@@ -1177,13 +1200,13 @@ function renderStats(all){
   const stake=my.reduce((s,p)=>s+p.stake,0);const pnl=my.reduce((s,p)=>s+p.pnl,0);
   const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):'0';
   animateCounter('statTotal',my.length);
-  document.getElementById('statWR').textContent=wr+'%';
-  const roiEl=document.getElementById('statROI');roiEl.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';roiEl.className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');
-  const pnlEl=document.getElementById('statPnL');pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');
+  const wrEl=document.getElementById('statWR');if(wrEl)wrEl.textContent=wr+'%';
+  const roiEl=document.getElementById('statROI');if(roiEl){roiEl.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';roiEl.className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
+  const pnlEl=document.getElementById('statPnL');if(pnlEl){pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');}
   const hsR=document.getElementById('hsROI');if(hsR)hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
   const settled=[...my].filter(p=>p.result!=='pending').reverse();let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
   const hsS=document.getElementById('hsStreak');if(hsS)hsS.textContent=st>0?st+'W':'—';
-  if(st>=3){const spEl=document.getElementById('streakPill');spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);document.getElementById('streakText').textContent=st+' WIN STREAK';}
+  if(st>=3){const spEl=document.getElementById('streakPill');if(spEl){spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);}const stEl=document.getElementById('streakText');if(stEl)stEl.textContent=st+' WIN STREAK';}
   let cP=0,cS=0,w2=0,t2=0;const pA=[],rA=[],wA=[],pkA=[];
   my.forEach((p,i)=>{cP+=p.pnl;cS+=p.stake;if(p.result==='win')w2++;if(p.result!=='pending')t2++;pA.push(cP);rA.push(cS>0?(cP/cS)*100:0);wA.push(t2>0?(w2/t2)*100:0);pkA.push(i+1);});
   if(my.length>1){drawSparkline('sp0',pkA,true);drawSparkline('sp1',wA,parseFloat(wr)>=50);drawSparkline('sp2',rA,parseFloat(roi)>=0);drawSparkline('sp3',pA,pnl>=0);}

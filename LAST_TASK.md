@@ -1,6 +1,6 @@
 # LAST TASK
 
-Date: 2026-05-19
+Date: 2026-05-20
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
@@ -65,6 +65,37 @@ FROM user_rankings ur WHERE ur.username = ? LIMIT 1
 
 `rank_up` broadcast fires when `rankNow < prevSnapshot.rank && rankNow <= 20`.
 `rank_change` personal unicast fires to pick owner.
+
+---
+
+---
+
+## Last completed: Home loading fix
+
+**File:** `home/index.html`
+
+**Root cause:** Three failure paths in `loadData()` all routed to a catch block that updated only `#communityFeed`. Every other skeleton element (stats row, identity card, rising grid, leaderboard panel, missions, MVP) stayed frozen permanently. Additionally the `/picks` fetch had no `.catch(()=>null)` — unlike the other three fetches in the same `Promise.all` — so any network error rejected the entire group. Railway cold-start causing `/picks` to hang had no timeout, so the page waited indefinitely.
+
+**Changes made:**
+
+1. **Added `_renderDataError()` function** — clears all skeleton sections atomically: stats row, hero stats, identity card fields, division badge, community feed, trending picks, rising grid, mini leaderboard, MVP wrap, matchup section, daily missions. Each section shows `—` or is hidden instead of hanging.
+
+2. **Fixed `loadData()`:**
+   - Added `AbortController` with 25s timeout (same pattern as login/register) to prevent infinite wait on cold start
+   - Added `.catch(()=>null)` to the `/picks` fetch (was the only one without it in `Promise.all`)
+   - Replaced `if(!picksRes.ok)throw` → `if(!picksRes||!picksRes.ok){_renderDataError();return;}`
+   - Wrapped `picksRes.json()` in try/catch → `_renderDataError();return` instead of throw
+   - Replaced `if(!Array.isArray(all))throw` → `_renderDataError();return`
+   - Replaced catch block `communityFeed.innerHTML=...` → `_renderDataError()`
+
+3. **Fixed `loadChatPreview()`:**
+   - Replaced `.then(r=>r.json())` chain on rooms fetch with proper null/ok guard
+   - Rooms response validated as array before calling `.find()`
+   - Messages fetch guarded with null/ok check; `msgs.slice(-3)` replaced with `Array.isArray(msgs)?msgs.slice(-3):[]`
+
+**Before:** `/picks` network error → Promise.all rejects → catch writes "Syncing feed..." to one div → all skeletons frozen forever. Cold start → infinite loading wait.
+
+**After:** `/picks` failure (network, 4xx/5xx, timeout, malformed JSON) → `_renderDataError()` → all sections show `—` within 25s max. Page always terminates loading.
 
 ---
 
