@@ -133,6 +133,11 @@ select option{background:#15122a}
 .submit-btn{width:100%;padding:15px;background:var(--ac);color:#07060d;border:none;border-radius:10px;font-family:var(--font-display);font-size:20px;letter-spacing:3px;cursor:pointer;transition:all .2s;margin-top:4px}
 .submit-btn:hover{background:#cdb8ff;transform:translateY(-1px);box-shadow:0 8px 24px rgba(184,159,255,0.2)}
 .submit-btn:active{transform:translateY(0)}
+.vis-toggle{display:flex;gap:6px;margin-bottom:10px}
+.vis-btn{flex:1;padding:8px 6px;border:1px solid var(--bd);border-radius:8px;font-size:11px;font-family:var(--font-mono);font-weight:700;cursor:pointer;transition:all .2s;color:var(--mu2);background:transparent;text-align:center}
+.vis-btn:hover{border-color:var(--bd2)}
+.vis-btn.active{border-color:var(--bd2);color:var(--ac);background:var(--acg)}
+.vis-btn.premium.active{border-color:rgba(123,44,255,.5);color:#b89fff;background:rgba(123,44,255,.1)}
 
 /* MY PICKS PANEL */
 .picks-filter-tabs{display:flex;gap:6px;margin-bottom:14px}
@@ -494,6 +499,10 @@ select option{background:#15122a}
         <div style="background:var(--acg);border:1px solid var(--bd2);border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:var(--mu2);font-family:var(--font-mono);margin-top:12px">
           🔒 Picks are locked after posting · Results verified automatically
         </div>
+        <div class="vis-toggle">
+          <button class="vis-btn active" id="visPublic" onclick="setVisibility('PUBLIC',this)">🌐 Public</button>
+          <button class="vis-btn premium" id="visPremium" onclick="setVisibility('PREMIUM',this)">🔒 Premium</button>
+        </div>
         <button class="submit-btn" onclick="postPick()">＋ POST PICK</button>
       </div>
 
@@ -539,7 +548,7 @@ const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null,currentSport='Soccer',currentDateOffset=0,currentLeague='all';
 let allFixtures=[],selectedFixture=null,currentStakeType='units',currentConf='medium';
 let homePlayers=[],awayPlayers=[],homeGK=[],awayGK=[],teamContext={},playerSelections={};
-let allMyPicks=[],currentPickFilter='all';
+let allMyPicks=[],currentPickFilter='all',pickVisibility='PUBLIC';
 
 // Result state → display mapping. Add new states here when backend adds them.
 const RESULT_UI={
@@ -787,6 +796,13 @@ async function selectFixture(f){
   updateBetSlip();
 }
 
+// ── VISIBILITY TOGGLE ──
+function setVisibility(v,el){
+  pickVisibility=v;
+  document.querySelectorAll('.vis-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
 // ── POST PICK ──
 async function postPick(){
   const market=document.getElementById('pickMarket').value.trim();
@@ -799,10 +815,11 @@ async function postPick(){
   if(!selectedFixture){showToast('⚠️ Select a match first!');return;}
   const btn=document.querySelector('.submit-btn');
   btn.textContent='Posting...';btn.disabled=true;
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
   try{
     const r=await fetch(API+'/picks',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},
       body:JSON.stringify({
         userId:user.id,sport:currentSport,
         event:selectedFixture.home+' vs '+selectedFixture.away,
@@ -811,7 +828,8 @@ async function postPick(){
         market,odds,stake,result:'pending',pnl:0,
         stakeType:currentStakeType,
         confidence:currentConf,
-        reasoning:reason||null
+        reasoning:reason||null,
+        visibility:pickVisibility
       })
     });
     const d=await r.json();
@@ -828,6 +846,10 @@ async function postPick(){
       document.getElementById('pickReason').value='';
       document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
       teamContext={};playerSelections={};
+      // reset visibility to PUBLIC after post
+      pickVisibility='PUBLIC';
+      document.getElementById('visPublic').classList.add('active');
+      document.getElementById('visPremium').classList.remove('active');
       renderMarkets(currentSport);filterFixtures();loadPicks();
     }else{showToast('Error: '+(d.error||'Unknown'));}
   }catch(e){showToast('Connection error');}
@@ -865,10 +887,11 @@ function drawROIChart(picks){
 async function loadPicks(){
   const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();},25000);
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal});
+    const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
+    const r=await fetch(API+'/picks?userId='+user.id,{cache:'no-store',signal:_ctrl.signal,headers:{Authorization:'Bearer '+tk}});
     clearTimeout(_xt);
     const picks=await r.json();
-    allMyPicks=picks.filter(p=>p.userId===user.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+    allMyPicks=Array.isArray(picks)?picks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)):[];
     // stats
     const wins=allMyPicks.filter(p=>p.result==='win').length;
     const losses=allMyPicks.filter(p=>p.result==='loss').length;

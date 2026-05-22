@@ -523,10 +523,39 @@ function renderPicks(){
     return;
   }
   c.innerHTML=filtered.map((p,idx)=>{
-    const ui=rui(p.result);
-    const borderCls=ui.cardCls;
     const icon=sportIcon[p.sport]||'🎯';
     const dateStr=new Date(p.createdAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'});
+
+    // Teaser stub — PREMIUM pick, viewer not subscribed
+    if(p._teaser){
+      const ui=rui(p.result);
+      let resultBadge;
+      if(p.result==='pending'){resultBadge=`<span class="result-badge rb-pending"><span class="pending-dot"></span>LIVE</span>`;}
+      else if(p.result==='win'){resultBadge=`<span class="result-badge rb-win">WIN ✓</span>`;}
+      else if(p.result==='loss'){resultBadge=`<span class="result-badge rb-loss">LOSS</span>`;}
+      else if(p.result==='push'){resultBadge=`<span class="result-badge rb-push">PUSH</span>`;}
+      else{resultBadge=`<span class="result-badge rb-void">VOID</span>`;}
+      return`<div class="pick-card ${ui.cardCls} anim-pick" style="animation-delay:${Math.min(idx*30,300)}ms">
+        <div class="pick-top-row">
+          <div class="pick-event-wrap">
+            <div class="pick-event-text">${p.event||'—'}</div>
+            <div class="pick-sport-date">
+              <span class="pick-sport-pill">${icon} ${p.sport}</span>
+              <span class="pick-date-text">${dateStr}</span>
+            </div>
+          </div>
+          ${resultBadge}
+        </div>
+        <div style="background:rgba(123,44,255,0.07);border:1px dashed rgba(123,44,255,0.3);border-radius:8px;padding:16px 14px;text-align:center;margin-top:8px">
+          <div style="font-family:var(--font-display);font-size:17px;letter-spacing:2px;color:#b89fff;margin-bottom:5px">🔒 PREMIUM PICK</div>
+          <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu2);margin-bottom:12px">Subscribe to see market, odds, stake &amp; analysis</div>
+          <button onclick="handleSubscribe()" style="background:#7b2cff;color:#fff;border:none;border-radius:6px;padding:7px 20px;font-family:var(--font-display);font-size:13px;letter-spacing:2px;cursor:pointer">SUBSCRIBE</button>
+        </div>
+      </div>`;
+    }
+
+    const ui=rui(p.result);
+    const borderCls=ui.cardCls;
 
     // Result badge
     let resultBadge;
@@ -995,20 +1024,32 @@ async function loadProfile(){
   if(!username){showNotFound();return;}
   const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>TIMEOUT</h2><p style="color:var(--mu2)">Request timed out. Please refresh.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';},25000);
   try{
-    const [picksRes,profileRes,rankingRes]=await Promise.all([
-      fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal}),
+    // Step 1: fetch profile + rankings in parallel — need rankingMeta.userId before picks
+    const [profileRes,rankingRes]=await Promise.all([
       fetch(API+'/profile/'+username).catch(()=>null),
       fetch(API+'/rankings/'+username).catch(()=>null)
     ]);
     clearTimeout(_xt);
-    const all=await picksRes.json();
-    allPicks=all.filter(p=>p.user&&p.user.username===username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-    let profileCfg=getProfileConfig(username);
 
     // Pre-computed ranking stats — init early so roi/wr/avg can use them
     let rankingMeta=null;
     if(rankingRes&&rankingRes.ok){
       try{rankingMeta=await rankingRes.json();}catch(e){}
+    }
+
+    let profileCfg=getProfileConfig(username);
+
+    // Step 2: fetch this tipster's picks using their userId (server-filtered, visibility-aware)
+    const tipsterUserId=rankingMeta?.userId||null;
+    {
+      const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
+      const picksHeaders=tk?{Authorization:'Bearer '+tk}:{};
+      let allPicksRaw=[];
+      if(tipsterUserId){
+        const pr=await fetch(API+'/picks?userId='+tipsterUserId,{cache:'no-store',signal:_ctrl.signal,headers:picksHeaders}).catch(()=>null);
+        if(pr&&pr.ok){try{allPicksRaw=await pr.json();}catch(e){}}
+      }
+      allPicks=Array.isArray(allPicksRaw)?allPicksRaw.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)):[];
     }
 
     const wins=allPicks.filter(p=>p.result==='win').length;
@@ -1028,7 +1069,6 @@ async function loadProfile(){
     const {badges,streak}=getBadges(allPicks);
     const sharpScore=window.getSharpScore?window.getSharpScore(allPicks):0;
     const autoArchetype=window.getArchetype?window.getArchetype(allPicks):null;
-    const tipsterUserId=allPicks.length>0?allPicks[0].userId:null;
 
     // Merge backend profile (takes priority over localStorage cache)
     if(profileRes&&profileRes.ok){
@@ -1047,16 +1087,8 @@ async function loadProfile(){
       }catch(e){}
     }
 
-    // global rank — use backend rank if available, else compute from picks
-    let rank=0;
-    if(rankingMeta&&rankingMeta.rank){
-      rank=rankingMeta.rank;
-    }else{
-      const tipsterMap={};
-      all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsterMap[u])tipsterMap[u]={pnl:0,stake:0};tipsterMap[u].pnl+=p.pnl;tipsterMap[u].stake+=p.stake;});
-      const sortedAll=Object.entries(tipsterMap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0;const rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
-      rank=sortedAll.findIndex(([u])=>u===username)+1;
-    }
+    // global rank — use authoritative backend value
+    const rank=rankingMeta?.rank||0;
 
     const sports={};allPicks.forEach(p=>{if(!sports[p.sport])sports[p.sport]=0;sports[p.sport]++;});
     const sportList=Object.entries(sports).sort((a,b)=>b[1]-a[1]);

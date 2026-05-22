@@ -4,9 +4,51 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 5 — Logo Integration Pass ✅ COMPLETE
+Current objective: Sprint 6 — Private/Public Picks ✅ COMPLETE
 
 ---
+
+## Last completed: Sprint 6 — Private/Public Picks (2026-05-22)
+
+### Schema
+- `picks-visibility-migration.sql` — `ALTER TABLE picks ADD COLUMN visibility ENUM('PUBLIC','PREMIUM') NOT NULL DEFAULT 'PUBLIC'`
+- Migration already applied to Railway DB. File is repo documentation only.
+
+### Changes
+
+1. **backend-picks-endpoints.js**
+   - `_formatPick()` — exposes `visibility: pick.visibility || 'PUBLIC'`
+   - `POST /picks` — accepts `visibility` in body; sanitized to `PUBLIC`/`PREMIUM`; stored immutably in INSERT
+   - `GET /picks` — optional JWT auth (try-catch, no 401); subscription check via `subscriptions` table (`userId` + `tipsterId` + `status='active'`); global feed (no `?userId`) hardcoded to `PUBLIC` only; per-user fetch returns all picks for own/subscriber, teaser stubs for non-subscribers on PREMIUM picks (`_teaser:true` + masked fields)
+
+2. **dashboard/index.html**
+   - State: `pickVisibility='PUBLIC'` added
+   - CSS: `.vis-toggle`, `.vis-btn`, `.vis-btn.premium.active` added
+   - HTML: `[🌐 Public] [🔒 Premium]` toggle inserted between immutability notice and POST PICK button
+   - `setVisibility(v,el)` function added
+   - `loadPicks()` — now fetches `GET /picks?userId=<id>` with `Authorization: Bearer <token>`; removes client-side `filter(p=>p.userId===user.id)` (server-filtered)
+   - `postPick()` — includes `visibility:pickVisibility` in POST body; resets to PUBLIC after successful post
+
+3. **tipster/index.html**
+   - `loadProfile()` restructured: profile + rankings fetched first in parallel; `tipsterUserId` derived from `rankingMeta.userId`; then picks fetched with `GET /picks?userId=<tipsterUserId>` + optional auth header
+   - Removed buggy `all.filter(p=>p.user&&p.user.username===username)` — picks now server-filtered
+   - Removed `tipsterUserId=allPicks[0].userId` (was always null due to the bug above)
+   - Removed client-side rank fallback that used `p.user.username` (broken) — now uses `rankingMeta.rank || 0`
+   - `renderPicks()` — teaser card branch added for `p._teaser === true`: shows event/sport/date/result + purple locked panel with SUBSCRIBE button
+
+### Smoke test checklist
+1. Dashboard: post pick with `🌐 Public` selected → check DB `visibility='PUBLIC'`
+2. Dashboard: post pick with `🔒 Premium` selected → check DB `visibility='PREMIUM'`
+3. Tipster page: logged out → PREMIUM picks show as teaser cards
+4. Tipster page: logged in, not subscribed → PREMIUM picks show as teaser cards
+5. Tipster page: logged in, subscribed → PREMIUM picks show full card
+6. Tipster page: own profile → PREMIUM picks show full card (own picks)
+7. Global feed (`GET /picks` no userId) → no PREMIUM picks appear
+8. Dashboard `loadPicks` — own PREMIUM picks always visible (own token sent)
+
+---
+
+
 
 ## Last completed: Sprint 5 — Logo Integration Pass (2026-05-22)
 

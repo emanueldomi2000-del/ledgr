@@ -3,13 +3,14 @@
 // Add these routes to your Railway backend Express app.
 //
 // Prerequisites: autoVerify-schema.sql must be run first.
+// Also requires: picks-visibility-migration.sql (adds visibility column).
 //
 // Integration points:
 //   1. autoVerify.js calls applyGrade() to settle picks (do not grade here)
 //   2. After grading: recalcUserRankings(db, userId) is called by autoVerify.js
 //   3. Websocket events: emitPickGraded() is called by autoVerify.js
 //
-// Replace `db`, `router`, `requireAuth` with your actual instances.
+// Replace `db`, `router`, `requireAuth`, `jwt` with your actual instances.
 //
 // IMMUTABILITY RULE: Picks CANNOT be edited or deleted once posted.
 // The only field that changes post-creation is result/pnl/settlement via
@@ -72,6 +73,7 @@ function _formatPick(pick) {
     createdAt:   pick.createdAt,
     settledAt:   pick.settledAt   || null,
     gradedBy:    pick.gradedBy    || null,
+    visibility:  pick.visibility  || 'PUBLIC',
     lockMetadata: {
       odds:      pick.odds,
       stake:     pick.stake,
@@ -86,22 +88,23 @@ function _formatPick(pick) {
 // ─── POST /picks ──────────────────────────────────────────────────────────────
 // Creates an immutable pick. Called by dashboard POST flow.
 // Body: { userId, sport, event, fixtureId, homeTeam, awayTeam, sportKey,
-//         market, odds, stake, stakeType, confidence, reasoning }
+//         market, odds, stake, stakeType, confidence, reasoning, visibility }
 router.post('/picks', requireAuth, async (req, res) => {
   try {
     const u = req.user;
     let {
       userId,
       sport, event,
-      fixtureId  = null,
-      homeTeam   = null,
-      awayTeam   = null,
-      sportKey   = null,
+      fixtureId   = null,
+      homeTeam    = null,
+      awayTeam    = null,
+      sportKey    = null,
       market,
       odds, stake,
-      stakeType  = 'units',
-      confidence = null,
-      reasoning  = null,
+      stakeType   = 'units',
+      confidence  = null,
+      reasoning   = null,
+      visibility  = 'PUBLIC',
     } = req.body;
 
     // Auth: userId in body must match authenticated user
@@ -127,6 +130,7 @@ router.post('/picks', requireAuth, async (req, res) => {
     // Sanitize enums
     if (!VALID_STAKE_TYPES.includes(stakeType)) stakeType = 'units';
     if (confidence && !VALID_CONFIDENCE.includes(confidence)) confidence = null;
+    if (!['PUBLIC', 'PREMIUM'].includes(visibility)) visibility = 'PUBLIC';
 
     // Truncate free-text fields
     if (reasoning) reasoning = String(reasoning).slice(0, 500);
@@ -163,8 +167,8 @@ router.post('/picks', requireAuth, async (req, res) => {
       `INSERT INTO picks
          (userId, sport, event, fixtureId, homeTeam, awayTeam, sportKey,
           market, odds, stake, stakeType, confidence, reasoning,
-          result, pnl, createdAt)
-       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,'pending',0,NOW())`,
+          result, pnl, visibility, createdAt)
+       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,'pending',0,?,NOW())`,
       [
         u.id,
         sport, event,
@@ -173,8 +177,9 @@ router.post('/picks', requireAuth, async (req, res) => {
         awayTeam  || null,
         sportKey  || null,
         market, odds, stake, stakeType,
-        confidence || null,
-        reasoning  || null,
+        confidence  || null,
+        reasoning   || null,
+        visibility,
       ]
     );
 
@@ -198,7 +203,11 @@ router.post('/picks', requireAuth, async (req, res) => {
 
 // ─── GET /picks ───────────────────────────────────────────────────────────────
 // Returns picks list. Optional ?userId= to filter by user.
-// Public — no auth required.
+// Auth is optional — Bearer token unlocks PREMIUM picks for subscribers.
+// - No ?userId (global feed): PUBLIC picks only, no auth needed.
+// - ?userId + own token: all picks returned (no teaser).
+// - ?userId + subscriber token: all picks returned (no teaser).
+// - ?userId + non-subscriber or anonymous: PUBLIC full + PREMIUM as teaser stubs.
 router.get('/picks', async (req, res) => {
   try {
     const { userId, limit, offset = 0 } = req.query;
@@ -209,11 +218,38 @@ router.get('/picks', async (req, res) => {
     const safeLimit  = Math.min(Math.max(parseInt(limit) || defaultLimit, 1), maxLimit);
     const safeOffset = Math.max(parseInt(offset) || 0, 0);
 
+    // Optional auth — read viewer identity without hard-rejecting anonymous requests
+    let viewerId = null;
+    try {
+      const ah = req.headers.authorization;
+      if (ah && ah.startsWith('Bearer ')) {
+        const decoded = jwt.verify(ah.slice(7), process.env.JWT_SECRET);
+        viewerId = decoded.id || decoded.userId || null;
+        if (viewerId) viewerId = parseInt(viewerId);
+      }
+    } catch (_) {}
+
+    const safeUserId = userId ? parseInt(userId) : null;
+    const isOwnPicks = safeUserId && viewerId && viewerId === safeUserId;
+
+    // Subscription check — only relevant when viewing someone else's picks
+    let isSubscriber = false;
+    if (safeUserId && viewerId && !isOwnPicks) {
+      const [subs] = await db.query(
+        `SELECT id FROM subscriptions WHERE userId=? AND tipsterId=? AND status='active' LIMIT 1`,
+        [viewerId, safeUserId]
+      );
+      isSubscriber = subs.length > 0;
+    }
+
     const params = [];
     let where = '';
-    if (userId) {
+    if (safeUserId) {
       where = 'WHERE p.userId = ?';
-      params.push(parseInt(userId));
+      params.push(safeUserId);
+    } else {
+      // Global feed: PUBLIC only — never expose PREMIUM picks without a userId context
+      where = "WHERE p.visibility = 'PUBLIC'";
     }
 
     const [rows] = await db.query(
@@ -226,7 +262,26 @@ router.get('/picks', async (req, res) => {
       [...params, safeLimit, safeOffset]
     );
 
-    res.json(rows.map(_formatPick));
+    const formatted = rows.map(pick => {
+      const f = _formatPick(pick);
+      // Mask PREMIUM pick content for non-subscribers who aren't the pick owner
+      if (f.visibility === 'PREMIUM' && !isOwnPicks && !isSubscriber) {
+        return {
+          id:         f.id,
+          userId:     f.userId,
+          username:   f.username,
+          sport:      f.sport,
+          event:      f.event,
+          createdAt:  f.createdAt,
+          result:     f.result,
+          visibility: 'PREMIUM',
+          _teaser:    true,
+        };
+      }
+      return f;
+    });
+
+    res.json(formatted);
   } catch (err) {
     console.error('[GET /picks]', err);
     res.status(500).json({ error: 'Failed to fetch picks' });
