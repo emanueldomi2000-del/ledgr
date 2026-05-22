@@ -61,7 +61,13 @@ function _sanitizeHandle(handle) {
   return clean || null;
 }
 
-const VALID_ARCHETYPES  = new Set(['sniper','demon','grinder','sharp','value-hunter','lock-machine','ice-cold','profit-farmer','underdog-king','data-nerd','momentum-monster']);
+const VALID_ARCHETYPES  = new Set([
+  // current archetype IDs
+  'sniper','demon','grinder','sharp','hunter','storm','kingmaker','iceblood',
+  'gambler','reaper','night-owl','shark','ghost','diamond-mind','hybrid','contender',
+  // legacy keys kept for backward compat
+  'value-hunter','lock-machine','ice-cold','profit-farmer','underdog-king','data-nerd','momentum-monster',
+]);
 const VALID_BANNERS     = new Set(['midnight','purple-fade','frost','carbon','dark-smoke','cosmic-nebula','diamond-storm','crimson-energy','electric-void','phantom-pulse','galaxy-motion','dragon-aura','eternal-flame','neon-rift','crown-energy','default','purple-haze','cyber-teal','gold-rush','fire-wave','ice-storm','diamond','legend-aura']);
 const VALID_BORDERS     = new Set(['none','clean','blue-ring','diamond-ring','cosmic','electric','inferno','royal','dragon','celestial','bronze-frame','silver-frame','gold-frame','diamond-frame','elite-frame','pulse','gold','fire','legend']);
 const VALID_THEMES      = new Set(['purple','gold','emerald','crimson','ice','ember','neon','platinum','default','cyan','red','green','orange','pink','white']);

@@ -4,7 +4,44 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 8 — Pre-Launch Polish ✅ COMPLETE
+Current objective: Sprint 9 — Final Verification Pass ✅ COMPLETE
+
+---
+
+## Last completed: Sprint 9 — Final Verification Pass (2026-05-22)
+
+### Static Audit — 8 pages inspected
+Pages: index.html, login, register, dashboard, tipster, progress, leaderboard, home
+
+**Findings — all clear:**
+- No localhost/127.0.0.1 references anywhere
+- All 28 referenced JS files exist on disk (including new untracked: insights.js, moments.js, motion.js, social.js)
+- All CSS files exist: app-tokens.css, app-components.css, brand.css
+- All pages have favicon + og:image set to production URL
+- API URL is correct production backend across all pages
+- No duplicate script imports
+
+### Vercel routing
+- `/archetypes` — already present ✅
+- `/tools` — no directory exists, no route added
+
+### OG image
+- `assets/logo/ledgr-logo.png` — EXISTS, no generator needed ✅
+
+---
+
+## Production ready
+- All sprint 5–9 changes committed and pushed
+- Private/public picks (visibility feature) — fully shipped
+- Progress page empty state — fully renders for 0-picks users
+- Pre-launch polish — 404, terms, privacy, become-a-tipster, index.html all updated
+- Logo integration — all 26 pages have favicon + og:image
+- No localhost refs, no missing assets, no broken script refs
+
+## Manual actions remaining
+1. **Railway smoke test**: post pick → `/admin/grading/run` → verify `rank_up` event fires → push notification delivered
+2. **Verify autoVerify-schema.sql applied**: confirm `autoVerify_log` table exists on Railway DB
+3. **Stripe webhook**: test subscription purchase flow end-to-end (subscribe/success, subscribe/cancel pages)
 
 ---
 
