@@ -245,14 +245,14 @@ async function loadProgress() {
   const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Request timed out. <a href="/home" style="color:var(--ac)">Go home →</a></div>';},25000);
   try {
     const [picksRes, rankingsRes, seasonsRes] = await Promise.all([
-      fetch(API + '/picks', { cache: 'no-store', signal: _ctrl.signal }),
+      fetch(API + '/picks?userId=' + USER_ID, { cache: 'no-store', signal: _ctrl.signal, headers: { Authorization: 'Bearer ' + _t } }),
       fetch(API + '/rankings', { cache: 'no-store' }).catch(() => null),
       fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null),
     ]);
 
     clearTimeout(_xt);
     const allPicks = await picksRes.json();
-    const myPicks = allPicks.filter(p => p.userId === USER_ID)
+    const myPicks = (Array.isArray(allPicks) ? allPicks : [])
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
     let rankingMeta = null;
@@ -422,6 +422,7 @@ function buildHTML(d) {
 
   const divColor = tier.color;
   const initials = USERNAME.slice(0,2).toUpperCase();
+  const isEmpty = picks.length === 0;
 
   // ── Section 1: Hero ──
   const heroHTML = `
@@ -442,14 +443,19 @@ function buildHTML(d) {
           <div class="hero-bar-track">
             <div class="hero-bar-fill" id="heroBarFill" style="width:0%;background:linear-gradient(90deg,${divColor}aa,${divColor})"></div>
           </div>
-          <div class="hero-bar-sub">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
-          ${picks.length >= 5 ? `<div class="hero-bar-week" style="color:var(--gr)">↑ ${myRank > 0 ? '#'+myRank+' globally' : 'Unranked'}</div>` : ''}
+          ${isEmpty
+            ? `<div class="hero-bar-sub">Start your journey — post your first pick</div>
+               <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#07060d;padding:7px 18px;border-radius:8px;font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-decoration:none;margin-top:10px">Post First Pick →</a>`
+            : `<div class="hero-bar-sub">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
+               ${picks.length >= 5 ? `<div class="hero-bar-week" style="color:var(--gr)">↑ ${myRank > 0 ? '#'+myRank+' globally' : 'Unranked'}</div>` : ''}`
+          }
         </div>
+        ${isEmpty ? '' : `
         <div class="hero-pills">
           ${streak >= 3 ? `<span class="hero-pill pill-streak">${streak}W Streak 🔥</span>` : ''}
           ${rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
           <span class="hero-pill ${sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}">Sharp: ${sharpScore.toFixed(0)}</span>
-        </div>
+        </div>`}
       </div>
     </div>
   `;
@@ -464,7 +470,15 @@ function buildHTML(d) {
   const flowLabel = flowState ? (flowState.short || flowState.label || 'Active') : 'Building';
   const flowColor = flowState ? (flowState.color || 'var(--ac)') : 'var(--ac)';
   const bgChart = buildSparkline(picks);
-  const momentumHTML = `
+  const momentumHTML = isEmpty ? `
+    <div class="momentum-card">
+      <div class="momentum-header" style="color:var(--mu)">Momentum</div>
+      <div style="text-align:center;padding:32px 16px">
+        <div style="font-family:var(--font-display);font-size:22px;letter-spacing:1px;color:var(--mu2);margin-bottom:8px">No data yet</div>
+        <div style="font-family:var(--font-mono);font-size:11px;color:var(--mu)">Post picks to see your momentum build</div>
+      </div>
+    </div>
+  ` : `
     <div class="momentum-card">
       <svg class="momentum-bg-chart" viewBox="0 0 300 120" preserveAspectRatio="none">${bgChart}</svg>
       <div class="momentum-header" style="color:${flowColor}">Momentum: ${flowLabel}</div>
@@ -478,7 +492,17 @@ function buildHTML(d) {
     </div>
   `;
 
-  const radarHTML = `
+  const flatRadarAxes = [
+    {label:'Consistency',value:0},{label:'Sharpness',value:0},{label:'CLV',value:0},
+    {label:'Volume',value:0},{label:'Reliability',value:0},{label:'Safety',value:0}
+  ];
+  const radarHTML = isEmpty ? `
+    <div class="radar-card">
+      <div class="sec-title" style="align-self:flex-start;width:100%">Skill Profile</div>
+      ${buildRadar(flatRadarAxes, divColor)}
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:10px;text-align:center;letter-spacing:1px">Radar unlocks after 5 picks</div>
+    </div>
+  ` : `
     <div class="radar-card">
       <div class="sec-title" style="align-self:flex-start;width:100%">Skill Profile</div>
       ${buildRadar(radarAxes, divColor)}
@@ -494,7 +518,14 @@ function buildHTML(d) {
   const bestStreakStr = bestStreak > 0 ? `${bestStreak}W` : '—';
   const bestRankStr = myRank > 0 ? `#${myRank}` : '—';
 
-  const momentsHTML = `
+  const momentsHTML = isEmpty ? `
+    <div class="moments-grid">
+      ${momentCard('💰','Biggest Win','—','Not yet achieved',divColor)}
+      ${momentCard('🔥','Longest Streak','—','Not yet achieved',divColor)}
+      ${momentCard('📅','Best Day','—','Not yet achieved',divColor)}
+      ${momentCard('🏆','Best Rank','—','Not yet achieved',divColor)}
+    </div>
+  ` : `
     <div class="moments-grid">
       ${momentCard('💰','Biggest Win',biggestWinStr,biggestWinDateStr,divColor)}
       ${momentCard('🔥','Longest Streak',bestStreakStr,'All time',divColor)}
@@ -503,19 +534,16 @@ function buildHTML(d) {
     </div>
   `;
 
-  const div = `<div class="logo-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>`;
-
-  if (picks.length === 0) {
-    return `
-      ${heroHTML}
-      <div style="text-align:center;padding:60px 24px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;margin-top:16px">
-        <div style="font-size:48px;margin-bottom:16px">📋</div>
-        <div style="font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--tx);margin-bottom:8px">YOUR JOURNEY STARTS HERE</div>
-        <div style="font-size:14px;color:var(--mu);margin-bottom:24px;font-family:var(--font-body)">Every legend started with their first pick. Build your verified record.</div>
-        <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#fff;padding:12px 28px;border-radius:8px;font-family:var(--font-body);font-size:14px;font-weight:600;text-decoration:none">Post Your First Pick →</a>
+  const bottomCTA = isEmpty ? `
+    <div style="position:fixed;bottom:0;left:0;right:0;z-index:100;background:linear-gradient(to top,var(--bg) 70%,transparent);padding:20px 24px 28px;text-align:center;pointer-events:none">
+      <div style="background:var(--s1);border:1px solid rgba(123,44,255,0.25);border-radius:12px;padding:18px 20px;max-width:480px;margin:0 auto;pointer-events:all">
+        <div style="font-family:var(--font-body);font-size:13px;color:var(--mu2);margin-bottom:12px">Ready to start? Post your first pick and begin building your verified record.</div>
+        <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#07060d;padding:10px 28px;border-radius:8px;font-family:var(--font-display);font-size:16px;letter-spacing:2px;text-decoration:none">Post First Pick →</a>
       </div>
-    `;
-  }
+    </div>
+  ` : '';
+
+  const div = `<div class="logo-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>`;
 
   return `
     ${heroHTML}
@@ -543,6 +571,7 @@ function buildHTML(d) {
       <div class="sec-title">Big Moments</div>
       ${momentsHTML}
     </div>
+    ${bottomCTA}
   `;
 }
 
@@ -560,7 +589,7 @@ function momentCard(icon, label, value, dateStr, divColor) {
 
 function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, divColor) {
   const events = [];
-  if (!picks.length) return '<div class="tl-item visible"><div class="tl-node node-logo"><img src="/assets/logo/ledgr-icon.png" alt=""></div><div class="tl-body"><div class="tl-title">Your journey starts here</div><div class="tl-date">Post your first pick to begin</div></div></div>';
+  if (!picks.length) return '<div class="tl-item visible"><div class="tl-node node-logo"><img src="/assets/logo/ledgr-icon.png" alt=""></div><div class="tl-body"><div class="tl-title">Your journey starts here</div><div class="tl-date">Every legend begins with pick #1</div></div></div>';
 
   const settled = picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
 
@@ -611,6 +640,18 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
 }
 
 function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank, totalTipsters, streak, divisionName) {
+  if (picks.length === 0) {
+    return [
+      { label:'🩸 First Blood', text:'0/1 wins',   pct:0 },
+      { label:'📋 Apprentice',  text:'0/10 picks', pct:0 },
+      { label:'🔥 Heat Check',  text:'0/3 streak', pct:0 },
+    ].map(u => `
+      <div class="unlock-item">
+        <div class="unlock-label"><span>${u.label}</span><span class="unlock-prog-text">${u.text}</span></div>
+        <div class="unlock-track"><div class="unlock-fill" style="width:0%"></div></div>
+      </div>`).join('');
+  }
+
   const divOrder = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
   const divThresh = {BRONZE:0,SILVER:20,GOLD:35,PLATINUM:50,DIAMOND:65,ELITE:80,LEGENDARY:92};
   const currentDivIdx = divOrder.indexOf(divisionName);

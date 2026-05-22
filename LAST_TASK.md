@@ -4,9 +4,49 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 6 — Private/Public Picks ✅ COMPLETE
+Current objective: Sprint 7 — Progress Page Empty State ✅ COMPLETE
 
 ---
+
+## Last completed: Sprint 7 — Progress Page Empty State (2026-05-22)
+
+### Problem
+Progress page for users with 0 picks either crashed or showed a broken layout. The early return at `buildHTML` short-circuited all sections, leaving the hero broken and every other section missing.
+
+### Changes — `progress/index.html`
+
+1. **Picks fetch** — changed from `GET /picks` (global feed, PUBLIC only after visibility feature) → `GET /picks?userId=USER_ID` with `Authorization: Bearer <token>`. Removed client-side `filter(p=>p.userId===USER_ID)` (now server-filtered). Array guard added.
+
+2. **Auth check** — verified uses `localStorage.getItem('ledgr_user')`, NOT `localStorage.getItem('userId')`. No change needed — was already correct.
+
+3. **Hero section** — when `isEmpty`:
+   - Shows BRONZE I, `0 / 1,000 RP`, ELO bar at 0%
+   - Sub-text: "Start your journey — post your first pick"
+   - Inline CTA: "Post First Pick →" → `/dashboard`
+   - Streak/rank/sharp pills hidden
+
+4. **Journey Timeline** — empty node text changed from "Post your first pick to begin" → "Every legend begins with pick #1"
+
+5. **Next Unlocks** — `buildUnlocks()` now returns fixed empty-state items when `picks.length === 0`:
+   - 🩸 First Blood: 0/1 wins
+   - 📋 Apprentice: 0/10 picks
+   - 🔥 Heat Check: 0/3 streak
+
+6. **Momentum** — when `isEmpty`: shows "No data yet" + "Post picks to see your momentum build" (no stats grid)
+
+7. **Skill Radar** — when `isEmpty`: renders flat radar (all zeros) + label "Radar unlocks after 5 picks"
+
+8. **Big Moments** — when `isEmpty`: all 4 cards show `—` / "Not yet achieved"
+
+9. **Fixed bottom CTA** — renders only when `picks.length === 0`:
+   - "Ready to start? Post your first pick and begin building your verified record."
+   - Button: "Post First Pick →" → `/dashboard`
+
+10. **Removed early return** — page now fully renders all sections for 0-picks users. No redirect.
+
+---
+
+
 
 ## Last completed: Sprint 6 — Private/Public Picks (2026-05-22)
 
