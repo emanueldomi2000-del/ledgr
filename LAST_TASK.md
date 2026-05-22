@@ -4,7 +4,42 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 10 — Analytics Fix + ELO Baseline + Ranking Verification ✅ COMPLETE
+Current objective: Sprint 11 — Nav Restructure ✅ COMPLETE
+
+---
+
+## Last completed: Sprint 11 — Nav Restructure (2026-05-22)
+
+### app-nav.js changes
+
+**Desktop bar order:** Home | Leaderboard | Progress | Feed | Community | Profile
+
+**Removed from desktop bar:** Analytics, Post Pick (dashboard)
+
+**Profile link:** Dynamic — reads `ledgr_user` from localStorage, href = `/tipster?u=USERNAME`. Hidden when logged out. Uses new `dynamicUser: true` flag in NAV_LINKS config.
+
+**Slide menu (hamburger):**
+Analytics | Compare | Simulator | Hall of Fame | Badges | Sports Intel | Archetypes | Settings | Notifications
+(Primary nav links — Home/Leaderboard/Progress/Feed/Community/Profile — also appear in slide for mobile)
+Bottom CTA: "POST A PICK → /dashboard" (unchanged)
+
+**Feed label:** "PULSE" → "Feed"
+
+**_buildHTML updated:**
+- Desktop link renderer handles `dynamicUser: true` (skips if logged out, computes href from username)
+- Slide link renderer extracted to `_slideLink()` helper (used for both primary + secondary sections)
+- Primary section: Home, Leaderboard, Progress, Feed, Community, Profile
+- Secondary section: Analytics, Compare, Simulator, Hall of Fame, Badges, News, Archetypes, Settings, Notifications
+
+### Vercel routing verification
+- `/hall-of-fame` → `/hall-of-fame/index.html` ✅ already present
+- `/compare` → `/compare/index.html` ✅ already present
+- `/simulator` → `/simulator/index.html` ✅ already present
+- No changes needed to vercel.json
+
+---
+
+## Last completed: Sprint 10 — Analytics Fix + ELO Baseline + Ranking Verification ✅ COMPLETE
 
 ---
 

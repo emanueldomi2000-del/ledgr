@@ -255,24 +255,25 @@
   // ── NAV LINK CONFIG ───────────────────────────────────────────────────────
   // desktopVisible = true  → shown in the top bar .an-links
   // desktopVisible = false → slide menu only
+  // dynamicUser = true     → href computed from logged-in username at render time
   var NAV_LINKS = [
-    // ── PRIMARY — desktop bar ────────────────────────────────────────────────
+    // ── PRIMARY — desktop bar + slide primary section ────────────────────────
     { href: '/home',         label: 'Home',         desktopLabel: 'Home',        icon: '🏠',  key: 'home',         desktopVisible: true  },
     { href: '/leaderboard',  label: 'Leaderboard',  desktopLabel: 'Leaderboard', icon: '🏆',  key: 'leaderboard',  desktopVisible: true  },
-    { href: '/feed',         label: 'PULSE',        desktopLabel: 'PULSE',       icon: '🔴',  key: 'feed',         desktopVisible: true  },
-    { href: '/analytics',    label: 'Analytics',    desktopLabel: 'Analytics',   icon: '📊',  key: 'analytics',    desktopVisible: true  },
+    { href: '/progress',     label: 'Progress',     desktopLabel: 'Progress',    icon: '🎮',  key: 'progress',     desktopVisible: true  },
+    { href: '/feed',         label: 'Feed',         desktopLabel: 'Feed',        icon: '🔴',  key: 'feed',         desktopVisible: true  },
     { href: '/community',    label: 'Community',    desktopLabel: 'Community',   icon: '💬',  key: 'community',    desktopVisible: true  },
-    { href: '/dashboard',    label: 'Post a Pick',  desktopLabel: 'Post Pick',   icon: '＋',  key: 'dashboard',    desktopVisible: true  },
+    { href: null,            label: 'Profile',      desktopLabel: 'Profile',     icon: '👤',  key: 'profile',      desktopVisible: true,  dynamicUser: true },
     // ── SECONDARY — slide menu only ──────────────────────────────────────────
-    { href: '/notifications', label: 'Notifications',  icon: '🔔',  key: 'notifications',  desktopVisible: false },
-    { href: '/progress',     label: 'Progress',                                  icon: '🎮',  key: 'progress',     desktopVisible: false },
-    { href: '/badges',       label: 'Badges',                                    icon: '🏅',  key: 'badges',       desktopVisible: false },
-    { href: '/archetypes',   label: 'Archetypes',                                icon: '⚡',  key: 'archetypes',   desktopVisible: false },
-    { href: '/simulator',    label: 'Simulator',                                 icon: '📈',  key: 'simulator',    desktopVisible: false },
+    { href: '/analytics',    label: 'Analytics',                                 icon: '📊',  key: 'analytics',    desktopVisible: false },
     { href: '/compare',      label: 'Compare',                                   icon: '⚖️',  key: 'compare',      desktopVisible: false },
+    { href: '/simulator',    label: 'Simulator',                                 icon: '📈',  key: 'simulator',    desktopVisible: false },
     { href: '/hall-of-fame', label: 'Hall of Fame',                              icon: '🏛️', key: 'hall-of-fame', desktopVisible: false },
+    { href: '/badges',       label: 'Badges',                                    icon: '🏅',  key: 'badges',       desktopVisible: false },
     { href: '/news',         label: 'Sports Intel',                              icon: '📰',  key: 'news',         desktopVisible: false },
-    { href: '/settings',     label: 'Settings',                                  icon: '⚙️',  key: 'settings',     desktopVisible: false }
+    { href: '/archetypes',   label: 'Archetypes',                                icon: '⚡',  key: 'archetypes',   desktopVisible: false },
+    { href: '/settings',     label: 'Settings',                                  icon: '⚙️',  key: 'settings',     desktopVisible: false },
+    { href: '/notifications', label: 'Notifications',                            icon: '🔔',  key: 'notifications', desktopVisible: false }
   ];
 
   // ── HELPERS ───────────────────────────────────────────────────────────────
@@ -377,9 +378,15 @@
     var desktopLinks = NAV_LINKS
       .filter(function (l) { return l.desktopVisible; })
       .map(function (l) {
-        var isActive   = active === l.key;
-        var extraClass = l.key === 'dashboard' ? ' an-link-post' : '';
-        return '<a href="' + l.href + '" class="an-link' + extraClass + (isActive ? ' active' : '') + '">'
+        var isActive = active === l.key;
+        var href;
+        if (l.dynamicUser) {
+          if (!username) return '';
+          href = '/tipster?u=' + encodeURIComponent(user.username);
+        } else {
+          href = l.href;
+        }
+        return '<a href="' + href + '" class="an-link' + (isActive ? ' active' : '') + '">'
           + _esc(l.desktopLabel || l.label)
           + '</a>';
       }).join('');
@@ -423,27 +430,28 @@
     }
     rightHtml += '<button class="an-ham" id="appNavHam" onclick="window.AppNav.open()">&#9776;</button>';
 
-    /* Slide nav links — primary first, then divider, then secondary; exclude dashboard (CTA at bottom) */
-    var primaryLinks  = NAV_LINKS.filter(function (l) { return l.desktopVisible && l.key !== 'dashboard'; });
+    /* Slide nav links — primary section (desktop links), divider, then secondary */
+    var primaryLinks   = NAV_LINKS.filter(function (l) { return l.desktopVisible; });
     var secondaryLinks = NAV_LINKS.filter(function (l) { return !l.desktopVisible; });
 
-    var slideLinks = primaryLinks.map(function (l) {
+    function _slideLink(l) {
       var isActive = active === l.key;
-      return '<a href="' + l.href + '" class="an-snl' + (isActive ? ' active' : '') + '" onclick="window.AppNav.close()">'
+      var href;
+      if (l.dynamicUser) {
+        if (!username) return '';
+        href = '/tipster?u=' + encodeURIComponent(user.username);
+      } else {
+        href = l.href;
+      }
+      return '<a href="' + href + '" class="an-snl' + (isActive ? ' active' : '') + '" onclick="window.AppNav.close()">'
         + '<span class="an-snl-icon">' + l.icon + '</span>'
         + '<span class="an-snl-text">' + _esc(l.label) + '</span>'
         + '</a>';
-    }).join('');
+    }
 
+    var slideLinks = primaryLinks.map(_slideLink).join('');
     slideLinks += '<div class="an-snl-divider"></div>';
-
-    slideLinks += secondaryLinks.map(function (l) {
-      var isActive = active === l.key;
-      return '<a href="' + l.href + '" class="an-snl' + (isActive ? ' active' : '') + '" onclick="window.AppNav.close()">'
-        + '<span class="an-snl-icon">' + l.icon + '</span>'
-        + '<span class="an-snl-text">' + _esc(l.label) + '</span>'
-        + '</a>';
-    }).join('');
+    slideLinks += secondaryLinks.map(_slideLink).join('');
 
     /* Slide footer */
     var footerHtml = username
