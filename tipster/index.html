@@ -4,24 +4,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Tipster Profile</title>
 <meta name="description" content="View a verified tipster profile on LEDGR — real pick history, ROI, win rate, and full performance analytics. Zero fake results.">
 <meta property="og:title" content="LEDGR — Verified Tipster Profile">
 <meta property="og:description" content="Real pick history, verified ROI, and full performance stats. No deleted losses. No fake records.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/tipster">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Verified Tipster Profile">
 <meta name="twitter:description" content="Real pick history, verified ROI, and full performance stats. No deleted losses. No fake records.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:var(--font-body);min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.3}
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(123,44,255,0.04),transparent 70%);pointer-events:none;z-index:0}
-.main{max-width:1100px;margin:0 auto;padding:0 0 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:0 0 80px;position:relative;z-index:2}
 
 /* ── CINEMATIC BANNER ── */
 @keyframes legendShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -63,12 +64,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ring-gold{border:2px solid rgba(251,191,36,0.7);box-shadow:0 0 16px rgba(251,191,36,0.2),0 0 32px rgba(251,191,36,0.06)}
 .ring-platinum{border:2px solid rgba(56,189,248,0.5);animation:ringPulse 2.5s ease-in-out infinite}
 .ring-diamond{border:2px solid rgba(56,189,248,0.8);animation:diamondCrackle 2s ease-in-out infinite}
-.ring-elite::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,#7B2CFF,#B14CFF,#f87171,#7B2CFF);animation:conicSpin 3s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
-.ring-legendary::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,#fbbf24,#b89fff,#34d399,#38bdf8,#f87171,#fbbf24);animation:conicSpin 4s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
+.ring-elite::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,var(--ac-vivid),var(--ac-light),var(--rd),var(--ac-vivid));animation:conicSpin 3s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
+.ring-legendary::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,var(--gold),var(--ac),var(--gr),var(--cyan),var(--rd),var(--gold));animation:conicSpin 4s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
 /* settings border overrides */
 .ring-pulse{border:2px solid rgba(184,159,255,0.45)!important;animation:ringPulse 2s ease-in-out infinite}
 .ring-fire::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,#ff6b00,#ff3500,#ffaa00,#ff6b00);animation:conicSpin 3s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
-.ring-legend::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,#f59e0b,#b89fff,#34d399,#38bdf8,#f87171,#f59e0b);animation:conicSpin 4s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
+.ring-legend::before{content:'';position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(from 0deg,var(--gold),var(--ac),var(--gr),var(--cyan),var(--rd),var(--gold));animation:conicSpin 4s linear infinite;-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px))}
 
 /* ── IDENTITY ── */
 .identity-block{flex:1;min-width:200px;padding-top:20px}
@@ -114,17 +115,17 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .dna-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
 .dna-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:11px;font-family:var(--font-mono);font-weight:700}
 .dna-tag.sharp{background:rgba(0,229,160,0.08);border:1px solid rgba(0,229,160,0.2);color:var(--gr)}
-.dna-tag.safe{background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);color:#38bdf8}
+.dna-tag.safe{background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);color:var(--cyan)}
 .dna-tag.aggressive{background:rgba(255,51,85,0.08);border:1px solid rgba(255,51,85,0.2);color:var(--rd)}
 .dna-tag.value{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);color:var(--gold)}
 .dna-tag.grinder{background:var(--acg);border:1px solid rgba(123,44,255,0.2);color:var(--ac-l)}
 .dna-tag.highvol{background:rgba(251,146,60,0.08);border:1px solid rgba(251,146,60,0.2);color:#fb923c}
 .division-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:1.5px}
-.div-bronze{background:rgba(180,120,80,0.12);border:1px solid rgba(180,120,80,0.3);color:#b47850}
-.div-silver{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.25);color:#94a3b8}
+.div-bronze{background:rgba(180,120,80,0.12);border:1px solid rgba(180,120,80,0.3);color:var(--bronze)}
+.div-silver{background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.25);color:var(--silver)}
 .div-gold{background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);color:var(--gold)}
-.div-platinum{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:#38bdf8}
-.div-diamond{background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.3);color:#b89fff}
+.div-platinum{background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);color:var(--cyan)}
+.div-diamond{background:rgba(184,159,255,0.12);border:1px solid rgba(184,159,255,0.3);color:var(--ac)}
 .div-elite{background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);color:var(--rd)}
 .div-legend{background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(184,159,255,0.1));border:1px solid rgba(251,191,36,0.4);color:var(--gold)}
 
@@ -180,6 +181,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .pick-card.push-border{border-left:3px solid var(--cyan)}
 .pick-card.push-border:hover{border-color:var(--cyan);transform:translateY(-2px)}
 .pick-card.void-border{border-left:3px solid var(--mu)}
+.pick-void-note{margin-top:8px;padding:8px 12px;background:rgba(107,107,107,.06);border:1px solid rgba(107,107,107,.15);border-radius:8px;font-family:var(--font-mono);font-size:10px;color:var(--mu);line-height:1.5}
 .pick-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px}
 .pick-event-wrap{flex:1;min-width:0}
 .pick-event-text{font-family:var(--font-body);font-weight:600;font-size:13px;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -304,17 +306,109 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 }
 </style>
 <style>
-.tip-trigger{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#2A2A2A;border:1px solid #7B2CFF;border-radius:50%;font-size:10px;color:#B14CFF;cursor:pointer;margin-left:4px;flex-shrink:0;vertical-align:middle;transition:background .15s,border-color .15s;position:relative;line-height:1}
-.tip-trigger:hover{background:rgba(123,44,255,0.2);border-color:#B14CFF}
-.tip-popup{display:none;position:fixed;z-index:99999;background:#1E1E1E;border:1px solid #7B2CFF;border-radius:8px;padding:10px 14px;font-size:13px;color:#E6E6E6;max-width:260px;line-height:1.5;box-shadow:0 0 20px rgba(123,44,255,0.3);pointer-events:none}
+.tip-trigger{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:var(--s2);border:1px solid var(--ac-vivid);border-radius:50%;font-size:10px;color:var(--ac-light);cursor:pointer;margin-left:4px;flex-shrink:0;vertical-align:middle;transition:background .15s,border-color .15s;position:relative;line-height:1}
+.tip-trigger:hover{background:rgba(123,44,255,0.2);border-color:var(--ac-light)}
+.tip-popup{display:none;position:fixed;z-index:99999;background:var(--s2);border:1px solid var(--ac-vivid);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--tx);max-width:260px;line-height:1.5;box-shadow:0 0 20px var(--glow-vivid);pointer-events:none}
 </style>
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
+<style>
+/* ── PHASE 6: PROFILE EVOLUTION ── */
+@keyframes barGrow{from{width:0%}to{width:var(--dw,0%)}}
+@keyframes tlFade{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+@keyframes archEnergy{0%,100%{box-shadow:0 0 0 0 rgba(184,159,255,0)}60%{box-shadow:0 0 14px 3px rgba(184,159,255,.12)}}
+
+/* DNA summary inline */
+.dna-sum{font-family:var(--font-mono);font-size:10px;color:var(--mu2);letter-spacing:.5px;margin:3px 0 8px;font-style:italic}
+
+/* DNA Panel */
+.dna-bar-row{margin-bottom:11px}
+.dna-bar-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.dna-bar-name{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;color:var(--mu);text-transform:uppercase}
+.dna-bar-val{font-family:var(--font-display);font-size:15px;color:var(--tx);line-height:1}
+.dna-bar-track{height:3px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.dna-bar-fill{height:100%;border-radius:3px;width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.dna-sum-box{background:rgba(184,159,255,.04);border:1px solid rgba(184,159,255,.08);border-radius:8px;padding:10px 14px;margin-top:12px;font-family:var(--font-mono);font-size:10px;color:var(--mu2);letter-spacing:.5px;font-style:italic;line-height:1.5}
+
+/* Archetype Evolution */
+.arch-primary{display:flex;align-items:center;gap:12px;padding:14px 0 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.arch-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:transform .2s;cursor:default}
+.arch-icon:hover{transform:scale(1.08)}
+.arch-tier{font-family:var(--font-mono);font-size:7px;letter-spacing:3px;color:var(--mu);text-transform:uppercase;margin-bottom:3px}
+.arch-name{font-family:var(--font-display);font-size:17px;letter-spacing:1px;line-height:1;margin-bottom:3px}
+.arch-desc-text{font-family:var(--font-mono);font-size:8px;color:var(--mu);line-height:1.4;max-width:160px}
+.arch-secondary{display:flex;align-items:center;gap:10px;padding:10px 0 12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.arch-sec-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.arch-sec-label{font-family:var(--font-mono);font-size:7px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:2px}
+.arch-sec-name{font-family:var(--font-mono);font-size:10px;font-weight:600}
+.arch-progress{padding:12px 0 2px}
+.ap-label{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.ap-eyebrow{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;color:var(--mu);text-transform:uppercase}
+.ap-pct{font-family:var(--font-display);font-size:15px;color:var(--tx);line-height:1}
+.ap-track{height:3px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.ap-fill{height:100%;border-radius:3px;width:0;transition:width 1.6s cubic-bezier(.4,0,.2,1)}
+.ap-note{font-family:var(--font-mono);font-size:8px;color:var(--mu);margin-top:5px}
+
+/* Trophy Wall */
+.trophy-section{margin-bottom:10px}
+.trophy-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:7px 0;user-select:none;transition:opacity .15s}
+.trophy-head:hover{opacity:.8}
+.trophy-head-label{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--mu);text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.trophy-head-label::before{content:'';width:3px;height:3px;border-radius:50%;background:var(--ac);flex-shrink:0}
+.trophy-toggle{font-family:var(--font-mono);font-size:9px;color:var(--mu);transition:transform .2s;flex-shrink:0}
+.trophy-head.open .trophy-toggle{transform:rotate(180deg)}
+.trophy-items{display:flex;flex-direction:column;gap:5px;overflow:hidden;max-height:0;transition:max-height .35s ease}
+.trophy-items.open{max-height:500px}
+.trophy-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.04);transition:border-color .2s,transform .18s,box-shadow .18s;cursor:default}
+.trophy-item:hover{border-color:rgba(184,159,255,.14);transform:translateY(-1px);box-shadow:0 2px 12px rgba(184,159,255,.06)}
+.trophy-item.rarity-legendary{border-color:rgba(251,191,36,.14);background:rgba(251,191,36,.025)}
+.trophy-item.rarity-epic{border-color:rgba(184,159,255,.13);background:rgba(184,159,255,.025)}
+.trophy-item.rarity-rare{border-color:rgba(56,189,248,.11);background:rgba(56,189,248,.02)}
+.trophy-item.locked{opacity:.35;pointer-events:none}
+.trophy-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07)}
+.trophy-icon.rarity-legendary{background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.2)}
+.trophy-icon.rarity-epic{background:rgba(184,159,255,.07);border-color:rgba(184,159,255,.15)}
+.trophy-icon.rarity-rare{background:rgba(56,189,248,.06);border-color:rgba(56,189,248,.14)}
+.trophy-name{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--tx);margin-bottom:2px}
+.trophy-name.rarity-legendary{color:var(--gold)}.trophy-name.rarity-epic{color:var(--ac)}.trophy-name.rarity-rare{color:var(--cyan)}
+.trophy-desc{font-family:var(--font-mono);font-size:8px;color:var(--mu)}
+.trophy-empty{font-family:var(--font-mono);font-size:9px;color:var(--mu);padding:8px 0;text-align:center}
+
+/* Personal Timeline */
+.ptl-section{padding:0 40px;margin-bottom:32px}
+.ptl-title{font-family:var(--font-display);font-size:17px;letter-spacing:2px;color:var(--tx);border-left:2px solid var(--ac);padding-left:10px;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.ptl-title::after{content:'';flex:1;height:1px;background:var(--bd)}
+.ptl-wrap{display:flex;flex-direction:column;gap:0;position:relative}
+.ptl-wrap::before{content:'';position:absolute;left:10px;top:20px;bottom:20px;width:1px;background:rgba(255,255,255,.06)}
+.ptl-row{display:flex;align-items:flex-start;gap:14px;padding:9px 0;position:relative;animation:tlFade .4s ease both}
+.ptl-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;border:1px solid rgba(255,255,255,.1);background:var(--s1);z-index:1;font-family:var(--font-mono);line-height:1}
+.ptl-body{flex:1;padding-top:1px}
+.ptl-label{font-size:12px;font-weight:600;color:var(--tx);margin-bottom:2px;line-height:1.3}
+.ptl-date{font-family:var(--font-mono);font-size:9px;color:var(--mu)}
+
+/* Micro-interactions */
+.avatar-wrap{transition:transform .22s cubic-bezier(.34,1.4,.64,1)}
+.avatar-wrap:hover{transform:translateY(-3px)!important}
+.badge-pill{transition:transform .18s,box-shadow .18s!important}
+.badge-pill:hover{box-shadow:0 4px 16px rgba(184,159,255,.15)!important}
+.division-badge,.archetype-badge{transition:transform .18s,box-shadow .18s}
+.division-badge:hover,.archetype-badge:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(184,159,255,.14)}
+@media(max-width:900px){.ptl-section{padding:0 20px}}
+@media(max-width:768px){.ptl-section{padding:0 16px}}
+
+/* ── IDENTITY: PERSONAL PRESTIGE ── */
+.bg-glow{background:radial-gradient(ellipse,rgba(123,44,255,.08),transparent 70%)!important}
+.bg-prestige{position:fixed;inset:0;background:radial-gradient(ellipse 70% 45% at 50% 0%,rgba(184,159,255,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+.bg-vignette{position:fixed;inset:0;background:radial-gradient(ellipse 85% 70% at 50% 20%,transparent 45%,rgba(0,0,0,.28) 100%);pointer-events:none;z-index:0}
+</style>
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="bg-prestige"></div>
+<div class="bg-vignette"></div>
 <div class="toast" id="toast"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'tipster' });</script>
 
 <div class="main" id="mainContent">
@@ -325,6 +419,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <script src="/flow.js"></script>
 <script src="/archetypes.js"></script>
 <script src="/follows.js"></script>
+<script src="/social.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
@@ -487,6 +582,7 @@ function renderPicks(){
         <span class="pick-verified">🔒 Verified</span>
       </div>
       ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
+      ${p.result==='void'?`<div class="pick-void-note">🚫 Pick voided — event was cancelled, postponed, or declared invalid. Stake returned. Not counted in win/loss record.</div>`:''}
       <div class="react-bar" data-pick="${p.id}">
         <button class="react-btn" id="rf_${p.id}" onclick="tipsterReact('${p.id}','fire',this,event)" title="Fire">🔥 <span class="react-count"></span></button>
         <button class="react-btn" id="rr_${p.id}" onclick="tipsterReact('${p.id}','rocket',this,event)" title="Rocket">🚀 <span class="react-count"></span></button>
@@ -528,7 +624,7 @@ function getELOFromPicks(picks){
 function getELOLabel(elo){
   if(elo>=1400)return{label:'Grandmaster',color:'var(--gold)'};
   if(elo>=1200)return{label:'Expert',color:'var(--ac)'};
-  if(elo>=1100)return{label:'Advanced',color:'#38bdf8'};
+  if(elo>=1100)return{label:'Advanced',color:'var(--cyan)'};
   if(elo>=1000)return{label:'Intermediate',color:'var(--gr)'};
   if(elo>=900)return{label:'Developing',color:'var(--mu2)'};
   return{label:'Beginner',color:'var(--mu)'};
@@ -710,14 +806,201 @@ async function handleSubscribe(){
   }
 }
 
+/* ── PHASE 6 HELPERS ── */
+function computeDNA(picks){
+  if(!picks.length)return{discipline:50,risk:50,consistency:50,clutch:50,aggression:50};
+  const settled=picks.filter(p=>p.result==='win'||p.result==='loss');
+  const wins=settled.filter(p=>p.result==='win').length;
+  const pnls=settled.map(p=>parseFloat(p.pnl)||0);
+  const avgPnl=pnls.length?pnls.reduce((a,b)=>a+b,0)/pnls.length:0;
+  const variance=pnls.length>1?pnls.reduce((s,v)=>s+Math.pow(v-avgPnl,2),0)/pnls.length:1;
+  const avgOdds=picks.reduce((s,p)=>s+(parseFloat(p.odds)||1.5),0)/picks.length;
+  const avgStake=picks.reduce((s,p)=>s+(parseFloat(p.stake)||1),0)/picks.length;
+  const wr=settled.length>0?wins/settled.length:0;
+  const expectedWR=picks.reduce((s,p)=>s+(1/Math.max(parseFloat(p.odds)||2,1.01)),0)/picks.length;
+  const discipline=Math.min(100,Math.max(0,100-Math.min(100,(Math.sqrt(variance)/Math.max(avgStake,.1))*28)));
+  const risk=Math.min(100,Math.max(0,((avgOdds-1.2)/4)*100));
+  const consistency=Math.min(100,Math.max(0,50+(wr-expectedWR)*180));
+  const highOdds=settled.filter(p=>parseFloat(p.odds)>=2.0);
+  const clutch=highOdds.length>0?Math.min(100,Math.max(0,(highOdds.filter(p=>p.result==='win').length/highOdds.length)*130)):40;
+  const stakes=picks.map(p=>parseFloat(p.stake)||1);
+  const maxStake=Math.max(...stakes);
+  const aggression=Math.min(100,Math.max(0,((maxStake/Math.max(avgStake,.1))-1)/3*100));
+  return{discipline:Math.round(discipline),risk:Math.round(risk),consistency:Math.round(consistency),clutch:Math.round(clutch),aggression:Math.round(aggression)};
+}
+
+function getDNASummary(dna,arch){
+  if(!dna)return'';
+  if(dna.discipline>70&&dna.consistency>62)return arch?`Calculates like ${arch.name} — controlled and precise`:'Controlled. Consistent. Clinical.';
+  if(dna.aggression>72)return'High conviction style — built for the big swing';
+  if(dna.risk>70&&dna.clutch>55)return'Value hunter — thrives on underpriced markets';
+  if(dna.consistency>70)return'Calibrated edge — every pick has a reason';
+  if(dna.clutch>70)return'Performs when pressure is highest — clutch by nature';
+  return arch?`Identity forming — building toward ${arch.name}`:'Building a verified edge, pick by pick';
+}
+
+function buildDNAPanel(picks,arch){
+  const dna=computeDNA(picks);
+  const bars=[
+    {name:'DISCIPLINE',val:dna.discipline,color:'var(--ac)'},
+    {name:'RISK',val:dna.risk,color:'var(--orange)'},
+    {name:'CONSISTENCY',val:dna.consistency,color:'var(--gr)'},
+    {name:'CLUTCH',val:dna.clutch,color:'var(--cyan)'},
+    {name:'AGGRESSION',val:dna.aggression,color:'var(--rd)'},
+  ];
+  const barsHtml=bars.map(b=>`<div class="dna-bar-row">
+    <div class="dna-bar-label"><span class="dna-bar-name">${b.name}</span><span class="dna-bar-val">${b.val}</span></div>
+    <div class="dna-bar-track"><div class="dna-bar-fill" data-dw="${b.val}" style="background:${b.color}"></div></div>
+  </div>`).join('');
+  return`<div class="panel" style="margin-bottom:16px">
+    <div class="panel-title">BETTING DNA</div>
+    ${barsHtml}
+    <div class="dna-sum-box">${getDNASummary(dna,arch)}</div>
+  </div>`;
+}
+
+function getSecondaryArchetype(picks,currentArch){
+  if(!picks.length)return null;
+  const settled=picks.filter(p=>p.result==='win'||p.result==='loss');
+  const stake=picks.reduce((s,p)=>s+(p.stake||0),0);
+  const pnl=picks.reduce((s,p)=>s+(p.pnl||0),0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const avgOdds=picks.length?picks.reduce((s,p)=>s+(p.odds||1.5),0)/picks.length:1.5;
+  const ss=window.getSharpScore?window.getSharpScore(picks):0;
+  const ck=currentArch?currentArch.key:'';
+  const candidates=[
+    {key:'sharp',score:Math.min(100,(ss/70)*60+(roi>10?30:roi>0?15:0)),icon:'📐',name:'The Sharp',color:'var(--cyan)'},
+    {key:'grinder',score:Math.min(100,(picks.length/100)*50+(roi>0?30:0)),icon:'⚙️',name:'The Grinder',color:'var(--ac)'},
+    {key:'value',score:Math.min(100,(avgOdds>=2.5&&avgOdds<=3.5?50:0)+(roi>0?30:0)),icon:'💎',name:'The Value Hunter',color:'var(--ac)'},
+    {key:'underdog',score:Math.min(100,(avgOdds>3?50:0)+(roi>5?30:0)),icon:'🦁',name:'The Underdog Hunter',color:'var(--gold)'},
+    {key:'sniper',score:Math.min(100,(picks.length<30?30:0)+(roi>20?50:roi>10?25:0)),icon:'🎯',name:'The Sniper',color:'var(--gr)'},
+  ].filter(c=>c.key!==ck).sort((a,b)=>b.score-a.score);
+  return candidates[0]&&candidates[0].score>15?candidates[0]:null;
+}
+
+function getArchetypeProgress(picks,arch){
+  if(!picks||!picks.length||!arch)return{pct:0,label:'Post picks to begin'};
+  const stake=picks.reduce((s,p)=>s+(p.stake||0),0);
+  const pnl=picks.reduce((s,p)=>s+(p.pnl||0),0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const t={sniper:{picks:30,roi:20},sharp:{picks:50,roi:15},grinder:{picks:100,roi:5},value:{picks:40,roi:10},underdog:{picks:30,roi:8},demon:{picks:15,roi:15}}[arch.key]||{picks:50,roi:10};
+  const pp=Math.min(1,picks.length/t.picks);
+  const rp=t.roi>0?Math.min(1,Math.max(0,roi/t.roi)):0.8;
+  const pct=Math.min(99,Math.round((pp*.6+rp*.4)*100));
+  return{pct,label:pct>=90?'Identity fully solidified':pct>=65?'Solidifying identity':'Building toward evolution'};
+}
+
+function buildArchEvoPanel(picks,arch){
+  if(!arch)return'';
+  const secondary=getSecondaryArchetype(picks,arch);
+  const prog=getArchetypeProgress(picks,arch);
+  const c=arch.color||'#b89fff';
+  return`<div class="panel" style="margin-bottom:16px">
+    <div class="panel-title">ARCHETYPE EVOLUTION</div>
+    <div class="arch-primary">
+      <div class="arch-icon" style="background:${c}18;border:1px solid ${c}33;animation:archEnergy 4s ease-in-out infinite">${arch.icon||'◉'}</div>
+      <div>
+        <div class="arch-tier">PRIMARY ARCHETYPE</div>
+        <div class="arch-name" style="color:${c}">${arch.name.toUpperCase()}</div>
+        <div class="arch-desc-text">${arch.desc||''}</div>
+      </div>
+    </div>
+    ${secondary?`<div class="arch-secondary">
+      <div class="arch-sec-icon" style="background:${secondary.color}11;border:1px solid ${secondary.color}22">${secondary.icon}</div>
+      <div><div class="arch-sec-label">SECONDARY</div><div class="arch-sec-name" style="color:${secondary.color}">${secondary.name}</div></div>
+    </div>`:''}
+    <div class="arch-progress">
+      <div class="ap-label"><span class="ap-eyebrow">EVOLUTION PROGRESS</span><span class="ap-pct">${prog.pct}%</span></div>
+      <div class="ap-track"><div class="ap-fill" data-dw="${prog.pct}" style="background:linear-gradient(90deg,${c}88,${c})"></div></div>
+      <div class="ap-note">${prog.label}</div>
+    </div>
+  </div>`;
+}
+
+function buildTrophyWallPanel(picks,badges,streak){
+  const wins=picks.filter(p=>p.result==='win');
+  const best=wins.length?Math.max(...wins.map(p=>parseFloat(p.pnl)||0)):0;
+  const bestSt=getBestStreak(picks);
+  const totalPnl=picks.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);
+  const featured=[];
+  if(best>=10)featured.push({icon:'👑',name:'Big Game Hunter',desc:'+'+best.toFixed(1)+'u single win',r:'legendary'});
+  else if(best>=5)featured.push({icon:'💎',name:'Diamond Win',desc:'+'+best.toFixed(1)+'u best win',r:'rare'});
+  else if(best>0)featured.push({icon:'✓',name:'First Blood',desc:'+'+best.toFixed(1)+'u top win',r:'common'});
+  if(bestSt>=7)featured.push({icon:'🔥',name:'Inferno Run',desc:'W'+bestSt+' streak',r:'legendary'});
+  else if(bestSt>=5)featured.push({icon:'🔥',name:'Hot Streak',desc:'W'+bestSt+' personal best',r:'epic'});
+  else if(bestSt>=3)featured.push({icon:'🔥',name:'Win Streak',desc:'W'+bestSt+' in a row',r:'rare'});
+  if(picks.length>=100)featured.push({icon:'👑',name:'Centennial',desc:'100 verified picks',r:'legendary'});
+  else if(picks.length>=50)featured.push({icon:'⚡',name:'Half Century',desc:'50 picks posted',r:'epic'});
+  if(totalPnl>=50)featured.push({icon:'💰',name:'Profit Machine',desc:'+'+totalPnl.toFixed(0)+'u total profit',r:'epic'});
+  const recent=badges.slice(0,2).map(b=>({icon:b.icon,name:b.name,desc:'Achievement earned',r:'common'}));
+  const hidden=[{icon:'🔒',name:'???',desc:'Reach Platinum to unlock',r:'common',locked:true},{icon:'🔒',name:'???',desc:'Post 3 winning days in a row',r:'common',locked:true}];
+  if(!featured.length&&!recent.length)return'';
+  const tItem=t=>`<div class="trophy-item rarity-${t.r} ${t.locked?'locked':''}">
+    <div class="trophy-icon rarity-${t.r}">${t.icon}</div>
+    <div><div class="trophy-name rarity-${t.r}">${t.name}</div><div class="trophy-desc">${t.desc}</div></div>
+  </div>`;
+  const sect=(lbl,items,open)=>items.length?`<div class="trophy-section">
+    <div class="trophy-head ${open?'open':''}" onclick="toggleTrophy(this)">
+      <span class="trophy-head-label">${lbl}</span>
+      <span class="trophy-toggle">▼</span>
+    </div>
+    <div class="trophy-items ${open?'open':''}">${items.map(tItem).join('')}</div>
+  </div>`:'';
+  return`<div class="panel" style="margin-bottom:16px">
+    <div class="panel-title">TROPHY WALL</div>
+    ${sect('FEATURED',featured.slice(0,3),true)}
+    ${sect('RECENT',recent,false)}
+    ${sect('HIDDEN',hidden,false)}
+  </div>`;
+}
+
+function buildPersonalTimeline(picks){
+  if(!picks.length)return'';
+  const sorted=[...picks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  const fmt=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'});
+  const ev=[];
+  ev.push({icon:'◎',label:'Posted first pick',date:fmt(sorted[0].createdAt),color:'var(--ac)'});
+  const fw=sorted.find(p=>p.result==='win');
+  if(fw)ev.push({icon:'✓',label:'First verified win',date:fmt(fw.createdAt),color:'var(--gr)'});
+  [10,50,100].forEach(n=>{if(sorted.length>=n)ev.push({icon:'◆',label:n+'-pick milestone',date:fmt(sorted[n-1].createdAt),color:'var(--gold)'});});
+  let cum=0,d10=false,d50=false;
+  sorted.forEach(p=>{cum+=parseFloat(p.pnl)||0;if(!d10&&cum>=10){ev.push({icon:'↑',label:'Hit +10u profit',date:fmt(p.createdAt),color:'var(--gr)'});d10=true;}if(!d50&&cum>=50){ev.push({icon:'↑',label:'Hit +50u profit',date:fmt(p.createdAt),color:'var(--gr)'});d50=true;}});
+  const bs=getBestStreak(picks);
+  if(bs>=3)ev.push({icon:'🔥',label:'W'+bs+' streak — personal best',date:'Career highlight',color:'var(--orange)'});
+  if(sorted.length>=10)ev.push({icon:'◉',label:'Identity revealed',date:fmt(sorted[9].createdAt),color:'var(--ac)'});
+  if(!ev.length)return'';
+  return`<div class="ptl-section">
+    <div class="ptl-title">PERSONAL TIMELINE</div>
+    <div class="ptl-wrap">${ev.map((e,i)=>`<div class="ptl-row" style="animation-delay:${i*55}ms">
+      <div class="ptl-dot" style="border-color:${e.color}44;color:${e.color}">${e.icon}</div>
+      <div class="ptl-body"><div class="ptl-label">${e.label}</div><div class="ptl-date">${e.date}</div></div>
+    </div>`).join('')}</div>
+  </div>`;
+}
+
+function initDNABars(){
+  document.querySelectorAll('.dna-bar-fill,.ap-fill').forEach(function(el){
+    const w=el.dataset.dw||'0';
+    requestAnimationFrame(function(){setTimeout(function(){el.style.width=w+'%';},60);});
+  });
+}
+
+function toggleTrophy(head){
+  head.classList.toggle('open');
+  const items=head.nextElementSibling;
+  if(items)items.classList.toggle('open');
+}
+
 async function loadProfile(){
   if(!username){showNotFound();return;}
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>TIMEOUT</h2><p style="color:var(--mu2)">Request timed out. Please refresh.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';},25000);
   try{
     const [picksRes,profileRes,rankingRes]=await Promise.all([
-      fetch(API+'/picks',{cache:'no-store'}),
+      fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal}),
       fetch(API+'/profile/'+username).catch(()=>null),
       fetch(API+'/rankings/'+username).catch(()=>null)
     ]);
+    clearTimeout(_xt);
     const all=await picksRes.json();
     allPicks=all.filter(p=>p.user&&p.user.username===username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let profileCfg=getProfileConfig(username);
@@ -794,6 +1077,7 @@ async function loadProfile(){
     const favSports=profileCfg.favSports&&profileCfg.favSports.length?profileCfg.favSports:[];
     const favSportsHtml=favSports.length?`<div class="dna-tags" style="margin-top:8px">${favSports.map(s=>`<span class="dna-tag grinder">${SPORT_ICONS_MINI[s]||'🎯'} ${s}</span>`).join('')}</div>`:'';
     const displayArch=arch||autoArchetype;
+    const dnaSummaryTxt=getDNASummary(computeDNA(allPicks),displayArch);
     const archetypeHtml=displayArch?`<div class="archetype-badge" style="color:${displayArch.color};border-color:${displayArch.color}55;background:${displayArch.color}11" title="${displayArch.desc||''}">${displayArch.icon} ${displayArch.name.replace('The ','').toUpperCase()}</div>`:'';
     // Use backend-authoritative stats when available, fall back to client-computed
     const finalSharpScore = rankingMeta ? rankingMeta.sharpScore : sharpScore;
@@ -827,7 +1111,7 @@ async function loadProfile(){
         :`<div class="avatar-big" style="overflow:hidden;padding:0"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div>`;
     }else{
       profileAvHTML=window.Divisions
-        ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,#7c3aed,#a855f7)',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})
+        ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,var(--ac-vivid),var(--ac-light))',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})
         :`<div class="avatar-big">${username.substring(0,2).toUpperCase()}</div>`;
     }
 
@@ -873,6 +1157,7 @@ async function loadProfile(){
               ${finalSharpScore>70?`<span style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.25);color:#00e5a0;font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;animation:sharpPulse 3s ease-in-out infinite">✓ VERIFIED SHARP</span>`:''}
             </div>
             <div class="profile-username">@${username}</div>
+            ${dnaSummaryTxt?`<div class="dna-sum">${dnaSummaryTxt}</div>`:''}
             ${bioHtml}
             ${socialHtml}
             <div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">
@@ -893,7 +1178,7 @@ async function loadProfile(){
         </div>
       </div>
 
-      <div class="stats-grid-6">${(()=>{const clvDisp=(rankingMeta&&rankingMeta.clvAvg!=null)?((rankingMeta.clvAvg>=0?'+':'')+rankingMeta.clvAvg.toFixed(1)+'%'):'—';const clvColor=(rankingMeta&&rankingMeta.clvAvg!=null)?(rankingMeta.clvAvg>=0?'var(--gr)':'var(--rd)'):'var(--mu)';const pnlDisp=rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl;const pnlPos=pnlDisp>=0;return`
+      <div class="stats-grid-6 reveal">${(()=>{const clvDisp=(rankingMeta&&rankingMeta.clvAvg!=null)?((rankingMeta.clvAvg>=0?'+':'')+rankingMeta.clvAvg.toFixed(1)+'%'):'—';const clvColor=(rankingMeta&&rankingMeta.clvAvg!=null)?(rankingMeta.clvAvg>=0?'var(--gr)':'var(--rd)'):'var(--mu)';const pnlDisp=rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl;const pnlPos=pnlDisp>=0;return`
         <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu">${rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length}</div><div class="stat-lbl">Picks <span class="tip-trigger" data-tip="Total number of picks posted. 30+ picks is the minimum for statistical significance. 100+ gives high confidence in the numbers.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
@@ -902,13 +1187,15 @@ async function loadProfile(){
         <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${clvColor}">${clvDisp}</div><div class="stat-lbl">CLV Avg <span class="tip-trigger" data-tip="Closing Line Value — whether you consistently beat the closing market odds. The closing line is the sharpest price. Positive CLV means you are a sharp bettor.">?</span></div></div>
       `})()}</div>
 
-      <div class="content-grid">
+      <div class="content-grid reveal reveal-d1">
         <div class="panel">
           <div class="panel-title" id="picksTitle">ALL PICKS <span class="panel-count">${allPicks.length}</span></div>
           ${_pickFilterTabs(allPicks)}
           <div id="picksList"></div>
         </div>
         <div>
+          ${buildDNAPanel(allPicks,displayArch)}
+          ${buildArchEvoPanel(allPicks,displayArch)}
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
             ${gaugeHTML?`<div style="text-align:center;padding:16px 0 12px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div style="display:inline-block">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">Sharp Score</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${finalSharpScore>=70?'Top performer · Verified edge':finalSharpScore>=40?'Building edge':'Early track record'}</div>${displayArch?`<div style="margin-top:8px"><span style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:1px;border:1px solid ${displayArch.color}44;background:${displayArch.color}11;color:${displayArch.color}">${displayArch.icon} ${displayArch.name}</span></div>`:''}</div>`:''}
@@ -932,11 +1219,14 @@ async function loadProfile(){
           ${reliabilityHtml}
           ${(()=>{const elo=rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks);const{label,color:ec}=getELOLabel(elo);return`<div class="elo-box" style="margin-top:12px"><div class="elo-val" style="color:${ec}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
           ${sportList.length>0?`<div class="panel" style="margin-top:16px"><div class="panel-title">BY SPORT</div>${sportList.map(([s,c])=>`<div class="sport-bar"><div class="sport-bar-label"><span>${sportIcon[s]||'🎯'} ${s}</span><span>${c} picks</span></div><div class="sbar"><div class="sbar-fill" style="width:${(c/allPicks.length*100).toFixed(0)}%"></div></div></div>`).join('')}</div>`:''}
+          ${buildTrophyWallPanel(allPicks,badges,streak)}
         </div>
-      </div>`;
+      </div>
+      ${buildPersonalTimeline(allPicks)}`;
 
     setTimeout(()=>{
       drawPnLChart(allPicks,'pnlChart');
+      initDNABars();
       renderPicks();
       if(window.animateSharpGauges)window.animateSharpGauges();
       if(window.Follows){
@@ -951,9 +1241,11 @@ async function loadProfile(){
       if(tipsterUserId)initSubscriptionUI(tipsterUserId);
       if(window.initTooltips)window.initTooltips();
       initTipTriggers();
+      if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
     },80);
 
   }catch(e){
+    clearTimeout(_xt);
     document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>ERROR</h2><p style="color:var(--mu2)">Could not load profile.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';
   }
 }
@@ -1066,5 +1358,6 @@ function initTipTriggers(){
   document.addEventListener('click',function(){popup.style.display='none';},{passive:true});
 }
 </script>
+<img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">
 </body>
 </html>

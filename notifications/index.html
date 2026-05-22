@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Notifications</title>
 <meta name="description" content="Your LEDGR notifications — get alerted when tipsters you follow post new picks, hit streaks, or reach new divisions.">
 <meta property="og:title" content="LEDGR — Notifications">
 <meta property="og:description" content="Stay up to date — alerts when tipsters you follow post picks, hit streaks, or level up.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/notifications">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Notifications">
 <meta name="twitter:description" content="Alerts when tipsters you follow post picks, hit streaks, or level up.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
@@ -21,7 +22,7 @@
 .page-head{margin-bottom:28px;display:flex;align-items:flex-end;justify-content:space-between}
 .head-left{}
 .page-eyebrow{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:6px}
-.page-title{font-family:var(--font-display);font-size:42px;letter-spacing:3px;line-height:1}
+.page-title{font-family:var(--font-display);font-size:clamp(26px,3vw,34px);letter-spacing:3px;line-height:.92}
 .clear-all-btn{background:transparent;border:1px solid rgba(248,113,113,0.2);border-radius:8px;padding:7px 14px;color:var(--rd);font-family:var(--font-mono);font-size:10px;letter-spacing:1px;cursor:pointer;transition:all .2s}.clear-all-btn:hover{background:rgba(248,113,113,0.06)}
 .filter-row{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
 .filter-btn{background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:5px 12px;font-family:var(--font-mono);font-size:9px;letter-spacing:1px;color:var(--mu2);cursor:pointer;transition:all .2s}.filter-btn:hover{color:var(--tx);border-color:var(--bd2)}.filter-btn.active{background:var(--acg);border-color:rgba(184,159,255,0.3);color:var(--ac)}
@@ -31,10 +32,10 @@
 .notif-card:hover{border-color:var(--bd2);background:rgba(255,255,255,0.025)}
 .notif-card.read{opacity:.5;border-color:transparent}
 .notif-card.read:hover{opacity:.75;border-color:var(--bd)}
-.notif-card.unread{border-left:3px solid #2A2A2A}
-.notif-card.unread-elite{border-left:3px solid #7B2CFF}
-.notif-card.unread-system{border-left:3px solid #FFD700}
-.elite-pill{display:inline-flex;align-items:center;gap:3px;background:rgba(123,44,255,0.12);border:1px solid rgba(123,44,255,0.35);color:#b89fff;font-family:var(--font-mono);font-size:8px;letter-spacing:1.5px;padding:2px 7px;border-radius:5px;margin-right:6px;vertical-align:middle;flex-shrink:0}
+.notif-card.unread{border-left:3px solid var(--bd)}
+.notif-card.unread-elite{border-left:3px solid var(--ac-vivid)}
+.notif-card.unread-system{border-left:3px solid var(--gold)}
+.elite-pill{display:inline-flex;align-items:center;gap:3px;background:rgba(123,44,255,0.12);border:1px solid rgba(123,44,255,0.35);color:var(--ac);font-family:var(--font-mono);font-size:8px;letter-spacing:1.5px;padding:2px 7px;border-radius:5px;margin-right:6px;vertical-align:middle;flex-shrink:0}
 .nf-icon{font-size:22px;flex-shrink:0;margin-top:2px}
 .nf-body{flex:1}
 .nf-text{font-size:13px;color:var(--tx);line-height:1.5}.nf-text b{color:var(--ac)}
@@ -75,13 +76,14 @@
 <body>
 <div class="bg-glow"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'notifications' });</script>
 
 <div class="main">
   <div class="page-head">
     <div class="head-left">
       <div class="page-eyebrow">LEDGR ALERTS</div>
-      <div class="page-title">🔔 NOTIFICATIONS</div>
+      <div class="page-title">NOTIFI<span style="color:var(--ac)">CATIONS</span></div>
     </div>
     <button class="clear-all-btn" onclick="clearAll()">CLEAR ALL</button>
   </div>
@@ -94,9 +96,9 @@
   </div>
 
   <!-- PUSH NOTIFICATIONS PANEL -->
-  <div class="push-panel" id="pushPanel">
+  <div class="push-panel panel-elevated reveal" id="pushPanel">
     <div class="push-header">
-      <div class="push-title">🔔 PUSH NOTIFICATIONS</div>
+      <div class="push-title section-header" style="margin-bottom:0;padding-left:14px">PUSH NOTIFICATIONS</div>
       <span class="push-status default" id="pushStatus">CHECKING…</span>
     </div>
     <div class="push-desc">Get notified the moment a tipster you follow posts a pick — even when LEDGR isn't open.</div>
@@ -116,6 +118,7 @@
 
 <script src="/ledgr-ws.js"></script>
 <script src="/push.js"></script>
+<script src="/social.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;let currentFilter='all';
@@ -163,8 +166,10 @@ function _beNotifToLocal(n){
 async function loadNotificationsFromAPI(){
   if(!user||!user.id)return;
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>_ctrl.abort(),25000);
   try{
-    const r=await fetch(API+'/notifications?userId='+user.id,{headers:tk?{Authorization:'Bearer '+tk}:{}});
+    const r=await fetch(API+'/notifications?userId='+user.id,{headers:tk?{Authorization:'Bearer '+tk}:{},signal:_ctrl.signal});
+    clearTimeout(_xt);
     if(!r.ok)return;
     const data=await r.json();
     const backendNotifs=(Array.isArray(data)?data:data.notifications||[]).map(_beNotifToLocal);
@@ -177,7 +182,7 @@ async function loadNotificationsFromAPI(){
       saveNotifs([...newOnes,...existing].slice(0,100));
       renderNotifs();
     }
-  }catch(e){}
+  }catch(e){clearTimeout(_xt);}
 }
 
 async function markAllReadOnBackend(){

@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Archetype Vault</title>
 <meta name="description" content="Discover your betting DNA. 15 archetypes detected automatically from your pick history.">
 <meta property="og:title" content="LEDGR — Archetype Vault">
 <meta property="og:description" content="Your competitive identity, detected automatically from your betting history.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/archetypes">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
@@ -19,7 +20,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
 
 /* MAIN */
-.main{max-width:1100px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:60px 24px 100px;position:relative;z-index:2}
 .not-logged{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px}
 .not-logged h2{font-family:var(--font-display);font-size:48px;letter-spacing:3px;color:var(--mu)}
 
@@ -109,6 +110,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <div class="bg-glow"></div>
 <div class="toast" id="toast"></div>
 
@@ -130,7 +132,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <!-- YOUR ARCHETYPE -->
   <div class="current-arch-wrap">
     <div class="section-label">Your Archetype</div>
-    <div id="currentArchetypeCard"><div class="current-card"><div class="loading-state">Analysing your picks…</div></div></div>
+    <div id="currentArchetypeCard"><div class="current-card"><div style="padding:32px;display:flex;flex-direction:column;gap:12px"><div class="skel" style="width:80px;height:80px;border-radius:50%;margin:0 auto"></div><div class="skel skel-title" style="width:60%;margin:0 auto"></div><div class="skel skel-text" style="width:80%;margin:0 auto"></div></div></div></div>
   </div>
 
   <!-- ALL ARCHETYPES -->
@@ -140,7 +142,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="s-title">THE VAULT</div>
       <div class="s-sub">Full color = matched. Dimmed = within reach. Greyscale = not yet.</div>
     </div>
-    <div class="arch-grid" id="archetypeGrid"><div class="loading-state">Loading…</div></div>
+    <div class="arch-grid" id="archetypeGrid"><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:8px 0"><div class="skel" style="height:100px;border-radius:12px"></div><div class="skel" style="height:100px;border-radius:12px"></div><div class="skel" style="height:100px;border-radius:12px"></div><div class="skel" style="height:100px;border-radius:12px"></div><div class="skel" style="height:100px;border-radius:12px"></div><div class="skel" style="height:100px;border-radius:12px"></div></div></div>
   </div>
 
   <!-- EVOLUTION PATH -->
@@ -150,7 +152,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="s-title">WHERE YOU'RE HEADING</div>
       <div class="s-sub">Your two closest archetypes based on current trajectory.</div>
     </div>
-    <div id="evolutionPath"><div class="loading-state">Computing path…</div></div>
+    <div id="evolutionPath"><div style="display:flex;gap:16px;padding:16px 0"><div class="skel" style="flex:1;height:80px;border-radius:12px"></div><div class="skel" style="width:32px;height:32px;border-radius:50%;align-self:center"></div><div class="skel" style="flex:1;height:80px;border-radius:12px"></div></div></div>
   </div>
 
   <!-- HOW IT WORKS -->
@@ -269,8 +271,10 @@ window.onload = () => {
 };
 
 async function loadData() {
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>_ctrl.abort(),25000);
   try {
-    const r = await fetch(API + '/rankings/' + user.username);
+    const r = await fetch(API + '/rankings/' + user.username, {signal:_ctrl.signal});
+    clearTimeout(_xt);
     if (!r.ok) throw new Error();
     const data = await r.json();
     const settled = (data.wins||0) + (data.losses||0);
@@ -289,6 +293,7 @@ async function loadData() {
       nightOwl: false,
     };
   } catch(e) {
+    clearTimeout(_xt);
     userStats = {picks:0,wins:0,losses:0,roi:0,winRate:0,currentStreak:0,bestStreak:0,sharpScore:0,avgOdds:0,followers:0,highVariance:false,nightOwl:false};
   }
 

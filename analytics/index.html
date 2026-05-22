@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Analytics</title>
 <meta name="description" content="Deep analytics on your LEDGR pick history — ROI curve, CLV, markets, streaks, variance, sharp score and more.">
 <meta property="og:title" content="LEDGR — Pick Analytics">
 <meta property="og:description" content="Deep analytics on pick history — ROI curve, CLV, win rate trend, and more. Understand your edge.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/analytics">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Pick Analytics">
 <meta name="twitter:description" content="Deep analytics on pick history — ROI curve, CLV, win rate trend, and more.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
@@ -23,7 +24,7 @@
 html{scroll-behavior:smooth}
 
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
+.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(56,189,248,.07),transparent 70%);pointer-events:none;z-index:0}
 
 /* LAYOUT */
 .main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
@@ -150,13 +151,21 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .chart-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 }
+
+/* ── IDENTITY: DATA LAB ── */
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(56,189,248,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.022) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+@keyframes labScan{0%{top:-2px;opacity:0}5%{opacity:1}92%{opacity:1}100%{top:100vh;opacity:0}}
+.bg-scan{position:fixed;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(56,189,248,.2) 30%,rgba(56,189,248,.28) 50%,rgba(56,189,248,.2) 70%,transparent);pointer-events:none;z-index:0;animation:labScan 14s linear infinite}
 </style>
 
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="bg-grid"></div>
+<div class="bg-scan"></div>
 <div id="chart-tip"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({active:'analytics'});</script>
 
 <div class="main">
@@ -176,8 +185,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <a href="#" class="view-profile-btn" id="profileLink">View Profile →</a>
     </div>
 
+    <!-- 0. INTELLIGENCE ─ insight deck + personality + patterns -->
+    <div id="intelligenceWrap" style="margin-bottom:20px"></div>
+
     <!-- 1. OVERVIEW STATS ROW (8 boxes) -->
-    <div class="stats-row" id="statsRow">
+    <div class="stats-row reveal" id="statsRow">
       <div class="sbox"><div class="sbox-val neu" id="s0">—</div><div class="sbox-lbl">Picks</div></div>
       <div class="sbox"><div class="sbox-val neu" id="s1">—</div><div class="sbox-lbl">ROI</div></div>
       <div class="sbox"><div class="sbox-val neu" id="s2">—</div><div class="sbox-lbl">Win Rate</div></div>
@@ -189,22 +201,22 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
 
     <!-- 2. ROI CURVE GRAPH -->
-    <div class="card">
+    <div class="card reveal reveal-d1">
       <div class="card-title">ROI CURVE <span class="card-sub">Cumulative ROI % over time</span></div>
-      <div class="chart-wrap" id="roiCurveWrap"><div class="chart-empty">Loading…</div></div>
+      <div class="chart-wrap" id="roiCurveWrap"><div style="display:flex;align-items:flex-end;gap:4px;padding:24px 16px;height:100px"><div class="skel" style="flex:1;height:65%"></div><div class="skel" style="flex:1;height:80%"></div><div class="skel" style="flex:1;height:50%"></div><div class="skel" style="flex:1;height:90%"></div><div class="skel" style="flex:1;height:40%"></div><div class="skel" style="flex:1;height:70%"></div><div class="skel" style="flex:1;height:60%"></div><div class="skel" style="flex:1;height:85%"></div></div></div>
     </div>
 
     <!-- 3. PROFIT GRAPH -->
-    <div class="card">
+    <div class="card reveal reveal-d2">
       <div class="card-title">PROFIT PER PICK <span class="card-sub">P&amp;L bars + running total line</span></div>
-      <div class="chart-wrap" id="profitWrap"><div class="chart-empty">Loading…</div></div>
+      <div class="chart-wrap" id="profitWrap"><div style="display:flex;align-items:flex-end;gap:4px;padding:24px 16px;height:100px"><div class="skel" style="flex:1;height:75%"></div><div class="skel" style="flex:1;height:55%"></div><div class="skel" style="flex:1;height:85%"></div><div class="skel" style="flex:1;height:45%"></div><div class="skel" style="flex:1;height:90%"></div><div class="skel" style="flex:1;height:60%"></div><div class="skel" style="flex:1;height:70%"></div><div class="skel" style="flex:1;height:50%"></div></div></div>
     </div>
 
     <!-- 4 + 5: Win Rate History + CLV Analysis -->
-    <div class="two-col">
+    <div class="two-col reveal reveal-d2">
       <div class="card" style="margin-bottom:0">
         <div class="card-title">WIN RATE TREND <span class="card-sub">30-pick rolling average</span></div>
-        <div class="chart-wrap" id="wrTrendWrap"><div class="chart-empty">Loading…</div></div>
+        <div class="chart-wrap" id="wrTrendWrap"><div style="display:flex;align-items:flex-end;gap:4px;padding:24px 16px;height:100px"><div class="skel" style="flex:1;height:55%"></div><div class="skel" style="flex:1;height:70%"></div><div class="skel" style="flex:1;height:80%"></div><div class="skel" style="flex:1;height:65%"></div><div class="skel" style="flex:1;height:85%"></div><div class="skel" style="flex:1;height:75%"></div><div class="skel" style="flex:1;height:90%"></div><div class="skel" style="flex:1;height:78%"></div></div></div>
         <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:8px">Rolling average over last 30 settled picks</div>
       </div>
       <div class="card" style="margin-bottom:0" id="clvCard">
@@ -222,19 +234,19 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
 
     <!-- 6 + 7: Best Markets + Best Leagues -->
-    <div class="two-col" style="margin-top:18px">
+    <div class="two-col reveal reveal-d3" style="margin-top:18px">
       <div class="card" style="margin-bottom:0">
         <div class="card-title">BEST MARKETS <span class="card-sub">By ROI</span></div>
-        <div id="marketsWrap"><div class="chart-empty" style="padding:24px">Loading…</div></div>
+        <div id="marketsWrap"><div style="padding:16px;display:flex;flex-direction:column;gap:8px"><div class="skel" style="height:24px;width:100%;border-radius:4px"></div><div class="skel" style="height:24px;width:90%;border-radius:4px"></div><div class="skel" style="height:24px;width:75%;border-radius:4px"></div><div class="skel" style="height:24px;width:60%;border-radius:4px"></div></div></div>
       </div>
       <div class="card" style="margin-bottom:0">
         <div class="card-title">BEST LEAGUES <span class="card-sub">By sport &amp; ROI</span></div>
-        <div id="leaguesWrap"><div class="chart-empty" style="padding:24px">Loading…</div></div>
+        <div id="leaguesWrap"><div style="padding:16px;display:flex;flex-direction:column;gap:8px"><div class="skel" style="height:24px;width:100%;border-radius:4px"></div><div class="skel" style="height:24px;width:85%;border-radius:4px"></div><div class="skel" style="height:24px;width:70%;border-radius:4px"></div><div class="skel" style="height:24px;width:55%;border-radius:4px"></div></div></div>
       </div>
     </div>
 
     <!-- 8. STREAK ANALYSIS -->
-    <div class="card" style="margin-top:18px">
+    <div class="card reveal reveal-d3" style="margin-top:18px">
       <div class="card-title">STREAK ANALYSIS</div>
       <div class="streak-cards" id="streakCards">
         <div class="sk-card"><div class="sk-num" id="skBest" style="color:var(--orange)">—</div><div class="sk-lbl">Best Win Streak</div></div>
@@ -247,7 +259,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
 
     <!-- 9 + 11: Variance + Sharp Score Breakdown -->
-    <div class="two-col" style="margin-top:18px">
+    <div class="two-col reveal reveal-d4" style="margin-top:18px">
       <div class="card" style="margin-bottom:0">
         <div class="card-title">VARIANCE ANALYSIS</div>
         <div id="varianceWrap">
@@ -263,7 +275,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
           <div class="var-stat">
             <div class="var-stat-lbl">Return Distribution</div>
-            <div class="chart-wrap" id="varChartWrap" style="margin-top:8px"><div class="chart-empty" style="padding:16px">Loading…</div></div>
+            <div class="chart-wrap" id="varChartWrap" style="margin-top:8px"><div style="display:flex;align-items:flex-end;gap:3px;padding:16px;height:60px"><div class="skel" style="flex:1;height:40%"></div><div class="skel" style="flex:1;height:60%"></div><div class="skel" style="flex:1;height:80%"></div><div class="skel" style="flex:1;height:90%"></div><div class="skel" style="flex:1;height:70%"></div><div class="skel" style="flex:1;height:50%"></div><div class="skel" style="flex:1;height:30%"></div></div></div>
           </div>
           <div id="varProfile"></div>
         </div>
@@ -281,7 +293,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
 
     <!-- 10. PERFORMANCE CALENDAR -->
-    <div class="card" style="margin-top:18px">
+    <div class="card reveal reveal-d4" style="margin-top:18px">
       <div class="card-title">PERFORMANCE CALENDAR <span class="card-sub">Last 26 weeks</span></div>
       <div class="cal-wrap">
         <div style="display:flex;gap:6px">
@@ -350,12 +362,15 @@ window.onload=()=>{
   if(!urlUser&&(!ud||!tk)){window.location.href='/login';return;}
   if(ud){try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}}
   document.getElementById('app').style.display='block';
+  if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
   loadData();
 };
 
 async function loadData(){
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Request timed out. Please refresh.</div>';},25000);
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
+    const r=await fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal});
+    clearTimeout(_xt);
     const all=await r.json();
     targetUser=urlUser||(user?user.username:null);
     if(!targetUser){document.getElementById('notLogged').style.display='flex';document.getElementById('app').style.display='none';return;}
@@ -374,8 +389,10 @@ async function loadData(){
     renderVariance();
     renderSharpScore();
     renderCalendar();
+    if(window.Insights)Insights.renderAnalytics('intelligenceWrap',allPicks);
   }catch(e){
-    document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:DM Mono,monospace">⚠️ Could not load data. Try again.</div>';
+    clearTimeout(_xt);
+    document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Could not load data. Try again.</div>';
   }
 }
 
@@ -452,13 +469,18 @@ function renderStats(all){
   const s7=document.getElementById('s7');
   s7.textContent=streak>0?streak+streakType:'—';
   s7.className='sbox-val '+(streakType==='W'?'gold':'neg');
+  if(window.LEDGR&&LEDGR.countUp){
+    LEDGR.countUp(document.getElementById('s0'),p.length);
+    LEDGR.countUp(document.getElementById('s2'),parseFloat(wr),{decimals:0,suffix:'%'});
+    LEDGR.countUp(document.getElementById('s4'),ss.total,{decimals:0,suffix:'/100'});
+  }
 }
 
 // ── 2. ROI CURVE ─────────────────────────────────────────────────
 function renderROICurve(){
   const el=document.getElementById('roiCurveWrap');
   const p=allPicks;
-  if(p.length<2){el.innerHTML='<div class="chart-empty">Need 2+ picks to show ROI curve.</div>';return;}
+  if(p.length<2){el.innerHTML='<div class="chart-empty">Post 2+ picks to see your ROI curve.</div>';return;}
   const W=900,H=220,PL=58,PR=16,PT=16,PB=36,CW=W-PL-PR,CH=H-PT-PB;
   let cumStake=0,cumPnl=0;
   _roiPts=[{i:0,roi:0,pnl:0,cumPnl:0,date:p[0].createdAt,event:'Start',market:'',odds:0,result:''}];
@@ -545,7 +567,7 @@ function renderROICurve(){
 function renderProfitGraph(){
   const el=document.getElementById('profitWrap');
   const settled=allPicks.filter(p=>p.result!=='pending');
-  if(settled.length<2){el.innerHTML='<div class="chart-empty">Need 2+ settled picks.</div>';return;}
+  if(settled.length<2){el.innerHTML='<div class="chart-empty">Your curve builds as results settle.</div>';return;}
   const W=900,H=180,PL=52,PR=16,PT=14,PB=8,CW=W-PL-PR,CH=H-PT-PB;
 
   // Sample if too many picks
@@ -592,7 +614,7 @@ function renderProfitGraph(){
 function renderWRTrend(){
   const el=document.getElementById('wrTrendWrap');
   const settled=allPicks.filter(p=>p.result!=='pending');
-  if(settled.length<5){el.innerHTML='<div class="chart-empty" style="padding:24px">Need 5+ settled picks.</div>';return;}
+  if(settled.length<5){el.innerHTML='<div class="chart-empty" style="padding:24px">5+ settled picks unlocks this view.</div>';return;}
   const WIN=30;const pts=[];
   settled.forEach((p,i)=>{const sl=settled.slice(Math.max(0,i-WIN+1),i+1);const w=sl.filter(x=>x.result==='win').length;pts.push((w/sl.length)*100);});
   const W=400,H=130,PT=8,PR=10,PB=8,PL=8,CW=W-PL-PR,CH=H-PT-PB;
@@ -651,7 +673,7 @@ function renderMarkets(){
     const avgOdds=d.odds.reduce((s,v)=>s+v,0)/d.odds.length;
     return{name,roi,wr,picks:d.picks,wins:d.wins,losses:d.losses,pnl:d.pnl,avgOdds};
   }).sort((a,b)=>b.roi-a.roi).slice(0,12);
-  if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No data yet</div>';return;}
+  if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No market data yet</div>';return;}
   const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
   el.innerHTML=`<table class="mkt-table"><thead><tr><th>Market</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">W-L</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
     list.map(d=>{const rPos=d.roi>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wins}–${d.losses}</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
@@ -673,7 +695,7 @@ function renderLeagues(){
     const wr=(d.wins+d.losses)>0?((d.wins/(d.wins+d.losses))*100):0;
     return{name,roi,wr,picks:d.picks,wins:d.wins,losses:d.losses,pnl:d.pnl};
   }).sort((a,b)=>b.roi-a.roi);
-  if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No data yet</div>';return;}
+  if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No league data yet</div>';return;}
   const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
   el.innerHTML=`<table class="mkt-table"><thead><tr><th>Sport</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">P&amp;L</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
     list.map(d=>{const rPos=d.roi>=0;const pPos=d.pnl>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
@@ -720,7 +742,7 @@ function renderStreaks(){
 // ── 9. VARIANCE ANALYSIS ─────────────────────────────────────────
 function renderVariance(){
   const settled=allPicks.filter(p=>p.result!=='pending');
-  if(settled.length<5){document.getElementById('varChartWrap').innerHTML='<div class="chart-empty" style="padding:16px">Need 5+ settled picks.</div>';return;}
+  if(settled.length<5){document.getElementById('varChartWrap').innerHTML='<div class="chart-empty" style="padding:16px">5+ settled picks unlocks this analysis.</div>';return;}
   const returns=settled.map(p=>p.stake>0?p.pnl/p.stake:0);
   const mean=returns.reduce((s,v)=>s+v,0)/returns.length;
   const variance=returns.reduce((s,v)=>s+Math.pow(v-mean,2),0)/returns.length;
@@ -796,6 +818,8 @@ function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach
 
 
 </script>
+<script src="/insights.js"></script>
+<script src="/social.js"></script>
 <script src="/tooltips.js"></script>
 
 </body>

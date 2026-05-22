@@ -3,29 +3,34 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Home</title>
 <meta name="description" content="Your verified sports tipster dashboard. Post picks, track your record, and climb the leaderboard. Results verified automatically.">
 <meta property="og:title" content="LEDGR — Your Verified Pick Record">
 <meta property="og:description" content="Post picks, track your ROI, compete on the leaderboard. Every result verified automatically — no fake records.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/home">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Your Verified Pick Record">
 <meta name="twitter:description" content="Post picks, track your ROI, compete on the leaderboard. Every result verified automatically.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
 body{min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.3}
-.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse,rgba(100,70,200,0.06),transparent 65%);pointer-events:none;z-index:0}
+@keyframes bgBreathe{0%,100%{opacity:0.55}50%{opacity:1}}
+.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse,rgba(100,70,200,0.10),transparent 65%);pointer-events:none;z-index:0;animation:bgBreathe 12s ease-in-out infinite}
+
+/* ══ PRESTIGE MOTION ══ */
+@keyframes accentPulse{0%,100%{opacity:1}50%{opacity:0.45}}
 
 /* ══ MAIN ══ */
 .main{max-width:1120px;margin:0 auto;padding:0 24px;position:relative;z-index:2}
 
 /* ══ HERO ══ */
-.hero{padding:32px 0 0;margin-bottom:16px}
+.hero{padding:24px 0 0;margin-bottom:12px}
 .hero-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px;animation:fadeSlideUp .5s ease both}
 
 .hero-tagline{font-family:var(--font-display);font-size:clamp(26px,3vw,34px);letter-spacing:3px;line-height:1.1;color:var(--tx);animation:fadeSlideUp .6s .05s ease both;opacity:0;animation-fill-mode:forwards}
@@ -50,7 +55,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
 /* ══ STATS ══ */
-.stats-wrap{padding:24px 0 32px;border-bottom:1px solid var(--bd)}
+.stats-wrap{padding:16px 0 20px;border-bottom:1px solid var(--bd)}
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
 .stat{padding:0 28px;border-right:1px solid var(--bd);cursor:default}
 .stat:first-child{padding-left:0}
@@ -62,12 +67,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .sparkline{width:100%;height:20px;margin-top:6px}
 
 /* ══ RISING ══ */
-.section-block{padding:28px 0 0}
-.section-head-row{display:flex;align-items:baseline;gap:12px;margin-bottom:22px}
-.section-head-row h2{font-family:var(--font-display);font-size:22px;letter-spacing:3px;color:var(--tx);border-left:2px solid var(--ac);padding-left:10px}
+.section-block{padding:20px 0 0}
+.section-head-row{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
+.section-head-row h2{font-family:var(--font-display);font-size:22px;letter-spacing:3px;color:var(--tx);padding-left:12px;position:relative}
+.section-head-row h2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
 .section-head-row span{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px}
 .rising-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.rising-card{padding:24px 20px;border-radius:16px;cursor:pointer;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25s;position:relative;overflow:hidden}
+.rising-card{padding:18px 16px;border-radius:16px;cursor:pointer;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25s;position:relative;overflow:hidden}
 .rising-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(0,0,0,0.4)}
 .rising-card.heat1{background:linear-gradient(135deg,rgba(251,191,36,0.1),rgba(251,146,60,0.05) 60%,transparent);border:1px solid rgba(251,191,36,0.12)}
 .rising-card.heat2{background:linear-gradient(135deg,rgba(52,211,153,0.09),rgba(56,189,248,0.04) 60%,transparent);border:1px solid rgba(52,211,153,0.1)}
@@ -81,10 +87,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .rising-card:hover .rc-arrow{transform:translate(4px,-4px)}
 
 /* ══ MVP STRIP — rich ══ */
-.mvp-wrap{padding:28px 0 0}
-.mvp-card{background:linear-gradient(135deg,rgba(251,191,36,0.07),rgba(251,191,36,0.02) 60%,transparent);border:1px solid rgba(251,191,36,0.12);border-radius:16px;padding:22px 24px;cursor:pointer;transition:all .25s;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
+.mvp-wrap{padding:20px 0 0}
+.mvp-card{background:linear-gradient(135deg,rgba(251,191,36,0.07),rgba(251,191,36,0.02) 60%,transparent);border:1px solid rgba(251,191,36,0.12);border-radius:16px;padding:18px 20px;cursor:pointer;transition:all .25s;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}
 .mvp-card:hover{border-color:rgba(251,191,36,0.22);background:linear-gradient(135deg,rgba(251,191,36,0.11),rgba(251,191,36,0.04) 60%,transparent);transform:translateY(-2px);box-shadow:0 8px 32px rgba(251,191,36,0.08)}
-.mvp-av{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#b45309,#f59e0b);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:#fff;flex-shrink:0;position:relative}
+.mvp-av{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,#b45309,var(--gold));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:#fff;flex-shrink:0;position:relative}
 .mvp-av::after{content:'MVP';position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:7px;letter-spacing:1px;background:var(--gold);color:#060508;padding:1px 5px;border-radius:3px;font-weight:700}
 .mvp-info{}
 .mvp-label{font-family:var(--font-mono);font-size:9px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
@@ -118,7 +124,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .hot-live::before{content:'';width:4px;height:4px;background:var(--gr);border-radius:50%;display:inline-block;animation:blink 1.5s infinite}
 
 /* ══ POST CTA ══ */
-.post-cta-wrap{display:none}
+.post-cta-wrap{display:block;margin-bottom:24px}
 .post-cta{background:linear-gradient(135deg,rgba(184,159,255,0.09),rgba(100,70,200,0.04));border-radius:16px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:16px;text-decoration:none;transition:all .25s;border:1px solid rgba(184,159,255,0.1);position:relative;overflow:hidden}
 .post-cta::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(184,159,255,0.04),transparent);opacity:0;transition:opacity .3s}
 .post-cta:hover{border-color:rgba(184,159,255,0.22);transform:translateY(-2px);box-shadow:0 8px 32px rgba(184,159,255,0.08)}
@@ -129,7 +135,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .post-cta:hover .post-cta-btn{box-shadow:0 6px 28px rgba(184,159,255,0.35);transform:scale(1.03)}
 
 /* ══ MAIN GRID ══ */
-.main-grid-wrap{padding:24px 0 60px}
+.main-grid-wrap{padding:16px 0 48px}
 .main-grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
 
 /* ══ QUICK ACTIONS ══ */
@@ -138,7 +144,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .qa-btn:hover{border-color:var(--bd2);background:rgba(255,255,255,0.03);transform:translateY(-2px)}
 .qa-icon{font-size:15px;flex-shrink:0}
 .qa-label{font-family:var(--font-display);font-size:13px;letter-spacing:1.5px;color:var(--tx)}
-.section-head{font-family:var(--font-display);font-size:15px;letter-spacing:3px;color:var(--mu2);margin-bottom:12px;border-left:2px solid var(--ac);padding-left:10px}
+.section-head{font-family:var(--font-display);font-size:15px;letter-spacing:3px;color:var(--mu2);margin-bottom:12px;padding-left:12px;position:relative}
+.section-head::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
 
 /* ══ TRENDING PICKS — with badges ══ */
 .picks-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
@@ -238,7 +245,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .lb-row:last-of-type{border-bottom:none}
 .lb-row:hover{opacity:.9;transform:translateX(2px)}
 .rank{font-family:var(--font-display);font-size:18px;color:var(--mu);width:22px;text-align:center;flex-shrink:0}
-.rank.r1{color:var(--gold)}.rank.r2{color:var(--silver)}.rank.r3{color:#b47850}
+.rank.r1{color:var(--gold)}.rank.r2{color:var(--silver)}.rank.r3{color:var(--bronze)}
 .av{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:13px;flex-shrink:0;color:#fff}
 .tip-info{flex:1;min-width:0}
 .tip-name{font-weight:700;font-size:12px;color:var(--tx);display:flex;align-items:center;gap:4px}
@@ -303,7 +310,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .share-card-inner{padding:28px}
 .share-card-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,0.08);border:none;color:var(--mu2);font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
 .share-card-close:hover{background:rgba(255,255,255,0.14);color:var(--tx)}
-.sc-banner{height:6px;width:100%;background:linear-gradient(90deg,var(--ac),#7c3aed,var(--cyan));position:absolute;top:0;left:0}
+.sc-banner{height:6px;width:100%;background:linear-gradient(90deg,var(--ac),var(--ac-vivid),var(--cyan));position:absolute;top:0;left:0}
 .sc-header{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;padding-top:4px}
 .sc-logo{font-family:var(--font-display);font-size:16px;letter-spacing:4px;color:var(--ac)}
 .sc-live{display:inline-flex;align-items:center;gap:4px;font-size:8px;color:var(--gr)}
@@ -322,7 +329,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .sc-result-badge.pending{background:rgba(184,159,255,0.08);border:1px solid var(--bd2);color:var(--mu2)}
 .sc-divider{height:1px;background:var(--bd);margin-bottom:16px}
 .sc-user{display:flex;align-items:center;gap:10px}
-.sc-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;color:#fff;flex-shrink:0}
+.sc-av{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--ac-vivid),var(--ac-light));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:12px;color:#fff;flex-shrink:0}
 .sc-user-info{flex:1}
 .sc-username{font-size:13px;font-weight:700;color:var(--tx)}
 .sc-sub{font-size:9px;color:var(--mu);font-family:var(--font-mono);margin-top:2px;display:flex;align-items:center;gap:6px}
@@ -347,7 +354,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .identity-card{background:linear-gradient(135deg,rgba(184,159,255,0.07),rgba(100,70,200,0.03));border:1px solid rgba(184,159,255,0.12);border-radius:20px;padding:22px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
 .identity-card:hover{border-color:rgba(184,159,255,0.22);transform:translateY(-3px);box-shadow:0 16px 48px rgba(184,159,255,0.1)}
 .id-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-.id-av{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#a855f7);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;color:#fff;flex-shrink:0;position:relative;box-shadow:0 0 20px rgba(124,58,237,0.3)}
+.id-av{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--ac-vivid),var(--ac-light));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;color:#fff;flex-shrink:0;position:relative;box-shadow:0 0 20px var(--glow-vivid)}
 .id-verified{position:absolute;bottom:-4px;right:-4px;width:18px;height:18px;background:var(--gr);border-radius:50%;border:2px solid var(--s1);display:flex;align-items:center;justify-content:center;font-size:8px}
 .id-name{font-family:var(--font-display);font-size:20px;letter-spacing:2px;color:var(--tx);margin-bottom:3px}
 .id-division{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px}
@@ -375,7 +382,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .mission-badge.todo{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
 .lb-row.top1{background:linear-gradient(135deg,rgba(251,191,36,0.04),transparent);border-left:2px solid rgba(251,191,36,0.25)}
 /* ── RECORDS OF THE DAY ── */
-.records-wrap{padding:36px 0 0}
+.records-wrap{padding:24px 0 0}
 .records-eyebrow{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
 .records-eyebrow::before,.records-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)}
 .records-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
@@ -408,6 +415,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @media(max-width:700px){
   .rising-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:repeat(2,1fr)}.stat{padding:0 16px;border-bottom:1px solid var(--bd)}.stat:nth-child(2n){border-right:none}
   .main{padding:0 16px}.mobile-menu-btn{display:block}.nav-r .user-badge,.nav-r .logout-btn{display:none}
+  .post-cta-wrap{display:none}
   .matchup-section{margin:0 -16px}.picks-grid{grid-template-columns:1fr}.hot-bar{grid-template-columns:1fr}
   .hot-item{border-right:none;border-bottom:1px solid var(--bd)}.hot-item:last-child{border-bottom:none}.hot-item:first-child{padding-left:24px}
   .qa-grid{grid-template-columns:1fr 1fr}.mvp-card{grid-template-columns:auto 1fr}.mvp-stats{display:none}
@@ -447,7 +455,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* ══ WEEKLY RECAP ══ */
 .recap-overlay{position:fixed;inset:0;background:rgba(6,5,8,.88);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(14px)}.recap-overlay.open{display:flex;animation:fadeIn .25s ease}
 .recap-card{background:var(--s1);border:1px solid var(--bd2);border-radius:20px;width:min(420px,92vw);overflow:hidden}
-.recap-top-bar{height:4px;background:linear-gradient(90deg,#7c3aed,#b89fff,#38bdf8)}
+.recap-top-bar{height:4px;background:linear-gradient(90deg,var(--ac-vivid),var(--ac),var(--cyan))}
 .recap-body{padding:26px 24px}
 .recap-ey{font-family:var(--font-mono);font-size:9px;letter-spacing:3px;color:var(--ac);margin-bottom:4px;text-transform:uppercase}
 .recap-title{font-family:var(--font-display);font-size:34px;letter-spacing:2px;line-height:1;margin-bottom:16px}
@@ -486,11 +494,48 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* ══ ARCHETYPE FLOAT ══ */
 @keyframes arch-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* ══ BRAIN ROW ══ */
+.brain-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:20px 0 16px;border-bottom:1px solid var(--bd)}
+.brain-card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px;transition:border-color .2s,transform .2s;cursor:default}
+.brain-card:hover{border-color:var(--bd2);transform:translateY(-1px)}
+.bc-eyebrow{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--mu);text-transform:uppercase;margin-bottom:8px}
+.bc-title{font-family:var(--font-display);font-size:17px;letter-spacing:1px;line-height:1.2;margin-bottom:5px;color:var(--tx)}
+.bc-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu2);line-height:1.5}
+.bc-prog{height:2px;background:rgba(255,255,255,.05);border-radius:2px;margin-top:10px;overflow:hidden}
+.bc-prog-fill{height:100%;background:var(--ac);border-radius:2px;width:0%;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.rival-head{display:flex;align-items:center;gap:6px;margin-bottom:8px;font-family:var(--font-mono);font-size:9px}
+.riv-you{color:var(--ac);letter-spacing:1px}
+.riv-sep{color:var(--mu);letter-spacing:2px;padding:0 4px}
+.riv-them{color:var(--mu2)}
+.rival-stat-row{display:flex;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);font-family:var(--font-mono);font-size:9px}
+.rival-stat-row:last-child{border:none;padding-bottom:0}
+.rival-v{font-family:var(--font-display);font-size:13px;color:var(--mu);min-width:44px}
+.rival-v.riv-r{text-align:right;margin-left:auto}
+.rival-v.riv-w{color:var(--gr)}
+.rival-lbl{flex:1;text-align:center;color:var(--mu);letter-spacing:1px;font-size:8px}
+/* ══ ACTIVITY SPOTLIGHT ══ */
+.spotlight-strip{padding:14px 0 16px;border-bottom:1px solid var(--bd)}
+.sl-eyebrow{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--mu);text-transform:uppercase;margin-bottom:10px}
+.sl-wrap{overflow:hidden}
+.sl-items{display:flex;gap:8px;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.sl-item{min-width:220px;background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;flex-shrink:0}
+.sl-badge{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.sl-val{font-family:var(--font-display);font-size:22px;letter-spacing:1px;line-height:1;margin-bottom:3px}
+.sl-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:960px){.brain-row{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.brain-row{grid-template-columns:1fr;gap:8px;padding:14px 0 10px}.sl-item{min-width:170px}}
+
+/* ── IDENTITY: COMMAND CENTER ── */
+@keyframes gridDrift{0%,100%{opacity:.055}50%{opacity:.095}}
+.bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(184,159,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,.055) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;animation:gridDrift 10s ease-in-out infinite}
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="bg-grid"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'home' });</script>
 <div id="notLogged" class="not-logged" style="display:none">
   <h2>ACCESS DENIED</h2>
@@ -507,7 +552,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="hero-eyebrow" id="heroEyebrow">YOUR RECORD</div>
     <div id="heroArchHero"></div>
     <div class="hero-meta">
-      <div class="division-badge div-bronze" id="divisionBadge"><span class="skel-inline" style="width:80px;height:14px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></div>
+      <div class="division-badge div-bronze" id="divisionBadge"><span class="skel-inline" style="width:80px;height:14px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
       <div id="streakPill" style="display:none" class="streak-pill">🔥 <span id="streakText"></span></div>
     </div>
     <div class="hero-sub">
@@ -519,14 +564,15 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <span class="vdiv">·</span>
       <span><b id="hsRel">—</b> reliability</span>
     </div>
+    <div id="heroContextLine" style="display:none;font-family:var(--font-mono);font-size:10px;color:var(--ac);margin-top:10px;letter-spacing:1px;opacity:0.85;animation:fadeSlideUp .6s .3s ease both"></div>
 </div>
 <div class="hero-identity">
   <div class="identity-card" onclick="AppNav.goToProfile()">
     <div class="id-top">
       <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
       <div>
-        <div class="id-name" id="idName"><span class="skel-inline" style="width:90px;height:14px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></div>
-        <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:70px;height:12px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></div>
+        <div class="id-name" id="idName"><span class="skel-inline" style="width:90px;height:14px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
+        <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:70px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
       </div>
     </div>
     <div class="id-stats">
@@ -539,15 +585,15 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="id-rank-bar">
       <span class="id-rank-lbl">Global rank</span>
       <div class="id-rank-track"><div class="id-rank-fill" id="idRankFill" style="width:0%"></div></div>
-      <span class="id-rank-num" id="idRankNum"><span class="skel-inline" style="width:32px;height:12px;display:inline-block;background:var(--surface-2,#1e1e1e);border-radius:4px;vertical-align:middle"></span></span>
+      <span class="id-rank-num" id="idRankNum"><span class="skel-inline" style="width:32px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></span>
     </div>
     <div id="idFollowers" style="font-family:var(--font-mono);font-size:10px;color:var(--mu);text-align:center;padding:4px 0 0;letter-spacing:1px">— followers</div>
     <div id="idSubscriberCount" style="display:none;font-family:var(--font-mono);font-size:10px;color:var(--gr);text-align:center;padding:2px 0 0;letter-spacing:1px"></div>
     <a href="#" onclick="AppNav.goToProfile();return false" class="id-view-btn">VIEW MY PROFILE →</a>
   </div>
-  <div class="missions-card">
+  <div class="missions-card panel-highlight">
     <div class="missions-title">⚡ Daily Missions</div>
-    <div id="dailyMissions">Loading...</div>
+    <div id="dailyMissions"><div class="skel skel-text" style="width:60%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:40%;height:9px"></div></div>
   </div>
   <div id="seasonInfoCard" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:16px;margin-top:0">
     <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:8px">🏆 Current Season</div>
@@ -591,78 +637,36 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
   </div>
 
-  <!-- ══════════════ RECORDS OF THE DAY ══════════════ -->
-  <div class="records-wrap fade-in" id="recordsWrap">
-    <div class="records-eyebrow">RECENT RECORDS</div>
-    <div class="records-grid">
-      <div class="rec-day rc-win rd-empty"><span class="rd-icon">⚡</span><div class="rd-label">BIGGEST WIN</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No activity in 48h</div></div>
-      <div class="rec-day rc-streak rd-empty"><span class="rd-icon">🔥</span><div class="rd-label">HOTTEST STREAK</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No active streak</div></div>
-      <div class="rec-day rc-odds rd-empty"><span class="rd-icon">💎</span><div class="rd-label">HIGHEST ODDS WIN</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No activity in 48h</div></div>
-      <div class="rec-day rc-roi rd-empty"><span class="rd-icon">📈</span><div class="rd-label">BEST ROI</div><div class="rd-value" style="font-size:22px">—</div><div class="rd-sub">No activity in 48h</div></div>
+  <!-- ══ SMART ALERTS ══ -->
+  <div id="smartAlerts"></div>
+
+  <!-- ══ BRAIN ROW ══ -->
+  <div class="brain-row fade-in" id="brainRow">
+    <div class="brain-card panel-elevated" id="brainObj">
+      <div class="bc-eyebrow">DAILY OBJECTIVE</div>
+      <div class="bc-title" style="color:var(--mu)">—</div>
+      <div class="bc-sub"><div class="skel skel-text" style="width:80px;height:9px"></div></div>
+      <div class="bc-prog"><div class="bc-prog-fill"></div></div>
+    </div>
+    <div class="brain-card panel-elevated" id="brainMs">
+      <div class="bc-eyebrow">NEXT MILESTONE</div>
+      <div class="bc-title" style="color:var(--mu)">—</div>
+      <div class="bc-sub"><div class="skel skel-text" style="width:80px;height:9px"></div></div>
+      <div class="bc-prog"><div class="bc-prog-fill"></div></div>
+    </div>
+    <div class="brain-card panel-elevated" id="brainRival">
+      <div class="bc-eyebrow">RIVAL</div>
+      <div class="bc-title" style="color:var(--mu)">—</div>
+      <div class="bc-sub"><div class="skel skel-text" style="width:80px;height:9px"></div></div>
     </div>
   </div>
 
-  <!-- ══════════════ RISING ══════════════ -->
-  <div class="section-block fade-in">
-    <div class="section-head-row">
-      <h2>Who's Heating Up</h2>
-      <span>LAST 7 DAYS</span>
-    </div>
-    <div class="rising-grid" id="risingGrid">
-      <div class="rising-card heat1"><span class="skel" style="width:80px;height:10px;display:block;margin-bottom:10px"></span><span class="skel" style="width:120px;height:20px;display:block;margin-bottom:10px"></span><span class="skel" style="width:60px;height:36px;display:block"></span></div>
-      <div class="rising-card heat2"><span class="skel" style="width:80px;height:10px;display:block;margin-bottom:10px"></span><span class="skel" style="width:120px;height:20px;display:block;margin-bottom:10px"></span><span class="skel" style="width:60px;height:36px;display:block"></span></div>
-      <div class="rising-card heat3"><span class="skel" style="width:80px;height:10px;display:block;margin-bottom:10px"></span><span class="skel" style="width:120px;height:20px;display:block;margin-bottom:10px"></span><span class="skel" style="width:60px;height:36px;display:block"></span></div>
-    </div>
-  </div>
-
-  <!-- ══════════════ MVP — rich card ══════════════ -->
-  <div class="mvp-wrap fade-in">
-    <div class="mvp-card" id="mvpCard" onclick="if(window._mvpUser)window.location.href='/tipster?u='+window._mvpUser">
-      <div class="mvp-av" id="mvpAv">?</div>
-      <div class="mvp-info">
-        <div class="mvp-label">⭐ Today's MVP</div>
-        <div class="mvp-name" id="mvpName">Loading...</div>
-        <div class="mvp-desc" id="mvpDesc">dominating the leaderboard</div>
-        <div class="mvp-badges" id="mvpBadges"></div>
-      </div>
-      <div class="mvp-stats">
-        <div class="mvp-stat"><div class="mvp-stat-val pos" id="mvpROI" style="color:var(--gr)">—</div><div class="mvp-stat-lbl">ROI</div></div>
-        <div class="mvp-stat"><div class="mvp-stat-val" style="color:var(--orange)" id="mvpStreak">—</div><div class="mvp-stat-lbl">Streak</div></div>
-        <div class="mvp-stat"><div class="mvp-stat-val" style="color:var(--ac)" id="mvpPicks">—</div><div class="mvp-stat-lbl">Picks</div></div>
-      </div>
-      <div class="mvp-arrow">→</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════ HOT BAR — live analytics ══════════════ -->
-<div class="hot-wrap">
-  <div class="hot-bar">
-    <div class="hot-item">
-      <div class="hot-icon">🔥</div>
-      <div>
-        <div class="hot-live">LIVE</div>
-        <div class="hot-lbl">Most Backed</div>
-        <div class="hot-val" id="trendBacked">—</div>
-        <div class="hot-sub" id="trendBackedSub"></div>
-      </div>
-    </div>
-    <div class="hot-item">
-      <div class="hot-icon">📈</div>
-      <div>
-        <div class="hot-live">TODAY</div>
-        <div class="hot-lbl">Most Active</div>
-        <div class="hot-val" id="trendTipster">—</div>
-        <div class="hot-sub" id="trendTipsterSub"></div>
-      </div>
-    </div>
-    <div class="hot-item">
-      <div class="hot-icon">💰</div>
-      <div>
-        <div class="hot-live">TODAY</div>
-        <div class="hot-lbl">Best ROI</div>
-        <div class="hot-val" id="trendROI">—</div>
-        <div class="hot-sub" id="trendROISub"></div>
+  <!-- ══ ACTIVITY SPOTLIGHT ══ -->
+  <div class="spotlight-strip fade-in">
+    <div class="sl-eyebrow">ACTIVITY SPOTLIGHT</div>
+    <div class="sl-wrap">
+      <div class="sl-items" id="spotlightItems">
+        <div class="sl-item"><div class="sl-badge" style="color:var(--mu)">LOADING</div><div class="sl-val" style="color:var(--mu)">—</div><div class="sl-sub">loading activity...</div></div>
       </div>
     </div>
   </div>
@@ -687,16 +691,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
       <!-- LEFT COLUMN -->
       <div>
-        <!-- COMMUNITY FEED -->
+        <!-- PULSE -->
         <div class="fade-in" style="margin-bottom:20px">
-          <div class="section-head">COMMUNITY FEED</div>
-          <div id="communityFeed"><div class="empty">Loading feed...</div></div>
+          <div class="section-head">PULSE</div>
+          <div id="communityFeed"><div class="empty">Community waking up...</div></div>
         </div>
 
         <!-- TRENDING PICKS -->
         <div style="margin-bottom:20px" class="fade-in">
           <div class="section-head">TRENDING PICKS</div>
-          <div class="picks-grid" id="trendingPicksGrid"><div class="empty">Loading...</div></div>
+          <div class="picks-grid" id="trendingPicksGrid"><div class="empty">No hot picks yet — be the first.</div></div>
         </div>
 
         <!-- COMMUNITY CHAT PREVIEW -->
@@ -709,7 +713,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
             <a href="/community" style="font-family:var(--font-mono);font-size:9px;color:var(--ac);text-decoration:none;letter-spacing:1px">OPEN CHAT →</a>
           </div>
           <div id="chatPreview" style="background:var(--s1);border:1px solid var(--bd);border-radius:14px;overflow:hidden">
-            <div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">Loading…</div>
+            <div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">Listening for messages...</div>
           </div>
         </div>
 
@@ -747,7 +751,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="matchup-section-title">HEAD TO HEAD</div>
     <div class="matchup-grid">
       <div class="matchup-side">
-        <div class="ms-av" id="msAvL" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">—</div>
+        <div class="ms-av" id="msAvL" style="background:linear-gradient(135deg,var(--ac-vivid),var(--ac-light))">—</div>
         <div class="ms-name" id="msNameL">@—</div>
         <div class="ms-sub" id="msSubL">— picks</div>
         <div class="ms-roi pos" id="msRoiL">—</div>
@@ -759,7 +763,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="vs-badge">VS</div>
       </div>
       <div class="matchup-side right">
-        <div class="ms-av" id="msAvR" style="background:linear-gradient(135deg,#059669,#10b981);margin-left:auto">—</div>
+        <div class="ms-av" id="msAvR" style="background:linear-gradient(135deg,var(--ac-vivid),var(--ac-light));margin-left:auto">—</div>
         <div class="ms-name" id="msNameR">@—</div>
         <div class="ms-sub" id="msSubR">— picks</div>
         <div class="ms-roi pos" id="msRoiR">—</div>
@@ -846,11 +850,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <script src="/archetypes-dict.js"></script>
 <script src="/flow.js"></script>
 <script src="/animations.js"></script>
+<script src="/moments.js"></script>
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
 <script src="/push.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
+<script src="/social.js"></script>
+<script src="/insights.js"></script>
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 let user=null;
@@ -995,7 +1002,8 @@ window.onload=()=>{
   const _ub=document.getElementById('userBadge');if(_ub)_ub.textContent='@'+user.username;
   if(window.Push)window.Push.init();
 
-  const _ey=document.getElementById('heroEyebrow');if(_ey)_ey.textContent=user.username.toUpperCase()+'\'S RECORD';
+  const _ey=document.getElementById('heroEyebrow');
+  if(_ey){const _hr=new Date().getHours();const _gr=_hr<12?['☀️','MORNING GRIND']:_hr<17?['⚡','AFTERNOON EDGE']:['🌙','NIGHT SESSION'];_ey.textContent=_gr[0]+' '+user.username.toUpperCase()+' · '+_gr[1];}
 
   // Online count set by WS; placeholder until connected
   const _oc=document.getElementById('onlineCount');if(_oc)_oc.textContent='— online';
@@ -1112,7 +1120,8 @@ async function loadData(){
     if(rankingsListRes&&rankingsListRes.ok){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
-    renderStats(all);renderProfileCard(all);renderMVP(all);renderMatchup(all);renderRising(all,rankingsTop5);renderTrending(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderRecords(all);
+    renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all);
+    if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.user&&p.user.username===user.username),window._myRankingMeta);
   }catch(e){clearTimeout(abort);_renderDataError();}
 }
 function renderIdentityPanel(myPicks,rank,totalTipsters){
@@ -1203,13 +1212,154 @@ function renderStats(all){
   const wrEl=document.getElementById('statWR');if(wrEl)wrEl.textContent=wr+'%';
   const roiEl=document.getElementById('statROI');if(roiEl){roiEl.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';roiEl.className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
   const pnlEl=document.getElementById('statPnL');if(pnlEl){pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');}
+  if(window.LEDGR&&LEDGR.countUp){const _wrEl=document.getElementById('statWR');if(_wrEl)LEDGR.countUp(_wrEl,parseFloat(wr),{decimals:0,suffix:'%'});}
   const hsR=document.getElementById('hsROI');if(hsR)hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
   const settled=[...my].filter(p=>p.result!=='pending').reverse();let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
   const hsS=document.getElementById('hsStreak');if(hsS)hsS.textContent=st>0?st+'W':'—';
-  if(st>=3){const spEl=document.getElementById('streakPill');if(spEl){spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);}const stEl=document.getElementById('streakText');if(stEl)stEl.textContent=st+' WIN STREAK';}
+  if(st>=3){const spEl=document.getElementById('streakPill');if(spEl){spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);if(window.Moments)window.Moments.applyStreak(spEl,st);}const stEl=document.getElementById('streakText');if(stEl)stEl.textContent=st+' WIN STREAK';}
   let cP=0,cS=0,w2=0,t2=0;const pA=[],rA=[],wA=[],pkA=[];
   my.forEach((p,i)=>{cP+=p.pnl;cS+=p.stake;if(p.result==='win')w2++;if(p.result!=='pending')t2++;pA.push(cP);rA.push(cS>0?(cP/cS)*100:0);wA.push(t2>0?(w2/t2)*100:0);pkA.push(i+1);});
   if(my.length>1){drawSparkline('sp0',pkA,true);drawSparkline('sp1',wA,parseFloat(wr)>=50);drawSparkline('sp2',rA,parseFloat(roi)>=0);drawSparkline('sp3',pA,pnl>=0);}
+  _checkMilestones(my);
+}
+
+function _checkMilestones(my){
+  if(!my||!my.length||!window.Moments)return;
+  const total=my.length;
+  const pnl=my.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);
+  var ms=[];
+  if(total===1&&!localStorage.getItem('ledgr_ms_first-pick'))ms.push('first-pick');
+  if(total>=10&&!localStorage.getItem('ledgr_ms_picks-10'))ms.push('picks-10');
+  if(total>=50&&!localStorage.getItem('ledgr_ms_picks-50'))ms.push('picks-50');
+  if(total>=100&&!localStorage.getItem('ledgr_ms_picks-100'))ms.push('picks-100');
+  if(pnl>=50&&!localStorage.getItem('ledgr_ms_profit-50'))ms.push('profit-50');
+  if(pnl>=100&&!localStorage.getItem('ledgr_ms_profit-100'))ms.push('profit-100');
+  ms.forEach(function(id,i){
+    setTimeout(function(){window.Moments.milestoneUnlock(id);localStorage.setItem('ledgr_ms_'+id,'1');},i*4200);
+  });
+}
+
+/* ══ BRAIN ROW ══ */
+function renderBrainRow(all){
+  if(!user)return;
+  const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+  renderObjectiveCard(my);
+  renderMilestoneCard(my);
+  renderRivalCard(my,all);
+}
+
+function renderObjectiveCard(my){
+  const el=document.getElementById('brainObj');if(!el)return;
+  const settled=[...my].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
+  const wins=my.filter(p=>p.result==='win').length;
+  const losses=my.filter(p=>p.result==='loss').length;
+  const pnl=my.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);
+  const stake=my.reduce((s,p)=>s+(parseFloat(p.stake)||0),0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  let title,sub,accent='var(--ac)',pct=0;
+  if(!my.length){
+    title='Post your first pick';sub='Start building your verified record';
+  }else if(st===0&&(wins+losses)>0){
+    title='Get back on track';sub='Last pick lost — reset and go again';accent='var(--mu2)';pct=20;
+  }else if(st===1){
+    title='Chain a second win';sub='Two in a row builds momentum';accent='var(--orange)';pct=30;
+  }else if(st===2){
+    title='1 win from a 3W streak';sub='Three consecutive — streak territory';accent='var(--orange)';pct=60;
+  }else if(st>=3&&st<5){
+    title='Keep the '+st+'W streak alive';sub='Post a pick to extend the run';accent='var(--orange)';pct=75;
+  }else if(st>=5){
+    title=st+'W — elite form';sub='Dominant streak. Protect it.';accent='var(--gold)';pct=90;
+  }else if(my.length<10){
+    title=(10-my.length)+' picks to your first badge';sub='10 verified picks unlocks a milestone';pct=Math.round(my.length/10*100);
+  }else if(my.length<50){
+    title=(50-my.length)+' picks to reach 50';sub='Halfway to the Century milestone';accent='var(--gold)';pct=Math.round(my.length/50*100);
+  }else{
+    const today=new Date().toDateString();const todayPicks=my.filter(p=>new Date(p.createdAt).toDateString()===today);
+    if(!todayPicks.length){title='Post a pick today';sub='Keep your activity live';pct=0;}
+    else{title='Consistency: '+(wins+losses)+' settled';sub=Math.round(roi)+'% ROI — stay sharp';accent='var(--gr)';pct=65;}
+  }
+  el.innerHTML=`<div class="bc-eyebrow">DAILY OBJECTIVE</div>
+    <div class="bc-title" style="color:${accent}">${title}</div>
+    <div class="bc-sub">${sub}</div>
+    <div class="bc-prog"><div class="bc-prog-fill" id="objFill" style="width:0%;background:${accent}"></div></div>`;
+  setTimeout(()=>{const f=document.getElementById('objFill');if(f)f.style.width=pct+'%';},300);
+}
+
+function renderMilestoneCard(my){
+  const el=document.getElementById('brainMs');if(!el)return;
+  const total=my.length;
+  const pnl=my.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);
+  const stake=my.reduce((s,p)=>s+(parseFloat(p.stake)||0),0);
+  const roi=stake>0?(pnl/stake)*100:0;
+  const wins=my.filter(p=>p.result==='win').length;
+  const losses=my.filter(p=>p.result==='loss').length;
+  const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
+  const sc=Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(total/100)*20))+Math.min(10,total));
+  const tiers=[{n:'BRONZE',min:0},{n:'SILVER',min:15},{n:'GOLD',min:30},{n:'PLATINUM',min:45},{n:'DIAMOND',min:60},{n:'ELITE',min:75},{n:'LEGENDARY',min:90}];
+  const divCols={BRONZE:'#c17f55',SILVER:'#94a3b8',GOLD:'#fbbf24',PLATINUM:'#38bdf8',DIAMOND:'#b89fff',ELITE:'#e879a0',LEGENDARY:'#fbbf24'};
+  const idx=tiers.reduce((b,t,i)=>sc>=t.min?i:b,0);
+  const cur=tiers[idx],nxt=tiers[idx+1];
+  let divTitle,divSub,divPct=0,divColor=divCols[cur.n];
+  if(!nxt){divTitle='LEGENDARY';divSub='Maximum division reached';divPct=100;}
+  else{const span=nxt.min-cur.min;divPct=Math.round(Math.max(0,Math.min(100,((sc-cur.min)/span)*100)));divTitle='→ '+nxt.n;divSub=(nxt.min-sc)+' score pts to next division';divColor=divCols[nxt.n];}
+  const nextPick=[10,50,100].find(n=>total<n);
+  const pickLine=nextPick?`<span style="display:block;margin-top:3px;color:var(--mu)">${nextPick-total} picks → ${nextPick} badge</span>`:'';
+  el.innerHTML=`<div class="bc-eyebrow">NEXT MILESTONE</div>
+    <div class="bc-title" style="color:${divColor}">${divTitle}</div>
+    <div class="bc-sub">${divSub}${pickLine}</div>
+    <div class="bc-prog"><div class="bc-prog-fill" id="msFill" style="width:0%;background:${divColor}"></div></div>`;
+  setTimeout(()=>{const f=document.getElementById('msFill');if(f)f.style.width=divPct+'%';},350);
+}
+
+function renderRivalCard(my,all){
+  const el=document.getElementById('brainRival');if(!el)return;
+  if(!user||!my.length){el.innerHTML=`<div class="bc-eyebrow">RIVAL</div><div class="bc-sub" style="margin-top:8px">Post picks to find your closest rival</div>`;return;}
+  const myPnl=my.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);
+  const myStake=my.reduce((s,p)=>s+(parseFloat(p.stake)||0),0);
+  const myROI=myStake>0?(myPnl/myStake)*100:0;
+  const myW=my.filter(p=>p.result==='win').length;
+  const mySt=[...my].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let mySt2=0;for(const p of mySt){if(p.result==='win')mySt2++;else break;}
+  const tM={};
+  all.forEach(p=>{if(!p.user||p.user.username===user.username)return;const u=p.user.username;if(!tM[u])tM[u]={u,pnl:0,stake:0,picks:[]};tM[u].picks.push(p);tM[u].pnl+=parseFloat(p.pnl)||0;tM[u].stake+=parseFloat(p.stake)||0;});
+  let rival=null,bestD=Infinity;
+  Object.values(tM).forEach(t=>{if(t.picks.length<3)return;const roi=t.stake>0?(t.pnl/t.stake)*100:0;const d=Math.abs(roi-myROI);if(d<bestD){bestD=d;rival=t;}});
+  if(!rival){el.innerHTML=`<div class="bc-eyebrow">RIVAL</div><div class="bc-sub" style="margin-top:8px">No close rival found — you're ahead of the field</div>`;return;}
+  const rROI=rival.stake>0?(rival.pnl/rival.stake)*100:0;
+  const rW=rival.picks.filter(p=>p.result==='win').length;
+  const rSt=[...rival.picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let rSt2=0;for(const p of rSt){if(p.result==='win')rSt2++;else break;}
+  const fmt=(n,d=1)=>(n>=0?'+':'')+n.toFixed(d);
+  const row=(lbl,mv,tv,hi=true)=>{const mw=hi?mv>tv:mv<tv,tw=hi?tv>mv:tv<mv;return`<div class="rival-stat-row"><span class="rival-v ${mw?'riv-w':''}">${mv}</span><span class="rival-lbl">${lbl}</span><span class="rival-v riv-r ${tw?'riv-w':''}">${tv}</span></div>`;};
+  el.innerHTML=`<div class="bc-eyebrow">YOU VS @${rival.u.toUpperCase()}</div>
+    <div class="rival-head"><span class="riv-you">YOU</span><span class="riv-sep">VS</span><span class="riv-them">@${rival.u}</span></div>
+    ${row('ROI',fmt(myROI)+'%',fmt(rROI)+'%')}
+    ${row('WINS',myW,rW)}
+    ${row('STREAK',mySt2+'W',rSt2+'W')}
+    ${row('P&L',fmt(myPnl)+'u',fmt(rival.pnl)+'u')}`;
+}
+
+/* ══ ACTIVITY SPOTLIGHT ══ */
+var _slIdx=0,_slTimer=null;
+function renderSpotlight(all){
+  const el=document.getElementById('spotlightItems');if(!el)return;
+  const cutoff=Date.now()-172800000;
+  const recent=all.filter(p=>p.user&&new Date(p.createdAt).getTime()>=cutoff);
+  const wins=recent.filter(p=>p.result==='win');
+  const items=[];
+  if(wins.length){const bw=[...wins].sort((a,b)=>(parseFloat(b.pnl)||0)-(parseFloat(a.pnl)||0))[0];items.push({c:'var(--gr)',badge:'BIGGEST WIN',val:'+'+(parseFloat(bw.pnl)||0).toFixed(1)+'u',sub:'@'+bw.user.username+' · '+(bw.event||'').slice(0,30)});}
+  const tM2={};all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tM2[u])tM2[u]=[];tM2[u].push(p);});
+  let hU=null,hS=0;Object.entries(tM2).forEach(([u,ps])=>{const s2=[...ps].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));let sc=0;for(const p of s2){if(p.result==='win')sc++;else break;}if(sc>hS){hS=sc;hU=u;}});
+  if(hU&&hS>=2)items.push({c:'var(--orange)',badge:'HOT STREAK',val:hS+'W',sub:'@'+hU+' — consecutive wins'});
+  const mkM={};recent.forEach(p=>{if(!p.market)return;const m=p.market.trim().slice(0,22);if(!mkM[m])mkM[m]=0;mkM[m]++;});
+  const topMk=Object.entries(mkM).sort((a,b)=>b[1]-a[1])[0];
+  if(topMk&&topMk[1]>=2)items.push({c:'var(--ac)',badge:'TRENDING MARKET',val:topMk[0],sub:topMk[1]+' picks in 48h'});
+  if(wins.length){const bO=[...wins].sort((a,b)=>parseFloat(b.odds)-parseFloat(a.odds))[0];if(parseFloat(bO.odds)>=2.5)items.push({c:'var(--gold)',badge:'LONGSHOT HIT',val:parseFloat(bO.odds).toFixed(2),sub:'@'+bO.user.username+' · '+(bO.event||'').slice(0,28)});}
+  if(!items.length)items.push({c:'var(--mu)',badge:'ALL QUIET',val:'—',sub:'No major activity yet'});
+  el.innerHTML=items.map(it=>`<div class="sl-item"><div class="sl-badge" style="color:${it.c}">${it.badge}</div><div class="sl-val" style="color:${it.c}">${it.val}</div><div class="sl-sub">${it.sub}</div></div>`).join('');
+  if(_slTimer)clearInterval(_slTimer);_slIdx=0;
+  if(items.length>2){_slTimer=setInterval(()=>{const w=document.getElementById('spotlightItems');if(!w)return;_slIdx=(_slIdx+1)%items.length;w.style.transform=`translateX(-${_slIdx*236}px)`;},4000);}
 }
 
 function renderProfileCard(all){
@@ -1236,6 +1386,25 @@ function renderProfileCard(all){
   if(window.checkBadgeUnlock)window.checkBadgeUnlock(my);
   if(window.checkStreak)window.checkStreak(my);
   renderHeroArch();
+  _updateContextLine(my,rank,sorted.length);
+}
+
+function _updateContextLine(myPicks,rank,totalTipsters){
+  const ctxEl=document.getElementById('heroContextLine');
+  if(!ctxEl||!myPicks.length)return;
+  const settled=[...myPicks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
+  const stake=myPicks.reduce((s,p)=>s+p.stake,0);
+  const pnl=myPicks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';
+  let msg='';
+  if(st>=5) msg='🔥 On fire — '+st+' win streak and counting';
+  else if(st>=3) msg='🔥 '+st+' win streak — keep the pressure on';
+  else if(st>0) msg=(4-st)+' more win'+(4-st!==1?'s':'')+' for a 4W streak';
+  else if(parseFloat(roi)>15) msg='ROI +'+roi+'% — you\'re in sharp territory';
+  else if(rank>0&&totalTipsters>1){const pct=Math.round((1-(rank/totalTipsters))*100);if(pct>50) msg='Ranked ahead of '+pct+'% of tipsters';}
+  if(!msg&&myPicks.length>0) msg=myPicks.length+' verified pick'+(myPicks.length!==1?'s':'')+' on the ledger';
+  if(msg){ctxEl.textContent=msg;ctxEl.style.display='';}
 }
 
 function renderHeroArch(){
@@ -1483,7 +1652,7 @@ function renderTrending(all){
   const cutoff24=Date.now()-86400000;const todayP=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff24&&p.user);
   const tMap={};todayP.forEach(p=>{tMap[p.user.username]=(tMap[p.user.username]||0)+1;});
   const topT=Object.entries(tMap).sort((a,b)=>b[1]-a[1])[0];
-  if(topT){document.getElementById('trendTipster').textContent='@'+topT[0];document.getElementById('trendTipsterSub').textContent=topT[1]+' picks today';}else{document.getElementById('trendTipster').textContent='No activity yet';document.getElementById('trendTipsterSub').textContent='Check back later';}
+  if(topT){document.getElementById('trendTipster').textContent='@'+topT[0];document.getElementById('trendTipsterSub').textContent=topT[1]+' picks today';}else{document.getElementById('trendTipster').textContent='Board quiet';document.getElementById('trendTipsterSub').textContent='Be the first today';}
   const rMap={};todayP.forEach(p=>{if(!rMap[p.user.username])rMap[p.user.username]={pnl:0,stake:0};rMap[p.user.username].pnl+=p.pnl;rMap[p.user.username].stake+=p.stake;});
   const topR=Object.entries(rMap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;})[0];
   if(topR){const roi=topR[1].stake>0?((topR[1].pnl/topR[1].stake)*100).toFixed(1):0;document.getElementById('trendROI').textContent='@'+topR[0];document.getElementById('trendROISub').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';}else{document.getElementById('trendROI').textContent='No data yet';document.getElementById('trendROISub').textContent='Pending results';}
@@ -1494,7 +1663,7 @@ function renderTrendingPicks(all){
   const tpMap={};all.forEach(p=>{if(!p.user)return;if(!tpMap[p.user.username])tpMap[p.user.username]=[];tpMap[p.user.username].push(p);});
   const hot=all.filter(p=>p.user&&p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
-  if(!hot.length){grid.innerHTML='<div class="empty">No picks right now.</div>';return;}
+  if(!hot.length){grid.innerHTML='<div class="empty">No hot picks right now</div>';return;}
   grid.innerHTML=hot.map((p,i)=>{
     const tipsterPicks=tpMap[p.user.username]||[];
     const badges=getPickBadges(p,tipsterPicks);
@@ -1558,7 +1727,7 @@ async function tailTP(id,event,market,odds,username,btn){
 function renderFeed(all){
   const feed=all.filter(p=>p.user).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,14);
   const c=document.getElementById('communityFeed');
-  if(!feed.length){c.innerHTML='<div class="empty">No picks yet.</div>';return;}
+  if(!feed.length){c.innerHTML='<div class="empty">No picks yet — check back after kickoff</div>';return;}
   const tpMap={};all.forEach(p=>{if(!p.user)return;if(!tpMap[p.user.username])tpMap[p.user.username]=[];tpMap[p.user.username].push(p);});
   const tails=getTails();
   c.innerHTML=feed.map((p,i)=>{
@@ -1790,7 +1959,10 @@ function checkWeeklyRecap(all){
   const stake=mine.reduce((s,p)=>s+(parseFloat(p.stake)||0),0);
   const roi=stake>0?(pnl/stake)*100:0;
   const best=mine.filter(p=>p.result==='win').sort((a,b)=>(parseFloat(b.pnl)||0)-(parseFloat(a.pnl)||0))[0];
-  setTimeout(()=>showWeeklyRecap({wins,losses,pnl,roi,best,total:mine.length}),1200);
+  setTimeout(()=>{
+    if(window.Moments)window.Moments.weeklyRecap({wins,losses,pnl,roi,best,total:mine.length});
+    else showWeeklyRecap({wins,losses,pnl,roi,best,total:mine.length});
+  },1200);
 }
 function showWeeklyRecap({wins,losses,pnl,roi,best,total}){
   const pnlPos=pnl>=0;const wr=total>0?Math.round(wins/total*100):0;
@@ -1856,6 +2028,7 @@ function showPersonalWin(payload) {
     (market ? '<div class="pr-market">' + market + '</div>' : '') +
     (streak >= 3 ? '<div class="pr-streak-chip">🔥 ' + streak + '-WIN STREAK</div>' : '');
   card.classList.add('show');
+  if(pnl>=15&&window.Moments)setTimeout(function(){window.Moments.bigWin(pnl,{event:event,market:market});},300);
   clearTimeout(card._to);
   card._to = setTimeout(function() { card.classList.remove('show'); }, streak >= 5 ? 5000 : 4000);
 }
@@ -1939,6 +2112,7 @@ function subscribeWS(){
   });
 }
 </script>
+<img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">
 </body>
 </html>
 

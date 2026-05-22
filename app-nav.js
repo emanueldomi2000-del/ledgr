@@ -259,11 +259,12 @@
     // ── PRIMARY — desktop bar ────────────────────────────────────────────────
     { href: '/home',         label: 'Home',         desktopLabel: 'Home',        icon: '🏠',  key: 'home',         desktopVisible: true  },
     { href: '/leaderboard',  label: 'Leaderboard',  desktopLabel: 'Leaderboard', icon: '🏆',  key: 'leaderboard',  desktopVisible: true  },
-    { href: '/feed',         label: 'Live Feed',    desktopLabel: 'Feed',        icon: '🔴',  key: 'feed',         desktopVisible: true  },
+    { href: '/feed',         label: 'PULSE',        desktopLabel: 'PULSE',       icon: '🔴',  key: 'feed',         desktopVisible: true  },
     { href: '/analytics',    label: 'Analytics',    desktopLabel: 'Analytics',   icon: '📊',  key: 'analytics',    desktopVisible: true  },
     { href: '/community',    label: 'Community',    desktopLabel: 'Community',   icon: '💬',  key: 'community',    desktopVisible: true  },
     { href: '/dashboard',    label: 'Post a Pick',  desktopLabel: 'Post Pick',   icon: '＋',  key: 'dashboard',    desktopVisible: true  },
     // ── SECONDARY — slide menu only ──────────────────────────────────────────
+    { href: '/notifications', label: 'Notifications',  icon: '🔔',  key: 'notifications',  desktopVisible: false },
     { href: '/progress',     label: 'Progress',                                  icon: '🎮',  key: 'progress',     desktopVisible: false },
     { href: '/badges',       label: 'Badges',                                    icon: '🏅',  key: 'badges',       desktopVisible: false },
     { href: '/archetypes',   label: 'Archetypes',                                icon: '⚡',  key: 'archetypes',   desktopVisible: false },
@@ -451,8 +452,10 @@
 
     var logoHref = username ? '/home' : '/';
     var logoHtml = '<a href="' + logoHref + '" class="an-logo">'
-      + '<img class="an-logo-img" src="/assets/logo/ledgr-icon.png" alt="LEDGR" loading="eager">'
-      + '<span class="an-logo-wordmark"><span class="logo-accent">L</span>EDGR</span>'
+      + '<picture>'
+      + '<source media="(max-width:768px)" srcset="/assets/logo/ledgr-icon.png">'
+      + '<img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:32px;width:auto;display:block;" loading="eager">'
+      + '</picture>'
       + '</a>';
 
     return '<nav id="appNav">'

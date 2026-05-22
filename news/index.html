@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <title>LEDGR — Sports Intel</title>
 <meta name="description" content="Live sports news, injury tracker, lineup reports and trending topics for sharp bettors.">
 
@@ -13,7 +15,7 @@
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.35}
 
 /* ── MAIN ── */
-.main{max-width:1160px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
 
 /* ── HERO ── */
 .intel-hero{padding:40px 0 32px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;border-bottom:1px solid var(--bd);margin-bottom:24px}
@@ -165,6 +167,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 <!-- NAV -->
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'news' });</script>
 
 <!-- MAIN -->

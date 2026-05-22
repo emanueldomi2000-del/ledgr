@@ -1,10 +1,71 @@
 # LAST TASK
 
-Date: 2026-05-20
+Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 4 Remaining ✅ COMPLETE
+Current objective: Sprint 5 — Logo Integration Pass ✅ COMPLETE
+
+---
+
+## Last completed: Sprint 5 — Logo Integration Pass (2026-05-22)
+
+### Changes
+
+1. **app-nav.js** — Nav logo updated from text+icon to `<picture>` responsive element:
+   - Desktop (>768px): `ledgr-logo.png` at 32px height (full wordmark)
+   - Mobile (≤768px): `ledgr-icon.png` (icon only)
+   - `.an-logo-wordmark` span removed from logoHtml (wordmark now in image)
+
+2. **Favicon** — Added `<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">` to all 26 pages. Previously only badges/progress had it.
+
+3. **og:image** — Updated all pages from `https://getledgr.bet/og-image.png` → `https://getledgr.bet/assets/logo/ledgr-logo.png`. Added og:image to 9 pages that had none (compare, become-a-tipster, badges, progress, simulator, news, parlay, privacy, terms).
+
+4. **Public page logos** — Replaced text logos with image logos:
+   - `login/index.html`: in-card `.logo` → `<img>` at 56px
+   - `register/index.html`: in-card `.logo` → `<img>` at 56px
+   - `index.html`: nav `.logo` → `<img>` at 28px (nav-height appropriate)
+   - `become-a-tipster/index.html`: nav `.bat-logo` → `<img>` at 28px
+
+5. **Prestige watermarks** — Added fixed-position LEDGR icon watermark to 4 prestige pages:
+   `position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0`
+   Pages: `home`, `leaderboard`, `tipster`, `hall-of-fame`
+   (badges/progress already had internal contextual watermarks)
+
+---
+
+## Last completed: Browser Reality Audit + Targeted Fixes
+
+### Canonical benchmark pages: tipster / progress / badges
+
+### Audit findings (10 pages inspected):
+
+**Fully migrated — no action needed:**
+- home/index.html — intentional command-center hero stats, correct tokens
+- feed/index.html — modern layout, PULSE identity correct
+- analytics/index.html — correct tokens, sbox font-display vs font-mono acceptable
+- leaderboard/index.html — podium + arena clean, COMPETITION ARENA eyebrow added
+- hall-of-fame/index.html — marble/cinematic intentional prestige treatment
+- compare/index.html — premium gradient hero, dual-color arena correct
+- community/index.html — chat layout intentional
+
+**Fixed this session:**
+
+1. **dashboard/index.html** — Missing page identity header. Added `.dash-header` above stats row with eyebrow "POST A PICK" + title "YOUR DASHBOARD". Stat initial values changed from `0`/`0%`/`€0` → `—` (correct skeleton state). Stat card style upgraded: added `::before` top accent bar, changed font from font-display 28px → font-mono 26px bold to match canonical.
+
+2. **notifications/index.html** — Title was `🔔 NOTIFICATIONS` at 42px. Removed emoji, corrected to `clamp(26px,3vw,34px)` matching all canonical page titles. Split word with accent span for visual identity.
+
+3. **settings/index.html** — Local bg-glow override had old color `rgba(124,95,230,0.05)` hardcoded. Removed local override — now inherits from app-components.css canonical shared glow.
+
+### Phase 12 Page Identity Pass (same session):
+All 8 target pages received unique atmospheric identity layers. See git diff for details.
+
+---
+
+## Next tasks
+
+1. Deploy to Railway — run autoVerify-schema.sql migration if not yet applied
+2. Smoke test: post pick → /admin/grading/run → verify rank_up fires → push notification delivered
 
 ---
 
@@ -99,10 +160,46 @@ FROM user_rankings ur WHERE ur.username = ? LIMIT 1
 
 ---
 
+## Last completed: B2 + B7 (2026-05-20)
+
+### B2 — Archetypes manually selectable in settings
+
+**Files:** `settings/index.html`, `backend-profile-endpoints.js`
+
+`backend-profile-endpoints.js` — expanded `VALID_ARCHETYPES` to include all current frontend archetype IDs (`hunter`, `storm`, `kingmaker`, `iceblood`, `gambler`, `reaper`, `night-owl`, `shark`, `ghost`, `diamond-mind`, `hybrid`, `contender`) alongside legacy keys. Old IDs were silently rejected before this fix.
+
+`settings/index.html` — added manual archetype override in section 04 (Betting DNA):
+- New CSS: `.arch-grid` (3-col, 2-col mobile), `.arch-card` (hover + selected state via `--arch-color`/`--arch-rgb` CSS vars), `.arch-ck` checkmark, `.arch-override-banner`, `.arch-clear-btn`
+- `config.manualArchetype: null` — new state field
+- `renderArchetypePicker()` — builds a 3-col grid of all 15 archetypes; selected tile gets border in archetype color + glow
+- `selectArchOverride(id)` — toggles selection (click again = deselect)
+- `clearArchOverride()` — clears to auto-detect
+- `_updateArchBanner()` — shows/hides banner with archetype name when override is active
+- `fetchOwnProfile()` — reads `data.archetype` → `config.manualArchetype`; calls `renderArchetypePicker()` after fetch
+- `postProfile()` — includes `archetype: config.manualArchetype || null` in PUT payload
+- Called `renderArchetypePicker()` in `window.onload`
+
+---
+
+### B7 — Void handling UX
+
+**Files:** `dashboard/index.html`, `tipster/index.html`
+
+Both pages already had VOID badge + grey left border on void pick cards. Added explanation note inside the card:
+
+New CSS `.pick-void-note` (both pages): muted grey box, `font-mono` 10px, 8px 12px padding, 8px radius.
+
+Dashboard `renderPicks()` — added after reasoning block:
+```
+🚫 Pick voided — event was cancelled, postponed, or declared invalid. Stake returned. Not counted in your win/loss record.
+```
+
+Tipster `renderPicks()` — same note added before the react-bar.
+
+---
+
 ## Next tasks
 
 Phase 3 remaining work:
-1. B2: Archetypes manually selectable in settings (currently computed-only)
-2. B7: Void handling UX — user should see "VOID" state with explanation on their pick cards
-3. Deploy to Railway — run autoVerify-schema.sql migration if not yet applied
-4. Smoke test: post pick → /admin/grading/run → verify rank_up fires → push notification delivered
+1. Deploy to Railway — run autoVerify-schema.sql migration if not yet applied
+2. Smoke test: post pick → /admin/grading/run → verify rank_up fires → push notification delivered

@@ -4,30 +4,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Post a Pick</title>
 <meta name="description" content="Post your sports picks on LEDGR. Select a match, set your market and odds, and build a verified public record automatically.">
 <meta property="og:title" content="LEDGR — Post a Pick">
 <meta property="og:description" content="Build your verified tipster record. Post picks, watch results auto-verified, climb the leaderboard.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/dashboard">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Post a Pick">
 <meta name="twitter:description" content="Build your verified tipster record. Post picks, watch results auto-verified, climb the leaderboard.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 
-.main{max-width:1200px;margin:0 auto;padding:32px 24px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:32px 24px;position:relative;z-index:2}
+
+/* PAGE HEADER */
+.dash-header{margin-bottom:28px}
+.page-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:4px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.page-eyebrow::before{content:'';width:20px;height:1px;background:var(--ac);opacity:.5}
+.page-title{font-family:var(--font-display);font-size:clamp(26px,3vw,34px);letter-spacing:2px;line-height:.92;color:var(--tx);margin-bottom:0}
+.page-title span{color:var(--ac)}
 
 /* STATS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
-.stat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px;transition:all .2s}
-.stat:hover{border-color:var(--bd2)}
+.stat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:18px;transition:all .2s;position:relative;overflow:hidden}
+.stat::before{content:'';display:block;position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac);opacity:.3;border-radius:2px 2px 0 0}
+.stat:hover{border-color:var(--bd2);transform:translateY(-2px)}
 .stat-label{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.stat-val{font-family:var(--font-display);font-size:28px;letter-spacing:1px;color:var(--tx)}
+.stat-val{font-family:var(--font-mono);font-size:26px;font-weight:700;letter-spacing:0;color:var(--tx);font-variant-numeric:tabular-nums}
 .stat-val.pos{color:var(--gr)}.stat-val.neg{color:var(--rd)}
 
 .grid{display:grid;grid-template-columns:1fr 380px;gap:20px}
@@ -160,6 +169,7 @@ select option{background:#15122a}
 .badge-void{background:rgba(107,107,107,.12);color:var(--mu2);border:1px solid rgba(107,107,107,.2)}
 .push-card{border-left:3px solid var(--cyan)}
 .void-card{border-left:3px solid var(--mu)}
+.pick-void-note{margin-top:8px;padding:8px 12px;background:rgba(107,107,107,.06);border:1px solid rgba(107,107,107,.15);border-radius:8px;font-family:var(--font-mono);font-size:10px;color:var(--mu);line-height:1.5}
 .pf-tab.push.active{border-color:rgba(56,189,248,.4);color:var(--cyan);background:rgba(56,189,248,.08)}
 .pf-tab.void.active{border-color:rgba(107,107,107,.4);color:var(--mu2);background:rgba(107,107,107,.08)}
 .pick-time{font-size:10px;color:var(--mu);font-family:var(--font-mono);margin-left:auto}
@@ -325,6 +335,7 @@ select option{background:#15122a}
 <body>
 <div class="bg-glow"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'dashboard' });</script>
 <div class="toast" id="toast"></div>
 <div id="tutorial-overlay">
@@ -369,11 +380,15 @@ select option{background:#15122a}
 <button class="pp-fab" id="ppFab" onclick="openParlayPanel()">🎰 <span id="ppFabCount">0</span>-LEG PARLAY ▸</button>
 
   <div class="main">
-    <div class="stats">
-      <div class="stat"><div class="stat-label">Total Picks</div><div class="stat-val" id="statTotal">0</div></div>
-      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI">0%</div></div>
-      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR">0%</div></div>
-      <div class="stat"><div class="stat-label">Total P&L</div><div class="stat-val" id="statPnL">€0</div></div>
+    <div class="dash-header reveal">
+      <div class="page-eyebrow">POST A PICK</div>
+      <div class="page-title">YOUR <span>DASHBOARD</span></div>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><div class="stat-label">Total Picks</div><div class="stat-val" id="statTotal">—</div></div>
+      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI">—</div></div>
+      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR">—</div></div>
+      <div class="stat"><div class="stat-label">Total P&L</div><div class="stat-val" id="statPnL">—</div></div>
     </div>
     <div class="grid">
       <!-- LEFT: POST A PICK -->
@@ -514,7 +529,9 @@ select option{background:#15122a}
 <script src="/divisions.js"></script>
 <script src="/share.js"></script>
 <script src="/animations.js"></script>
+<script src="/moments.js"></script>
 <script src="/push.js"></script>
+<script src="/social.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script>
@@ -846,8 +863,10 @@ function drawROIChart(picks){
 }
 
 async function loadPicks(){
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();},25000);
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store'});
+    const r=await fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal});
+    clearTimeout(_xt);
     const picks=await r.json();
     allMyPicks=picks.filter(p=>p.userId===user.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     // stats
@@ -870,7 +889,24 @@ async function loadPicks(){
     if(window.checkRankUp)window.checkRankUp(allMyPicks);
     if(window.checkBadgeUnlock)window.checkBadgeUnlock(allMyPicks);
     if(window.checkStreak)window.checkStreak(allMyPicks);
-  }catch(e){console.error(e);}
+    _checkMilestonesDash(allMyPicks);
+  }catch(e){clearTimeout(_xt);console.error(e);}
+}
+
+function _checkMilestonesDash(picks){
+  if(!picks||!picks.length||!window.Moments)return;
+  const total=picks.length;
+  const pnl=picks.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);
+  var ms=[];
+  if(total===1&&!localStorage.getItem('ledgr_ms_first-pick'))ms.push('first-pick');
+  if(total>=10&&!localStorage.getItem('ledgr_ms_picks-10'))ms.push('picks-10');
+  if(total>=50&&!localStorage.getItem('ledgr_ms_picks-50'))ms.push('picks-50');
+  if(total>=100&&!localStorage.getItem('ledgr_ms_picks-100'))ms.push('picks-100');
+  if(pnl>=50&&!localStorage.getItem('ledgr_ms_profit-50'))ms.push('profit-50');
+  if(pnl>=100&&!localStorage.getItem('ledgr_ms_profit-100'))ms.push('profit-100');
+  ms.forEach(function(id,i){
+    setTimeout(function(){window.Moments.milestoneUnlock(id);localStorage.setItem('ledgr_ms_'+id,'1');},i*4200);
+  });
 }
 
 // Picks keyed by index for share access
@@ -919,6 +955,7 @@ function renderMyPicks(){
         ${shareBtn}
       </div>
       ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
+      ${p.result==='void'?`<div class="pick-void-note">🚫 Pick voided — event was cancelled, postponed, or declared invalid. Stake returned. Not counted in your win/loss record.</div>`:''}
       <div class="locked-badge">🔒 Verified automatically</div>
     </div>`;
   }).join('');

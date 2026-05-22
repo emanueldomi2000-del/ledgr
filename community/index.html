@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Community Chat</title>
 <meta name="description" content="Join the LEDGR community — discuss picks, debate tips, and follow the sharpest sports bettors in real time.">
 <meta property="og:title" content="LEDGR Community — Live Tipster Chat">
 <meta property="og:description" content="Discuss picks, share tips, and connect with the sharpest sports bettors on LEDGR.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/community">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR Community — Live Tipster Chat">
 <meta name="twitter:description" content="Discuss picks, share tips, and connect with the sharpest sports bettors on LEDGR.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
@@ -113,15 +114,25 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .room-name{font-size:11px}
   .room-count{display:none}
   /* Chat input — fixed above bottom nav */
-  .input-area{position:fixed;bottom:var(--nav-h,60px);left:0;right:0;padding:8px 16px;background:#121212;z-index:10;border-top:1px solid var(--bd)}
+  .input-area{position:fixed;bottom:var(--nav-h,60px);left:0;right:0;padding:8px 16px;background:var(--s1);z-index:10;border-top:1px solid var(--bd)}
   /* Messages scroll area */
   .messages-wrap{height:calc(100dvh - 180px);flex:none;overflow-y:auto;padding-bottom:calc(var(--nav-h,60px) + 58px + 8px)}
 }
+
+/* ── IDENTITY: LIVE ROOM ── */
+.bg-glow{background:radial-gradient(ellipse,rgba(184,159,255,.09),transparent 65%)!important}
+@keyframes roomBreath{0%,100%{opacity:.4}50%{opacity:.65}}
+.bg-room-l{position:fixed;left:-150px;top:10%;width:500px;height:700px;background:radial-gradient(ellipse,rgba(184,159,255,.06),transparent 65%);pointer-events:none;z-index:0;animation:roomBreath 9s ease-in-out infinite}
+.bg-room-r{position:fixed;right:-150px;top:20%;width:500px;height:700px;background:radial-gradient(ellipse,rgba(251,146,60,.04),transparent 65%);pointer-events:none;z-index:0;animation:roomBreath 9s ease-in-out infinite 4.5s}
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="bg-room-l"></div>
+<div class="bg-room-r"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
+<script src="/social.js"></script>
 <script>AppNav.init({ active: 'community' });</script>
 
 <div class="chat-layout">
@@ -133,7 +144,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="sidebar-sub">Choose a channel</div>
     </div>
     <div class="rooms-list" id="roomsList">
-      <div style="padding:16px;text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mu)">Loading…</div>
+      <div style="padding:8px;display:flex;flex-direction:column;gap:6px"><div class="skel" style="height:40px;border-radius:8px"></div><div class="skel" style="height:40px;border-radius:8px"></div><div class="skel" style="height:40px;border-radius:8px"></div></div>
     </div>
   </div>
 
@@ -257,7 +268,7 @@ function setWsStatus(state) {
 async function loadRooms() {
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 8000);
+    const timer = setTimeout(() => ctrl.abort(), 25000);
     const r = await fetch(API + '/chat/rooms', { signal: ctrl.signal });
     clearTimeout(timer);
     if (!r.ok) throw new Error();
@@ -369,7 +380,7 @@ function linkify(text) {
 function renderMessages(msgs) {
   const wrap = document.getElementById('messagesWrap');
   if (!msgs.length) {
-    wrap.innerHTML = '<div class="empty-chat"><div class="icon">▷</div><div>No messages yet.<br>Be the first to say something!</div></div>';
+    wrap.innerHTML = '<div class="empty-chat"><div class="icon">▷</div><div>Community warming up.<br>Be the first to say something!</div></div>';
     return;
   }
   let html = '';

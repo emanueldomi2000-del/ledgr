@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Hall of Fame</title>
 <meta name="description" content="The LEDGR Hall of Fame — the all-time greatest verified tipsters. Season champions, all-time records, and legendary performances.">
 <meta property="og:title" content="LEDGR Hall of Fame — Where Legends Are Made">
 <meta property="og:description" content="Season champions, all-time records, and legendary performances — verified and immortalised.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/hall-of-fame">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -47,7 +48,7 @@ body::before{content:'';position:fixed;inset:0;
   pointer-events:none;z-index:0}
 
 /* ── MAIN ── */
-.main{max-width:1100px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
 @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 
 /* ── HERO BANNER ── */
@@ -99,7 +100,7 @@ body::before{content:'';position:fixed;inset:0;
 .sc-card{
   position:relative;border-radius:22px;padding:36px 24px 28px;text-align:center;
   cursor:pointer;overflow:hidden;
-  background:linear-gradient(#0b0912,#0b0912) padding-box,
+  background:linear-gradient(var(--s1),var(--s1)) padding-box,
              linear-gradient(135deg,rgba(251,191,36,.55),rgba(184,159,255,.35),rgba(251,191,36,.3)) border-box;
   border:1.5px solid transparent;
   transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s}
@@ -109,7 +110,7 @@ body::before{content:'';position:fixed;inset:0;
   width:240px;height:240px;border-radius:50%;
   background:radial-gradient(circle,rgba(251,191,36,.1) 0%,transparent 70%);pointer-events:none}
 .sc-card.active-season{
-  background:linear-gradient(#0b0912,#0b0912) padding-box,
+  background:linear-gradient(var(--s1),var(--s1)) padding-box,
              linear-gradient(135deg,rgba(184,159,255,.55),rgba(56,189,248,.35),rgba(184,159,255,.3)) border-box;
   border:1.5px solid transparent}
 .sc-card.active-season::before{background:radial-gradient(circle,rgba(184,159,255,.1) 0%,transparent 70%)}
@@ -189,13 +190,13 @@ body::before{content:'';position:fixed;inset:0;
 .legend-section{margin-bottom:8px}
 .legend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .legend-ring{border-radius:22px;padding:2px;
-  background:conic-gradient(from 0deg,#f43f5e,#fb923c,#fbbf24,#34d399,#38bdf8,#818cf8,#c026d3,#f43f5e);
+  background:conic-gradient(from 0deg,#f43f5e,var(--orange),var(--gold),var(--gr),var(--cyan),#818cf8,#c026d3,#f43f5e);
   animation:ring-spin 5s linear infinite}
 @keyframes ring-spin{to{transform:rotate(360deg)}}
-.legend-card{border-radius:20px;background:#0b0912;padding:28px 22px;text-align:center;
+.legend-card{border-radius:20px;background:var(--s1);padding:28px 22px;text-align:center;
   cursor:pointer;animation:ring-spin 5s linear infinite reverse;
   transition:background .3s}
-.legend-card:hover{background:#100d1c}
+.legend-card:hover{background:var(--s2)}
 .legend-rank{font-family:var(--font-display);font-size:52px;line-height:1;
   color:rgba(251,191,36,.1);margin-bottom:-10px}
 .legend-av{width:64px;height:64px;border-radius:var(--r-lg,14px);margin:0 auto 14px;
@@ -203,7 +204,7 @@ body::before{content:'';position:fixed;inset:0;
   font-family:var(--font-display);font-size:24px;color:#fff;
   box-shadow:0 0 24px rgba(251,191,36,.3)}
 .legend-name{font-family:var(--font-display);font-size:22px;letter-spacing:3px;
-  margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f43f5e,#818cf8);
+  margin-bottom:4px;background:linear-gradient(135deg,var(--gold),#f43f5e,#818cf8);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .legend-div-tag{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;
   color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:16px}
@@ -282,6 +283,8 @@ body::before{content:'';position:fixed;inset:0;
 
 <!-- ═══ NAV ═══ -->
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
+<script src="/social.js"></script>
 <script>AppNav.init({ active: 'hall-of-fame' });</script>
 
 <!-- ═══ MAIN ═══ -->
@@ -460,12 +463,14 @@ function pos(n) { return n >= 0 ? '+' : ''; }
 
 // ── Main loader ──────────────────────────────────────────────
 async function loadHOF() {
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('recordsGrid').innerHTML='<div class="section-empty" style="grid-column:1/-1"><span class="icon">⚠️</span><h3>TIMEOUT</h3><p>Request timed out. Please refresh.</p></div>';},25000);
   try {
     const [picksRes, seasonsRes] = await Promise.all([
-      fetch(API + '/picks', { cache: 'no-store' }),
+      fetch(API + '/picks', { cache: 'no-store', signal: _ctrl.signal }),
       fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null)
     ]);
 
+    clearTimeout(_xt);
     const allPicks  = picksRes.ok ? await picksRes.json() : [];
     const seasons   = (seasonsRes && seasonsRes.ok) ? await seasonsRes.json() : [];
 
@@ -564,6 +569,7 @@ async function loadHOF() {
     renderWOF(allPicks, tipsters, seasons, byROI, byStreak, byCLV, bigOddsPick, bigDay);
 
   } catch (err) {
+    clearTimeout(_xt);
     console.error('HOF error', err);
     document.getElementById('recordsGrid').innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">⚠️</span><h3>SYNC IN PROGRESS</h3><p>We're loading verified data. Refresh in a moment.</p></div>`;
   }
@@ -709,5 +715,6 @@ function renderWOF(allPicks, tipsters, seasons, byROI, byStreak, byCLV, bigOddsP
 loadHOF();
 </script>
 
+<img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">
 </body>
 </html>

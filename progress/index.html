@@ -15,7 +15,7 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
 
 /* Layout */
-.main { max-width:1100px; margin:0 auto; padding:32px 24px 80px; position:relative; z-index:2; }
+.main { max-width:1120px; margin:0 auto; padding:32px 24px 80px; position:relative; z-index:2; }
 .two-col { display:grid; grid-template-columns:3fr 2fr; gap:20px; margin-bottom:8px; }
 
 /* Section title */
@@ -55,8 +55,8 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .hring-gold { border:2px solid rgba(251,191,36,0.7); box-shadow:0 0 16px rgba(251,191,36,0.3); }
 .hring-platinum { border:2px solid rgba(56,189,248,0.5); animation:ringPulse 2.5s ease-in-out infinite; }
 .hring-diamond { border:2px solid rgba(56,189,248,0.8); animation:diamondCrackle 2s ease-in-out infinite; }
-.hring-elite::before { content:''; position:absolute; inset:-3px; border-radius:50%; background:conic-gradient(from 0deg,#7B2CFF,#B14CFF,#f87171,#7B2CFF); animation:conicSpin 3s linear infinite; -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); }
-.hring-legendary::before { content:''; position:absolute; inset:-3px; border-radius:50%; background:conic-gradient(from 0deg,#fbbf24,#b89fff,#34d399,#38bdf8,#f87171,#fbbf24); animation:conicSpin 4s linear infinite; -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); }
+.hring-elite::before { content:''; position:absolute; inset:-3px; border-radius:50%; background:conic-gradient(from 0deg,var(--ac-vivid),var(--ac-light),var(--rd),var(--ac-vivid)); animation:conicSpin 3s linear infinite; -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); }
+.hring-legendary::before { content:''; position:absolute; inset:-3px; border-radius:50%; background:conic-gradient(from 0deg,var(--gold),var(--ac),var(--gr),var(--cyan),var(--rd),var(--gold)); animation:conicSpin 4s linear infinite; -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#fff calc(100% - 2px)); }
 @keyframes ringPulse { 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0)} 50%{box-shadow:0 0 0 8px rgba(56,189,248,0.1)} }
 @keyframes diamondCrackle { 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0),0 0 8px rgba(56,189,248,0.2)} 50%{box-shadow:0 0 0 6px rgba(56,189,248,0.08),0 0 20px rgba(56,189,248,0.4)} }
 @keyframes conicSpin { to{transform:rotate(360deg)} }
@@ -173,12 +173,18 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
   .rewards-row { grid-template-columns:repeat(2,1fr); }
   .hero-av { width:64px; height:64px; font-size:22px; }
 }
+
+/* ── IDENTITY: JOURNEY / EVOLUTION ── */
+@keyframes riseUp{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.52;transform:translateX(-50%) translateY(-18px)}}
+.bg-horizon{position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:1200px;height:380px;background:radial-gradient(ellipse,rgba(251,146,60,.07),rgba(251,191,36,.04) 30%,transparent 65%);pointer-events:none;z-index:0;animation:riseUp 11s ease-in-out infinite}
 </style>
 
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="bg-horizon"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({active:'progress'});</script>
 
 <div class="main" id="mainContent">
@@ -187,6 +193,7 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 
 <script src="/divisions.js"></script>
 <script src="/flow.js"></script>
+<script src="/social.js"></script>
 <script>
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
 
@@ -235,13 +242,15 @@ function computeEloFromDivScore(divScore) {
 }
 
 async function loadProgress() {
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Request timed out. <a href="/home" style="color:var(--ac)">Go home →</a></div>';},25000);
   try {
     const [picksRes, rankingsRes, seasonsRes] = await Promise.all([
-      fetch(API + '/picks', { cache: 'no-store' }),
+      fetch(API + '/picks', { cache: 'no-store', signal: _ctrl.signal }),
       fetch(API + '/rankings', { cache: 'no-store' }).catch(() => null),
       fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null),
     ]);
 
+    clearTimeout(_xt);
     const allPicks = await picksRes.json();
     const myPicks = allPicks.filter(p => p.userId === USER_ID)
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
@@ -275,8 +284,9 @@ async function loadProgress() {
 
     renderAll(myPicks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons);
   } catch(e) {
+    clearTimeout(_xt);
     document.getElementById('mainContent').innerHTML =
-      '<div style="text-align:center;padding:80px;color:var(--mu);font-family:\'JetBrains Mono\',monospace">Could not load progress. <a href="/home" style="color:var(--ac)">Go home →</a></div>';
+      '<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Could not load progress. <a href="/home" style="color:var(--ac)">Go home →</a></div>';
   }
 }
 
@@ -668,7 +678,7 @@ function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank,
     .sort((a,b) => (b.current/b.target) - (a.current/a.target))
     .slice(0, 4);
 
-  if (!shown.length) return '<div style="color:var(--mu);font-family:\'Barlow\',sans-serif;font-size:13px">Keep posting picks to unlock achievements.</div>';
+  if (!shown.length) return '<div style="color:var(--mu);font-family:var(--font-body);font-size:13px">Keep posting picks to unlock achievements.</div>';
 
   return shown.map(u => {
     const pct = Math.min(100, Math.round((u.current / u.target) * 100));

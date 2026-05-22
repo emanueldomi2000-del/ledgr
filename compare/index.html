@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <title>LEDGR — Head to Head</title>
 <meta name="description" content="Compare two LEDGR tipsters head-to-head — ROI, win rate, streaks, best picks, and full performance breakdown.">
 
@@ -14,7 +16,7 @@
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
 
 /* ── MAIN ── */
-.main{max-width:1060px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
 /* ── HERO ── */
 .cmp-hero{text-align:center;padding:40px 0 48px;position:relative}
 .cmp-hero-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:5px;text-transform:uppercase;margin-bottom:14px}
@@ -169,6 +171,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <body>
 <div class="bg-glow"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({active:'compare'});</script>
 
 <div class="main">
@@ -239,8 +242,10 @@ function calcStats(picks) {
 }
 
 async function loadTipsters() {
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>_ctrl.abort(),25000);
   try {
-    const resp = await fetch(API + '/picks', { cache: 'no-store' });
+    const resp = await fetch(API + '/picks', { cache: 'no-store', signal: _ctrl.signal });
+    clearTimeout(_xt);
     allPicks = await resp.json();
     if (!Array.isArray(allPicks)) allPicks = [];
     const map = {};
@@ -256,7 +261,8 @@ async function loadTipsters() {
     })).sort((a, b) => b.roi - a.roi);
     renderGrid('A'); renderGrid('B');
   } catch (e) {
-    document.getElementById('gridA').innerHTML = '<div style="color:var(--rd);font-family:\'DM Mono\',monospace;font-size:11px;padding:12px">⚠️ Could not load tipsters. Refresh to retry.</div>';
+    clearTimeout(_xt);
+    document.getElementById('gridA').innerHTML = '<div style="color:var(--rd);font-family:var(--font-mono);font-size:11px;padding:12px">Could not load tipsters. Refresh to retry.</div>';
     document.getElementById('gridB').innerHTML = document.getElementById('gridA').innerHTML;
   }
 }
@@ -265,7 +271,7 @@ function renderGrid(side, query = '') {
   const el = document.getElementById('grid' + side);
   const q = query.toLowerCase();
   const list = q ? allTipsters.filter(t => t.username.toLowerCase().includes(q)) : allTipsters;
-  if (!list.length) { el.innerHTML = '<div style="color:var(--mu);font-family:\'DM Mono\',monospace;font-size:10px;padding:10px;text-align:center">No tipsters found</div>'; return; }
+  if (!list.length) { el.innerHTML = '<div style="color:var(--mu);font-family:\'DM Mono\',monospace;font-size:10px;padding:10px;text-align:center">No tipsters found matching that name</div>'; return; }
   const other = side === 'A' ? selectedB : selectedA;
   el.innerHTML = list.map(t => {
     const sel = side === 'A' ? selectedA : selectedB;

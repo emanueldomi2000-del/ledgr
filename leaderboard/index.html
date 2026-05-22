@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Leaderboard</title>
 <meta name="description" content="See who's the sharpest tipster on LEDGR. Real picks, verified results, zero fake ROI. Full leaderboard ranked by performance.">
 <meta property="og:title" content="LEDGR Leaderboard — Top Verified Tipsters">
 <meta property="og:description" content="Real picks. Verified results. Zero fake ROI. See the sharpest sports tipsters ranked by ROI, win rate, and reliability.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/leaderboard">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/app-tokens.css">
@@ -18,7 +19,7 @@ body::before{content:'';position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
   pointer-events:none;z-index:1;opacity:.4}
 .bg-glow{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:600px;
-  background:radial-gradient(ellipse,rgba(100,60,200,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+  background:radial-gradient(ellipse,rgba(251,191,36,.04) 0%,transparent 70%);pointer-events:none;z-index:0}
 
 /* ── MAIN ── */
 .main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
@@ -221,10 +222,10 @@ body::before{content:'';position:fixed;inset:0;
 
 /* Division badges */
 .dv-pill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;font-family:var(--font-mono);font-weight:700;letter-spacing:1px;white-space:nowrap;font-size:8px;padding:2px 7px}
-.div-bronze{background:rgba(180,120,80,.12);border:1px solid rgba(180,120,80,.3);color:#b47850}
-.div-silver{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:#94a3b8}
+.div-bronze{background:rgba(180,120,80,.12);border:1px solid rgba(180,120,80,.3);color:var(--bronze)}
+.div-silver{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.25);color:var(--silver)}
 .div-gold{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:var(--gold)}
-.div-platinum{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:#38bdf8}
+.div-platinum{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.25);color:var(--cyan)}
 .div-diamond{background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.3);color:var(--ac)}
 .div-elite{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:var(--rd)}
 .div-legend{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(184,159,255,.1));border:1px solid rgba(251,191,36,.4);color:var(--gold)}
@@ -291,11 +292,21 @@ body::before{content:'';position:fixed;inset:0;
   .search-input{height:44px;font-size:16px}
   .search-wrap{max-width:100%;width:100%;margin-bottom:12px}
 }
+
+/* ── IDENTITY: COMPETITION ARENA ── */
+@keyframes spotBreath{0%,100%{opacity:.3}50%{opacity:.6}}
+.bg-spot-l{position:fixed;top:-120px;left:-60px;width:800px;height:600px;background:radial-gradient(ellipse at top left,rgba(251,191,36,.055),transparent 60%);pointer-events:none;z-index:0;animation:spotBreath 10s ease-in-out infinite}
+.bg-spot-r{position:fixed;top:-120px;right:-60px;width:800px;height:600px;background:radial-gradient(ellipse at top right,rgba(251,191,36,.04),transparent 60%);pointer-events:none;z-index:0;animation:spotBreath 10s ease-in-out infinite 5s}
+.lb-eyebrow{font-family:var(--font-mono);font-size:9px;letter-spacing:4px;color:var(--mu);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.lb-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.5}
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
+<div class="bg-spot-l"></div>
+<div class="bg-spot-r"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'leaderboard' });</script>
 
 <!-- ═══ MAIN ═══ -->
@@ -304,6 +315,7 @@ body::before{content:'';position:fixed;inset:0;
   <!-- Header -->
   <div class="lb-header">
     <div>
+      <div class="lb-eyebrow">COMPETITION ARENA</div>
       <div class="lb-title">LEADER<span>BOARD</span></div>
       <div class="lb-sub">Real picks · Verified records · Zero fake ROI</div>
     </div>
@@ -311,7 +323,7 @@ body::before{content:'';position:fixed;inset:0;
   </div>
 
   <!-- Live stats bar -->
-  <div class="live-bar">
+  <div class="live-bar reveal">
     <div class="lb-stat-box">
       <div class="lsb-label"><div class="lsb-live-dot"></div>PICKS TODAY</div>
       <div class="lsb-val" id="sbToday">—</div>
@@ -387,10 +399,10 @@ body::before{content:'';position:fixed;inset:0;
   </div>
 
   <!-- Podium -->
-  <div class="podium-section" id="podium" style="display:none"></div>
+  <div class="podium-section reveal reveal-d1" id="podium" style="display:none"></div>
 
   <!-- Table -->
-  <div class="lb-table-wrap" id="lbTableWrap" style="display:none">
+  <div class="lb-table-wrap reveal reveal-d2" id="lbTableWrap" style="display:none">
     <div class="lb-head" id="lbHead">
       <span></span>
       <span>TIPSTER</span>
@@ -416,6 +428,7 @@ body::before{content:'';position:fixed;inset:0;
 <script src="/follows.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
+<script src="/social.js"></script>
 <script>
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
 let allPicks = [], currentFilter = 'all', allTipsters = [], allSeasons = [];
@@ -621,7 +634,7 @@ async function setTimeFilter(t, el) {
 
   // Non-default filter: need full picks data
   if (!_picksLoaded) {
-    document.getElementById('lbContainer').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:2px">LOADING…</div>';
+    document.getElementById('lbContainer').innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;padding:16px"><div class="skel" style="height:40px;border-radius:8px"></div><div class="skel" style="height:40px;border-radius:8px"></div><div class="skel" style="height:40px;border-radius:8px;width:90%"></div><div class="skel" style="height:40px;border-radius:8px;width:80%"></div><div class="skel" style="height:40px;border-radius:8px;width:85%"></div></div>';
   }
   await _ensurePicksLoaded();
   buildTipsters();
@@ -652,7 +665,7 @@ async function renderFrozenSeason(season) {
       results.map((r, i) => {
         const isChamp = r.user?.username === season.champion;
         const uname = r.user?.username || 'Unknown';
-        return `<div class="frozen-row ${isChamp?'champion-row':''}" onclick="window.location.href='/tipster?u=${uname}'">
+        return `<div class="frozen-row ${isChamp?'champion-row':''}" data-sh-user="${uname}" onclick="window.location.href='/tipster?u=${uname}'">
           <div class="fr-rank ${rankCls(i)}">${i<3?medals[i]:r.rank}</div>
           <div class="fr-tipster">
             <div class="fr-av" style="background:${COLORS[i%COLORS.length]}">${uname.slice(0,2).toUpperCase()}</div>
@@ -697,12 +710,14 @@ function updateSeasonBanner(filter, tipsters) {
 }
 
 async function loadLeaderboard() {
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('lbTableWrap').style.display='none';document.getElementById('lbEmpty').style.display='block';document.getElementById('lbEmpty').innerHTML='<div class="empty-lb"><span class="icon">⚠️</span><h3>TIMEOUT</h3><p>Request timed out. Please refresh.</p></div>';},25000);
   try {
     const [rankingsRes, seasonsRes] = await Promise.all([
-      fetch(API + '/rankings', {cache:'no-store'}),
+      fetch(API + '/rankings', {cache:'no-store',signal:_ctrl.signal}),
       fetch(API + '/seasons', {cache:'no-store'}).catch(() => null)
     ]);
     if (!rankingsRes.ok) throw new Error('Server error');
+    clearTimeout(_xt);
     rankingsData = await rankingsRes.json();
     if (!rankingsData || !Array.isArray(rankingsData.tipsters)) throw new Error('Invalid response');
 
@@ -723,6 +738,7 @@ async function loadLeaderboard() {
     updateStats();
     renderLeaderboard();
   } catch (e) {
+    clearTimeout(_xt);
     document.getElementById('lbTableWrap').style.display = 'none';
     document.getElementById('lbEmpty').style.display = 'block';
     document.getElementById('lbEmpty').innerHTML = '<div class="empty-lb"><span class="icon">⚠️</span><h3>SYNC IN PROGRESS</h3><p>Could not load data. Try again in a moment.</p></div>';
@@ -831,7 +847,7 @@ async function filterBy(sport, btn) {
   }
 
   if (!_picksLoaded) {
-    document.getElementById('lbContainer').innerHTML = '<div style="padding:24px;text-align:center;color:var(--mu);font-family:\'DM Mono\',monospace;font-size:11px;letter-spacing:2px">LOADING…</div>';
+    document.getElementById('lbContainer').innerHTML = '<div style="display:flex;flex-direction:column;gap:8px;padding:16px"><div class="skel" style="height:40px;border-radius:8px"></div><div class="skel" style="height:40px;border-radius:8px"></div><div class="skel" style="height:40px;border-radius:8px;width:90%"></div><div class="skel" style="height:40px;border-radius:8px;width:80%"></div><div class="skel" style="height:40px;border-radius:8px;width:85%"></div></div>';
   }
   await _ensurePicksLoaded();
   buildTipsters();
@@ -898,7 +914,7 @@ function renderLeaderboard() {
         : `<div style="width:52px;height:52px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`;
       const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
-      return `<div class="podium-card ${cls}" onclick="window.location.href='/tipster?u=${t.username}'">
+      return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
         ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div>' : ''}
         ${i===0 ? '<span class="podium-crown">👑</span>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
         <div style="margin:0 auto 10px;width:52px">${podAv}</div>
@@ -963,11 +979,11 @@ function renderLeaderboard() {
     const ss = t.sharpScore || 0;
     const ssColor = ss >= 70 ? 'var(--gr)' : ss >= 40 ? 'var(--gold)' : 'var(--rd)';
     const eloClass = (t.elo||1000) >= 1200 ? 'top' : (t.elo||1000) < 900 ? 'low' : '';
-    const usernameColor = globalRank === 1 ? '#FFD700' : globalRank <= 10 ? '#B14CFF' : '';
+    const usernameColor = globalRank === 1 ? 'var(--gold)' : globalRank <= 10 ? 'var(--ac-light)' : '';
     const usernamePfx = globalRank === 1 ? '👑 ' : '';
-    const sharpMark = ss > 70 ? `<span style="color:#00e5a0;font-size:11px;margin-left:4px">✓ Sharp</span>` : '';
+    const sharpMark = ss > 70 ? `<span style="color:var(--gr);font-size:11px;margin-left:4px">✓ Sharp</span>` : '';
 
-    return `<div class="lb-row" style="--ri:${idx}" onclick="window.location.href='/tipster?u=${t.username}'">
+    return `<div class="lb-row" style="--ri:${idx}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
       <div class="rank-cell">
         <div class="rank-num ${rankCls}">${globalRank}</div>
         ${move}
@@ -1016,6 +1032,7 @@ function renderLeaderboard() {
     });
     if (window.animateSharpGauges) window.animateSharpGauges();
     if (window.Follows) window.Follows.initFollowButtons();
+    if (window.LEDGR && LEDGR.observeReveal) LEDGR.observeReveal();
   }, 60);
 }
 
@@ -1038,6 +1055,7 @@ loadLeaderboard();
   new MutationObserver(observe).observe(document.body, {childList: true, subtree: true});
 })();
 </script>
+<img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">
 </body>
 </html>
 

@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Sign Up</title>
 <meta name="description" content="Create your free LEDGR account — build a verified sports tipster record, post picks, and compete on the leaderboard.">
 <meta property="og:title" content="Join LEDGR — Free Verified Tipster Account">
 <meta property="og:description" content="Create your free account and start building a verified sports tipster record. Real picks. Real results.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/register">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Join LEDGR — Free Verified Tipster Account">
 <meta name="twitter:description" content="Create your free account and start building a verified sports tipster record.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
@@ -22,8 +23,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--font-body);min-heigh
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
 .orb{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(124,95,230,0.07),transparent 70%);pointer-events:none;z-index:0}
 .box{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:40px;width:100%;max-width:400px;position:relative;z-index:1}
-.logo{font-family:var(--font-display);font-size:28px;letter-spacing:6px;color:var(--tx);text-decoration:none;display:block;text-align:center;margin-bottom:8px}
-.logo-accent{color:var(--ac-vivid)}
+.logo{display:block;text-align:center;margin-bottom:8px;text-decoration:none;line-height:0}
 .hero-tag{text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;margin-bottom:28px}
 .form-label{display:block;font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;margin-top:14px}
 .form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;padding:12px 14px;outline:none;font-family:var(--font-body);transition:border-color .2s}
@@ -46,7 +46,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <body>
 <div class="orb"></div>
 <div class="box">
-  <a href="/" class="logo"><span class="logo-accent">L</span>EDGR</a>
+  <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:56px;width:auto;display:inline-block;"></a>
   <div class="hero-tag">CREATE YOUR ACCOUNT</div>
   <div class="wake-bar" id="wakeBar">
     <div class="wake-bar-text">Waking up server — this takes ~10 seconds on first load</div>

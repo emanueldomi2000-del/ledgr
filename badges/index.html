@@ -157,10 +157,18 @@
 .collapsed .badge-grid,.collapsed .badge-grid-featured{display:none}
 .show-toggle{font-size:12px;color:var(--ac);cursor:pointer;margin-top:6px;display:inline-block;font-family:var(--font-body);font-weight:500}
 .show-toggle:hover{text-decoration:underline}
+
+/* ── IDENTITY: BADGE VAULT ── */
+@keyframes vaultBreath{0%,100%{opacity:.35}50%{opacity:.55}}
+.bg-vignette{position:fixed;inset:0;background:radial-gradient(ellipse 90% 72% at 50% 32%,transparent 38%,rgba(0,0,0,.42) 100%);pointer-events:none;z-index:0}
+.bg-vault-floor{position:fixed;bottom:-100px;left:50%;transform:translateX(-50%);width:1000px;height:320px;background:radial-gradient(ellipse,rgba(251,191,36,.055),transparent 65%);pointer-events:none;z-index:0;animation:vaultBreath 9s ease-in-out infinite}
 </style>
 </head>
 <body>
+<div class="bg-vignette"></div>
+<div class="bg-vault-floor"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({active:'badges'});</script>
 
 <!-- HERO -->
@@ -305,7 +313,7 @@ const RARITY_ORDER = ['common','rare','epic','legendary','mythic'];
 const RARITY_PCT = { common:45, rare:18, epic:6, legendary:1.2, mythic:0.3 };
 
 const DIV_MAP = { bronze:0, silver:1, gold:2, platinum:3, diamond:4, elite:5, legendary:6 };
-const DIV_COLORS = { bronze:'#b47850', silver:'#94a3b8', gold:'#fbbf24', platinum:'#38bdf8', diamond:'#b89fff', elite:'#e879a0', legendary:'#fbbf24' };
+const DIV_COLORS = { bronze:'var(--bronze)', silver:'var(--silver)', gold:'var(--gold)', platinum:'var(--cyan)', diamond:'var(--ac)', elite:'#e879a0', legendary:'var(--gold)' };
 
 // Showcase
 let showcaseIds = JSON.parse(localStorage.getItem('ledgr_badge_showcase') || '["","","",""]');

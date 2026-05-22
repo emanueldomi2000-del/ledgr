@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Log In</title>
 <meta name="description" content="Log in to LEDGR — your verified sports tipster platform. Track picks, compete on the leaderboard, build your record.">
 <meta property="og:title" content="Log In to LEDGR">
 <meta property="og:description" content="Log in and access your verified tipster dashboard — picks, rankings, and real performance data.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/login">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Log In to LEDGR">
 <meta name="twitter:description" content="Log in and access your verified tipster dashboard.">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
@@ -22,8 +23,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--font-body);min-heigh
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
 .orb{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(124,95,230,0.07),transparent 70%);pointer-events:none;z-index:0}
 .box{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:40px;width:100%;max-width:400px;position:relative;z-index:1}
-.logo{font-family:var(--font-display);font-size:28px;letter-spacing:6px;color:var(--tx);text-decoration:none;display:block;text-align:center;margin-bottom:28px}
-.logo-accent{color:var(--ac-vivid)}
+.logo{display:block;text-align:center;margin-bottom:28px;text-decoration:none;line-height:0}
 .tabs{display:flex;gap:6px;background:var(--s2);border-radius:10px;padding:4px;margin-bottom:24px}
 .tab{flex:1;padding:9px;border-radius:7px;border:none;background:transparent;color:var(--mu2);font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
 .tab.active{background:var(--ac);color:#07060d;font-weight:700}
@@ -46,7 +46,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <body>
 <div class="orb"></div>
 <div class="box">
-  <a href="/" class="logo"><span class="logo-accent">L</span>EDGR</a>
+  <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:56px;width:auto;display:inline-block;"></a>
 
   <!-- Wake up bar — shows when backend is cold starting -->
   <div class="wake-bar" id="wakeBar">

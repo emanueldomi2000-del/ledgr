@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
 <title>LEDGR — Profile Settings</title>
 <meta name="description" content="Customize your LEDGR tipster profile — banner, border, theme, and account settings.">
 <meta property="og:title" content="LEDGR — Profile Settings">
 <meta property="og:description" content="Customize your tipster profile and manage subscriptions.">
-<meta property="og:image" content="https://getledgr.bet/og-image.png">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <meta property="og:url" content="https://getledgr.bet/settings">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="LEDGR — Profile Settings">
-<meta name="twitter:image" content="https://getledgr.bet/og-image.png">
+<meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
@@ -22,7 +23,7 @@
 html{scroll-behavior:smooth}
 
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.4}
-.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(124,95,230,0.05),transparent 70%);pointer-events:none;z-index:0}
+/* bg-glow from app-components.css */
 
 /* ── MAIN ── */
 .main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
@@ -190,7 +191,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ring-gold{border:2px solid rgba(251,191,36,0.75);box-shadow:0 0 10px rgba(251,191,36,0.2)}
 .ring-diamond-frame{border:2px solid rgba(56,189,248,0.75);animation:diamondRing 2.5s ease-in-out infinite}
 @keyframes diamondRing{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0)}50%{box-shadow:0 0 14px 3px rgba(56,189,248,0.25)}}
-.ring-elite{background:conic-gradient(from 0deg,#f59e0b,#b89fff,#34d399,#38bdf8,#f87171,#f59e0b);animation:spinRing 4s linear infinite}
+.ring-elite{background:conic-gradient(from 0deg,var(--gold),var(--ac),var(--gr),var(--cyan),var(--rd),var(--gold));animation:spinRing 4s linear infinite}
 @keyframes spinRing{to{transform:rotate(360deg)}}
 
 /* ── PREFERENCES ── */
@@ -297,9 +298,23 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .toast{position:fixed;bottom:24px;right:24px;background:var(--gr);color:#07060d;padding:12px 24px;border-radius:10px;font-family:var(--font-display);font-size:16px;letter-spacing:2px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);max-width:320px}
 .toast.show{transform:translateY(0);opacity:1}
 
+/* ── ARCHETYPE OVERRIDE PICKER ── */
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.arch-card{background:var(--s1);border:1.5px solid var(--bd);border-radius:12px;padding:14px 10px;cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s;text-align:center;position:relative}
+.arch-card:hover{border-color:var(--bd2);transform:translateY(-1px)}
+.arch-card.selected{border-color:var(--arch-color,var(--ac));box-shadow:0 0 16px rgba(var(--arch-rgb,184,159,255),.12);background:rgba(var(--arch-rgb,184,159,255),.04)}
+.arch-icon{font-size:20px;margin-bottom:6px;display:block}
+.arch-name{font-family:var(--font-display);font-size:11px;letter-spacing:1px;color:var(--tx);margin-bottom:2px;line-height:1.1}
+.arch-rarity{font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:.5px}
+.arch-ck{position:absolute;top:6px;right:6px;width:15px;height:15px;border-radius:50%;background:var(--arch-color,var(--ac));display:none;align-items:center;justify-content:center;font-size:8px;color:#07060d;font-weight:900}
+.arch-card.selected .arch-ck{display:flex}
+.arch-override-banner{display:flex;align-items:center;gap:8px;padding:9px 14px;background:rgba(184,159,255,.06);border:1px solid rgba(184,159,255,.14);border-radius:8px;margin-bottom:14px;font-family:var(--font-mono);font-size:10px;color:var(--ac);letter-spacing:.5px}
+.arch-clear-btn{background:transparent;border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:4px 12px;font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all .2s;margin-left:auto;flex-shrink:0}
+.arch-clear-btn:hover{border-color:var(--bd2);color:var(--tx)}
+
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{grid-template-columns:1fr}.preview-panel{position:relative;top:0}}
-@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 
 </head>
@@ -307,8 +322,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-glow"></div>
 <div class="toast" id="toast"></div>
 <script src="/app-nav.js"></script>
+<script src="/motion.js"></script>
 <script>AppNav.init({ active: 'settings' });</script>
 <script src="/push.js"></script>
+<script src="/social.js"></script>
+<script src="/moments.js"></script>
 
 <div class="main">
   <div class="not-logged" id="notLogged" style="display:none">
@@ -524,10 +542,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
             <div class="section-num">04</div>
             <div>
               <div class="section-title">BETTING DNA</div>
-              <div class="section-sub">Your competitive identity, detected automatically from your pick history.</div>
+              <div class="section-sub">Detected from your pick history · override below to pin your identity.</div>
             </div>
           </div>
-          <div id="dnaContent"><div class="dna-loading">Loading your DNA…</div></div>
+          <div id="dnaContent"><div style="padding:24px;display:flex;flex-direction:column;gap:12px"><div class="skel" style="height:80px;border-radius:12px"></div><div style="display:flex;gap:8px"><div class="skel" style="flex:1;height:48px;border-radius:8px"></div><div class="skel" style="flex:1;height:48px;border-radius:8px"></div><div class="skel" style="flex:1;height:48px;border-radius:8px"></div></div></div></div>
+
+          <div id="archPickerWrap" style="margin-top:24px">
+            <div id="archOverrideBanner" class="arch-override-banner" style="display:none">
+              <span>⚡</span><span id="archOverrideLabel">Override active</span>
+              <button class="arch-clear-btn" onclick="clearArchOverride()">Use Auto-Detect</button>
+            </div>
+            <div class="bp-section-hd" style="margin-bottom:12px">Manual Override</div>
+            <div class="arch-grid" id="archGrid"></div>
+            <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:4px">Click an archetype to pin it · click again to deselect · save profile to apply</div>
+          </div>
         </section>
 
         <!-- 05 ACCOUNT -->
@@ -583,7 +611,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <div class="section-sub">Tipsters you are currently subscribed to</div>
             </div>
           </div>
-          <div id="mySubscriptions"><div class="sub-empty">Loading…</div></div>
+          <div id="mySubscriptions"><div style="display:flex;flex-direction:column;gap:10px;padding:4px 0"><div style="display:flex;align-items:center;gap:12px"><div class="skel skel-avatar" style="width:36px;height:36px;flex-shrink:0"></div><div style="flex:1"><div class="skel skel-text" style="width:120px;height:12px;margin-bottom:6px"></div><div class="skel skel-text" style="width:80px;height:10px"></div></div></div><div style="display:flex;align-items:center;gap:12px"><div class="skel skel-avatar" style="width:36px;height:36px;flex-shrink:0"></div><div style="flex:1"><div class="skel skel-text" style="width:140px;height:12px;margin-bottom:6px"></div><div class="skel skel-text" style="width:90px;height:10px"></div></div></div></div></div>
         </section>
 
         <!-- MY SUBSCRIBERS -->
@@ -601,7 +629,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <div class="earnings-lbl">Monthly earnings estimate</div>
             </div>
           </div>
-          <div id="mySubscribers"><div class="sub-empty">Loading…</div></div>
+          <div id="mySubscribers"><div style="display:flex;flex-direction:column;gap:10px;padding:4px 0"><div style="display:flex;align-items:center;gap:12px"><div class="skel skel-avatar" style="width:36px;height:36px;flex-shrink:0"></div><div style="flex:1"><div class="skel skel-text" style="width:110px;height:12px;margin-bottom:6px"></div><div class="skel skel-text" style="width:85px;height:10px"></div></div></div><div style="display:flex;align-items:center;gap:12px"><div class="skel skel-avatar" style="width:36px;height:36px;flex-shrink:0"></div><div style="flex:1"><div class="skel skel-text" style="width:130px;height:12px;margin-bottom:6px"></div><div class="skel skel-text" style="width:75px;height:10px"></div></div></div></div></div>
           <div class="price-row" style="margin-top:20px">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--mu2)">Monthly price:</span>
             <span style="font-family:var(--font-display);font-size:18px;color:var(--mu)">€</span>
@@ -727,7 +755,8 @@ let config = {
   theme:'purple', profileTheme:'#7B2CFF', bannerPack:'midnight',
   border:'clean', favSports:[], bio:'', social:{twitter:'',instagram:''},
   oddsFormat:'decimal', timezone:'UTC',
-  hideFromLeaderboard:false, notifications:false
+  hideFromLeaderboard:false, notifications:false,
+  manualArchetype:null,
 };
 let pendingAvatar = undefined;
 let pendingBanner = undefined;
@@ -974,11 +1003,12 @@ async function fetchOwnProfile(){
     if(data.bio!=null)config.bio=data.bio;
     if(data.social_twitter!=null||data.social_instagram!=null)
       config.social={twitter:data.social_twitter||'',instagram:data.social_instagram||''};
+    if(data.archetype)config.manualArchetype=data.archetype;
     const key=user.id||user.username;
     if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
     if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
     localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
-    renderThemes();renderBannerPacks();renderBorders();renderSports();loadIdentitySettings();applyPreview();
+    renderThemes();renderBannerPacks();renderBorders();renderSports();loadIdentitySettings();applyPreview();renderArchetypePicker();
   }catch(e){}
 }
 
@@ -992,6 +1022,7 @@ async function postProfile(){
     favSports:config.favSports||[],
     bio:config.bio||'',
     social:{twitter:(config.social&&config.social.twitter)||'',instagram:(config.social&&config.social.instagram)||''},
+    archetype:config.manualArchetype||null,
   };
   if(pendingAvatar!==undefined)payload.avatarB64=pendingAvatar;
   if(pendingBanner!==undefined)payload.bannerB64=pendingBanner;
@@ -1088,6 +1119,9 @@ async function fetchAndComputeDNA(){
     const evolution=sorted.slice(1,3).map(x=>({...ARCHETYPES_DATA.find(a=>a.id===x.id),s:x.s})).filter(x=>x.s>20);
     const confidence=Math.round(top);
 
+    // Archetype change → reveal moment
+    {const prev=localStorage.getItem('ledgr_my_archetype');if(window.Moments&&prev&&prev!==primary.id){setTimeout(()=>window.Moments.archetypeReveal({id:primary.id,name:primary.name,color:primary.color}),800);}localStorage.setItem('ledgr_my_archetype',primary.id);}
+
     // Build reason list
     const reasons=buildReasons(primary.id,stats);
 
@@ -1149,8 +1183,10 @@ async function loadMySubscriptions(){
   const el=document.getElementById('mySubscriptions');
   const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
   if(!user||!token){el.innerHTML='<div class="sub-empty">Log in to see your subscriptions.</div>';return;}
+  const ctrl=new AbortController();const _t=setTimeout(()=>{ctrl.abort();el.innerHTML='<div class="sub-empty">Request timed out. Please refresh.</div>';},25000);
   try{
-    const r=await fetch(API+'/subscriptions/'+user.id,{headers:{Authorization:'Bearer '+token}});
+    const r=await fetch(API+'/subscriptions/'+user.id,{headers:{Authorization:'Bearer '+token},signal:ctrl.signal});
+    clearTimeout(_t);
     const subs=await r.json();
     if(!Array.isArray(subs)||!subs.length){
       el.innerHTML='<div class="sub-empty">No active subscriptions.<br><a href="/leaderboard" style="color:var(--ac)">Browse tipsters →</a></div>';return;
@@ -1166,7 +1202,7 @@ async function loadMySubscriptions(){
         <button class="sub-cancel-btn" onclick="cancelSubscription('${s.id}',this)">Cancel</button>
       </div>`;
     }).join('');
-  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscriptions.</div>';}
+  }catch(e){clearTimeout(_t);el.innerHTML='<div class="sub-empty">Could not load subscriptions.</div>';}
 }
 
 async function cancelSubscription(subId,btn){
@@ -1186,8 +1222,10 @@ async function loadMySubscribers(){
   const cardEl=document.getElementById('earningsCard');
   const earningsEl=document.getElementById('earningsVal');
   if(!user){el.innerHTML='<div class="sub-empty">Log in to see your subscribers.</div>';return;}
+  const ctrl2=new AbortController();const _t2=setTimeout(()=>{ctrl2.abort();el.innerHTML='<div class="sub-empty">Request timed out. Please refresh.</div>';},25000);
   try{
-    const r=await fetch(API+'/subscribers/'+user.id);
+    const r=await fetch(API+'/subscribers/'+user.id,{signal:ctrl2.signal});
+    clearTimeout(_t2);
     const d=await r.json();
     if(!d.count){el.innerHTML='<div class="sub-empty">No subscribers yet.<br>Share your profile to grow your following.</div>';return;}
     const price=parseInt(localStorage.getItem('ledgr_my_sub_price')||'10');
@@ -1202,7 +1240,7 @@ async function loadMySubscribers(){
         <span class="sub-badge active">● ACTIVE</span>
       </div>`;
     }).join('');
-  }catch(e){el.innerHTML='<div class="sub-empty">Could not load subscribers.</div>';}
+  }catch(e){clearTimeout(_t2);el.innerHTML='<div class="sub-empty">Could not load subscribers.</div>';}
 }
 
 function saveSubPrice(){
@@ -1240,6 +1278,53 @@ async function saveProfile(){
   showToast(ok?'PROFILE SYNCED ✓':'SAVED LOCALLY — backend offline');
 }
 
+/* ── ARCHETYPE PICKER ── */
+function renderArchetypePicker(){
+  const grid=document.getElementById('archGrid');
+  if(!grid)return;
+  grid.innerHTML=ARCHETYPES_DATA.map(a=>{
+    const rgb=hexToRgb(a.color);
+    const sel=config.manualArchetype===a.id;
+    return`<div class="arch-card${sel?' selected':''}" onclick="selectArchOverride('${a.id}')" id="arch_${a.id}" style="--arch-color:${a.color};--arch-rgb:${rgb}">
+      <div class="arch-ck">✓</div>
+      <span class="arch-icon">${a.icon}</span>
+      <div class="arch-name">${a.name.toUpperCase().replace(/^THE /,'')}</div>
+      <div class="arch-rarity">${a.rarity}% of tipsters</div>
+    </div>`;
+  }).join('');
+  _updateArchBanner();
+}
+
+function selectArchOverride(id){
+  config.manualArchetype=config.manualArchetype===id?null:id;
+  renderArchetypePicker();
+  if(config.manualArchetype){
+    const sel=ARCHETYPES_DATA.find(a=>a.id===id);
+    showToast((sel?sel.name:'Archetype')+' set — save to apply');
+  }else{
+    showToast('Override cleared — using auto-detect');
+  }
+}
+
+function clearArchOverride(){
+  config.manualArchetype=null;
+  renderArchetypePicker();
+  showToast('Using auto-detected archetype');
+}
+
+function _updateArchBanner(){
+  const banner=document.getElementById('archOverrideBanner');
+  const label=document.getElementById('archOverrideLabel');
+  if(!banner)return;
+  if(config.manualArchetype){
+    const sel=ARCHETYPES_DATA.find(a=>a.id===config.manualArchetype);
+    banner.style.display='flex';
+    if(label&&sel)label.textContent=sel.icon+' '+sel.name+' — override active';
+  }else{
+    banner.style.display='none';
+  }
+}
+
 /* ── INIT ── */
 window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
@@ -1249,6 +1334,7 @@ window.onload=()=>{
   if(!user?.username){window.location.href='/login';return;}
 
   document.getElementById('app').style.display='block';
+  if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
   document.getElementById('snAv').textContent=user.username.slice(0,2).toUpperCase();
   document.getElementById('snName').textContent='@'+user.username;
   document.getElementById('previewAv').textContent=user.username.slice(0,2).toUpperCase();
@@ -1277,6 +1363,7 @@ window.onload=()=>{
   renderSports();
   loadIdentitySettings();
   applyPreview();
+  renderArchetypePicker();
   loadMySubscriptions();
   loadMySubscribers();
   fetchOwnProfile();
