@@ -529,6 +529,34 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* ── IDENTITY: COMMAND CENTER ── */
 @keyframes gridDrift{0%,100%{opacity:.055}50%{opacity:.095}}
 .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(184,159,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(184,159,255,.055) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;animation:gridDrift 10s ease-in-out infinite}
+
+/* ══ ELITE IDENTITY CARD — Sprint 12 ══ */
+.hero-layout{grid-template-columns:1fr!important;gap:0!important}
+.hero{display:none!important}
+.identity-card{padding:0!important;cursor:pointer}
+.id-div-banner{height:3px;width:100%;border-radius:20px 20px 0 0;background:linear-gradient(90deg,rgba(180,120,80,.7),rgba(180,120,80,.4));transition:background .6s}
+.id-card-main{display:grid;grid-template-columns:auto 1fr;align-items:center;padding:22px 26px 0;position:relative;overflow:hidden}
+.id-card-main::after{content:'▲';position:absolute;right:-20px;bottom:-50px;font-size:260px;color:rgba(255,255,255,.04);pointer-events:none;line-height:1;user-select:none;font-family:var(--font-display);letter-spacing:0}
+.id-left{display:flex;align-items:center;gap:20px;padding-right:28px;border-right:1px solid rgba(255,255,255,.05)}
+.id-av{width:80px!important;height:80px!important;border-radius:18px!important;font-size:28px!important;box-shadow:0 0 32px rgba(184,159,255,.22)!important;flex-shrink:0}
+.id-info{display:flex;flex-direction:column;gap:7px}
+.id-eyebrow{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:3px;text-transform:uppercase}
+.id-name{font-size:32px!important;letter-spacing:3px!important;line-height:1!important;margin-bottom:0!important}
+@keyframes divBadgePulse{0%,100%{opacity:1}55%{opacity:.65}}
+.id-division{animation:divBadgePulse 3s ease-in-out infinite;width:fit-content}
+.id-stats{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:0!important;margin:18px 0 0!important;border-top:1px solid rgba(255,255,255,.05)}
+.id-stat{background:transparent!important;border:none!important;border-left:1px solid rgba(255,255,255,.04)!important;border-radius:0!important;padding:14px 10px!important;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px}
+.id-stat:first-child{border-left:none!important}
+.id-stat-lbl{font-size:7px!important;letter-spacing:2px;text-transform:uppercase;margin-bottom:0!important;order:2;color:var(--mu)!important}
+.id-stat-val{font-family:'DM Mono',monospace!important;font-size:clamp(16px,2vw,26px)!important;font-weight:700!important;letter-spacing:-.5px;line-height:1!important;order:1}
+.id-graph{display:none!important}
+.id-rank-bar{border-top:1px solid rgba(255,255,255,.04);padding:10px 26px!important;margin:0!important}
+#idFollowers{padding:2px 26px 0!important;text-align:left!important}
+.id-view-btn{border-radius:0 0 20px 20px!important;border:none!important;border-top:1px solid rgba(184,159,255,.1)!important;background:rgba(184,159,255,.04)!important;margin:0!important;padding:10px!important}
+.hero-cards-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+#seasonInfoCard{margin-top:0!important}
+@media(max-width:960px){.id-card-main{grid-template-columns:1fr}.id-left{border-right:none;padding-right:0;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.05)}.hero-cards-row{grid-template-columns:1fr}}
+@media(max-width:700px){.id-stats{grid-template-columns:repeat(2,1fr)!important}.id-stat:nth-child(2){border-left:1px solid rgba(255,255,255,.04)!important}.id-stat:nth-child(3){border-left:none!important}}
 </style>
 </head>
 <body>
@@ -548,11 +576,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <!-- ══════════════ HERO ══════════════ -->
 <div class="main">
   <div class="hero-layout">
-<div class="hero">
+<div class="hero" style="display:none">
 <div class="hero-eyebrow" id="heroEyebrow">YOUR RECORD</div>
     <div id="heroArchHero"></div>
     <div class="hero-meta">
-      <div class="division-badge div-bronze" id="divisionBadge"><span class="skel-inline" style="width:80px;height:14px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
+      <div class="division-badge div-bronze" id="divisionBadge"></div>
       <div id="streakPill" style="display:none" class="streak-pill">🔥 <span id="streakText"></span></div>
     </div>
     <div class="hero-sub">
@@ -568,44 +596,51 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </div>
 <div class="hero-identity">
   <div class="identity-card" onclick="AppNav.goToProfile()">
-    <div class="id-top">
-      <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
-      <div>
-        <div class="id-name" id="idName"><span class="skel-inline" style="width:90px;height:14px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
-        <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:70px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
+    <div class="id-div-banner" id="idDivBanner"></div>
+    <div class="id-card-main">
+      <div class="id-left">
+        <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
+        <div class="id-info">
+          <div class="id-eyebrow">YOUR RECORD</div>
+          <div class="id-name" id="idName"><span class="skel-inline" style="width:120px;height:24px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
+          <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:80px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
+        </div>
+      </div>
+      <div style="display:none"><div id="idRel"></div></div>
+      <div class="id-stats">
+        <div class="id-stat"><div class="id-stat-lbl">SHARP SCORE</div><div class="id-stat-val" id="idSharpScore"><span class="skel-inline" style="width:32px;height:20px;display:inline-block;background:var(--s2);border-radius:4px"></span></div></div>
+        <div class="id-stat"><div class="id-stat-lbl">ROI</div><div class="id-stat-val pos" id="idROI"><span class="skel-inline" style="width:40px;height:20px;display:inline-block;background:var(--s2);border-radius:4px"></span></div></div>
+        <div class="id-stat"><div class="id-stat-lbl">RANK</div><div class="id-stat-val ac" id="idRank"><span class="skel-inline" style="width:30px;height:20px;display:inline-block;background:var(--s2);border-radius:4px"></span></div></div>
+        <div class="id-stat"><div class="id-stat-lbl">STREAK</div><div class="id-stat-val orange" id="idStreak"><span class="skel-inline" style="width:28px;height:20px;display:inline-block;background:var(--s2);border-radius:4px"></span></div></div>
       </div>
     </div>
-    <div class="id-stats">
-      <div class="id-stat"><div class="id-stat-lbl">ROI</div><div class="id-stat-val pos" id="idROI">—</div></div>
-      <div class="id-stat"><div class="id-stat-lbl">Rank</div><div class="id-stat-val ac" id="idRank">—</div></div>
-      <div class="id-stat"><div class="id-stat-lbl">Streak</div><div class="id-stat-val orange" id="idStreak">—</div></div>
-      <div class="id-stat"><div class="id-stat-lbl">Rel.</div><div class="id-stat-val cyan" id="idRel">—</div></div>
-    </div>
-    <svg class="id-graph" id="idGraph" viewBox="0 0 280 40" preserveAspectRatio="none"></svg>
+    <svg style="display:none" class="id-graph" id="idGraph" viewBox="0 0 280 40" preserveAspectRatio="none"></svg>
     <div class="id-rank-bar">
       <span class="id-rank-lbl">Global rank</span>
       <div class="id-rank-track"><div class="id-rank-fill" id="idRankFill" style="width:0%"></div></div>
       <span class="id-rank-num" id="idRankNum"><span class="skel-inline" style="width:32px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></span>
     </div>
-    <div id="idFollowers" style="font-family:var(--font-mono);font-size:10px;color:var(--mu);text-align:center;padding:4px 0 0;letter-spacing:1px">— followers</div>
-    <div id="idSubscriberCount" style="display:none;font-family:var(--font-mono);font-size:10px;color:var(--gr);text-align:center;padding:2px 0 0;letter-spacing:1px"></div>
+    <div id="idFollowers" style="font-family:var(--font-mono);font-size:10px;color:var(--mu);padding:4px 0 0;letter-spacing:1px">— followers</div>
+    <div id="idSubscriberCount" style="display:none;font-family:var(--font-mono);font-size:10px;color:var(--gr);padding:2px 0 0;letter-spacing:1px"></div>
     <a href="#" onclick="AppNav.goToProfile();return false" class="id-view-btn">VIEW MY PROFILE →</a>
   </div>
-  <div class="missions-card panel-highlight">
-    <div class="missions-title">⚡ Daily Missions</div>
-    <div id="dailyMissions"><div class="skel skel-text" style="width:60%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:40%;height:9px"></div></div>
-  </div>
-  <div id="seasonInfoCard" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:16px;margin-top:0">
-    <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:8px">🏆 Current Season</div>
-    <div style="font-family:var(--font-display);font-size:20px;letter-spacing:3px;color:var(--gold);margin-bottom:4px" id="sidSeasonName">Season 3</div>
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu2)" id="sidSeasonDays">— days left</div>
-      <div style="font-family:var(--font-display);font-size:16px;color:var(--ac)" id="sidSeasonRank">#—</div>
+  <div class="hero-cards-row">
+    <div class="missions-card panel-highlight">
+      <div class="missions-title">⚡ Daily Missions</div>
+      <div id="dailyMissions"><div class="skel skel-text" style="width:60%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:40%;height:9px"></div></div>
     </div>
-    <div style="margin-top:8px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
-      <div id="sidSeasonBar" style="height:100%;background:linear-gradient(90deg,#fbbf24,#b89fff);border-radius:2px;width:0%;transition:width 1.2s ease"></div>
+    <div id="seasonInfoCard" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:16px">
+      <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:8px">🏆 Current Season</div>
+      <div style="font-family:var(--font-display);font-size:20px;letter-spacing:3px;color:var(--gold);margin-bottom:4px" id="sidSeasonName">Season 3</div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu2)" id="sidSeasonDays">— days left</div>
+        <div style="font-family:var(--font-display);font-size:16px;color:var(--ac)" id="sidSeasonRank">#—</div>
+      </div>
+      <div style="margin-top:8px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
+        <div id="sidSeasonBar" style="height:100%;background:linear-gradient(90deg,#fbbf24,#b89fff);border-radius:2px;width:0%;transition:width 1.2s ease"></div>
+      </div>
+      <a href="/leaderboard" style="display:block;text-align:center;margin-top:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:rgba(251,191,36,.5);text-decoration:none">VIEW SEASON LEADERBOARD →</a>
     </div>
-    <a href="/leaderboard" style="display:block;text-align:center;margin-top:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:rgba(251,191,36,.5);text-decoration:none">VIEW SEASON LEADERBOARD →</a>
   </div>
 </div>
 </div>
@@ -1161,6 +1196,10 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
   const idRankNum=document.getElementById('idRankNum');if(idRankNum)idRankNum.textContent=rank>0?'#'+rank:'#—';
+  const sharp=rm&&rm.sharpScore!=null?Math.round(rm.sharpScore):0;
+  const idSS=document.getElementById('idSharpScore');if(idSS){idSS.textContent=sharp>0?sharp+'/100':'—';idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');}
+  const idBanner=document.getElementById('idDivBanner');
+  if(idBanner){const bc={LEGENDARY:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(184,159,255,.6),rgba(251,191,36,.7))',ELITE:'linear-gradient(90deg,rgba(248,113,113,.8),rgba(251,146,60,.5))',DIAMOND:'linear-gradient(90deg,rgba(184,159,255,.9),rgba(123,44,255,.6))',PLATINUM:'linear-gradient(90deg,rgba(56,189,248,.8),rgba(52,211,153,.5))',GOLD:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(251,146,60,.5))',SILVER:'linear-gradient(90deg,rgba(148,163,184,.7),rgba(100,116,139,.4))',BRONZE:'linear-gradient(90deg,rgba(180,120,80,.8),rgba(180,120,80,.4))'};idBanner.style.background=bc[div.name]||bc.BRONZE;}
   const sorted=[...myPicks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
   let cum=0,cumStake=0;
   const pts=[0,...sorted.map(p=>{cum+=p.pnl;cumStake+=p.stake;return cumStake>0?(cum/cumStake)*100:0;})];

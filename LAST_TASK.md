@@ -4,7 +4,62 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 11 — Nav Restructure ✅ COMPLETE
+Current objective: Sprint 12 — Visual Upgrade (home, leaderboard, feed) ✅ COMPLETE
+
+---
+
+## Last completed: Sprint 12 — Visual Upgrade (2026-05-22)
+
+### 1. home/index.html — Elite Identity Card Hero
+
+**Layout:** `hero-layout` changed from 2-column (1fr + 320px) to full-width (1fr). Left `.hero` div hidden (all IDs preserved for JS compat). `.hero-identity` now spans full width.
+
+**Identity card restructure:**
+- `id-div-banner` (3px colored top stripe, color set by JS based on division: Bronze/Silver/Gold/Platinum/Diamond/ELITE/Legendary gradients)
+- `id-card-main`: horizontal grid (avatar left + stats right)
+- Avatar (`id-av`): 80px × 80px, border-radius 18px, purple glow shadow
+- Username (`id-name`): Bebas Neue 32px, letter-spacing 3px
+- Division badge (`id-division`): animated pulse (divBadgePulse keyframe)
+- `id-info` group: eyebrow + username + division badge stacked
+- Stats row (4-col, DM Mono): Sharp Score | ROI | Rank | Streak — label below value, JetBrains Mono, clamp(16px,2vw,26px)
+- `idRel` element kept hidden (div style=display:none) for JS compat
+- ROI curve graph hidden (`display:none`) — removed clutter
+- Rank bar kept below main body
+- Watermark: `::after` pseudo-element on `id-card-main` → "▲" at 260px, opacity 0.04
+
+**New JS in `renderIdentityPanel`:**
+- Populates `idSharpScore` from `window._myRankingMeta.sharpScore` (fallback: 0)
+- Sets `idDivBanner` background gradient based on `div.name`
+- Sharp score color: green ≥70, purple ≥40, default neutral
+
+**Missions + Season cards:** wrapped in `hero-cards-row` (2-col grid on desktop, 1-col mobile)
+
+**Responsive:** at ≤960px: id-card-main → 1 column (avatar + info stacked, stats below). Stats stay 4-col until ≤700px → 2-col.
+
+---
+
+### 2. leaderboard/index.html — Header + Podium Upgrade
+
+**Title:** `.lb-title` font-size upgraded from `clamp(26px,3vw,34px)` to `clamp(44px,6vw,80px)`, letter-spacing 5px, line-height 0.9. Span (BOARD) keeps `color:var(--ac)` with added text-shadow glow.
+
+**Podium avatars:** `width:52 → 72px`, `height:52 → 72px` in both `Divisions.avHTML()` call and fallback div. Container `width:52 → 72`.
+
+**Podium animations:** replaced existing `pod-in` spring with stronger `podEntrance` keyframe (more travel, more spring). Delays: p2=0.1s, p1=0.25s, p3=0.4s (staggered).
+
+---
+
+### 3. feed/index.html — Header + Feed Card Upgrade
+
+**Eyebrow:** `.pm-eye` text changed from "LEDGR INTELLIGENCE" → "LIVE ACTIVITY"
+
+**Feed card event coloring** (via JS class on act-row):
+- `act-win`: green left border (2px var(--gr)) + subtle green background
+- `act-bigwin`: brighter green glow treatment
+- `act-streak`: orange left border + orange background tint
+- `act-underdog`: gold left border + gold tint
+- Others: transparent border (no visual noise)
+
+**JS change:** `buildActRow()` now computes `_rowCls` from `ev.type` and adds it to the act-row div.
 
 ---
 

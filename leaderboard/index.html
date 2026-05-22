@@ -299,6 +299,16 @@ body::before{content:'';position:fixed;inset:0;
 .bg-spot-r{position:fixed;top:-120px;right:-60px;width:800px;height:600px;background:radial-gradient(ellipse at top right,rgba(251,191,36,.04),transparent 60%);pointer-events:none;z-index:0;animation:spotBreath 10s ease-in-out infinite 5s}
 .lb-eyebrow{font-family:var(--font-mono);font-size:9px;letter-spacing:4px;color:var(--mu);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .lb-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.5}
+
+/* ══ HEADER UPGRADE — Sprint 12 ══ */
+.lb-title{font-size:clamp(44px,6vw,80px)!important;letter-spacing:5px!important;line-height:.9!important}
+.lb-title span{color:var(--ac);text-shadow:0 0 40px rgba(184,159,255,.35)}
+.lb-header{margin-bottom:32px!important;align-items:flex-start!important}
+@keyframes podEntrance{0%{opacity:0;transform:translateY(60px) scale(.75)}70%{transform:translateY(-10px) scale(1.03)}88%{transform:translateY(4px) scale(.99)}100%{opacity:1;transform:none}}
+.podium-card{animation:podEntrance .9s cubic-bezier(.34,1.56,.64,1) both!important}
+.podium-card.p2{animation-delay:.1s!important}
+.podium-card.p1{animation-delay:.25s!important}
+.podium-card.p3{animation-delay:.4s!important}
 </style>
 </head>
 <body>
@@ -910,14 +920,14 @@ function renderLeaderboard() {
       const cls  = ['p1','p2','p3'][i];
       const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
       const podAv = window.Divisions
-        ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:52,height:52,borderRadius:'50%',classes:'podium-av-inner'})
-        : `<div style="width:52px;height:52px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`;
+        ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:72,height:72,borderRadius:'50%',classes:'podium-av-inner'})
+        : `<div style="width:72px;height:72px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`;
       const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
       return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
         ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div>' : ''}
         ${i===0 ? '<span class="podium-crown">👑</span>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
-        <div style="margin:0 auto 10px;width:52px">${podAv}</div>
+        <div style="margin:0 auto 12px;width:72px">${podAv}</div>
         <div class="podium-name">@${t.username}</div>
         ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
         <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>

@@ -192,6 +192,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bg-market{position:fixed;bottom:-200px;right:-150px;width:700px;height:600px;background:radial-gradient(ellipse,rgba(52,211,153,.065),transparent 65%);pointer-events:none;z-index:0;animation:bgBreathe 9s ease-in-out infinite 4.5s}
 @keyframes mktScan{0%{transform:translateX(-200%)}100%{transform:translateX(200vw)}}
 .bg-scan{position:fixed;top:0;bottom:0;width:1px;background:linear-gradient(180deg,transparent,rgba(52,211,153,.12) 40%,rgba(52,211,153,.18) 50%,rgba(52,211,153,.12) 60%,transparent);pointer-events:none;z-index:0;animation:mktScan 18s linear infinite 1s}
+
+/* ══ FEED CARD UPGRADE — Sprint 12 ══ */
+.act-row{border-left:2px solid transparent!important;padding-left:8px!important}
+.act-row.act-win{border-left-color:var(--gr)!important;background:rgba(52,211,153,.025)!important}
+.act-row.act-win:hover{background:rgba(52,211,153,.05)!important;box-shadow:inset 0 0 20px rgba(52,211,153,.04)}
+.act-row.act-bigwin{border-left-color:var(--gr)!important;background:rgba(52,211,153,.04)!important;box-shadow:0 0 16px rgba(52,211,153,.05)}
+.act-row.act-bigwin:hover{background:rgba(52,211,153,.07)!important}
+.act-row.act-streak{border-left-color:var(--orange)!important;background:rgba(251,146,60,.025)!important}
+.act-row.act-streak:hover{background:rgba(251,146,60,.05)!important}
+.act-row.act-underdog{border-left-color:var(--gold)!important;background:rgba(251,191,36,.02)!important}
 </style>
 </head>
 <body>
@@ -208,7 +218,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <!-- ══ PULSE MASTHEAD ══ -->
 <div class="pulse-mast">
   <div class="pm-left">
-    <div class="pm-eye">LEDGR INTELLIGENCE</div>
+    <div class="pm-eye">LIVE ACTIVITY</div>
     <div class="pm-title">PUL<span>SE</span></div>
   </div>
   <div class="pm-right">
@@ -554,7 +564,8 @@ function buildActRow(ev,delay){
   else if(ev.type==='milestone'){action=`${d.count}-pick milestone reached`;badge=`<span class="act-badge ab-ms">${d.count}</span>`;}
   else if(ev.type==='flow'){action=d.state?d.state.label:'momentum shift';badge='';}
   else{action=`posted · ${esc(d.market||'—')} @ ${parseFloat(d.odds||0).toFixed(2)}`;badge=`<span class="act-badge ab-post">LIVE</span>`;}
-  return`<div class="act-row" style="${delay?'animation-delay:'+delay+'ms':''}">
+  const _rowCls=ev.type==='bigwin'?'act-bigwin':ev.type==='win'?'act-win':ev.type==='underdog'?'act-underdog':ev.type==='streak'?'act-streak':'';
+  return`<div class="act-row ${_rowCls}" style="${delay?'animation-delay:'+delay+'ms':''}">
     <div class="act-av" style="background:${avColor(ev.user)}">${ev.user.slice(0,2).toUpperCase()}</div>
     <a class="act-user" href="/tipster?u=${ev.user}" onclick="event.stopPropagation()">@${ev.user}</a>
     <span class="act-action">${action}</span>
