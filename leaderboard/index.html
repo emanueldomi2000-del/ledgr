@@ -773,7 +773,7 @@ function buildTipsters() {
     for (const p of userPicks) { if (p.result === 'win') streak++; else break; }
     map[u].streak = streak;
     map[u].isLive = map[u].lastPickAt >= yesterday;
-    map[u].elo = (window._eloMap && window._eloMap[u]) ? window._eloMap[u] : 1000;
+    map[u].elo = (window._eloMap && window._eloMap[u] != null) ? window._eloMap[u] : 0;
     const allTimePicks = allPicks.filter(p => p.user?.username === u);
     map[u].sharpScore = window.getSharpScore ? window.getSharpScore(allTimePicks) : 0;
     map[u].archetype  = window.getArchetype  ? window.getArchetype(allTimePicks)  : null;
@@ -931,7 +931,7 @@ function renderLeaderboard() {
         <div style="margin-bottom:6px">${divPill}</div>
         ${archHtml}
         ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak}-win streak</div>`:''}
-        <div class="podium-elo">⚡ ELO <span data-elo="${t.elo||1000}">${t.elo||1000}</span></div>
+        <div class="podium-elo">⚡ ELO <span data-elo="${t.elo!=null?t.elo:0}">${t.elo!=null?t.elo:0}</span></div>
         <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
       </div>`;
     }).join('');
@@ -978,7 +978,8 @@ function renderLeaderboard() {
     const flowHtml = t.flowState && window.Flow ? window.Flow.chipHTML(t.flowState) : '';
     const ss = t.sharpScore || 0;
     const ssColor = ss >= 70 ? 'var(--gr)' : ss >= 40 ? 'var(--gold)' : 'var(--rd)';
-    const eloClass = (t.elo||1000) >= 1200 ? 'top' : (t.elo||1000) < 900 ? 'low' : '';
+    const _elo = t.elo != null ? t.elo : 0;
+    const eloClass = _elo >= 1200 ? 'top' : _elo < 900 ? 'low' : '';
     const usernameColor = globalRank === 1 ? 'var(--gold)' : globalRank <= 10 ? 'var(--ac-light)' : '';
     const usernamePfx = globalRank === 1 ? '👑 ' : '';
     const sharpMark = ss > 70 ? `<span style="color:var(--gr);font-size:11px;margin-left:4px">✓ Sharp</span>` : '';
@@ -1019,7 +1020,7 @@ function renderLeaderboard() {
       <div class="elo-cell">
         ${ss > 0
           ? `<div class="elo-val" style="color:${ssColor}" data-elo="${Math.round(ss)}">${Math.round(ss)}</div><div class="elo-lbl">SHARP</div>`
-          : `<div class="elo-badge ${eloClass}" data-elo="${t.elo||1000}">${t.elo||1000}</div><div class="elo-lbl">ELO</div>`}
+          : `<div class="elo-badge ${eloClass}" data-elo="${_elo}">${_elo}</div><div class="elo-lbl">ELO</div>`}
       </div>
       <button class="follow-btn" data-user-id="${t.userId||''}" onclick="event.stopPropagation()">Follow</button>
     </div>`;

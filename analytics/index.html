@@ -367,18 +367,43 @@ window.onload=()=>{
 };
 
 async function loadData(){
-  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Request timed out. Please refresh.</div>';},25000);
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
+  const _ctrl=new AbortController();
+  const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Request timed out. Please refresh.</div>';},25000);
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal});
+    let picksRaw=[];
+    if(urlUser){
+      // Viewing another user — resolve userId from rankings, then fetch their picks
+      const rr=await fetch(API+'/rankings/'+urlUser,{cache:'no-store',signal:_ctrl.signal}).catch(()=>null);
+      let tipsterUserId=null;
+      if(rr&&rr.ok){try{const rm=await rr.json();tipsterUserId=rm.userId||null;}catch(e){}}
+      if(!tipsterUserId){
+        clearTimeout(_xt);
+        document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Could not load analytics for @'+urlUser+'.</div>';
+        return;
+      }
+      const pr=await fetch(API+'/picks?userId='+tipsterUserId,{cache:'no-store',signal:_ctrl.signal}).catch(()=>null);
+      if(pr&&pr.ok){try{picksRaw=await pr.json();}catch(e){}}
+    }else{
+      // Own analytics — fetch own picks with auth
+      if(!user||!user.id){
+        clearTimeout(_xt);
+        document.getElementById('notLogged').style.display='flex';
+        document.getElementById('app').style.display='none';
+        return;
+      }
+      const hdrs=tk?{Authorization:'Bearer '+tk}:{};
+      const pr=await fetch(API+'/picks?userId='+user.id,{cache:'no-store',signal:_ctrl.signal,headers:hdrs});
+      if(pr.ok){try{picksRaw=await pr.json();}catch(e){}}
+    }
     clearTimeout(_xt);
-    const all=await r.json();
     targetUser=urlUser||(user?user.username:null);
     if(!targetUser){document.getElementById('notLogged').style.display='flex';document.getElementById('app').style.display='none';return;}
-    allPicks=all.filter(p=>p.user&&p.user.username===targetUser).sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+    allPicks=Array.isArray(picksRaw)?picksRaw.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt)):[];
     document.getElementById('pageTitle').innerHTML=`<span style="color:var(--ac)">@${targetUser}</span> ANALYTICS`;
     document.getElementById('profileLink').href='/tipster?u='+targetUser;
     document.title='LEDGR — @'+targetUser+' Analytics';
-    renderStats(all);
+    renderStats();
     renderROICurve();
     renderProfitGraph();
     renderWRTrend();
@@ -440,7 +465,7 @@ function computeSharpScore(picks){
 }
 
 // ── 1. STATS ROW ─────────────────────────────────────────────────
-function renderStats(all){
+function renderStats(){
   const p=allPicks;
   const settled=p.filter(x=>x.result!=='pending');
   const wins=settled.filter(x=>x.result==='win').length;

@@ -635,7 +635,7 @@ function filterPicks(filter,el){
 
 function getELOFromPicks(picks){
   // Calculate ELO from pick history
-  const BASE=1000;const K=32;
+  const BASE=0;const K=32;
   let elo=BASE;
   const settled=picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
   let streak=0;

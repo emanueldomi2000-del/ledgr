@@ -4,7 +4,44 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 9 — Final Verification Pass ✅ COMPLETE
+Current objective: Sprint 10 — Analytics Fix + ELO Baseline + Ranking Verification ✅ COMPLETE
+
+---
+
+## Last completed: Sprint 10 — Analytics Fix + ELO Baseline + Ranking Verification (2026-05-22)
+
+### 1. analytics/index.html — Loading fix
+
+**Root cause (two bugs):**
+- `fetch(API+'/picks', ...)` — global feed, no `?userId`, no auth. After visibility feature, global feed returns PUBLIC picks only.
+- `all.filter(p=>p.user&&p.user.username===targetUser)` — wrong field path. Backend returns `p.username`, not `p.user.username`. `allPicks` was always empty.
+
+**Fix:**
+- Own analytics: `fetch(API+'/picks?userId='+user.id, { Authorization: 'Bearer '+tk })`
+- `?u=username` URL param: first fetch `/rankings/<username>` to get `userId`, then `fetch(API+'/picks?userId='+tipsterUserId)`
+- Removed client-side filter — server now returns only the right user's picks
+- `allPicks = Array.isArray(picksRaw) ? picksRaw.sort(...) : []`
+- `renderStats()` param removed (function already uses module-level `allPicks`)
+
+### 2. ELO baseline — 1000 → 0 (frontend display only)
+
+**Changed files (frontend starting values only, no formula changes):**
+- `home/index.html`: `getELO()` — `let elo=1000` → `let elo=0`
+- `tipster/index.html`: `getELOFromPicks()` — `const BASE=1000` → `const BASE=0`
+- `leaderboard/index.html`:
+  - Fallback in `buildTipsterMap()`: `1000` → `0`
+  - Podium: `t.elo||1000` → `t.elo!=null?t.elo:0` (null-safe, handles ELO=0 correctly)
+  - Table `eloClass`: `(t.elo||1000)` → `_elo = t.elo!=null?t.elo:0` (extracted variable)
+  - Table ELO badge: `t.elo||1000` → `_elo`
+- `progress/index.html`: Fixed falsy-0 guard — `rankingMeta.elo ? elo : fallback` → `rankingMeta.elo != null ? elo : fallback` (ELO=0 was being treated as missing)
+
+### 3. Premium picks ranking verification
+
+**Result: already correct — no changes needed.**
+- `backend-rankings-engine.js` `recalcUserRankings` queries picks with no visibility filter
+- `autoVerify.js` grading also has no visibility filter
+- Both PUBLIC and PREMIUM picks count toward: ELO, wins/losses, ROI, streak, division score
+- Only pick CONTENT (market, odds, stake, reasoning) is hidden from non-subscribers
 
 ---
 
