@@ -4,9 +4,38 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 7 — Progress Page Empty State ✅ COMPLETE
+Current objective: Sprint 8 — Pre-Launch Polish ✅ COMPLETE
 
 ---
+
+## Last completed: Sprint 8 — Pre-Launch Polish (2026-05-22)
+
+### Changes
+
+**terms/index.html + privacy/index.html**
+- `--ac:#e8ff00` → `--ac:#b89fff` (removed legacy neon-yellow accent, canonical soft purple)
+
+**404.html**
+- `--bg:#07060d` → `--bg:#0A0A0A` (canonical black background)
+- Logo: text "LEDG<span>R</span>" → `<img src="/assets/logo/ledgr-logo.png" height:28px opacity:0.55>` (centered image logo)
+- `.logo` CSS stripped to `display:block;margin-bottom:48px;line-height:0` (font properties removed)
+
+**become-a-tipster/index.html**
+- Benefit card 3: "EARN MONTHLY" → "MONETIZE YOUR RECORD"
+- Founding perk 2 label: "Founding Badge" → "Founding Member Badge"
+- Founding perk 3 value: "Top" → "6mo"; desc: added "for 6 months"
+- body: added `overflow-x:hidden` (mobile scroll fix)
+
+**index.html (landing page)**
+- Background flash fix: `<style>html{background:#0a0a0a}</style>` added before external stylesheets
+- Auth redirect: replaced instant token-check redirect with async session validation — calls `GET /profile` with Bearer token; only redirects on 200 OK; clears stale localStorage on 4xx; silently ignores network errors
+- `loadData()`: added `AbortController` with 6s timeout; changed URL to `?limit=3`; on failure hides `.tipsters-section` silently (no error message shown)
+- Trust section text already correct: "Picks Verified Automatically", "Records Cannot Be Edited", "Real Closing Line Value" ✅
+- Top tipsters cards already show username, ROI, division badge, `/tipster?u=USERNAME` link ✅
+
+---
+
+
 
 ## Last completed: Sprint 7 — Progress Page Empty State (2026-05-22)
 

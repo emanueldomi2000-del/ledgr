@@ -19,7 +19,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07060d;--s1:#0c0a1a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171}
+:root{--bg:#0A0A0A;--s1:#0c0a1a;--bd:rgba(184,159,255,0.1);--bd2:rgba(184,159,255,0.18);--ac:#b89fff;--acg:rgba(184,159,255,0.08);--tx:#f0edff;--mu:#6a6690;--mu2:#9590b8;--gr:#34d399;--rd:#f87171}
 body{background:var(--bg);color:var(--tx);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;position:relative;overflow:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
 .orb{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(124,95,230,0.06),transparent 70%);pointer-events:none;z-index:0}
@@ -33,14 +33,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .btn-a:hover{background:#cdb8ff;transform:translateY(-2px)}
 .btn-b{color:var(--mu2);padding:13px 28px;border-radius:7px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--bd2);transition:all .2s}
 .btn-b:hover{border-color:rgba(184,159,255,.35);color:var(--ac)}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--mu);text-decoration:none;display:block;margin-bottom:48px}
-.logo span{color:var(--ac)}
+.logo{display:block;margin-bottom:48px;line-height:0}
 </style>
 </head>
 <body>
 <div class="orb"></div>
 <div class="content">
-  <a href="/" class="logo">LEDG<span>R</span></a>
+  <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:28px;width:auto;display:inline-block;opacity:0.55;"></a>
   <div class="num">4<span>0</span>4</div>
   <div class="title">PAGE NOT FOUND</div>
   <div class="desc">This page doesn't exist or has been moved.<br>The pick you're looking for isn't here.</div>

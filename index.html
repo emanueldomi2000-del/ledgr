@@ -17,6 +17,7 @@
 <meta name="twitter:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&family=Barlow:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/brand.css">
+<style>html{background:#0a0a0a}</style>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -153,9 +154,18 @@ footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;a
 </style>
 </head>
 <script>
-if (localStorage.getItem('ledgr_token') && localStorage.getItem('ledgr_user')) {
-  window.location.replace('/home');
-}
+(async function(){
+  var tk=localStorage.getItem('ledgr_token'),usr=localStorage.getItem('ledgr_user');
+  if(!tk||!usr)return;
+  try{
+    var ctrl=new AbortController();
+    var t=setTimeout(function(){ctrl.abort();},5000);
+    var r=await fetch('https://ledgr-backend-production-c132.up.railway.app/profile',{headers:{Authorization:'Bearer '+tk},signal:ctrl.signal});
+    clearTimeout(t);
+    if(r.ok){window.location.replace('/home');}
+    else{['ledgr_token','ledgr_user','token','user'].forEach(function(k){localStorage.removeItem(k);});}
+  }catch(e){}
+})();
 </script>
 <body>
 
@@ -333,8 +343,12 @@ const DIV_MAP = {
 
 async function loadData() {
   const grid = document.getElementById('tipstersGrid');
+  const section = document.querySelector('.tipsters-section');
+  const ctrl = new AbortController();
+  const _xt = setTimeout(() => ctrl.abort(), 6000);
   try {
-    const r = await fetch(API + '/rankings', {cache:'no-store'});
+    const r = await fetch(API + '/rankings?limit=3', {cache:'no-store', signal:ctrl.signal});
+    clearTimeout(_xt);
     if (!r.ok) throw new Error('rankings unavailable');
     const rd = await r.json();
     const rankings = Array.isArray(rd) ? rd : (rd && rd.tipsters ? rd.tipsters : []);
@@ -383,8 +397,8 @@ async function loadData() {
       '</div>';
     }).join('');
   } catch(e) {
-    // Fallback: show static message but keep static hero numbers
-    grid.innerHTML = '<div class="tc-loading">Syncing verified stats — check back shortly.</div>';
+    clearTimeout(_xt);
+    if (section) section.style.display = 'none';
   }
 }
 loadData();
