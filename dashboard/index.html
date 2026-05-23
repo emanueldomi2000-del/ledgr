@@ -583,22 +583,55 @@ function rangeOU(start,end,step=1){
 }
 
 const SOCCER=[
-  {id:'result',    title:'⚽ Result',         markets:['Home Win (1)','Draw (X)','Away Win (2)'],noTeam:true},
-  {id:'dc',        title:'🎯 Double Chance',   markets:['1X','X2','12'],noTeam:true},
-  {id:'btts',      title:'🥅 BTTS',            markets:['BTTS Yes','BTTS No'],noTeam:true},
-  {id:'goals',     title:'📊 Total Goals',      teamOptions:true, markets:rangeOU(0.5,5.5)},
-  {id:'htft',      title:'⏱️ HT / Full Time',  markets:['HT Home / FT Home','HT Draw / FT Home','HT Away / FT Away','HT Home / FT Draw','HT Draw / FT Draw','HT Draw / FT Away'],noTeam:true},
-  {id:'score',     title:'🎯 Correct Score',    markets:['1-0','2-0','2-1','3-0','3-1','0-1','0-2','1-2','0-0','1-1','2-2'],noTeam:true},
-  {id:'corners',   title:'🚩 Corners',          teamOptions:true, markets:rangeOU(6.5,12.5)},
-  {id:'cards',     title:'🟨 Cards',            teamOptions:true, markets:rangeOU(1.5,5.5)},
+  {id:'result',    title:'⚽ 1X2',              markets:['Home Win (1)','Draw (X)','Away Win (2)'],noTeam:true},
+  {id:'dc',        title:'🎯 Double Chance',    markets:['1X','X2','12'],noTeam:true},
+  {id:'btts',      title:'🥅 BTTS',             markets:['BTTS Yes','BTTS No'],noTeam:true},
+  {id:'goals',     title:'📊 Over/Under Goals', teamOptions:true, markets:rangeOU(0.5,5.5)},
+  {id:'asianhc',   title:'🎯 Asian Handicap',   teamOptions:true, markets:['-0.25','-0.5','-0.75','-1.0','-1.25','-1.5','+0.25','+0.5','+0.75','+1.0','+1.25','+1.5']},
+  {id:'dnb',       title:'🛡️ Draw No Bet',      markets:['Home Win (DNB)','Away Win (DNB)'],noTeam:true},
+  {id:'htft',      title:'⏱️ HT / Full Time',   markets:['HT Home / FT Home','HT Draw / FT Home','HT Away / FT Away','HT Home / FT Draw','HT Draw / FT Draw','HT Draw / FT Away'],noTeam:true},
+  {id:'score',     title:'🎯 Correct Score',     markets:['1-0','2-0','2-1','3-0','3-1','0-1','0-2','1-2','0-0','1-1','2-2'],noTeam:true},
+  {id:'bttsres',   title:'⚽ BTTS + Result',     markets:['Yes + Home Win','Yes + Away Win','Yes + Draw','No + Home Win','No + Away Win','No + Draw'],noTeam:true},
+  {id:'corners',   title:'🚩 Corners',           teamOptions:true, markets:rangeOU(6.5,12.5)},
+  {id:'cards',     title:'🟨 Cards',             teamOptions:true, markets:rangeOU(1.5,5.5)},
 ];
 const NBA=[
-  {id:'nbagame',   title:'🏀 Winner',          markets:['Home Win','Away Win'],noTeam:true},
-  {id:'nbaspread', title:'📊 Spread',           markets:['-3.5','+3.5','-5.5','+5.5','-7.5','+7.5','-9.5','+9.5'],noTeam:true},
-  {id:'nbatotal',  title:'📈 Total Points',     markets:rangeOU(210.5,230.5,2),noTeam:true},
+  {id:'nbagame',   title:'🏀 Moneyline',         markets:['Home Win','Away Win'],noTeam:true},
+  {id:'nbaspread', title:'📊 Spread',             markets:['-3.5','+3.5','-5.5','+5.5','-7.5','+7.5','-9.5','+9.5'],noTeam:true},
+  {id:'nbatotal',  title:'📈 Over/Under Points',  markets:rangeOU(210.5,230.5,2),noTeam:true},
+  {id:'nbappts',   title:'📊 Player Points O/U',  markets:['O/U 14.5','O/U 19.5','O/U 24.5','O/U 29.5','O/U 34.5','O/U 39.5'],noTeam:true},
+  {id:'nbarebs',   title:'📊 Player Rebounds O/U',markets:['O/U 3.5','O/U 5.5','O/U 7.5','O/U 9.5','O/U 11.5'],noTeam:true},
+  {id:'nbaasts',   title:'📊 Player Assists O/U', markets:['O/U 3.5','O/U 5.5','O/U 7.5','O/U 9.5'],noTeam:true},
+  {id:'nbaq1',     title:'🏀 First Quarter Winner',markets:['Home Win Q1','Away Win Q1'],noTeam:true},
+];
+const NFL=[
+  {id:'nflwin',    title:'🏈 Moneyline',          markets:['Home Win','Away Win'],noTeam:true},
+  {id:'nflspread', title:'📊 Spread',              markets:['-1.5','+1.5','-3.5','+3.5','-6.5','+6.5','-7.5','+7.5','-10.5','+10.5','-13.5','+13.5'],noTeam:true},
+  {id:'nfltotal',  title:'📈 Over/Under',          markets:rangeOU(38.5,54.5,2),noTeam:true},
+  {id:'nfltd',     title:'🏆 First TD Scorer',     markets:['Home First TD','Away First TD','No Score'],noTeam:true},
+  {id:'nflantd',   title:'🎯 Anytime TD',           markets:['Home Anytime TD','Away Anytime TD'],noTeam:true},
+];
+const TENNIS=[
+  {id:'tenwinner', title:'🎾 Match Winner',        markets:['Player 1','Player 2'],noTeam:true},
+  {id:'tenset',    title:'📊 Set Betting',          markets:['2-0','2-1','0-2','1-2'],noTeam:true},
+  {id:'tengames',  title:'📈 Over/Under Games',     markets:rangeOU(18.5,26.5,1),noTeam:true},
+  {id:'ten1set',   title:'🎯 First Set Winner',     markets:['Player 1 First Set','Player 2 First Set'],noTeam:true},
+];
+const MMA=[
+  {id:'mmawinner', title:'🥊 Fight Winner',         markets:['Fighter 1','Fighter 2','Draw / NC'],noTeam:true},
+  {id:'mmamethod', title:'⚡ Method of Victory',    markets:['KO / TKO','Submission','Decision','DQ / NC'],noTeam:true},
+  {id:'mmaround',  title:'🎯 Round Betting',         markets:['Ends R1','Ends R2','Ends R3','Ends R4','Ends R5','Goes Distance'],noTeam:true},
+  {id:'mmatotal',  title:'📊 Over/Under Rounds',    markets:rangeOU(1.5,3.5,1),noTeam:true},
+];
+const MLB=[
+  {id:'mlbwin',    title:'⚾ Moneyline',             markets:['Home Win','Away Win'],noTeam:true},
+  {id:'mlbrl',     title:'📊 Run Line',              markets:['Home -1.5','+1.5','Away -1.5','+1.5'],noTeam:true},
+  {id:'mlbtotal',  title:'📈 Over/Under Runs',       markets:rangeOU(6.5,10.5,1),noTeam:true},
+  {id:'mlbf5',     title:'⏱️ First 5 Innings',       markets:['Home Win F5','Away Win F5','Tie F5'],noTeam:true},
+  {id:'mlbhrs',    title:'🎯 Player Home Runs',      markets:['HR Yes','HR No'],noTeam:true},
 ];
 const GENERIC=[
-  {id:'win',       title:'🏆 Match Winner',    markets:['Home Win','Away Win'],noTeam:true},
+  {id:'win',       title:'🏆 Match Winner',         markets:['Home Win','Away Win'],noTeam:true},
 ];
 
 // ── INIT ──
@@ -677,7 +710,7 @@ function updateBetSlip(){
 
 // ── MARKETS ──
 function renderMarkets(sport){
-  const sections=sport==='Basketball'?NBA:sport==='Soccer'?SOCCER:GENERIC;
+  const sections=sport==='Basketball'?NBA:sport==='Soccer'?SOCCER:sport==='Tennis'?TENNIS:sport==='Football'?NFL:sport==='MMA/Boxing'?MMA:sport==='Baseball'?MLB:GENERIC;
   document.getElementById('marketSections').innerHTML=sections.map(s=>{
     let body='';
     if(s.teamOptions){
