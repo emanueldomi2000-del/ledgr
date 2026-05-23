@@ -211,6 +211,13 @@
       'margin:6px 14px;',
     '}',
 
+    /* Section label inside slide nav */
+    '.an-snl-section{',
+      'padding:10px 14px 3px;',
+      'font-family:var(--font-mono,"DM Mono",monospace);',
+      'font-size:9px;letter-spacing:2px;color:var(--mu,#6a6690);',
+    '}',
+
     /* Post a Pick CTA strip */
     '.an-slide-post{',
       'padding:12px 20px;',
@@ -265,15 +272,15 @@
     { href: '/community',    label: 'Community',    desktopLabel: 'Community',   icon: '💬',  key: 'community',    desktopVisible: true  },
     { href: null,            label: 'Profile',      desktopLabel: 'Profile',     icon: '👤',  key: 'profile',      desktopVisible: true,  dynamicUser: true },
     // ── SECONDARY — slide menu only ──────────────────────────────────────────
-    { href: '/analytics',    label: 'Analytics',                                 icon: '📊',  key: 'analytics',    desktopVisible: false },
-    { href: '/compare',      label: 'Compare',                                   icon: '⚖️',  key: 'compare',      desktopVisible: false },
-    { href: '/simulator',    label: 'Simulator',                                 icon: '📈',  key: 'simulator',    desktopVisible: false },
-    { href: '/hall-of-fame', label: 'Hall of Fame',                              icon: '🏛️', key: 'hall-of-fame', desktopVisible: false },
-    { href: '/badges',       label: 'Badges',                                    icon: '🏅',  key: 'badges',       desktopVisible: false },
-    { href: '/news',         label: 'Sports Intel',                              icon: '📰',  key: 'news',         desktopVisible: false },
-    { href: '/archetypes',   label: 'Archetypes',                                icon: '⚡',  key: 'archetypes',   desktopVisible: false },
-    { href: '/settings',     label: 'Settings',                                  icon: '⚙️',  key: 'settings',     desktopVisible: false },
-    { href: '/notifications', label: 'Notifications',                            icon: '🔔',  key: 'notifications', desktopVisible: false }
+    { href: '/hall-of-fame', label: 'Hall of Fame',  icon: '🏆',  key: 'hall-of-fame',  desktopVisible: false, section: 'explore' },
+    { href: '/compare',      label: 'Compare',        icon: '⚖️',  key: 'compare',       desktopVisible: false, section: 'explore' },
+    { href: '/simulator',    label: 'Simulator',      icon: '📊',  key: 'simulator',     desktopVisible: false, section: 'explore' },
+    { href: '/analytics',    label: 'Analytics',      icon: '📈',  key: 'analytics',     desktopVisible: false, section: 'explore' },
+    { href: '/badges',       label: 'Badges',         icon: '🎖️', key: 'badges',        desktopVisible: false, section: 'explore' },
+    { href: '/news',         label: 'Sports Intel',   icon: '📰',  key: 'news',          desktopVisible: false, section: 'explore' },
+    { href: '/archetypes',   label: 'Archetypes',     icon: '🧬',  key: 'archetypes',    desktopVisible: false, section: 'explore' },
+    { href: '/settings',     label: 'Settings',       icon: '⚙️',  key: 'settings',      desktopVisible: false, section: 'account' },
+    { href: '/notifications', label: 'Notifications', icon: '🔔',  key: 'notifications', desktopVisible: false, section: 'account' }
   ];
 
   // ── HELPERS ───────────────────────────────────────────────────────────────
@@ -451,7 +458,16 @@
 
     var slideLinks = primaryLinks.map(_slideLink).join('');
     slideLinks += '<div class="an-snl-divider"></div>';
-    slideLinks += secondaryLinks.map(_slideLink).join('');
+    var _seenSection = {};
+    var _sectionLabels = { explore: 'EXPLORE', account: 'ACCOUNT' };
+    secondaryLinks.forEach(function(l) {
+      var sec = l.section || '';
+      if (sec && !_seenSection[sec]) {
+        _seenSection[sec] = true;
+        slideLinks += '<div class="an-snl-section">' + (_sectionLabels[sec] || sec.toUpperCase()) + '</div>';
+      }
+      slideLinks += _slideLink(l);
+    });
 
     /* Slide footer */
     var footerHtml = username

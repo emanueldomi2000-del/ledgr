@@ -4,7 +4,31 @@ Date: 2026-05-23
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Cold start retry + ELO display + progress error state + settings cosmetics + welcome message ✅ COMPLETE
+Current objective: Hamburger nav section headers (EXPLORE / ACCOUNT) ✅ COMPLETE
+
+---
+
+## Last completed: Hamburger nav section headers (2026-05-23)
+
+### Changes — app-nav.js only
+
+All items were already present. Added visual organization into labeled sections:
+
+**EXPLORE section:** Hall of Fame, Compare, Simulator, Analytics, Badges, Sports Intel, Archetypes
+
+**ACCOUNT section:** Settings, Notifications
+
+**Implementation:**
+- Added `.an-snl-section` CSS: 9px mono uppercase label, muted color, padding above group
+- Added `section: 'explore'` / `section: 'account'` property to all secondary NAV_LINKS
+- `_buildHTML` slide renderer now iterates secondary links and inserts section header `<div>` when a new section key is first seen — preserves order from NAV_LINKS array
+- Updated icons to match spec: Hall of Fame 🏛️→🏆, Simulator 📈→📊, Analytics 📊→📈, Badges 🏅→🎖️, Archetypes ⚡→🧬
+
+**vercel.json:** All 7 routes verified present — no changes needed.
+- /hall-of-fame ✅, /compare ✅, /simulator ✅, /analytics ✅, /badges ✅, /news ✅, /archetypes ✅
+
+### Modified files
+- `app-nav.js`
 
 ---
 
