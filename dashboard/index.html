@@ -639,7 +639,7 @@ window.onload=()=>{
   const ud=localStorage.getItem('ledgr_user');
   const tk=localStorage.getItem('ledgr_token');
   if(!ud||!tk){window.location.href='/login';return;}
-  user=JSON.parse(ud);
+  try{user=JSON.parse(ud);}catch(e){window.location.href='/login';return;}
   document.getElementById('app').style.display='block';
   if(window.Push)window.Push.init();
   renderMarkets('Soccer');
@@ -786,8 +786,10 @@ async function loadFixtures(){
   list.innerHTML='<div class="fixture-loading">Loading matches...</div>';
   document.getElementById('leagueFilter').innerHTML='<div class="league-chip active" onclick="selectLeague(\'all\',this)">All</div>';
   currentLeague='all';
+  const _fCtrl=new AbortController();const _fXt=setTimeout(()=>_fCtrl.abort(),25000);
   try{
-    const r=await fetch(`${API}/fixtures?sport=${currentSport}&dateOffset=${currentDateOffset}`);
+    const r=await fetch(`${API}/fixtures?sport=${currentSport}&dateOffset=${currentDateOffset}`,{signal:_fCtrl.signal});
+    clearTimeout(_fXt);
     allFixtures=await r.json();
     if(!Array.isArray(allFixtures))allFixtures=[];
     const leagues=[...new Set(allFixtures.map(f=>f.league))];
@@ -800,6 +802,7 @@ async function loadFixtures(){
     });
     filterFixtures();
   }catch(e){
+    clearTimeout(_fXt);
     list.innerHTML='<div class="fixture-loading" style="color:var(--mu2)">No matches available</div>';
   }
 }

@@ -1120,12 +1120,12 @@ async function loadData(){
     const [picksRes,profileRes,rankingRes,rankingsListRes]=await Promise.all([
       fetch(API+'/picks',{cache:'no-store',signal:ctrl.signal}).catch(()=>null),
       user&&user.username
-        ?fetch(API+'/profile/'+user.username,{headers:token?{Authorization:'Bearer '+token}:{}}).catch(()=>null)
+        ?fetch(API+'/profile/'+user.username,{headers:token?{Authorization:'Bearer '+token}:{},signal:ctrl.signal}).catch(()=>null)
         :Promise.resolve(null),
       user&&user.username
-        ?fetch(API+'/rankings/'+user.username).catch(()=>null)
+        ?fetch(API+'/rankings/'+user.username,{signal:ctrl.signal}).catch(()=>null)
         :Promise.resolve(null),
-      fetch(API+'/rankings?limit=5',{cache:'no-store'}).catch(()=>null)
+      fetch(API+'/rankings?limit=5',{cache:'no-store',signal:ctrl.signal}).catch(()=>null)
     ]);
     clearTimeout(abort);
     if(!picksRes||!picksRes.ok){_renderDataError();return;}
@@ -1156,7 +1156,7 @@ async function loadData(){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
     renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all);
-    if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.user&&p.user.username===user.username),window._myRankingMeta);
+    if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
   }catch(e){clearTimeout(abort);_renderDataError();}
 }
 function renderIdentityPanel(myPicks,rank,totalTipsters){
@@ -1361,7 +1361,7 @@ function renderRivalCard(my,all){
   const mySt=[...my].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   let mySt2=0;for(const p of mySt){if(p.result==='win')mySt2++;else break;}
   const tM={};
-  all.forEach(p=>{if(!p.user||p.user.username===user.username)return;const u=p.user.username;if(!tM[u])tM[u]={u,pnl:0,stake:0,picks:[]};tM[u].picks.push(p);tM[u].pnl+=parseFloat(p.pnl)||0;tM[u].stake+=parseFloat(p.stake)||0;});
+  all.forEach(p=>{if(!p.username||p.username===user.username)return;const u=p.username;if(!tM[u])tM[u]={u,pnl:0,stake:0,picks:[]};tM[u].picks.push(p);tM[u].pnl+=parseFloat(p.pnl)||0;tM[u].stake+=parseFloat(p.stake)||0;});
   let rival=null,bestD=Infinity;
   Object.values(tM).forEach(t=>{if(t.picks.length<3)return;const roi=t.stake>0?(t.pnl/t.stake)*100:0;const d=Math.abs(roi-myROI);if(d<bestD){bestD=d;rival=t;}});
   if(!rival){el.innerHTML=`<div class="bc-eyebrow">RIVAL</div><div class="bc-sub" style="margin-top:8px">No close rival found — you're ahead of the field</div>`;return;}
@@ -1384,17 +1384,17 @@ var _slIdx=0,_slTimer=null;
 function renderSpotlight(all){
   const el=document.getElementById('spotlightItems');if(!el)return;
   const cutoff=Date.now()-172800000;
-  const recent=all.filter(p=>p.user&&new Date(p.createdAt).getTime()>=cutoff);
+  const recent=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff);
   const wins=recent.filter(p=>p.result==='win');
   const items=[];
-  if(wins.length){const bw=[...wins].sort((a,b)=>(parseFloat(b.pnl)||0)-(parseFloat(a.pnl)||0))[0];items.push({c:'var(--gr)',badge:'BIGGEST WIN',val:'+'+(parseFloat(bw.pnl)||0).toFixed(1)+'u',sub:'@'+bw.user.username+' · '+(bw.event||'').slice(0,30)});}
-  const tM2={};all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tM2[u])tM2[u]=[];tM2[u].push(p);});
+  if(wins.length){const bw=[...wins].sort((a,b)=>(parseFloat(b.pnl)||0)-(parseFloat(a.pnl)||0))[0];items.push({c:'var(--gr)',badge:'BIGGEST WIN',val:'+'+(parseFloat(bw.pnl)||0).toFixed(1)+'u',sub:'@'+(bw.username||'—')+' · '+(bw.event||'').slice(0,30)});}
+  const tM2={};all.forEach(p=>{if(!p.username)return;const u=p.username;if(!tM2[u])tM2[u]=[];tM2[u].push(p);});
   let hU=null,hS=0;Object.entries(tM2).forEach(([u,ps])=>{const s2=[...ps].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));let sc=0;for(const p of s2){if(p.result==='win')sc++;else break;}if(sc>hS){hS=sc;hU=u;}});
   if(hU&&hS>=2)items.push({c:'var(--orange)',badge:'HOT STREAK',val:hS+'W',sub:'@'+hU+' — consecutive wins'});
   const mkM={};recent.forEach(p=>{if(!p.market)return;const m=p.market.trim().slice(0,22);if(!mkM[m])mkM[m]=0;mkM[m]++;});
   const topMk=Object.entries(mkM).sort((a,b)=>b[1]-a[1])[0];
   if(topMk&&topMk[1]>=2)items.push({c:'var(--ac)',badge:'TRENDING MARKET',val:topMk[0],sub:topMk[1]+' picks in 48h'});
-  if(wins.length){const bO=[...wins].sort((a,b)=>parseFloat(b.odds)-parseFloat(a.odds))[0];if(parseFloat(bO.odds)>=2.5)items.push({c:'var(--gold)',badge:'LONGSHOT HIT',val:parseFloat(bO.odds).toFixed(2),sub:'@'+bO.user.username+' · '+(bO.event||'').slice(0,28)});}
+  if(wins.length){const bO=[...wins].sort((a,b)=>parseFloat(b.odds)-parseFloat(a.odds))[0];if(parseFloat(bO.odds)>=2.5)items.push({c:'var(--gold)',badge:'LONGSHOT HIT',val:parseFloat(bO.odds).toFixed(2),sub:'@'+(bO.username||'—')+' · '+(bO.event||'').slice(0,28)});}
   if(!items.length)items.push({c:'var(--mu)',badge:'ALL QUIET',val:'—',sub:'No major activity yet'});
   el.innerHTML=items.map(it=>`<div class="sl-item"><div class="sl-badge" style="color:${it.c}">${it.badge}</div><div class="sl-val" style="color:${it.c}">${it.val}</div><div class="sl-sub">${it.sub}</div></div>`).join('');
   if(_slTimer)clearInterval(_slTimer);_slIdx=0;
@@ -1404,7 +1404,7 @@ function renderSpotlight(all){
 function renderProfileCard(all){
   const my=all.filter(p=>p.userId===user.id);
   const tipsters={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!tipsters[u])tipsters[u]={pnl:0,stake:0};tipsters[u].pnl+=p.pnl;tipsters[u].stake+=p.stake;});
   const sorted=Object.entries(tipsters).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;});
   const rawRank=sorted.findIndex(([u])=>u===user.username)+1;
   const rmPc=window._myRankingMeta;
@@ -1464,7 +1464,7 @@ function renderHeroArch(){
 }
 function renderMVP(all){
   const tMap={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;});
   const sorted=Object.values(tMap).filter(t=>t.picks.length>=3).sort((a,b)=>{const ra=a.stake>0?(a.pnl/a.stake)*100:0,rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;});
   if(!sorted.length){const w=document.querySelector('.mvp-wrap');if(w)w.style.display='none';return;}
   const mvp=sorted[0];window._mvpUser=mvp.username;
@@ -1494,7 +1494,7 @@ function renderMVP(all){
 
 function renderMatchup(all){
   const tMap={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!tMap[u])tMap[u]={username:u,picks:[],pnl:0,stake:0};tMap[u].picks.push(p);tMap[u].pnl+=p.pnl;tMap[u].stake+=p.stake;});
   const sorted=Object.values(tMap).filter(t=>t.picks.length>=5).sort((a,b)=>{const ra=a.stake>0?(a.pnl/a.stake)*100:0,rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;});
   if(sorted.length<2){const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';return;}
   const t1=sorted[0],t2=sorted[1];
@@ -1529,7 +1529,7 @@ function renderRecords(all){
 
   // 2. Hottest active streak (across all picks)
   const tipMap={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tipMap[u])tipMap[u]=[];tipMap[u].push(p);});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!tipMap[u])tipMap[u]=[];tipMap[u].push(p);});
   let streakUser=null,streakLen=0;
   Object.entries(tipMap).forEach(([u,picks])=>{
     const settled=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
@@ -1542,7 +1542,7 @@ function renderRecords(all){
 
   // 4. Best ROI today (min 2 picks)
   const dayMap={};
-  todayAll.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!dayMap[u])dayMap[u]={pnl:0,stake:0,n:0};dayMap[u].pnl+=p.pnl||0;dayMap[u].stake+=p.stake||0;dayMap[u].n++;});
+  todayAll.forEach(p=>{if(!p.username)return;const u=p.username;if(!dayMap[u])dayMap[u]={pnl:0,stake:0,n:0};dayMap[u].pnl+=p.pnl||0;dayMap[u].stake+=p.stake||0;dayMap[u].n++;});
   let roiUser=null,roiVal=-Infinity;
   Object.entries(dayMap).forEach(([u,d])=>{if(d.n<2)return;const roi=d.stake>0?(d.pnl/d.stake)*100:0;if(roi>roiVal){roiVal=roi;roiUser=u;}});
 
@@ -1561,9 +1561,9 @@ function renderRecords(all){
   grid.innerHTML=
     makeCard('rc-win','⚡','BIGGEST WIN',
       bigWin?(bigWin.pnl>=0?'+':'')+bigWin.pnl.toFixed(1)+'u':null,
-      bigWin?.user?.username,
+      bigWin?.username,
       bigWin?((bigWin.event||'').slice(0,38)+' @ '+parseFloat(bigWin.odds).toFixed(2)):null,
-      bigWin?'/tipster?u='+bigWin.user?.username:null)+
+      bigWin?'/tipster?u='+bigWin.username:null)+
     makeCard('rc-streak','🔥','HOTTEST STREAK',
       streakUser&&streakLen>=2?'W'+streakLen:null,
       streakUser&&streakLen>=2?streakUser:null,
@@ -1571,9 +1571,9 @@ function renderRecords(all){
       streakUser&&streakLen>=2?'/tipster?u='+streakUser:null)+
     makeCard('rc-odds','💎','HIGHEST ODDS WIN',
       bigOdds?parseFloat(bigOdds.odds).toFixed(2):null,
-      bigOdds?.user?.username,
+      bigOdds?.username,
       bigOdds?(bigOdds.event||'').slice(0,40):null,
-      bigOdds?'/tipster?u='+bigOdds.user?.username:null)+
+      bigOdds?'/tipster?u='+bigOdds.username:null)+
     makeCard('rc-roi','📈','BEST ROI',
       roiUser?(roiVal>=0?'+':'')+roiVal.toFixed(1)+'%':null,
       roiUser,
@@ -1589,7 +1589,7 @@ function renderRising(all,rankingsTop5){
       const roi=typeof t.roi==='number'?t.roi:0;
       const roiPos=roi>=0;
       const wr=typeof t.winRate==='number'?Math.round(t.winRate*100):0;
-      const streak=t.streak||0;
+      const streak=t.streakType==='win'?t.currentStreak||0:0;
       const label=streak>=3?`🔥 ${streak}-win streak`:(roiPos?`+${roi.toFixed(1)}% ROI`:`${roi.toFixed(1)}% ROI`);
       return`<div class="rising-card ${heat[i]}" onclick="window.location.href='/tipster?u=${encodeURIComponent(t.username)}'">
       <div class="rc-tag" style="color:var(--${roiPos?'gr':'rd'})">#${t.rank||i+1} RANKED</div>
@@ -1603,8 +1603,8 @@ function renderRising(all,rankingsTop5){
   }
   const tMap={};
   all.forEach(p=>{
-    if(!p.user)return;
-    const u=p.user.username;
+    if(!p.username)return;
+    const u=p.username;
     if(!tMap[u])tMap[u]={username:u,picks:[]};
     tMap[u].picks.push(p);
   });
@@ -1688,30 +1688,30 @@ function renderTrending(all){
   const top=Object.entries(eCount).sort((a,b)=>b[1]-a[1])[0];
   if(top){document.getElementById('trendBacked').textContent=top[0].length>22?top[0].slice(0,20)+'…':top[0];document.getElementById('trendBackedSub').textContent=top[1]+' picks';}
   else{document.getElementById('trendBacked').textContent='Quiet right now';document.getElementById('trendBackedSub').textContent='No live picks';}
-  const cutoff24=Date.now()-86400000;const todayP=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff24&&p.user);
-  const tMap={};todayP.forEach(p=>{tMap[p.user.username]=(tMap[p.user.username]||0)+1;});
+  const cutoff24=Date.now()-86400000;const todayP=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff24&&p.username);
+  const tMap={};todayP.forEach(p=>{tMap[p.username]=(tMap[p.username]||0)+1;});
   const topT=Object.entries(tMap).sort((a,b)=>b[1]-a[1])[0];
   if(topT){document.getElementById('trendTipster').textContent='@'+topT[0];document.getElementById('trendTipsterSub').textContent=topT[1]+' picks today';}else{document.getElementById('trendTipster').textContent='Board quiet';document.getElementById('trendTipsterSub').textContent='Be the first today';}
-  const rMap={};todayP.forEach(p=>{if(!rMap[p.user.username])rMap[p.user.username]={pnl:0,stake:0};rMap[p.user.username].pnl+=p.pnl;rMap[p.user.username].stake+=p.stake;});
+  const rMap={};todayP.forEach(p=>{if(!rMap[p.username])rMap[p.username]={pnl:0,stake:0};rMap[p.username].pnl+=p.pnl;rMap[p.username].stake+=p.stake;});
   const topR=Object.entries(rMap).sort((a,b)=>{const ra=a[1].stake>0?(a[1].pnl/a[1].stake)*100:0,rb=b[1].stake>0?(b[1].pnl/b[1].stake)*100:0;return rb-ra;})[0];
   if(topR){const roi=topR[1].stake>0?((topR[1].pnl/topR[1].stake)*100).toFixed(1):0;document.getElementById('trendROI').textContent='@'+topR[0];document.getElementById('trendROISub').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';}else{document.getElementById('trendROI').textContent='No data yet';document.getElementById('trendROISub').textContent='Pending results';}
 }
 
 function renderTrendingPicks(all){
   const localTails=getTails();
-  const tpMap={};all.forEach(p=>{if(!p.user)return;if(!tpMap[p.user.username])tpMap[p.user.username]=[];tpMap[p.user.username].push(p);});
-  const hot=all.filter(p=>p.user&&p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+  const tpMap={};all.forEach(p=>{if(!p.username)return;if(!tpMap[p.username])tpMap[p.username]=[];tpMap[p.username].push(p);});
+  const hot=all.filter(p=>p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
   if(!hot.length){grid.innerHTML='<div class="empty">No hot picks right now</div>';return;}
   grid.innerHTML=hot.map((p,i)=>{
-    const tipsterPicks=tpMap[p.user.username]||[];
+    const tipsterPicks=tpMap[p.username]||[];
     const badges=getPickBadges(p,tipsterPicks);
     const badgeHtml=renderStatusBadges(badges);
     const isTailed=!!localTails[p.id];
     return`<div class="pick-card ${i===0?'hot':''}">
       <div class="pc-top">
         <div>
-          <div class="pc-user" onclick="window.location.href='/tipster?u=${p.user.username}'">${p.user.username}</div>
+          <div class="pc-user" onclick="window.location.href='/tipster?u=${p.username}'">${p.username}</div>
           <div class="pc-sport">${SPORT_ICON[p.sport]||'🎯'} ${p.sport}</div>
         </div>
       </div>
@@ -1724,8 +1724,8 @@ function renderTrendingPicks(all){
           ${p.confidence?`<div class="conf-badge-mini">${p.confidence} conf</div>`:''}
         </div>
         <div class="pc-actions">
-          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
-          <button class="view-btn-sm" onclick="window.location.href='/tipster?u=${p.user.username}'">View</button>
+          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.username)}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
+          <button class="view-btn-sm" onclick="window.location.href='/tipster?u=${p.username}'">View</button>
         </div>
       </div>
       <div id="ptc_${p.id}" style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:6px;min-height:14px"></div>
@@ -1764,21 +1764,21 @@ async function tailTP(id,event,market,odds,username,btn){
 }
 
 function renderFeed(all){
-  const feed=all.filter(p=>p.user).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,14);
+  const feed=all.filter(p=>p.username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,14);
   const c=document.getElementById('communityFeed');
   if(!feed.length){c.innerHTML='<div class="empty">No picks yet — check back after kickoff</div>';return;}
-  const tpMap={};all.forEach(p=>{if(!p.user)return;if(!tpMap[p.user.username])tpMap[p.user.username]=[];tpMap[p.user.username].push(p);});
+  const tpMap={};all.forEach(p=>{if(!p.username)return;if(!tpMap[p.username])tpMap[p.username]=[];tpMap[p.username].push(p);});
   const tails=getTails();
   c.innerHTML=feed.map((p,i)=>{
     const resultBadge=p.result==='win'?'<span class="badge badge-win">✓ WIN</span>':p.result==='loss'?'<span class="badge badge-loss">✗ LOSS</span>':p.result==='cashout'?'<span class="badge badge-cashout">💸 CASHOUT</span>':'<span class="badge badge-pending">⏳</span>';
-    const myPicks=tpMap[p.user.username]||[];const {icons}=getBadgeIcons(myPicks);
+    const myPicks=tpMap[p.username]||[];const {icons}=getBadgeIcons(myPicks);
     const badgeHtml=icons.slice(0,2).map(ic=>`<span style="font-size:12px">${ic}</span>`).join('');
     const oddsClass=p.result==='win'?'win':p.result==='loss'?'loss':'pending';
     return`<div class="feed-card ${i<2?'featured':''}">
       <div class="feed-top">
-        <div class="feed-av" style="background:${AV_COLORS[i%AV_COLORS.length]}">${p.user.username.slice(0,2).toUpperCase()}</div>
+        <div class="feed-av" style="background:${AV_COLORS[i%AV_COLORS.length]}">${p.username.slice(0,2).toUpperCase()}</div>
         <div>
-          <div class="feed-user" onclick="window.location.href='/tipster?u=${p.user.username}'">${p.user.username}</div>
+          <div class="feed-user" onclick="window.location.href='/tipster?u=${p.username}'">${p.username}</div>
           <div class="feed-meta">${getTimeAgo(new Date(p.createdAt))} · ${SPORT_ICON[p.sport]||'🎯'} ${p.sport}</div>
         </div>
         <div class="feed-badges">${badgeHtml}</div>
@@ -1790,12 +1790,12 @@ function renderFeed(all){
       <div class="feed-footer"><span class="badge badge-sport">${p.sport}</span><span style="font-size:10px;color:var(--mu);font-family:var(--font-mono)">${p.stake}u</span>${resultBadge}</div>
       ${p.reasoning?`<div class="feed-reason">💭 ${p.reasoning}</div>`:''}
       <div class="feed-reactions">
-        <button class="tail-pick-btn ${tails[p.id]?'tailed':''}" id="tailBtn_${p.id}" onclick="tailFeed('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',this,document.getElementById('tc_${p.id}'))">${tails[p.id]?'✓ tailed':'tail'}</button>
+        <button class="tail-pick-btn ${tails[p.id]?'tailed':''}" id="tailBtn_${p.id}" onclick="tailFeed('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.username)}',this,document.getElementById('tc_${p.id}'))">${tails[p.id]?'✓ tailed':'tail'}</button>
         <span class="tail-count" id="tc_${p.id}"></span>
         <button class="react-btn" onclick="toggleReact(this,'fire_${p.id}')">🔥 <span>0</span></button>
         <button class="react-btn" onclick="toggleReact(this,'mind_${p.id}')">🤯 <span>0</span></button>
         <button class="cmt-toggle-btn" onclick="toggleComments('${p.id}',this)">💬 <span id="cmt_count_${p.id}">${getCommentCount(p.id)}</span></button>
-        <button class="share-tiny" onclick="sharePick('${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.user.username)}',${p.stake})" title="Share">↗</button>
+        <button class="share-tiny" onclick="sharePick('${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.username)}',${p.stake})" title="Share">↗</button>
       </div>
       <div class="comments-wrap" id="comments_${p.id}"></div>
     </div>`;
@@ -1817,7 +1817,7 @@ function toggleReact(btn,key){
 
 function renderLeaderboard(all,rankingsTop5){
   const map={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0,allPicks:[]};map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;map[u].allPicks.push(p);if(p.result==='win')map[u].wins++;if(p.result==='loss')map[u].losses++;});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0,allPicks:[]};map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;map[u].allPicks.push(p);if(p.result==='win')map[u].wins++;if(p.result==='loss')map[u].losses++;});
   const top5=Object.values(map).sort((a,b)=>{const ra=a.stake>0?(a.pnl/a.stake)*100:0,rb=b.stake>0?(b.pnl/b.stake)*100:0;return rb-ra;}).slice(0,5);
   const c=document.getElementById('miniLeaderboard');if(!top5.length&&!rankingsTop5){c.innerHTML='<div class="empty">No tipsters yet.</div>';return;}
   if(rankingsTop5&&Array.isArray(rankingsTop5)&&rankingsTop5.length){
@@ -1825,7 +1825,7 @@ function renderLeaderboard(all,rankingsTop5){
     c.innerHTML=rankingsTop5.slice(0,5).map((t,i)=>{
       const roi=typeof t.roi==='number'?t.roi:0;const roiPos=roi>=0;
       const wr=typeof t.winRate==='number'?Math.round(t.winRate*100):0;
-      const streak=t.streak||0;
+      const streak=t.streakType==='win'?t.currentStreak||0:0;
       const initials=(t.username||'??').slice(0,2).toUpperCase();
       return`<a class="lb-row" href="/tipster?u=${encodeURIComponent(t.username)}">
       <div class="rank ${i<3?rkCls[i]:''}">${i<3?medals[i]:i+1}</div>
@@ -1876,24 +1876,24 @@ function toggleFollow(username,btn){
 function renderActivityTicker(all){
   if(!all.length)return;
   const now=Date.now();
-  const settled=all.filter(p=>p.user&&p.result&&p.result!=='pending');
+  const settled=all.filter(p=>p.result&&p.result!=='pending');
   const events=[];
-  settled.filter(p=>p.result==='win').forEach(p=>{
+  settled.filter(p=>p.result==='win'&&p.username).forEach(p=>{
     const pnl=parseFloat(p.pnl)||0;
-    if(pnl>=5)events.push(`🔥 <b>@${p.user.username}</b> cashed <b>+${pnl.toFixed(1)}u</b> on ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
-    else if(parseFloat(p.odds)>=2.5)events.push(`💥 Underdog hit — <b>@${p.user.username}</b> wins ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
-    else events.push(`✅ <b>@${p.user.username}</b> won ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
+    if(pnl>=5)events.push(`🔥 <b>@${p.username}</b> cashed <b>+${pnl.toFixed(1)}u</b> on ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
+    else if(parseFloat(p.odds)>=2.5)events.push(`💥 Underdog hit — <b>@${p.username}</b> wins ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
+    else events.push(`✅ <b>@${p.username}</b> won ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`);
   });
-  const byUser={};settled.forEach(p=>{const u=p.user.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
+  const byUser={};settled.forEach(p=>{if(!p.username)return;const u=p.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
   Object.entries(byUser).forEach(([u,picks])=>{
     const sorted=picks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let streak=0;for(const p of sorted){if(p.result==='win')streak++;else break;}
     if(streak>=4)events.push(`🔥 <b>@${u}</b> is on a <b>${streak}-WIN STREAK</b>`);
     else if(streak>=3)events.push(`⚡ <b>@${u}</b> on a <b>${streak}-win streak</b>`);
   });
-  all.filter(p=>p.user&&(!p.result||p.result==='pending')&&now-new Date(p.createdAt).getTime()<86400000*2)
-    .slice(0,4).forEach(p=>events.push(`📌 <b>@${p.user.username}</b> posted ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`));
-  if(!events.length)all.filter(p=>p.user).slice(0,8).forEach(p=>events.push(`📌 <b>@${p.user.username}</b> posted ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`));
+  all.filter(p=>p.username&&(!p.result||p.result==='pending')&&now-new Date(p.createdAt).getTime()<86400000*2)
+    .slice(0,4).forEach(p=>events.push(`📌 <b>@${p.username}</b> posted ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`));
+  if(!events.length)all.filter(p=>p.username).slice(0,8).forEach(p=>events.push(`📌 <b>@${p.username}</b> posted ${p.event} @ <b>${parseFloat(p.odds).toFixed(2)}</b>`));
   const items=events.slice(0,14).map(e=>`<span>${e}</span>`);
   document.getElementById('tickerText').innerHTML=[...items,...items].join('');
 }
@@ -1950,9 +1950,9 @@ function addNotif(type,icon,text,ref){
 function checkNotifications(all){
   const following=JSON.parse(localStorage.getItem('ledgr_following')||'[]');if(!following.length)return;
   const lastCheck=parseInt(localStorage.getItem('ledgr_notif_last_check')||'0');
-  all.filter(p=>p.user&&following.includes(p.user.username)&&new Date(p.createdAt).getTime()>lastCheck)
-    .forEach(p=>addNotif('new_pick','📌',`<b>@${p.user.username}</b> posted: ${p.event} @ ${parseFloat(p.odds).toFixed(2)}`,p.user.username));
-  const byUser={};all.filter(p=>p.user&&following.includes(p.user.username)&&p.result&&p.result!=='pending').forEach(p=>{const u=p.user.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
+  all.filter(p=>following.includes(p.username)&&new Date(p.createdAt).getTime()>lastCheck)
+    .forEach(p=>addNotif('new_pick','📌',`<b>@${p.username}</b> posted: ${p.event} @ ${parseFloat(p.odds).toFixed(2)}`,p.username));
+  const byUser={};all.filter(p=>following.includes(p.username)&&p.result&&p.result!=='pending').forEach(p=>{const u=p.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
   const sn=JSON.parse(localStorage.getItem('ledgr_streak_notif')||'{}');
   Object.entries(byUser).forEach(([u,picks])=>{
     const sorted=picks.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));let s=0;
@@ -1991,7 +1991,7 @@ function checkWeeklyRecap(all){
   const last=parseInt(localStorage.getItem('ledgr_last_recap')||'0');
   if((Date.now()-last)/86400000<6)return;
   const weekAgo=Date.now()-7*86400000;
-  const mine=all.filter(p=>p.user&&p.user.username===user.username&&new Date(p.createdAt).getTime()>=weekAgo&&p.result&&p.result!=='pending');
+  const mine=all.filter(p=>p.userId===user.id&&new Date(p.createdAt).getTime()>=weekAgo&&p.result&&p.result!=='pending');
   if(mine.length<2)return;
   const wins=mine.filter(p=>p.result==='win').length,losses=mine.filter(p=>p.result==='loss').length;
   const pnl=mine.reduce((s,p)=>s+(parseFloat(p.pnl)||0),0);

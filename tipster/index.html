@@ -1313,8 +1313,8 @@ async function tipsterLoadInteractions(){
   pids.slice(0,25).forEach(async pid=>{
     try{
       const[rr,tr]=await Promise.all([
-        fetch(API+'/picks/'+pid+'/reactions'+uq).then(r=>r.json()),
-        fetch(API+'/picks/'+pid+'/tails'+uq).then(r=>r.json()),
+        fetch(API+'/picks/'+pid+'/reactions'+uq).then(r=>r.json()).catch(()=>null),
+        fetch(API+'/picks/'+pid+'/tails'+uq).then(r=>r.json()).catch(()=>null),
       ]);
       _updateReactUI(pid,rr,tr);
     }catch(e){}

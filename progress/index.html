@@ -259,6 +259,7 @@ async function loadProgress() {
     ]);
 
     clearTimeout(_xt);
+    if(!picksRes.ok)throw new Error('Picks fetch failed');
     const allPicks = await picksRes.json();
     const myPicks = (Array.isArray(allPicks) ? allPicks : [])
       .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));

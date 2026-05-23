@@ -342,7 +342,7 @@ function renderHeroStats(all,events){
   const bwMeta=document.getElementById('hsBigWinMeta');
   if(bigWin&&bwEl){
     bwEl.textContent='+'+(parseFloat(bigWin.pnl)||0).toFixed(1)+'u';
-    if(bwMeta)bwMeta.textContent='@'+(bigWin.user&&bigWin.user.username||'—');
+    if(bwMeta)bwMeta.textContent='@'+(bigWin.username||'—');
   }else if(bwEl){
     bwEl.textContent='—';
     if(bwMeta)bwMeta.textContent='no wins yet today';
@@ -384,11 +384,11 @@ function buildIntelItems(all,events){
   if(pendingToday>0)items.push(`<b>${pendingToday}</b> picks live and waiting`);
   const cut7=Date.now()-7*86400000;
   const umap={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!umap[u])umap[u]={pnl:0,stake:0,picks:0};const ts=new Date(p.createdAt).getTime();if(ts>=cut7){umap[u].pnl+=p.pnl;umap[u].stake+=p.stake;umap[u].picks++;}});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!umap[u])umap[u]={pnl:0,stake:0,picks:0};const ts=new Date(p.createdAt).getTime();if(ts>=cut7){umap[u].pnl+=p.pnl;umap[u].stake+=p.stake;umap[u].picks++;}});
   const hotROI=Object.entries(umap).filter(([,d])=>d.picks>=5&&d.stake>0).sort((a,b)=>(b[1].pnl/b[1].stake)-(a[1].pnl/a[1].stake));
   if(hotROI.length){const [u,d]=hotROI[0];items.push(`<b>@${u}</b> leading 7d ROI at ${((d.pnl/d.stake)*100).toFixed(1)}%`);}
   const biggestWin=all.filter(p=>p.result==='win').sort((a,b)=>(parseFloat(b.pnl)||0)-(parseFloat(a.pnl)||0))[0];
-  if(biggestWin)items.push(`Biggest win all-time: <b>+${(parseFloat(biggestWin.pnl)||0).toFixed(1)}u</b> by @${biggestWin.user&&biggestWin.user.username||'—'}`);
+  if(biggestWin)items.push(`Biggest win all-time: <b>+${(parseFloat(biggestWin.pnl)||0).toFixed(1)}u</b> by @${biggestWin.username||'—'}`);
   if(!items.length){items.push('Welcome to PULSE — verified pick intelligence');items.push('Live activity from all LEDGR tipsters');}
   return items;
 }
@@ -407,23 +407,23 @@ function renderTrendingPicks(all){
   if(!el)return;
   const cut=Date.now()-48*3600000;
   const umap={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!umap[u])umap[u]={pnl:0,stake:0,wins:0,picks:0};umap[u].pnl+=p.pnl;umap[u].stake+=p.stake;umap[u].picks++;if(p.result==='win')umap[u].wins++;});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!umap[u])umap[u]={pnl:0,stake:0,wins:0,picks:0};umap[u].pnl+=p.pnl;umap[u].stake+=p.stake;umap[u].picks++;if(p.result==='win')umap[u].wins++;});
   // Tail count: pending picks in same event+market
   const tailMap={};
   all.filter(p=>p.result==='pending'&&new Date(p.createdAt).getTime()>cut).forEach(p=>{
     const k=(p.event||'')+'||'+(p.market||'');
     if(!tailMap[k])tailMap[k]=[];
-    tailMap[k].push(p.user&&p.user.username);
+    tailMap[k].push(p.username);
   });
   const picks=all.filter(p=>{
-    if(!p.user||p.result!=='pending')return false;
+    if(!p.username||p.result!=='pending')return false;
     if(new Date(p.createdAt).getTime()<cut)return false;
-    const u=umap[p.user.username];
+    const u=umap[p.username];
     return u&&u.picks>=5;
   }).sort((a,b)=>parseFloat(b.odds)-parseFloat(a.odds)).slice(0,6);
   if(!picks.length){el.innerHTML='<div class="tp-empty">No hot picks in the last 48h — market is quiet<br><a href="/dashboard" style="color:var(--ac)">Be the first to post →</a></div>';return;}
   el.innerHTML=picks.map((p,i)=>{
-    const u=p.user.username;const ud=umap[u];
+    const u=p.username;const ud=umap[u];
     const roi=ud&&ud.stake>0?((ud.pnl/ud.stake)*100).toFixed(1):'0';
     const wr=ud?(ud.wins/ud.picks*100).toFixed(0):'0';
     const odds=parseFloat(p.odds);
@@ -492,8 +492,8 @@ function renderHotTipsters(all){
   const cut7=Date.now()-7*86400000;
   const umap={};
   all.forEach(p=>{
-    if(!p.user)return;
-    const u=p.user.username;
+    if(!p.username)return;
+    const u=p.username;
     if(!umap[u])umap[u]={pnl:0,stake:0,picks:0,totalPnl:0,wins:0,streak:0};
     umap[u].picks++;
     umap[u].totalPnl+=parseFloat(p.pnl)||0;
@@ -502,7 +502,7 @@ function renderHotTipsters(all){
     if(ts>=cut7){umap[u].pnl+=parseFloat(p.pnl)||0;umap[u].stake+=parseFloat(p.stake)||0;}
   });
   const byUser={};
-  all.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
+  all.forEach(p=>{if(!p.username)return;const u=p.username;if(!byUser[u])byUser[u]=[];byUser[u].push(p);});
   Object.entries(byUser).forEach(([u,picks])=>{
     const settled=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
     let s=0;for(const p of settled){if(p.result==='win')s++;else break;}
@@ -566,7 +566,7 @@ function buildActRow(ev,delay){
   else{action=`posted · ${esc(d.market||'—')} @ ${parseFloat(d.odds||0).toFixed(2)}`;badge=`<span class="act-badge ab-post">LIVE</span>`;}
   const _rowCls=ev.type==='bigwin'?'act-bigwin':ev.type==='win'?'act-win':ev.type==='underdog'?'act-underdog':ev.type==='streak'?'act-streak':'';
   return`<div class="act-row ${_rowCls}" style="${delay?'animation-delay:'+delay+'ms':''}">
-    <div class="act-av" style="background:${avColor(ev.user)}">${ev.user.slice(0,2).toUpperCase()}</div>
+    <div class="act-av" style="background:${avColor(ev.user||'')}">${(ev.user||'??').slice(0,2).toUpperCase()}</div>
     <a class="act-user" href="/tipster?u=${ev.user}" onclick="event.stopPropagation()">@${ev.user}</a>
     <span class="act-action">${action}</span>
     ${badge}
@@ -609,14 +609,14 @@ function prependActivityRow(feedEv){
 /* ── EVENTS COMPUTATION ── */
 function computeEvents(allPicks){
   const events=[];const tMap={};
-  allPicks.forEach(p=>{if(!p.user)return;const u=p.user.username;if(!tMap[u])tMap[u]=[];tMap[u].push(p);});
-  allPicks.filter(p=>p.user&&p.result==='win').forEach(p=>{
+  allPicks.forEach(p=>{if(!p.username)return;const u=p.username;if(!tMap[u])tMap[u]=[];tMap[u].push(p);});
+  allPicks.filter(p=>p.result==='win'&&p.username).forEach(p=>{
     const isU=p.odds>=2.5,isBig=p.pnl>=3,isMassive=p.pnl>=6;
-    events.push({type:isMassive?'bigwin':isU?'underdog':isBig?'bigwin':'win',user:p.user.username,ts:new Date(p.createdAt).getTime(),detail:{event:p.event,market:p.market,odds:p.odds,pnl:p.pnl}});
+    events.push({type:isMassive?'bigwin':isU?'underdog':isBig?'bigwin':'win',user:p.username,ts:new Date(p.createdAt).getTime(),detail:{event:p.event,market:p.market,odds:p.odds,pnl:p.pnl}});
   });
   const cut=Date.now()-2*86400000;
-  allPicks.filter(p=>p.user&&p.result==='pending'&&new Date(p.createdAt).getTime()>cut).forEach(p=>{
-    events.push({type:'posted',user:p.user.username,ts:new Date(p.createdAt).getTime(),detail:{event:p.event,market:p.market,odds:p.odds,stake:p.stake}});
+  allPicks.filter(p=>p.result==='pending'&&p.username&&new Date(p.createdAt).getTime()>cut).forEach(p=>{
+    events.push({type:'posted',user:p.username,ts:new Date(p.createdAt).getTime(),detail:{event:p.event,market:p.market,odds:p.odds,stake:p.stake}});
   });
   Object.entries(tMap).forEach(([username,picks])=>{
     const settled=[...picks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));

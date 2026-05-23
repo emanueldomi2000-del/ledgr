@@ -567,7 +567,7 @@ async function _ensurePicksLoaded() {
         allPicks = await r.json();
         if (!Array.isArray(allPicks)) allPicks = [];
         const eloMap = {};
-        allPicks.forEach(p => { if (p.user && p.eloAfter) eloMap[p.user.username] = p.eloAfter; });
+        allPicks.forEach(p => { if (p.eloAfter) eloMap[p.username] = p.eloAfter; });
         window._eloMap = eloMap;
         _picksLoaded = true;
       }
@@ -763,8 +763,8 @@ function buildTipsters() {
   const timePicks = filterPicksByTime(filtered);
 
   timePicks.forEach(p => {
-    if (!p.user) return;
-    const u = p.user.username;
+    if (!p.username) return;
+    const u = p.username;
     if (!map[u]) map[u] = {username:u, picks:0, wins:0, losses:0, stake:0, pnl:0, streak:0, userId:null, lastPickAt:0};
     map[u].picks++;
     map[u].stake += p.stake;
@@ -777,14 +777,14 @@ function buildTipsters() {
   });
 
   Object.keys(map).forEach(u => {
-    const userPicks = filtered.filter(p => p.user?.username === u && p.result !== 'pending')
+    const userPicks = filtered.filter(p => p.username === u && p.result !== 'pending')
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     let streak = 0;
     for (const p of userPicks) { if (p.result === 'win') streak++; else break; }
     map[u].streak = streak;
     map[u].isLive = map[u].lastPickAt >= yesterday;
     map[u].elo = (window._eloMap && window._eloMap[u] != null) ? window._eloMap[u] : 0;
-    const allTimePicks = allPicks.filter(p => p.user?.username === u);
+    const allTimePicks = allPicks.filter(p => p.username === u);
     map[u].sharpScore = window.getSharpScore ? window.getSharpScore(allTimePicks) : 0;
     map[u].archetype  = window.getArchetype  ? window.getArchetype(allTimePicks)  : null;
     // Pre-compute roi/winRate for consistent rendering with rankings path
@@ -795,7 +795,7 @@ function buildTipsters() {
   // Flow detection
   if (window.Flow) {
     const picksMap = {};
-    Object.keys(map).forEach(u => { picksMap[u] = allPicks.filter(p => p.user?.username === u); });
+    Object.keys(map).forEach(u => { picksMap[u] = allPicks.filter(p => p.username === u); });
     const flowMap = window.Flow.detectAll(picksMap);
     Object.keys(map).forEach(u => { map[u].flowState = flowMap[u] || null; });
   }
@@ -820,13 +820,13 @@ function updateStats() {
     const yesterday = now - 86400000;
     const todayPicks = allPicks.filter(p => new Date(p.createdAt).getTime() >= yesterday);
     document.getElementById('sbToday').textContent = todayPicks.length || '—';
-    document.getElementById('sbTodaySub').textContent = todayPicks.length ? `across ${new Set(todayPicks.map(p=>p.user?.username)).size} tipsters` : 'No picks yet today';
+    document.getElementById('sbTodaySub').textContent = todayPicks.length ? `across ${new Set(todayPicks.map(p=>p.username)).size} tipsters` : 'No picks yet today';
     const todayWins = todayPicks.filter(p => p.result === 'win' && p.pnl > 0).sort((a,b) => b.pnl - a.pnl);
     const bigW = todayWins[0];
     document.getElementById('sbBigWin').textContent = bigW ? (bigW.pnl >= 0 ? '+' : '') + bigW.pnl.toFixed(1) + 'u' : '—';
-    document.getElementById('sbBigWinSub').textContent = bigW ? '@' + (bigW.user?.username || '?') : 'No wins yet today';
+    document.getElementById('sbBigWinSub').textContent = bigW ? '@' + (bigW.username || '?') : 'No wins yet today';
     const actMap = {};
-    todayPicks.forEach(p => { if (!p.user) return; actMap[p.user.username] = (actMap[p.user.username] || 0) + 1; });
+    todayPicks.forEach(p => { if (!p.username) return; actMap[p.username] = (actMap[p.username] || 0) + 1; });
     const mostActive = Object.entries(actMap).sort((a, b) => b[1] - a[1])[0];
     document.getElementById('sbActive').textContent = mostActive ? '@' + mostActive[0] : '—';
     document.getElementById('sbActiveSub').textContent = mostActive ? mostActive[1] + ' picks today' : 'No activity yet';

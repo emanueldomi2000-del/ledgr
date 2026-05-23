@@ -1,10 +1,48 @@
 # LAST TASK
 
-Date: 2026-05-22
+Date: 2026-05-23
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Division Demotion System + Pyramid Icons ✅ COMPLETE
+Current objective: Render chain stabilization + null data crash fixes ✅ COMPLETE
+
+---
+
+## Last completed: Render chain stabilization + null data crash fixes (2026-05-23)
+
+### Root cause
+Backend `picks` response returns `username` as a flat top-level field. Some picks in the DB have `username=null` (orphaned or legacy rows). Frontend render functions that accessed `p.username` without a guard, or called `.slice()` on the value directly, threw TypeError which propagated to catch blocks showing "Could not load" / "—" across feed and home.
+
+### 1. feed/index.html — Pulse "Could not load" fix
+
+**Root cause confirmed:** `buildActRow(ev)` called `ev.user.slice(0,2)` — crashes when `ev.user=null`. Upstream `computeEvents()` win and pending filters had no `&&p.username` guard so null-username picks flowed into events.
+
+**Fixes:**
+- `allPicks.filter(p=>p.result==='win')` → `allPicks.filter(p=>p.result==='win'&&p.username)`
+- `allPicks.filter(p=>p.result==='pending'&&...)` → added `&&p.username`
+- `ev.user.slice(0,2)` → `(ev.user||'??').slice(0,2)` + `avColor(ev.user||'')`
+
+### 2. home/index.html — Full render chain guard pass
+
+**Render chain verified end-to-end:** `loadData()` → `renderStats()` → `renderProfileCard()` → `renderMatchup()` → `renderTrendingPicks()` → `renderFeed()` → `renderLeaderboard()` → `renderActivityTicker()` → `renderBrainRow()` → `renderSpotlight()`
+
+**Fields confirmed safe:** `username`, `avatar`, `currentStreak` (`rm&&rm.streakType==='win'?rm.currentStreak:streak`), `rank` (`rm&&rm.rank?rm.rank:rank`), `ROI` (`stake>0?...:'0'`), `todayStats` (not consumed in home chain).
+
+**Fixes — renderActivityTicker:**
+- Win filter: `settled.filter(p=>p.result==='win')` → `&&p.username`
+- Pending filter: `all.filter(p=>(!p.result||p.result==='pending')&&...)` → added leading `&&p.username`
+- byUser builder: added `if(!p.username)return` guard
+
+**Fixes — renderSpotlight:**
+- `'@'+bw.username` → `'@'+(bw.username||'—')`
+- `'@'+bO.username` → `'@'+(bO.username||'—')`
+
+### Modified files
+- `feed/index.html`
+- `home/index.html`
+
+### Known risks
+None — all changes are defensive guards only. No behavior change for picks with a valid username.
 
 ---
 

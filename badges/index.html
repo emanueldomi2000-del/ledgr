@@ -366,11 +366,13 @@ function buildParticles(color) {
 
 // Main load
 async function loadBadges() {
+  const _bCtrl=new AbortController();const _bXt=setTimeout(()=>{_bCtrl.abort();document.getElementById('badgePage').innerHTML='<div class="loading-wrap">Request timed out. <a href="" style="color:var(--ac)">Retry</a></div>';},25000);
   try {
     const [picksRes, rankingRes] = await Promise.all([
-      fetch(API + '/picks?username=' + encodeURIComponent(ME_USERNAME), { headers: authHdr() }),
-      fetch(API + '/rankings/' + encodeURIComponent(ME_USERNAME), { headers: authHdr() }),
+      fetch(API + '/picks?username=' + encodeURIComponent(ME_USERNAME), { headers: authHdr(), signal: _bCtrl.signal }),
+      fetch(API + '/rankings/' + encodeURIComponent(ME_USERNAME), { headers: authHdr(), signal: _bCtrl.signal }),
     ]);
+    clearTimeout(_bXt);
 
     let picks = [];
     let rm = null;
@@ -432,6 +434,7 @@ async function loadBadges() {
     renderShowcase();
 
   } catch(err) {
+    clearTimeout(_bXt);
     document.getElementById('badgePage').innerHTML = `<div class="loading-wrap">Failed to load badges. <a href="" style="color:var(--ac)">Retry</a></div>`;
     console.error(err);
   }
