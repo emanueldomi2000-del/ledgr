@@ -803,6 +803,7 @@ function renderBannerPacks(){
 function selectBannerPack(id,locked){
   if(locked){showToast('DIVISION LOCKED',true);return;}
   config.bannerPack=id;
+  localStorage.setItem('ledgr_banner_pack',id);
   document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.id==='bp_'+id));
   applyPreview();
 }

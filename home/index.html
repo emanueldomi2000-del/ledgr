@@ -147,6 +147,23 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .section-head{font-family:var(--font-display);font-size:15px;letter-spacing:3px;color:var(--mu2);margin-bottom:12px;padding-left:12px;position:relative}
 .section-head::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
 
+/* ══ MY PICKS ══ */
+.mp-pick{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);position:relative}
+.mp-pick:last-child{border-bottom:none}
+.mp-accent{width:3px;min-height:40px;border-radius:2px;flex-shrink:0;align-self:stretch}
+.mp-event{font-family:var(--font-body);font-size:12px;color:var(--tx);flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mp-sport{font-family:var(--font-mono);font-size:9px;color:var(--mu);display:block;margin-top:2px}
+.mp-right{flex-shrink:0;text-align:right}
+.mp-odds{font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--mu2)}
+.mp-pnl{font-family:var(--font-mono);font-size:10px;margin-top:1px}
+.mp-pnl.pos{color:#00E5A0}.mp-pnl.neg{color:#FF3355}.mp-pnl.pend{color:var(--ac);letter-spacing:.5px}
+.mp-empty{padding:20px 0;text-align:center}
+.mp-empty-icon{font-size:28px;margin-bottom:8px}
+.mp-empty-title{font-family:var(--font-display);font-size:16px;letter-spacing:3px;color:var(--mu2);margin-bottom:4px}
+.mp-empty-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-bottom:14px;letter-spacing:.5px}
+.mp-cta{display:inline-block;font-family:var(--font-display);font-size:12px;letter-spacing:2px;color:var(--ac);text-decoration:none;border:1px solid rgba(184,159,255,.3);border-radius:6px;padding:6px 16px;transition:all .2s}
+.mp-cta:hover{background:rgba(184,159,255,.08);border-color:var(--ac)}
+
 /* ══ TRENDING PICKS — with badges ══ */
 .picks-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
 .pick-card{background:rgba(255,255,255,0.025);border:1px solid var(--bd);border-radius:14px;padding:16px;transition:all .25s;position:relative;overflow:hidden;cursor:pointer}
@@ -727,6 +744,21 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
       <!-- LEFT COLUMN -->
       <div>
+        <!-- MY PICKS -->
+        <div class="fade-in" style="margin-bottom:20px" id="myPicksSection">
+          <div class="section-head-row">
+            <h2>My Picks</h2>
+            <a href="/tipster?u=__self__" id="myPicksViewAll" style="font-family:var(--font-mono);font-size:9px;color:var(--ac);text-decoration:none;letter-spacing:1px;display:none">VIEW ALL →</a>
+          </div>
+          <div id="myPicksList">
+            <div style="opacity:.45;pointer-events:none">
+              <div class="mp-pick"><div class="mp-accent" style="background:rgba(184,159,255,.3)"></div><div style="flex:1"><span class="skel skel-text" style="width:120px;height:11px;display:block;margin-bottom:5px"></span><span class="skel skel-text" style="width:60px;height:9px;display:block"></span></div><div class="mp-right"><span class="skel skel-text" style="width:36px;height:11px;display:block;margin-bottom:4px"></span><span class="skel skel-text" style="width:28px;height:9px;display:block"></span></div></div>
+              <div class="mp-pick"><div class="mp-accent" style="background:rgba(184,159,255,.3)"></div><div style="flex:1"><span class="skel skel-text" style="width:96px;height:11px;display:block;margin-bottom:5px"></span><span class="skel skel-text" style="width:72px;height:9px;display:block"></span></div><div class="mp-right"><span class="skel skel-text" style="width:36px;height:11px;display:block;margin-bottom:4px"></span><span class="skel skel-text" style="width:28px;height:9px;display:block"></span></div></div>
+              <div class="mp-pick"><div class="mp-accent" style="background:rgba(184,159,255,.3)"></div><div style="flex:1"><span class="skel skel-text" style="width:140px;height:11px;display:block;margin-bottom:5px"></span><span class="skel skel-text" style="width:50px;height:9px;display:block"></span></div><div class="mp-right"><span class="skel skel-text" style="width:36px;height:11px;display:block;margin-bottom:4px"></span><span class="skel skel-text" style="width:28px;height:9px;display:block"></span></div></div>
+            </div>
+          </div>
+        </div>
+
         <!-- PULSE -->
         <div class="fade-in" style="margin-bottom:20px">
           <div class="section-head">PULSE</div>
@@ -1113,10 +1145,11 @@ function _renderDataError(){
   const feed=document.getElementById('communityFeed');if(feed)feed.innerHTML='<div class="empty">Could not load — <a href="" style="color:var(--ac)">Retry</a></div>';
   const tp=document.getElementById('trendingPicksGrid');if(tp)tp.innerHTML='<div class="empty">—</div>';
   const rg=document.getElementById('risingGrid');if(rg)rg.innerHTML='<div class="empty" style="font-family:var(--font-mono);font-size:11px;color:var(--mu);padding:20px;text-align:center;grid-column:1/-1">—</div>';
-  const lb=document.getElementById('miniLeaderboard');if(lb)lb.innerHTML='<div style="padding:20px;text-align:center;font-family:var(--font-mono);font-size:11px;color:var(--mu)">—</div>';
+  // Don't wipe miniLeaderboard — rankings fetch runs independently
   const mv=document.querySelector('.mvp-wrap');if(mv)mv.style.display='none';
   const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';
   const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">—</div>';
+  renderMyPicks([]);
 }
 
 async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
@@ -1125,6 +1158,15 @@ async function loadData(){
   await wakeBackend();
   const ctrl=new AbortController();
   const abort=setTimeout(()=>ctrl.abort(),15000);
+  // Fetch rankings independently so TOP TIPSTERS renders even if picks fail
+  fetch(API+'/rankings?limit=5',{cache:'no-store'}).then(async r=>{
+    if(!r.ok)return;
+    try{
+      const rd=await r.json();
+      const top5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);
+      if(top5&&top5.length)renderLeaderboard([],top5);
+    }catch(e){}
+  }).catch(()=>{});
   try{
     const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
     const [picksRes,profileRes,rankingRes,rankingsListRes]=await Promise.all([
@@ -1165,7 +1207,7 @@ async function loadData(){
     if(rankingsListRes&&rankingsListRes.ok){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
-    renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all);
+    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all);
     if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
     updateGreeting();
   }catch(e){clearTimeout(abort);_renderDataError();}
@@ -1261,6 +1303,43 @@ async function loadSeasonInfo(myRank){
     document.getElementById('sidSeasonRank').textContent=myRank>0?'#'+myRank+' this season':'—';
     setTimeout(()=>{const bar=document.getElementById('sidSeasonBar');if(bar)bar.style.width=progress+'%';},600);
   }catch(e){_showOffSeason();}
+}
+
+function renderMyPicks(all){
+  const my=all.filter(p=>p.userId===user.id).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const el=document.getElementById('myPicksList');if(!el)return;
+  const vl=document.getElementById('myPicksViewAll');
+  if(vl&&user&&user.username){vl.href='/tipster?u='+encodeURIComponent(user.username);vl.style.display=my.length>0?'':'none';}
+  if(!my.length){
+    el.innerHTML=`<div class="mp-empty">
+      <div class="mp-empty-icon">🎯</div>
+      <div class="mp-empty-title">YOUR RECORD STARTS HERE</div>
+      <div class="mp-empty-sub">Every legend begins with pick #1</div>
+      <a href="/dashboard" class="mp-cta">POST FIRST PICK →</a>
+    </div>`;
+    return;
+  }
+  const sportIcons={Football:'⚽',Basketball:'🏀',Tennis:'🎾','American Football':'🏈',Baseball:'⚾',Hockey:'🏒',MMA:'🥊',Boxing:'🥊',Cricket:'🏏',Rugby:'🏉',Golf:'⛳'};
+  el.innerHTML=my.slice(0,6).map(p=>{
+    const accentColor=p.result==='win'?'#00E5A0':p.result==='loss'?'#FF3355':'var(--ac)';
+    const icon=sportIcons[p.sport]||'🎯';
+    const pnlHtml=p.result==='pending'
+      ?`<div class="mp-pnl pend">PENDING</div>`
+      :p.pnl>0?`<div class="mp-pnl pos">+${p.pnl.toFixed(2)}u</div>`
+      :p.pnl<0?`<div class="mp-pnl neg">−${Math.abs(p.pnl).toFixed(2)}u</div>`
+      :`<div class="mp-pnl" style="color:var(--mu)">0u</div>`;
+    return`<div class="mp-pick">
+      <div class="mp-accent" style="background:${accentColor}"></div>
+      <div style="flex:1;min-width:0">
+        <div class="mp-event">${p.event||'—'}</div>
+        <span class="mp-sport">${icon} ${p.sport||'—'}</span>
+      </div>
+      <div class="mp-right">
+        <div class="mp-odds">${parseFloat(p.odds||0).toFixed(2)}</div>
+        ${pnlHtml}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderStats(all){

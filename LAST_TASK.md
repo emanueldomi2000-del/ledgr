@@ -4,64 +4,64 @@ Date: 2026-05-23
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Visual redesign pass — home, leaderboard, feed, progress ✅ COMPLETE
+Current objective: Analytics fix + home empty states + tipster picks + settings banners ✅ COMPLETE
 
 ---
 
-## Last completed: Visual redesign pass (2026-05-23)
+## Last completed: Multi-page fixes (2026-05-23)
 
 All JS logic preserved. No backend changes. No functionality changes.
 
 ---
 
-### home/index.html
+### analytics/index.html — Fix blank page
 
-- **Section title borders**: `.section-head::before` and `.section-head-row h2::before` width 2px → 3px
-- **Panel title**: `.panel-title` now has `padding-left:12px;position:relative` + `::before` left accent (3px, purple, pulsing)
-- **Identity card glow**: Added persistent `box-shadow:0 0 60px rgba(123,44,255,.08)` to `.identity-card`
-- **Username size**: `.id-name` font-size 32px → 36px
-- **Hero glow**: `.bg-glow` broadened (900→1000px, 700→800px height) and deepened (rgba 0.10 → 0.14)
-- **communityFeed skeleton**: Replaced "Community waking up..." with 3 skeleton feed cards (opacity .45, pointer-events:none)
-
----
-
-### leaderboard/index.html
-
-- **Stats bar values**: `.lsb-val` → DM Mono, 32px, tabular-nums, weight 700 (was font-display 26px)
-- **Stat box top accents**: Added `border-top:2px solid transparent` to `.lb-stat-box` + nth-child color rules:
-  - Box 1 (picks today): purple `rgba(184,159,255,.5)`
-  - Box 2 (biggest win): green `rgba(52,211,153,.5)`
-  - Box 3 (most active): orange `rgba(251,146,60,.5)`
-  - Box 4 (win rate): gold `rgba(251,191,36,.5)`
+- **Root cause fixed**: `loadData()` double-checked `user.id` after `window.onload` already made `#app` visible; when null it hid the app → blank page
+- **Fix**: Changed inner `user.id` check to redirect to `/login` instead of hiding `#app`
+- **Error overlay**: Added `#analyticsErrOverlay` — a fixed overlay that appears on top of the loaded app on timeout/catch, replacing the `innerHTML` wipe
+- **`_showAnalyticsError(msg)`**: New helper that shows the overlay (doesn't destroy page structure)
+- **`targetUser` null**: Also redirects to `/login` instead of hiding app
 
 ---
 
-### feed/index.html
+### home/index.html — MY PICKS section
 
-- **PULSE title glow**: Added `.pm-left::before` radial glow element + `titlePulse` keyframe animation on `.pm-title` (text-shadow glow every 3s)
-- **Skeleton error states**: All 3 catch-block `innerHTML` replacements now render skeleton cards instead of plain error text:
-  - `activityGrid`: 5 skeleton `.act-row` items + Retry link
-  - `trendingPicks`: 3 skeleton `.tp-card` items
-  - `hotTipsters`: 3 skeleton `.ht-row` items
+- **New CSS**: `.mp-pick`, `.mp-accent`, `.mp-event`, `.mp-sport`, `.mp-right`, `.mp-odds`, `.mp-pnl`, `.mp-empty`, `.mp-cta`
+- **New HTML**: `#myPicksSection` at top of left column (before PULSE), with skeleton loading state
+- **`renderMyPicks(all)`**: Filters `all.filter(p=>p.userId===user.id)`, sorts by newest first
+  - 0 picks: empty state with 🎯 icon, "YOUR RECORD STARTS HERE", "Every legend begins with pick #1", CTA → /dashboard
+  - Picks exist: up to 6 most recent, each with color-coded left accent bar (WIN=#00E5A0, LOSS=#FF3355, PENDING=var(--ac)), odds + P&L
+  - "VIEW ALL →" link to `/tipster?u=username` shown when picks exist
+- **Called in**: `loadData()` and `_renderDataError()` (shows empty state on error)
 
 ---
 
-### progress/index.html
+### home/index.html — TOP TIPSTERS "—" fix
 
-- **Empty state hero upgrade**: "Start your journey" → large `START YOUR JOURNEY` in font-display with division color + glow text-shadow, subtitle "Every legend begins with pick #1", bolder `POST FIRST PICK →` CTA button with shadow
-- **Division track component**: New `buildDivTrack(actualElo)` function + `.div-track` CSS
-  - Horizontal row of 7 nodes (BRONZE→LEGENDARY), rendered above the logo-divider
-  - Each node: 40px circle with `ledgr-icon.png` filtered per division color (CSS filter hue-rotate/sepia/saturate)
-  - Current division node: 52px, glowing ring `box-shadow`, division-colored border, full-opacity icon
-  - Past nodes: slightly visible with division-colored border
-  - Locked nodes: icon at opacity .18
-  - Connector line: `::before` pseudo-element spanning node track
+- **Root cause**: `_renderDataError()` was setting miniLeaderboard to `—` text on picks fetch failure
+- **Fix**: Removed the miniLeaderboard wipe from `_renderDataError()`
+- **Independent rankings fetch**: Added a standalone `fetch('/rankings?limit=5')` at the top of `loadData()` that runs outside the `Promise.all` — renders TOP TIPSTERS even if picks fetch fails
+
+---
+
+### tipster/index.html — Teaser cards improved
+
+- **Before**: Plain premium box with 🔒 label and basic subscribe button
+- **After**: Event shown with sport emoji; blurred pick preview underneath (market + odds obscured with block chars + CSS blur); glassmorphism overlay with 🔒 PREMIUM PICK + "Market · Odds · Stake · Analysis" sub + `UNLOCK →` CTA button with purple gradient + shadow
+- **Teaser card border**: `rgba(123,44,255,0.25)` purple tint to distinguish from free picks
+
+---
+
+### settings/index.html — Banner packs localStorage
+
+- **Added**: `localStorage.setItem('ledgr_banner_pack', id)` on banner pack select
+- All existing CSS classes, render function, lock logic unchanged
 
 ---
 
 ### Modified files
+- `analytics/index.html`
 - `home/index.html`
-- `leaderboard/index.html`
-- `feed/index.html`
-- `progress/index.html`
+- `tipster/index.html`
+- `settings/index.html`
 - `LAST_TASK.md`

@@ -175,6 +175,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a href="/login" class="btn btn-primary" style="margin-top:8px">Log In →</a>
   </div>
 
+  <div id="analyticsErrOverlay" style="display:none;position:fixed;inset:0;background:rgba(10,10,10,.85);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;font-family:var(--font-mono)">
+    <div style="font-size:28px">⚠</div>
+    <div class="aeo-msg" style="font-size:13px;color:var(--mu);letter-spacing:1px">Could not load data</div>
+    <a href="" onclick="location.reload()" style="font-size:11px;color:var(--ac);letter-spacing:2px;text-decoration:none">↺ RETRY</a>
+  </div>
+
   <div id="app" style="display:none">
     <!-- PAGE HEADER -->
     <div class="page-header">
@@ -372,7 +378,7 @@ async function loadData(){
   await wakeBackend();
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
   const _ctrl=new AbortController();
-  const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Server waking up — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></div>';},15000);
+  const _xt=setTimeout(()=>{_ctrl.abort();_showAnalyticsError('Server waking up');},15000);
   try{
     let picksRaw=[];
     if(urlUser){
@@ -391,8 +397,7 @@ async function loadData(){
       // Own analytics — fetch own picks with auth
       if(!user||!user.id){
         clearTimeout(_xt);
-        document.getElementById('notLogged').style.display='flex';
-        document.getElementById('app').style.display='none';
+        window.location.href='/login';
         return;
       }
       const hdrs=tk?{Authorization:'Bearer '+tk}:{};
@@ -401,7 +406,7 @@ async function loadData(){
     }
     clearTimeout(_xt);
     targetUser=urlUser||(user?user.username:null);
-    if(!targetUser){document.getElementById('notLogged').style.display='flex';document.getElementById('app').style.display='none';return;}
+    if(!targetUser){window.location.href='/login';return;}
     allPicks=Array.isArray(picksRaw)?picksRaw.sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt)):[];
     document.getElementById('pageTitle').innerHTML=`<span style="color:var(--ac)">@${targetUser}</span> ANALYTICS`;
     document.getElementById('profileLink').href='/tipster?u='+targetUser;
@@ -420,8 +425,13 @@ async function loadData(){
     if(window.Insights)Insights.renderAnalytics('intelligenceWrap',allPicks);
   }catch(e){
     clearTimeout(_xt);
-    document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Could not load data. Try again.</div>';
+    _showAnalyticsError('Could not load data');
   }
+}
+
+function _showAnalyticsError(msg){
+  const overlay=document.getElementById('analyticsErrOverlay');
+  if(overlay){overlay.style.display='flex';overlay.querySelector('.aeo-msg').textContent=msg;}
 }
 
 // ── HELPERS ───────────────────────────────────────────────────────
