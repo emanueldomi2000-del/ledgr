@@ -4,7 +4,79 @@ Date: 2026-05-22
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Sprint 12 — Visual Upgrade (home, leaderboard, feed) ✅ COMPLETE
+Current objective: Division Demotion System + Pyramid Icons ✅ COMPLETE
+
+---
+
+## Last completed: Division Demotion System + Pyramid Division Icons (2026-05-22)
+
+### 1. progress/index.html — Live Division Score + Demotion Warning
+
+**Division score computed live** (ROI 40% + WR 30% + Volume 20% + Picks 10%) — same formula as backend.
+
+**Demotion banner** injected below hero card:
+- `at-risk` (red): when score < threshold + 8 and division is not BRONZE
+- `safe` (green): division secure, shows +N pts above threshold
+- Shows exact score vs threshold (e.g. "42 / 50")
+- BRONZE excluded (floor division, no demotion possible)
+
+**Division history** in season widget:
+- Now fetches `/rankings/:USERNAME/history` in `loadProgress()`
+- Detects division changes across weekly snapshots
+- Shows `↑ Promoted` / `↓ Demoted` with from→to and week label
+- Last 5 changes shown, most recent first
+
+---
+
+### 2. animations.js — divisionDownAnimation()
+
+New function `window.divisionDownAnimation(newDivName)`:
+- Dark overlay (rgba 0.88, less dramatic than promotion)
+- Red accented: "DIVISION DROPPED" in #ff3355
+- Shows new division name
+- "Fight back →" CTA to `/dashboard`
+- Auto-dismiss after 4s, tap to dismiss early
+
+CSS: `.la-divdown-overlay`, `.la-divdown-card`, `.la-divdown-headline`, `.la-divdown-cta`
+
+---
+
+### 3. home/index.html — WS Event Handlers
+
+**division_up updated**: now checks `ev.targetUserId === user.id`:
+- Own promotion → fires `rankUpAnimation()` ceremony directly
+- Other users' promotions → adds to ticker (unchanged)
+
+**division_down added**: `LedgrWS.on('division_down', ...)`:
+- Only fires for own demotion (`ev.targetUserId === user.id`)
+- Calls `window.divisionDownAnimation(p.toDivision)`
+
+---
+
+### 4. backend-rankings-engine.js — Division Demotion Detection
+
+`recalcUserRankings(db, userId, opts)` — added optional third parameter:
+- Reads `prevDivision` from `user_rankings` before the upsert
+- After upsert: if `DIVISION_ORDER.indexOf(newDiv) < DIVISION_ORDER.indexOf(prevDiv)`, emits demotion event
+- Event: `{ type:'division_down', targetUserId, username, payload:{ fromDivision, toDivision } }`
+- Calls `opts.broadcast(event)` if provided — no breaking change to existing callers
+- `DIVISION_ORDER` constant added at module level
+
+---
+
+### 5. divisions.js — Pyramid Icon System
+
+**CSS (injected via `injectCSS()`):**
+- `.dv-pyr` base class: CSS `mask`/`-webkit-mask` using `/assets/logo/ledgr-icon.png`
+- Sizes: `.dv-pyr-sm` (10px), `.dv-pyr-md` (13px), `.dv-pyr-lg` (16px), `.dv-pyr-xl` (22px)
+- Per-division color: `.dv-pyr-bronze` #CD7F32, `.dv-pyr-silver` #C0C0C0, `.dv-pyr-gold` #FFD700, `.dv-pyr-platinum` #4FC3F7
+- `.dv-pyr-diamond`: #00E5FF + `filter: drop-shadow(0 0 4px cyan)`
+- `.dv-pyr-elite`: #7B2CFF + `filter: drop-shadow(0 0 5px purple)`
+- `.dv-pyr-legendary`: #FFD700 + `animation: dv-pyr-rainbow 2.5s` (hue-rotate 0→360°)
+
+**Functions:**
+- `Divisions.pyramidHTML(divDef, size)` — new public function, returns masked pyramid span
+- `pillHTML()` updated to include pyramid icon before division name text
 
 ---
 
