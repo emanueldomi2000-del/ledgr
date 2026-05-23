@@ -651,11 +651,10 @@ function getELOFromPicks(picks){
 }
 
 function getELOLabel(elo){
-  if(elo>=1400)return{label:'Grandmaster',color:'var(--gold)'};
-  if(elo>=1200)return{label:'Expert',color:'var(--ac)'};
-  if(elo>=1100)return{label:'Advanced',color:'var(--cyan)'};
-  if(elo>=1000)return{label:'Intermediate',color:'var(--gr)'};
-  if(elo>=900)return{label:'Developing',color:'var(--mu2)'};
+  if(elo>=400)return{label:'Grandmaster',color:'var(--gold)'};
+  if(elo>=200)return{label:'Expert',color:'var(--ac)'};
+  if(elo>=100)return{label:'Advanced',color:'var(--cyan)'};
+  if(elo>=0)return{label:'Intermediate',color:'var(--gr)'};
   return{label:'Beginner',color:'var(--mu)'};
 }
 
@@ -1020,9 +1019,12 @@ function toggleTrophy(head){
   if(items)items.classList.toggle('open');
 }
 
+async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+
 async function loadProfile(){
   if(!username){showNotFound();return;}
-  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>TIMEOUT</h2><p style="color:var(--mu2)">Request timed out. Please refresh.</p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';},25000);
+  await wakeBackend();
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div class="not-found"><h2>SERVER WAKING UP</h2><p style="color:var(--mu2)">Request timed out — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></p><a href="/leaderboard" class="back-btn">← Back to Leaderboard</a></div>';},15000);
   try{
     // Step 1: fetch profile + rankings in parallel — need rankingMeta.userId before picks
     const [profileRes,rankingRes]=await Promise.all([
@@ -1241,7 +1243,7 @@ async function loadProfile(){
             <div class="perf-row"><span class="perf-key">Win Streak</span><span class="perf-val" style="color:${streak>=3?'var(--orange)':'var(--tx)'}">${streak>=3?'🔥 ':''} W${streak}</span></div>
             <div class="perf-row"><span class="perf-key">Reliability <span class="tip-trigger" data-tip="Reliability Score combines ROI (40%), Win Rate (30%), pick volume (20%) and recent activity (10%). Ranges from 0 to 100. Above 70 is considered trustworthy.">?</span></span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Global Rank</span><span class="perf-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</span></div>
-            <div class="perf-row"><span class="perf-key">ELO Rating <span class="tip-trigger" data-tip="ELO is a competitive ranking system borrowed from chess. It goes up when you win and down when you lose, weighted by the odds. Starting ELO is 1000. Above 1100 is elite level.">?</span></span><span class="perf-val" style="color:var(--ac-l)">${rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks)}</span></div>
+            <div class="perf-row"><span class="perf-key">ELO Rating <span class="tip-trigger" data-tip="ELO is a competitive ranking system borrowed from chess. It goes up when you win and down when you lose, weighted by the odds. Starting ELO is 0. Above 100 is advanced.">?</span></span><span class="perf-val" style="color:var(--ac-l)">${rankingMeta?Math.max(0,(rankingMeta.elo||1000)-1000):getELOFromPicks(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Best Streak Ever</span><span class="perf-val" style="color:var(--orange)">🔥 W${getBestStreak(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Biggest Win</span><span class="perf-val pos">+€${getBiggestWin(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Fav Market</span><span class="perf-val">${getFavMarket(allPicks)}</span></div>
@@ -1249,7 +1251,7 @@ async function loadProfile(){
             <div class="pnl-chart" id="pnlChart"></div>
           </div>
           ${reliabilityHtml}
-          ${(()=>{const elo=rankingMeta?rankingMeta.elo:getELOFromPicks(allPicks);const{label,color:ec}=getELOLabel(elo);return`<div class="elo-box" style="margin-top:12px"><div class="elo-val" style="color:${ec}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
+          ${(()=>{const elo=rankingMeta?Math.max(0,(rankingMeta.elo||1000)-1000):getELOFromPicks(allPicks);const{label,color:ec}=getELOLabel(elo);return`<div class="elo-box" style="margin-top:12px"><div class="elo-val" style="color:${ec}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
           ${sportList.length>0?`<div class="panel" style="margin-top:16px"><div class="panel-title">BY SPORT</div>${sportList.map(([s,c])=>`<div class="sport-bar"><div class="sport-bar-label"><span>${sportIcon[s]||'🎯'} ${s}</span><span>${c} picks</span></div><div class="sbar"><div class="sbar-fill" style="width:${(c/allPicks.length*100).toFixed(0)}%"></div></div></div>`).join('')}</div>`:''}
           ${buildTrophyWallPanel(allPicks,badges,streak)}
         </div>

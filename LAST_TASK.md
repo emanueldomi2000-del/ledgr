@@ -4,7 +4,48 @@ Date: 2026-05-23
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: Render chain stabilization + null data crash fixes ✅ COMPLETE
+Current objective: Cold start retry + ELO display + progress error state + settings cosmetics + welcome message ✅ COMPLETE
+
+---
+
+## Last completed: Cold start retry / ELO display / progress empty state / settings cosmetics / welcome message (2026-05-23)
+
+### 1. Backend cold start — wakeBackend() added to 6 pages
+Pages: home, progress, feed, leaderboard, analytics, tipster
+- `async function wakeBackend()` fires a 3s fire-and-forget ping to `API+'/health'` before main data fetch
+- AbortController timeout reduced 25s → 15s on all 6 pages
+- Timeout error messages updated to "Server waking up — Retry" (with `location.reload()` link)
+
+### 2. Progress "Could not load" → always shows empty state
+- Catch block in `loadProgress()` changed from injecting error HTML → calling `renderAll([], null, 0, 0, null, [], [])`
+- Empty state already supported by `buildHTML()` when `picks.length === 0`
+
+### 3. ELO display fix — subtract 1000 from backend ELO everywhere
+Backend stores ELO with 1000 baseline. Display formula: `Math.max(0, (backendElo||1000) - 1000)`
+- `progress/index.html` lines 320/327: both `elo` and `actualElo` now adjusted
+- `progress/index.html` `computeEloFromDivScore`: changed to 0-based (`(divScore/100)*3000` — removed +1000)
+- `tipster/index.html` line 1244 stat panel: `rankingMeta.elo` → `Math.max(0,(rankingMeta.elo||1000)-1000)`
+- `tipster/index.html` line 1252 elo-box: same adjustment
+- `tipster/index.html` `getELOLabel`: thresholds shifted from 1400/1200/1100/1000/900 → 400/200/100/0 (0-based)
+- `tipster/index.html` ELO tooltip text updated: "Starting ELO is 0. Above 100 is advanced."
+- `home/index.html` mini-leaderboard ELO badge: `t.elo||'—'` → `t.elo!=null?Math.max(0,t.elo-1000):'—'`
+
+### 4. Settings cosmetics section empty (snAv/snName null crash)
+- Root cause: `document.getElementById('snAv').textContent=...` called on element from old nav (no longer exists)
+- Fix: null-guarded both `snAv` and `snName` accesses, unblocking entire `window.onload` and all cosmetics renders
+
+### 5. Home contextual greeting
+- `updateGreeting()` function added, called at end of `loadData()` try block after `window._myRankingMeta` is populated
+- Logic: rank===1 → "👑 USERNAME · #1 IN THE WORLD"; streak≥5 → "🔥 USERNAME · W{N} STREAK"; streak≥3 → "🔥 USERNAME · ON A ROLL"; else → time-of-day greeting (unchanged initial value set in window.onload)
+
+### Modified files
+- `home/index.html`
+- `progress/index.html`
+- `feed/index.html`
+- `leaderboard/index.html`
+- `analytics/index.html`
+- `tipster/index.html`
+- `settings/index.html`
 
 ---
 

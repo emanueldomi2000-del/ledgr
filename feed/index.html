@@ -673,8 +673,11 @@ function subscribeWS(){
 }
 
 /* ── LOAD FEED ── */
+async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+
 async function loadFeed(){
-  const _ctrl=new AbortController();const _xt=setTimeout(()=>_ctrl.abort(),25000);
+  await wakeBackend();
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>_ctrl.abort(),15000);
   try{
     const r=await fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal});
     clearTimeout(_xt);

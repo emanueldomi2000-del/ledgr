@@ -1112,9 +1112,12 @@ function _renderDataError(){
   const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">—</div>';
 }
 
+async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+
 async function loadData(){
+  await wakeBackend();
   const ctrl=new AbortController();
-  const abort=setTimeout(()=>ctrl.abort(),25000);
+  const abort=setTimeout(()=>ctrl.abort(),15000);
   try{
     const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
     const [picksRes,profileRes,rankingRes,rankingsListRes]=await Promise.all([
@@ -1157,7 +1160,18 @@ async function loadData(){
     }
     renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all);
     if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
+    updateGreeting();
   }catch(e){clearTimeout(abort);_renderDataError();}
+}
+function updateGreeting(){
+  const _ey=document.getElementById('heroEyebrow');if(!_ey||!user)return;
+  const rm=window._myRankingMeta;
+  const rank=rm&&rm.rank?rm.rank:null;
+  const streak=rm&&rm.streakType==='win'?(rm.currentStreak||0):0;
+  if(rank===1){_ey.textContent='👑 '+user.username.toUpperCase()+' · #1 IN THE WORLD';}
+  else if(streak>=5){_ey.textContent='🔥 '+user.username.toUpperCase()+' · W'+streak+' STREAK';}
+  else if(streak>=3){_ey.textContent='🔥 '+user.username.toUpperCase()+' · ON A ROLL';}
+  else{const _hr=new Date().getHours();const _g=_hr<12?['☀️','MORNING GRIND']:_hr<17?['⚡','AFTERNOON EDGE']:['🌙','NIGHT SESSION'];_ey.textContent=_g[0]+' '+user.username.toUpperCase()+' · '+_g[1];}
 }
 function renderIdentityPanel(myPicks,rank,totalTipsters){
   if(!user)return;
@@ -1837,7 +1851,7 @@ function renderLeaderboard(all,rankingsTop5){
       <div class="tip-right">
         <div class="tip-roi ${roiPos?'':'neg'}">${roiPos?'+':''}${roi.toFixed(1)}%</div>
         ${streak>=3?`<div class="tip-streak">🔥 W${streak}</div>`:''}
-        <div class="elo-mini">ELO ${t.elo||'—'}</div>
+        <div class="elo-mini">ELO ${t.elo!=null?Math.max(0,t.elo-1000):'—'}</div>
       </div>
     </a>`;
     }).join('');

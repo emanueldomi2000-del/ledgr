@@ -719,8 +719,11 @@ function updateSeasonBanner(filter, tipsters) {
   else { wb.style.display='none'; }
 }
 
+async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+
 async function loadLeaderboard() {
-  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('lbTableWrap').style.display='none';document.getElementById('lbEmpty').style.display='block';document.getElementById('lbEmpty').innerHTML='<div class="empty-lb"><span class="icon">⚠️</span><h3>TIMEOUT</h3><p>Request timed out. Please refresh.</p></div>';},25000);
+  await wakeBackend();
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('lbTableWrap').style.display='none';document.getElementById('lbEmpty').style.display='block';document.getElementById('lbEmpty').innerHTML='<div class="empty-lb"><span class="icon">⚠️</span><h3>SERVER WAKING UP</h3><p>Request timed out — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></p></div>';},15000);
   try {
     const [rankingsRes, seasonsRes] = await Promise.all([
       fetch(API + '/rankings', {cache:'no-store',signal:_ctrl.signal}),

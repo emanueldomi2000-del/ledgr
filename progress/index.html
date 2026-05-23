@@ -245,11 +245,14 @@ const DIV_SCORE = {
 };
 
 function computeEloFromDivScore(divScore) {
-  return Math.round(1000 + (divScore / 100) * 3000);
+  return Math.max(0, Math.round((divScore / 100) * 3000));
 }
 
+async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+
 async function loadProgress() {
-  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Request timed out. <a href="/home" style="color:var(--ac)">Go home →</a></div>';},25000);
+  await wakeBackend();
+  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Server is waking up — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></div>';},15000);
   try {
     const [picksRes, rankingsRes, seasonsRes, historyRes] = await Promise.all([
       fetch(API + '/picks?userId=' + USER_ID, { cache: 'no-store', signal: _ctrl.signal, headers: { Authorization: 'Bearer ' + _t } }),
@@ -299,8 +302,7 @@ async function loadProgress() {
     renderAll(myPicks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons, rankHistory);
   } catch(e) {
     clearTimeout(_xt);
-    document.getElementById('mainContent').innerHTML =
-      '<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Could not load progress. <a href="/home" style="color:var(--ac)">Go home →</a></div>';
+    renderAll([], null, 0, 0, null, [], []);
   }
 }
 
@@ -317,14 +319,14 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
   const winRate = (wins + losses) > 0 ? wins / (wins + losses) : 0;
   const avgOdds = picks.length > 0 ? picks.reduce((s,p) => s + (p.odds||0), 0) / picks.length : 0;
 
-  const elo = rankingMeta ? rankingMeta.elo : computeEloFromDivScore(rankingMeta ? rankingMeta.divisionScore : 0);
+  const elo = rankingMeta ? Math.max(0,(rankingMeta.elo||1000)-1000) : computeEloFromDivScore(rankingMeta ? rankingMeta.divisionScore : 0);
   const sharpScore = rankingMeta ? (rankingMeta.sharpScore || 0) : 0;
   const reliabilityScore = rankingMeta ? (rankingMeta.reliabilityScore || 0) : 0;
   const clvAvg = rankingMeta ? (rankingMeta.clvAvg || 0) : 0;
   const currentStreak = rankingMeta ? Math.max(0, rankingMeta.currentStreak || 0) : 0;
   const divisionName = rankingMeta ? (rankingMeta.division || 'BRONZE') : 'BRONZE';
 
-  const actualElo = (rankingMeta && rankingMeta.elo != null) ? rankingMeta.elo : computeEloFromDivScore(DIV_SCORE[divisionName] || 0);
+  const actualElo = (rankingMeta && rankingMeta.elo != null) ? Math.max(0,rankingMeta.elo-1000) : computeEloFromDivScore(DIV_SCORE[divisionName] || 0);
   const tier = getEloTier(actualElo);
   const roman = getTierRoman(actualElo, tier);
   const eloInTier = actualElo - tier.min;

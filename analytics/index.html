@@ -366,10 +366,13 @@ window.onload=()=>{
   loadData();
 };
 
+async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+
 async function loadData(){
+  await wakeBackend();
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';
   const _ctrl=new AbortController();
-  const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Request timed out. Please refresh.</div>';},25000);
+  const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Server waking up — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></div>';},15000);
   try{
     let picksRaw=[];
     if(urlUser){

@@ -1335,8 +1335,8 @@ window.onload=()=>{
 
   document.getElementById('app').style.display='block';
   if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
-  document.getElementById('snAv').textContent=user.username.slice(0,2).toUpperCase();
-  document.getElementById('snName').textContent='@'+user.username;
+  const _snAv=document.getElementById('snAv');if(_snAv)_snAv.textContent=user.username.slice(0,2).toUpperCase();
+  const _snName=document.getElementById('snName');if(_snName)_snName.textContent='@'+user.username;
   document.getElementById('previewAv').textContent=user.username.slice(0,2).toUpperCase();
   document.getElementById('previewUname').textContent='@'+user.username;
   document.getElementById('acctUsername').textContent='@'+user.username;
