@@ -35,11 +35,15 @@ body::before{content:'';position:fixed;inset:0;
 
 /* ── LIVE STATS BAR ── */
 .live-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border-radius:14px;overflow:hidden;margin-bottom:28px;border:1px solid var(--bd)}
-.lb-stat-box{background:var(--s1);padding:16px 18px;position:relative;transition:background .2s}
+.lb-stat-box{background:var(--s1);padding:16px 18px;position:relative;transition:background .2s;border-top:2px solid transparent}
+.lb-stat-box:nth-child(1){border-top-color:rgba(184,159,255,.5)}
+.lb-stat-box:nth-child(2){border-top-color:rgba(52,211,153,.5)}
+.lb-stat-box:nth-child(3){border-top-color:rgba(251,146,60,.5)}
+.lb-stat-box:nth-child(4){border-top-color:rgba(251,191,36,.5)}
 .lb-stat-box:hover{background:var(--s2)}
 .lsb-label{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:6px}
 .lsb-live-dot{width:4px;height:4px;background:var(--gr);border-radius:50%;animation:live-pulse 1.5s ease-in-out infinite}
-.lsb-val{font-family:var(--font-display);font-size:26px;letter-spacing:1px;line-height:1;color:var(--tx)}
+.lsb-val{font-family:'DM Mono',monospace;font-size:32px;letter-spacing:-0.5px;line-height:1;color:var(--tx);font-weight:700;font-variant-numeric:tabular-nums}
 .lsb-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:3px}
 
 /* ── GAMING CONTROL BAR ── */

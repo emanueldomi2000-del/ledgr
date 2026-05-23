@@ -188,6 +188,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 }
 @media(max-width:400px){.hero-grid{grid-template-columns:1fr 1fr}}
 
+/* ── PULSE TITLE GLOW ── */
+@keyframes pulseHalo{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes titlePulse{0%,100%{text-shadow:0 0 0px transparent}50%{text-shadow:0 0 48px rgba(184,159,255,.35),0 0 80px rgba(123,44,255,.18)}}
+.pm-left{position:relative}
+.pm-left::before{content:'';position:absolute;left:-60px;top:-30px;width:460px;height:160px;background:radial-gradient(ellipse,rgba(123,44,255,.12),transparent 65%);pointer-events:none;z-index:-1;animation:pulseHalo 3s ease-in-out infinite}
+.pm-title{animation:titlePulse 3s ease-in-out infinite}
+
 /* ── IDENTITY: LIVE MARKET ENERGY ── */
 .bg-market{position:fixed;bottom:-200px;right:-150px;width:700px;height:600px;background:radial-gradient(ellipse,rgba(52,211,153,.065),transparent 65%);pointer-events:none;z-index:0;animation:bgBreathe 9s ease-in-out infinite 4.5s}
 @keyframes mktScan{0%{transform:translateX(-200%)}100%{transform:translateX(200vw)}}
@@ -693,9 +700,9 @@ async function loadFeed(){
     if(window.Insights)Insights.renderTrends('hotRightNow',all);
   }catch(e){
     clearTimeout(_xt);
-    document.getElementById('activityGrid').innerHTML='<div class="act-empty">Could not load — <a href="" style="color:var(--ac)">Retry</a></div>';
-    document.getElementById('trendingPicks').innerHTML='<div class="tp-empty">Could not load picks.</div>';
-    document.getElementById('hotTipsters').innerHTML='<div class="ht-empty">Could not load tipsters.</div>';
+    document.getElementById('activityGrid').innerHTML='<div style="opacity:.4;display:flex;flex-direction:column;gap:0">'+['92px','76px','110px','64px','88px'].map(w=>`<div class="act-row"><span class="skel" style="width:20px;height:20px;border-radius:4px;flex-shrink:0;display:inline-block"></span><span class="skel" style="width:${w};height:10px;display:inline-block"></span><span class="skel" style="flex:1;height:9px;display:block"></span><span class="skel" style="width:42px;height:18px;border-radius:6px;display:inline-block"></span></div>`).join('')+'</div><div style="text-align:center;margin-top:12px"><a href="" style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px">RETRY ↺</a></div>';
+    document.getElementById('trendingPicks').innerHTML='<div style="opacity:.4">'+['88px','104px','70px'].map(_=>`<div class="tp-card" style="pointer-events:none"><span class="skel" style="width:24px;height:24px;border-radius:5px;flex-shrink:0;display:inline-block"></span><div style="flex:1;padding-left:8px"><span class="skel" style="width:${_};height:11px;display:block;margin-bottom:4px"></span><span class="skel" style="width:56px;height:8px;display:block"></span></div><span class="skel" style="width:32px;height:22px;border-radius:4px;display:inline-block"></span></div>`).join('')+'</div>';
+    document.getElementById('hotTipsters').innerHTML='<div style="opacity:.4">'+['80px','96px','72px'].map(_=>`<div class="ht-row" style="pointer-events:none"><span class="skel" style="width:24px;height:24px;border-radius:5px;flex-shrink:0;display:inline-block"></span><div style="flex:1;padding-left:8px"><span class="skel" style="width:${_};height:11px;display:block;margin-bottom:4px"></span><span class="skel" style="width:52px;height:8px;display:block"></span></div><span class="skel" style="width:28px;height:18px;border-radius:4px;display:inline-block"></span></div>`).join('')+'</div>';
   }
   renderMarketMoves();
   renderIntelFeed();

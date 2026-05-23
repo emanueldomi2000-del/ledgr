@@ -21,7 +21,7 @@
 body{min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.3}
 @keyframes bgBreathe{0%,100%{opacity:0.55}50%{opacity:1}}
-.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse,rgba(100,70,200,0.10),transparent 65%);pointer-events:none;z-index:0;animation:bgBreathe 12s ease-in-out infinite}
+.bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:1000px;height:800px;background:radial-gradient(ellipse,rgba(123,44,255,0.14),transparent 65%);pointer-events:none;z-index:0;animation:bgBreathe 12s ease-in-out infinite}
 
 /* ══ PRESTIGE MOTION ══ */
 @keyframes accentPulse{0%,100%{opacity:1}50%{opacity:0.45}}
@@ -70,7 +70,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .section-block{padding:20px 0 0}
 .section-head-row{display:flex;align-items:baseline;gap:12px;margin-bottom:16px}
 .section-head-row h2{font-family:var(--font-display);font-size:22px;letter-spacing:3px;color:var(--tx);padding-left:12px;position:relative}
-.section-head-row h2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
+.section-head-row h2::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
 .section-head-row span{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px}
 .rising-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .rising-card{padding:18px 16px;border-radius:16px;cursor:pointer;transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25s;position:relative;overflow:hidden}
@@ -145,7 +145,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .qa-icon{font-size:15px;flex-shrink:0}
 .qa-label{font-family:var(--font-display);font-size:13px;letter-spacing:1.5px;color:var(--tx)}
 .section-head{font-family:var(--font-display);font-size:15px;letter-spacing:3px;color:var(--mu2);margin-bottom:12px;padding-left:12px;position:relative}
-.section-head::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
+.section-head::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
 
 /* ══ TRENDING PICKS — with badges ══ */
 .picks-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px}
@@ -230,7 +230,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* ══ PANEL ══ */
 .panel{background:rgba(255,255,255,0.018);border:1px solid var(--bd);border-radius:16px;padding:20px}
-.panel-title{font-family:var(--font-display);font-size:15px;letter-spacing:3px;color:var(--mu2);margin-bottom:16px}
+.panel-title{font-family:var(--font-display);font-size:15px;letter-spacing:3px;color:var(--mu2);margin-bottom:16px;padding-left:12px;position:relative}
+.panel-title::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac);border-radius:2px;animation:accentPulse 3s ease-in-out infinite}
 
 /* STREAK */
 .streak-panel{display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:14px;flex-wrap:wrap;gap:8px}
@@ -351,7 +352,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .fade-in.visible{opacity:1;transform:translateY(0)}
 .hero-layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start;padding:20px 0 0;margin-bottom:20px}
 .hero-identity{display:flex;flex-direction:column;gap:12px;animation:fadeSlideUp .7s .15s ease both;opacity:0;animation-fill-mode:forwards}
-.identity-card{background:linear-gradient(135deg,rgba(184,159,255,0.07),rgba(100,70,200,0.03));border:1px solid rgba(184,159,255,0.12);border-radius:20px;padding:22px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.identity-card{background:linear-gradient(135deg,rgba(184,159,255,0.07),rgba(100,70,200,0.03));border:1px solid rgba(184,159,255,0.12);border-radius:20px;padding:22px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(123,44,255,0.08),0 8px 32px rgba(0,0,0,0.25)}
 .identity-card:hover{border-color:rgba(184,159,255,0.22);transform:translateY(-3px);box-shadow:0 16px 48px rgba(184,159,255,0.1)}
 .id-top{display:flex;align-items:center;gap:14px;margin-bottom:18px}
 .id-av{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--ac-vivid),var(--ac-light));display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;color:#fff;flex-shrink:0;position:relative;box-shadow:0 0 20px var(--glow-vivid)}
@@ -541,7 +542,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .id-av{width:80px!important;height:80px!important;border-radius:18px!important;font-size:28px!important;box-shadow:0 0 32px rgba(184,159,255,.22)!important;flex-shrink:0}
 .id-info{display:flex;flex-direction:column;gap:7px}
 .id-eyebrow{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:3px;text-transform:uppercase}
-.id-name{font-size:32px!important;letter-spacing:3px!important;line-height:1!important;margin-bottom:0!important}
+.id-name{font-size:36px!important;letter-spacing:3px!important;line-height:1!important;margin-bottom:0!important}
 @keyframes divBadgePulse{0%,100%{opacity:1}55%{opacity:.65}}
 .id-division{animation:divBadgePulse 3s ease-in-out infinite;width:fit-content}
 .id-stats{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:0!important;margin:18px 0 0!important;border-top:1px solid rgba(255,255,255,.05)}
@@ -729,7 +730,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <!-- PULSE -->
         <div class="fade-in" style="margin-bottom:20px">
           <div class="section-head">PULSE</div>
-          <div id="communityFeed"><div class="empty">Community waking up...</div></div>
+          <div id="communityFeed">
+            <div style="opacity:.45;pointer-events:none">
+              <div class="feed-card"><div class="feed-top"><span class="skel" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;display:inline-block"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px;padding-left:10px"><span class="skel skel-text" style="width:92px;height:12px;display:block"></span><span class="skel skel-text" style="width:54px;height:9px;display:block"></span></div><span class="skel" style="width:44px;height:28px;border-radius:6px;display:inline-block"></span></div></div>
+              <div class="feed-card"><div class="feed-top"><span class="skel" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;display:inline-block"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px;padding-left:10px"><span class="skel skel-text" style="width:110px;height:12px;display:block"></span><span class="skel skel-text" style="width:46px;height:9px;display:block"></span></div><span class="skel" style="width:44px;height:28px;border-radius:6px;display:inline-block"></span></div></div>
+              <div class="feed-card" style="border-bottom:none"><div class="feed-top"><span class="skel" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;display:inline-block"></span><div style="flex:1;display:flex;flex-direction:column;gap:5px;padding-left:10px"><span class="skel skel-text" style="width:76px;height:12px;display:block"></span><span class="skel skel-text" style="width:62px;height:9px;display:block"></span></div><span class="skel" style="width:44px;height:28px;border-radius:6px;display:inline-block"></span></div></div>
+            </div>
+          </div>
         </div>
 
         <!-- TRENDING PICKS -->

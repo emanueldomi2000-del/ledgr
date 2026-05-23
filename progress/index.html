@@ -181,6 +181,22 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .demotion-banner .db-icon { font-size:14px; flex-shrink:0; }
 .demotion-banner .db-pts { font-family:var(--font-display); font-size:14px; font-weight:700; margin-right:4px; }
 
+/* ── DIVISION TRACK ── */
+.div-track{display:flex;align-items:flex-end;justify-content:center;gap:0;padding:20px 0 0;position:relative;margin-bottom:8px}
+.div-track::before{content:'';position:absolute;bottom:24px;left:50%;transform:translateX(-50%);width:calc(100% - 80px);height:2px;background:linear-gradient(90deg,var(--bd),var(--bd2),var(--bd));z-index:0;border-radius:2px}
+.dt-node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;flex:1;cursor:default}
+.dt-icon{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.06);background:var(--s2);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;position:relative}
+.dt-icon img{width:22px;height:22px;opacity:.35}
+.dt-node.dt-past .dt-icon{border-color:rgba(255,255,255,.12)}
+.dt-node.dt-past .dt-icon img{opacity:.55}
+.dt-node.dt-current .dt-icon{width:52px;height:52px;border-width:2.5px;margin-bottom:4px}
+.dt-node.dt-current .dt-icon img{width:28px;height:28px;opacity:.9}
+.dt-node.dt-locked .dt-icon img{opacity:.18}
+.dt-label{font-family:var(--font-mono);font-size:7px;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;opacity:.55;white-space:nowrap}
+.dt-node.dt-current .dt-label{opacity:1;font-weight:700}
+.dt-node.dt-past .dt-label{opacity:.7}
+@keyframes dtNodeGlow{0%,100%{box-shadow:0 0 0 0 currentColor}60%{box-shadow:0 0 0 6px transparent}}
+
 /* ── IDENTITY: JOURNEY / EVOLUTION ── */
 @keyframes riseUp{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.52;transform:translateX(-50%) translateY(-18px)}}
 .bg-horizon{position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:1200px;height:380px;background:radial-gradient(ellipse,rgba(251,146,60,.07),rgba(251,191,36,.04) 30%,transparent 65%);pointer-events:none;z-index:0;animation:riseUp 11s ease-in-out infinite}
@@ -475,8 +491,9 @@ function buildHTML(d) {
             <div class="hero-bar-fill" id="heroBarFill" style="width:0%;background:linear-gradient(90deg,${divColor}aa,${divColor})"></div>
           </div>
           ${isEmpty
-            ? `<div class="hero-bar-sub">Start your journey — post your first pick</div>
-               <a href="/dashboard" style="display:inline-block;background:var(--ac);color:#07060d;padding:7px 18px;border-radius:8px;font-family:var(--font-display);font-size:13px;letter-spacing:2px;text-decoration:none;margin-top:10px">Post First Pick →</a>`
+            ? `<div style="font-family:var(--font-display);font-size:clamp(22px,3vw,30px);letter-spacing:4px;color:${divColor};margin:6px 0 4px;line-height:1;text-shadow:0 0 24px ${divColor}66">START YOUR JOURNEY</div>
+               <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:12px">Every legend begins with pick #1</div>
+               <a href="/dashboard" style="display:inline-flex;align-items:center;gap:8px;background:var(--ac);color:#07060d;padding:9px 22px;border-radius:9px;font-family:var(--font-display);font-size:14px;letter-spacing:2px;text-decoration:none;box-shadow:0 4px 20px rgba(184,159,255,.3)">POST FIRST PICK →</a>`
             : `<div class="hero-bar-sub">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
                ${picks.length >= 5 ? `<div class="hero-bar-week" style="color:var(--gr)">↑ ${myRank > 0 ? '#'+myRank+' globally' : 'Unranked'}</div>` : ''}`
           }
@@ -588,10 +605,12 @@ function buildHTML(d) {
     </div>
   ` : '';
 
+  const divTrack = buildDivTrack(actualElo);
   const div = `<div class="logo-divider"><img src="/assets/logo/ledgr-icon.png" alt=""></div>`;
 
   return `
     ${heroHTML}
+    ${divTrack}
     ${div}
     <div class="two-col">
       <div>
@@ -618,6 +637,26 @@ function buildHTML(d) {
     </div>
     ${bottomCTA}
   `;
+}
+
+function buildDivTrack(actualElo) {
+  const TIER_FILTERS = {
+    BRONZE:   'sepia(1) saturate(1.3) hue-rotate(20deg) brightness(0.9)',
+    SILVER:   'saturate(0.2) brightness(0.82)',
+    GOLD:     'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.15)',
+    PLATINUM: 'sepia(1) saturate(3) hue-rotate(175deg) brightness(1.1)',
+    DIAMOND:  'sepia(1) saturate(2.5) hue-rotate(215deg) brightness(1.1)',
+    ELITE:    'sepia(1) saturate(2.5) hue-rotate(280deg) brightness(0.95)',
+    LEGENDARY:'sepia(1) saturate(4) hue-rotate(0deg) brightness(1.25)',
+  };
+  const currentTier = getEloTier(actualElo);
+  const currentIdx = ELO_TIERS.findIndex(t => t.name === currentTier.name);
+  return `<div class="div-track">` + ELO_TIERS.map((t, i) => {
+    const state = i < currentIdx ? 'dt-past' : i === currentIdx ? 'dt-current' : 'dt-locked';
+    const glow = i === currentIdx ? `box-shadow:0 0 0 3px ${t.color}44,0 0 16px ${t.color}33;border-color:${t.color};` : i < currentIdx ? `border-color:${t.color}88;` : '';
+    const flt = TIER_FILTERS[t.name] || '';
+    return `<div class="dt-node ${state}"><div class="dt-icon" style="${glow}"><img src="/assets/logo/ledgr-icon.png" alt="" style="filter:${flt}"></div><span class="dt-label" style="${i===currentIdx?'color:'+t.color:''}">${t.name}</span></div>`;
+  }).join('') + `</div>`;
 }
 
 function momentCard(icon, label, value, dateStr, divColor) {
