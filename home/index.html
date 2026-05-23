@@ -2145,9 +2145,26 @@ function subscribeWS(){
 
   window.LedgrWS.on('division_up',function(ev){
     if(!window.LedgrWS.isVisible())return;
+    const p=ev.payload||{};
+    // Own promotion — fire full ceremony
+    if(user&&ev.targetUserId===user.id){
+      const divDef=window.Divisions&&p.toDivision?window.Divisions.DEFS.find(function(d){return d.name===p.toDivision;}):null;
+      if(divDef&&window.rankUpAnimation){
+        const laCls='la-div-'+divDef.name.toLowerCase().replace('legendary','legend');
+        window.rankUpAnimation({name:divDef.name,cls:laCls,icon:divDef.icon});
+      }
+      return;
+    }
     if((ev._rarity||1)<3)return;
-    const p=ev.payload||{};const u=ev.username||'';
+    const u=ev.username||'';
     _addToTicker((DIV_ICON[p.toDivision]||'🏆')+' <b>@'+u+'</b> reached <b>'+p.toDivision+'</b>');
+  });
+
+  window.LedgrWS.on('division_down',function(ev){
+    if(!window.LedgrWS.isVisible())return;
+    if(!user||ev.targetUserId!==user.id)return;
+    const p=ev.payload||{};
+    if(window.divisionDownAnimation)window.divisionDownAnimation(p.toDivision||ev.division);
   });
 }
 </script>

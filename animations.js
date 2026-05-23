@@ -114,6 +114,18 @@
 .la-streak-broken-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;color:rgba(148,163,184,.4);text-transform:uppercase;margin-top:6px}
 .la-streak-broken-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(148,163,184,.25);margin-top:8px}
 
+/* DIVISION DROPPED */
+.la-divdown-overlay{position:fixed;inset:0;z-index:8900;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(6,5,8,0);animation:la-dd-bg .3s ease forwards}
+@keyframes la-dd-bg{to{background:rgba(6,5,8,.88)}}
+.la-divdown-card{background:#0d0508;border:1px solid rgba(255,51,85,.22);border-radius:20px;padding:36px 52px;text-align:center;box-shadow:0 0 60px rgba(255,51,85,.1),0 20px 60px rgba(0,0,0,.7);transform:scale(.82) translateY(20px);opacity:0;animation:la-dd-in .45s .15s cubic-bezier(.34,1.4,.64,1) forwards}
+@keyframes la-dd-in{to{transform:scale(1) translateY(0);opacity:1}}
+.la-divdown-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:5px;color:rgba(255,51,85,.6);text-transform:uppercase;margin-bottom:10px}
+.la-divdown-headline{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#ff3355;line-height:1;text-shadow:0 0 40px rgba(255,51,85,.3);margin-bottom:8px}
+.la-divdown-division{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:3px;color:rgba(230,200,210,.6);margin-bottom:24px}
+.la-divdown-cta{display:inline-block;padding:10px 28px;border-radius:10px;background:rgba(255,51,85,.12);border:1px solid rgba(255,51,85,.3);font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:#ff8899;text-decoration:none;cursor:pointer;transition:background .2s}
+.la-divdown-cta:hover{background:rgba(255,51,85,.22)}
+.la-divdown-tap{font-family:'DM Mono',monospace;font-size:9px;color:rgba(240,237,255,.18);letter-spacing:2px;margin-top:16px;animation:la-blink 1.5s .6s infinite}
+
 /* ── SEASON END ── */
 .la-season-overlay{position:fixed;inset:0;z-index:9100;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(4,3,9,0);animation:la-sn-bg .5s ease forwards}
 @keyframes la-sn-bg{to{background:rgba(4,3,9,.97)}}
@@ -330,6 +342,30 @@
       '</div>';
     document.body.appendChild(wrap);
     setTimeout(function () { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); }, 4600);
+  };
+
+  // ── divisionDownAnimation ────────────────────────────────────────────
+  window.divisionDownAnimation = function (newDivName) {
+    newDivName = (newDivName || 'BRONZE').toUpperCase();
+    var overlay = document.createElement('div');
+    overlay.className = 'la-divdown-overlay';
+    overlay.innerHTML =
+      '<div class="la-divdown-card">' +
+        '<div class="la-divdown-eyebrow">DIVISION CHANGE</div>' +
+        '<div class="la-divdown-headline">DIVISION DROPPED</div>' +
+        '<div class="la-divdown-division">Now in ' + newDivName + '</div>' +
+        '<a class="la-divdown-cta" href="/dashboard">Fight back →</a>' +
+        '<div class="la-divdown-tap">Tap to dismiss</div>' +
+      '</div>';
+    document.body.appendChild(overlay);
+    function dismiss() {
+      overlay.style.transition = 'opacity .4s ease';
+      overlay.style.opacity = '0';
+      overlay.style.pointerEvents = 'none';
+      setTimeout(function () { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); }, 420);
+    }
+    overlay.addEventListener('click', dismiss);
+    setTimeout(dismiss, 4000);
   };
 
   // ── streakAnimation ──────────────────────────────────────────────────

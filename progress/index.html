@@ -174,6 +174,13 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
   .hero-av { width:64px; height:64px; font-size:22px; }
 }
 
+/* ── Demotion Warning ── */
+.demotion-banner { display:flex; align-items:center; gap:10px; margin-top:10px; padding:9px 14px; border-radius:8px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.5px; }
+.demotion-banner.at-risk { background:rgba(255,51,85,0.07); border:1px solid rgba(255,51,85,0.25); color:#ff8899; }
+.demotion-banner.safe { background:rgba(0,229,160,0.05); border:1px solid rgba(0,229,160,0.18); color:var(--gr); }
+.demotion-banner .db-icon { font-size:14px; flex-shrink:0; }
+.demotion-banner .db-pts { font-family:var(--font-display); font-size:14px; font-weight:700; margin-right:4px; }
+
 /* ── IDENTITY: JOURNEY / EVOLUTION ── */
 @keyframes riseUp{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.52;transform:translateX(-50%) translateY(-18px)}}
 .bg-horizon{position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:1200px;height:380px;background:radial-gradient(ellipse,rgba(251,146,60,.07),rgba(251,191,36,.04) 30%,transparent 65%);pointer-events:none;z-index:0;animation:riseUp 11s ease-in-out infinite}
@@ -244,10 +251,11 @@ function computeEloFromDivScore(divScore) {
 async function loadProgress() {
   const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Request timed out. <a href="/home" style="color:var(--ac)">Go home →</a></div>';},25000);
   try {
-    const [picksRes, rankingsRes, seasonsRes] = await Promise.all([
+    const [picksRes, rankingsRes, seasonsRes, historyRes] = await Promise.all([
       fetch(API + '/picks?userId=' + USER_ID, { cache: 'no-store', signal: _ctrl.signal, headers: { Authorization: 'Bearer ' + _t } }),
       fetch(API + '/rankings', { cache: 'no-store' }).catch(() => null),
       fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null),
+      fetch(API + '/rankings/' + encodeURIComponent(USERNAME) + '/history', { cache: 'no-store' }).catch(() => null),
     ]);
 
     clearTimeout(_xt);
@@ -282,7 +290,12 @@ async function loadProgress() {
       } catch(e) {}
     }
 
-    renderAll(myPicks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons);
+    let rankHistory = [];
+    if (historyRes && historyRes.ok) {
+      try { const h = await historyRes.json(); if (Array.isArray(h)) rankHistory = h; } catch(e) {}
+    }
+
+    renderAll(myPicks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons, rankHistory);
   } catch(e) {
     clearTimeout(_xt);
     document.getElementById('mainContent').innerHTML =
@@ -290,7 +303,8 @@ async function loadProgress() {
   }
 }
 
-function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons) {
+function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons, rankHistory) {
+  rankHistory = rankHistory || [];
   const wins   = picks.filter(p => p.result === 'win').length;
   const losses = picks.filter(p => p.result === 'loss').length;
   const pushes = picks.filter(p => p.result === 'push').length;
@@ -357,6 +371,18 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
     picks: settledPicks, currentStreak, streakType: streak>0?'win':'', clvAvg, avgOdds, roi, winRate
   }) : null;
 
+  // Division score & demotion check
+  const DIV_THRESHOLDS = {BRONZE:0,SILVER:20,GOLD:35,PLATINUM:50,DIAMOND:65,ELITE:80,LEGENDARY:92};
+  const divScore = Math.round(
+    Math.min(40, Math.max(0, (roi / 20) * 40)) +
+    Math.min(30, Math.max(0, (winRate * 100 / 70) * 30)) +
+    Math.min(20, Math.max(0, (picks.length / 100) * 20)) +
+    Math.min(10, picks.length)
+  );
+  const currentThreshold = DIV_THRESHOLDS[divisionName] ?? 0;
+  const pointsAbove = divScore - currentThreshold;
+  const demotionAtRisk = picks.length > 0 && divisionName !== 'BRONZE' && pointsAbove < 8;
+
   const biggestWin = wins > 0 ? Math.max(...picks.filter(p=>p.result==='win').map(p=>p.pnl||0)) : null;
   const biggestWinDate = biggestWin != null ? picks.find(p=>p.result==='win'&&Math.abs((p.pnl||0)-biggestWin)<0.01)?.createdAt : null;
 
@@ -378,7 +404,8 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
     recent14, roi14, wr14, pnl14, trend,
     radarAxes, flowState, divisionName,
     biggestWin, biggestWinDate, bestDay, myRank,
-    activeSeason, pastSeasons, totalPnl, totalStake, rankingMeta
+    activeSeason, pastSeasons, totalPnl, totalStake, rankingMeta,
+    divScore, pointsAbove, demotionAtRisk, rankHistory
   });
 
   requestAnimationFrame(() => {
@@ -417,7 +444,8 @@ function buildHTML(d) {
     recent14, roi14, wr14, pnl14, trend,
     radarAxes, flowState, divisionName,
     biggestWin, biggestWinDate, bestDay,
-    activeSeason, pastSeasons, totalPnl, rankingMeta
+    activeSeason, pastSeasons, totalPnl, rankingMeta,
+    divScore, pointsAbove, demotionAtRisk, rankHistory
   } = d;
 
   const divColor = tier.color;
@@ -458,6 +486,20 @@ function buildHTML(d) {
         </div>`}
       </div>
     </div>
+    ${(!isEmpty && demotionAtRisk) ? `
+    <div class="demotion-banner at-risk">
+      <span class="db-icon">↓</span>
+      <span>⚠️ At risk of demotion</span>
+      <span style="margin-left:auto">
+        <span class="db-pts">${pointsAbove < 0 ? Math.abs(pointsAbove) + ' pts below' : pointsAbove + ' pts above'}</span>
+        <span style="color:rgba(255,136,153,0.6)">${divisionName} threshold (${divScore} / ${(({BRONZE:0,SILVER:20,GOLD:35,PLATINUM:50,DIAMOND:65,ELITE:80,LEGENDARY:92})[divisionName] || 0)})</span>
+      </span>
+    </div>` : (!isEmpty && !demotionAtRisk && divisionName !== 'BRONZE' && picks.length > 0) ? `
+    <div class="demotion-banner safe">
+      <span class="db-icon">↑</span>
+      <span>Division secure</span>
+      <span style="margin-left:auto;color:rgba(0,229,160,0.6)">+${pointsAbove} pts above ${divisionName} threshold</span>
+    </div>` : ''}
   `;
 
   const timeline = buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, tier.color);
@@ -509,7 +551,7 @@ function buildHTML(d) {
     </div>
   `;
 
-  const seasonHTML = buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName);
+  const seasonHTML = buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, rankHistory);
 
   const biggestWinStr = biggestWin != null ? `+${biggestWin.toFixed(2)}u` : '—';
   const biggestWinDateStr = biggestWinDate ? new Date(biggestWinDate).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : '';
@@ -813,7 +855,8 @@ function animateRadar() {
   });
 }
 
-function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
+function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, rankHistory) {
+  rankHistory = rankHistory || [];
   const DIV_REWARDS = {
     BRONZE:   { icon:'▲', label:'Basic Badge', color:'#b47850' },
     SILVER:   { icon:'◆', label:'Profile Border', color:'#94a3b8' },
@@ -862,6 +905,40 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
     </div>
   ` : '';
 
+  // Division change history from weekly snapshots
+  let divHistoryHTML = '';
+  if (rankHistory.length >= 2) {
+    const changes = [];
+    for (let i = 1; i < rankHistory.length; i++) {
+      const prev = rankHistory[i-1];
+      const cur  = rankHistory[i];
+      if (prev.division && cur.division && prev.division !== cur.division) {
+        const divOrder = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
+        const prevIdx = divOrder.indexOf(prev.division);
+        const curIdx  = divOrder.indexOf(cur.division);
+        if (prevIdx !== -1 && curIdx !== -1) {
+          changes.push({
+            week:      cur.isoWeek,
+            direction: curIdx > prevIdx ? 'up' : 'down',
+            from:      prev.division,
+            to:        cur.division,
+          });
+        }
+      }
+    }
+    if (changes.length) {
+      divHistoryHTML = `<div style="margin-top:16px">
+        <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:8px">Division History</div>
+        ${changes.slice(-5).reverse().map(c=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd);font-family:var(--font-mono);font-size:10px">
+            <span style="color:${c.direction==='up'?'var(--gr)':'var(--rd)'}">${c.direction==='up'?'↑ Promoted':'↓ Demoted'}</span>
+            <span style="color:var(--mu2)">${c.from} → ${c.to}</span>
+            <span style="color:var(--mu);margin-left:auto">${c.week}</span>
+          </div>`).join('')}
+      </div>`;
+    }
+  }
+
   return `
     <div class="sec-title">Season Progression</div>
     <div class="season-hero">
@@ -871,6 +948,7 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName) {
         <div class="season-countdown-fill" style="width:${seasonPct}%"></div>
       </div>
       <div class="rewards-row">${rewardsRow}</div>
+      ${divHistoryHTML}
       ${pastHTML}
     </div>
   `;

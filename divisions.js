@@ -87,6 +87,23 @@
 .dv-pill-md{font-size:10px;padding:3px 11px}
 .dv-pill-lg{font-size:11px;padding:4px 14px}
 
+/* ── Pyramid icon badges (CSS mask-based tint) ── */
+.dv-pyr{display:inline-block;background-repeat:no-repeat;background-position:center;background-size:contain;flex-shrink:0;
+  -webkit-mask:url('/assets/logo/ledgr-icon.png') center/contain no-repeat;
+  mask:url('/assets/logo/ledgr-icon.png') center/contain no-repeat}
+.dv-pyr-sm{width:10px;height:10px}
+.dv-pyr-md{width:13px;height:13px}
+.dv-pyr-lg{width:16px;height:16px}
+.dv-pyr-xl{width:22px;height:22px}
+.dv-pyr-bronze  {background-color:#CD7F32}
+.dv-pyr-silver  {background-color:#C0C0C0}
+.dv-pyr-gold    {background-color:#FFD700}
+.dv-pyr-platinum{background-color:#4FC3F7}
+.dv-pyr-diamond {background-color:#00E5FF;filter:drop-shadow(0 0 4px rgba(0,229,255,0.55))}
+.dv-pyr-elite   {background-color:#7B2CFF;filter:drop-shadow(0 0 5px rgba(123,44,255,0.65))}
+.dv-pyr-legendary{background-color:#FFD700;animation:dv-pyr-rainbow 2.5s linear infinite}
+@keyframes dv-pyr-rainbow{to{filter:hue-rotate(360deg) drop-shadow(0 0 5px rgba(251,191,36,0.5))}}
+
 .dv-pill-bronze  {background:rgba(180,120,80,.12);border:1px solid rgba(180,120,80,.3);color:#c49070}
 .dv-pill-silver  {background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.28);color:#94a3b8}
 .dv-pill-gold    {background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.38);color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.35)}
@@ -186,12 +203,21 @@
            '</div>';
   }
 
-  // Division badge pill HTML (replaces existing badge pill at call site)
+  // Pyramid icon HTML for a division — size: 'sm'|'md'|'lg'|'xl'
+  // Returns a <span> using CSS mask tinting instead of character icons
+  function pyramidHTML(divDef, size) {
+    size = size || 'md';
+    var nameLow = divDef.name.toLowerCase();
+    return '<span class="dv-pyr dv-pyr-' + size + ' dv-pyr-' + nameLow + '" aria-label="' + divDef.name + '"></span>';
+  }
+
+  // Division badge pill HTML — includes pyramid icon
   // size: 'sm' | 'md' | 'lg'
   function pillHTML(divDef, size) {
     size = size || 'md';
+    var pyrSize = size === 'lg' ? 'md' : 'sm';
     return '<span class="dv-pill dv-pill-' + size + ' ' + divDef.pillCls + '">' +
-             divDef.icon + ' ' + divDef.name +
+             pyramidHTML(divDef, pyrSize) + ' ' + divDef.name +
            '</span>';
   }
 
@@ -271,6 +297,7 @@
     calcScore    : calcScore,
     avHTML       : avHTML,
     pillHTML     : pillHTML,
+    pyramidHTML  : pyramidHTML,
     applyGlow    : applyGlow,
     DEFS         : DEFS,
   };

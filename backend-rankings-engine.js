@@ -150,9 +150,12 @@ function enrichFlowState(id) {
   return { id, ...FLOW_META[id] };
 }
 
+const DIVISION_ORDER = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
+
 // ─── Core recalculation function ──────────────────────────────────────────────
 // Call this after every pick is graded.
-async function recalcUserRankings(db, userId) {
+// opts.broadcast(event) — optional WS broadcast function for division_down events.
+async function recalcUserRankings(db, userId, opts) {
   // Fetch all graded picks for this user (win/loss/push only)
   const [picks] = await db.query(`
     SELECT result, odds, stake, pnl, sport, market, eloAfter, clv, createdAt
@@ -236,10 +239,13 @@ async function recalcUserRankings(db, userId) {
   const archetype = detectArchetype(statsForDetection);
   const flowState = detectFlowState(statsForDetection);
 
-  // Get username
+  // Get username and current division (before upsert — for demotion detection)
   const [userRows] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [userId]);
   if (!userRows.length) return;
   const { username } = userRows[0];
+
+  const [prevRankRows] = await db.query('SELECT division FROM user_rankings WHERE userId = ? LIMIT 1', [userId]);
+  const prevDivision = prevRankRows.length ? prevRankRows[0].division : null;
 
   // Upsert user_rankings
   await db.query(`
@@ -270,6 +276,21 @@ async function recalcUserRankings(db, userId) {
     currentStreak, streakType, bestStreak,
     archetype, flowState, isLive, lastPickAt, avgOdds != null ? avgOdds.toFixed(4) : null,
   ]);
+
+  // Detect division demotion and broadcast if callback provided
+  if (prevDivision && prevDivision !== division) {
+    const prevIdx = DIVISION_ORDER.indexOf(prevDivision);
+    const newIdx  = DIVISION_ORDER.indexOf(division);
+    if (prevIdx > newIdx && prevIdx >= 0 && newIdx >= 0) {
+      const event = {
+        type:         'division_down',
+        targetUserId: userId,
+        username,
+        payload: { fromDivision: prevDivision, toDivision: division },
+      };
+      if (opts && typeof opts.broadcast === 'function') opts.broadcast(event);
+    }
+  }
 
   // Update recent_picks_cache with the 3 most recent graded picks
   const recent = picks.slice(-3).reverse();  // [newest, ..., oldest]
