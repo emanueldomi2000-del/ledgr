@@ -697,14 +697,15 @@ function buildLbTicker(tipsters, picks) {
   const roiVal = topRoi ? (topRoi.roi!=null?topRoi.roi:(topRoi.stake>0?(topRoi.pnl/topRoi.stake)*100:0)) : 0;
   const champ = tipsters[0];
   const rank2 = tipsters[1];
-  const msgs = [];
-  if (topStreak) msgs.push(`🔥 HOT: <span>@${topStreak.username} ${topStreak.streak}W</span>`);
-  if (topRoi) msgs.push(`👑 GOAT ROI: <span>@${topRoi.username} ${roiVal>=0?'+':''}${roiVal.toFixed(1)}%</span>`);
-  if (todayPicks > 0) msgs.push(`📈 TODAY: <span>${todayPicks} picks posted</span>`);
-  if (champ && rank2) msgs.push(`⚔️ GAP: <span>@${champ.username} leads by ${((champ.roi||0)-(rank2.roi||0)).toFixed(1)}%</span>`);
-  msgs.push(`🔒 VERIFIED: <span>Zero fake records. Ever.</span>`);
-  if (msgs.length < 3) msgs.push(`⚡ ACTIVE: <span>${tipsters.length} tipsters competing</span>`);
-  const full = [...msgs,...msgs].map(m=>`<span class="lb-tick-item" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mu);flex-shrink:0;padding:0 24px;">${m}</span>`).join('');
+  const champRoi = champ ? (champ.roi!=null?champ.roi:(champ.stake>0?(champ.pnl/champ.stake)*100:0)) : 0;
+  const tickerMsgs = [
+    champ ? `👑 THRONE: @${champ.username} +${champRoi.toFixed(1)}% ROI` : null,
+    topStreak ? `🔥 HOT: @${topStreak.username} ${topStreak.streak}W streak` : null,
+    champ && rank2 ? `⚔️ GAP: @${champ.username} leads by ${Math.abs(champRoi-(rank2.roi||0)).toFixed(1)}%` : null,
+    `📈 ACTIVE: ${tipsters.length||0} verified tipsters`,
+    `🔒 LEDGR: Zero fake records. Ever.`
+  ].filter(Boolean);
+  const full = [...tickerMsgs,...tickerMsgs].map(m=>`<span style="padding:0 32px;font-family:'DM Mono',monospace;font-size:12px;color:var(--mu);flex-shrink:0;">${m}</span>`).join('');
   const el = document.getElementById('lbTicker');
   if (el) {
     el.innerHTML = full;
@@ -1053,6 +1054,14 @@ function renderLeaderboard() {
     const top3 = list.slice(0, 3);
     const ORDER = [1, 0, 2]; // silver-center-gold, gold-center position
     const getStr = v => { if (!v) return ''; if (typeof v === 'string') return v; if (typeof v === 'object') return v.name || v.label || v.value || ''; return String(v); };
+    const getEgoLine = (champ, rank2) => {
+      if (!rank2) return 'Uncontested at the top';
+      const gap = Math.abs((champ.roi||0)-(rank2.roi||0)).toFixed(1);
+      if (champ.streak >= 5) return `${champ.streak}W streak — untouchable`;
+      if (parseFloat(gap) > 100) return `Leading @${rank2.username} by +${gap}% ROI`;
+      if (champ.rank === 1) return `King of Season 3`;
+      return `#1 on the verified leaderboard`;
+    };
     podiumEl.innerHTML = ORDER.map(i => {
       const t    = top3[i];
       const roi  = t.roi != null ? t.roi : (t.stake > 0 ? (t.pnl / t.stake * 100) : 0);
@@ -1079,13 +1088,14 @@ function renderLeaderboard() {
           <div style="text-align:center;padding:0 6px;">
             <div style="font-size:9px;letter-spacing:0.2em;color:#FFD700;font-family:'DM Mono';margin-bottom:6px;">👑 CURRENT CHAMPION</div>
             <div style="font-family:'Bebas Neue';font-size:20px;color:var(--tx);margin:4px 0 2px;">@${t.username}</div>
-            <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:8px;">${getStr(t.archetype)||'The Sharp'} · ${div.name}</div>
+            <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:4px;">${getStr(t.archetype)||'The Sharp'} · ${div.name}</div>
+            <div style="font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;margin:4px 0 8px;padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;">"${getEgoLine(t, top3[1])}"</div>
             <div style="font-family:'Bebas Neue';font-size:34px;color:#00E5A0;line-height:1;margin-bottom:2px;">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
             <div style="font-size:9px;color:var(--mu);font-family:'DM Mono';margin-bottom:10px;letter-spacing:0.1em;">ROI</div>
-            <div style="display:flex;justify-content:center;gap:14px;margin-bottom:10px;">
-              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:16px;">${t.picks||0}</div><div style="font-size:8px;color:var(--mu);">PICKS</div></div>
-              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:16px;">${wr.toFixed(0)}%</div><div style="font-size:8px;color:var(--mu);">WIN RATE</div></div>
-              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:16px;">${Math.round(t.sharpScore||0)}</div><div style="font-size:8px;color:var(--mu);">SHARP</div></div>
+            <div style="display:flex;justify-content:center;gap:20px;margin:12px 0;">
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:28px;color:var(--tx);line-height:1;">${t.picks||0}</div><div style="font-size:9px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono';">PICKS</div></div>
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:28px;color:var(--tx);line-height:1;">${wr.toFixed(0)}%</div><div style="font-size:9px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono';">WIN RATE</div></div>
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:28px;color:${(t.sharpScore||0)>70?'#00E5A0':(t.sharpScore||0)>40?'#FFD700':'#FF3355'};line-height:1;">${Math.round(t.sharpScore||0)}</div><div style="font-size:9px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono';">SHARP</div></div>
             </div>
             ${t.streak>0?`<div style="font-size:11px;color:#FF6B35;font-family:'DM Mono';margin-bottom:6px;">🔥 ${t.streak}W streak active</div>`:''}
             <div class="champ-extras" id="champExtras"></div>
@@ -1104,6 +1114,9 @@ function renderLeaderboard() {
           <div style="margin-bottom:6px">${divPill}</div>
           ${archHtml}
           ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak}-win streak</div>`:''}
+          <div style="font-size:10px;color:${i===1?'#C0C0C0':'#CD7F32'};font-family:'DM Mono',monospace;margin-top:8px;text-align:center;">
+            ${t.streak>0?`🔥 ${t.streak}W streak`:roi>0?`📈 +${roi.toFixed(1)}% ROI`:i===1?'⚔️ Chasing the throne':'⚔️ Fighting for podium'}
+          </div>
         `}
         <div class="podium-elo">⚡ ELO <span data-elo="${eloDisplay}">${eloDisplay}</span></div>
         <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
@@ -1126,6 +1139,17 @@ function renderLeaderboard() {
       setTimeout(() => {
         _p1Card.style.setProperty('animation', 'goldBreath 4s ease-in-out infinite', 'important');
       }, 1500);
+      // Gold radial glow layer + inner watermark
+      if (!_p1Card.querySelector('._p1glow')) {
+        const _glow = document.createElement('div');
+        _glow.className = '_p1glow';
+        _glow.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 50% 30%,rgba(255,215,0,0.08) 0%,transparent 65%);pointer-events:none;z-index:0;';
+        _p1Card.insertBefore(_glow, _p1Card.firstChild);
+        const _wmInner = document.createElement('img');
+        _wmInner.src = '/assets/logo/ledgr-icon.png';
+        _wmInner.style.cssText = 'position:absolute;bottom:-10px;right:-10px;height:140px;width:auto;opacity:0.025;pointer-events:none;z-index:0;';
+        _p1Card.appendChild(_wmInner);
+      }
     }
 
     // Division-based podium background + watermark
