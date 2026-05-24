@@ -400,6 +400,19 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bg-glow{background:radial-gradient(ellipse,rgba(123,44,255,.08),transparent 70%)!important}
 .bg-prestige{position:fixed;inset:0;background:radial-gradient(ellipse 70% 45% at 50% 0%,rgba(184,159,255,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
 .bg-vignette{position:fixed;inset:0;background:radial-gradient(ellipse 85% 70% at 50% 20%,transparent 45%,rgba(0,0,0,.28) 100%);pointer-events:none;z-index:0}
+@keyframes heroParticle{0%,100%{transform:translateY(0);opacity:0.3}50%{transform:translateY(-20px);opacity:0}}
+@keyframes ringRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.trophy-item{transition:border-color .2s,transform .18s,box-shadow .18s!important}
+.trophy-item:hover:not(.locked){border-color:rgba(123,44,255,0.3)!important;box-shadow:0 0 16px rgba(123,44,255,0.25)!important;transform:translateY(-2px)!important}
+.community-impact{margin:12px 0 4px}
+.ci-grid{display:flex;gap:10px;margin-top:8px}
+.ci-stat{flex:1;text-align:center;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px 6px}
+.ci-value{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--ac);line-height:1}
+.ci-label{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:0.1em;text-transform:uppercase;margin-top:4px}
+.hero-quick-stats{margin-top:10px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hqs-item{display:flex;align-items:center;gap:5px}
+.hqs-label{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:0.05em}
+.hqs-val{font-family:'Bebas Neue',sans-serif;font-size:14px}
 </style>
 </head>
 <body>
@@ -488,6 +501,22 @@ function getBadges(picks){
   return{badges,streak};
 }
 
+function getStreakStatus(picks){
+  const settled=picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  if(!settled.length)return null;
+  let streak=0;const dir=settled[0].result;
+  for(const p of settled){if(p.result===dir)streak++;else break;}
+  if(dir==='win'&&streak>=3)return{label:'🔥 W'+streak+' Streak',color:'#FF6B35'};
+  if(dir==='win'&&streak>=1)return{label:'✅ On Track',color:'#00E5A0'};
+  if(dir==='loss'&&streak>=3)return{label:'⚠ Cold Streak',color:'#FF3355'};
+  return null;
+}
+function countUp(el,target,prefix='',suffix=''){
+  if(!el||isNaN(parseFloat(target)))return;
+  const num=parseFloat(target);const dur=800;const start=Date.now();
+  const tick=()=>{const p=Math.min((Date.now()-start)/dur,1);const e=1-Math.pow(1-p,3);const val=num*e;el.textContent=prefix+(Number.isInteger(num)?Math.round(val):val.toFixed(1))+suffix;if(p<1)requestAnimationFrame(tick);};
+  requestAnimationFrame(tick);
+}
 function drawPnLChart(picks,containerId){
   const el=document.getElementById(containerId);
   if(!el||picks.length<2)return;
@@ -797,6 +826,8 @@ async function initSubscriptionUI(tipsterUserId){
       cntEl.textContent='· '+d.count+(d.count===1?' subscriber':' subscribers');
       cntEl.style.display='block';
     }
+    const ciSub=document.getElementById('ciSubscribers');
+    if(ciSub&&d.count>0)countUp(ciSub,d.count);
   }catch(_){}
 
   // Hide subscribe button on own profile or if not logged in
@@ -1141,7 +1172,7 @@ async function loadProfile(){
     const flowState=rankingMeta&&rankingMeta.flowState
       ? rankingMeta.flowState
       : (window.Flow?window.Flow.detect(allPicks):null);
-    const flowBadgeHTML=flowState?window.Flow.badgeHTML(flowState):'';
+    const flowBadgeHTML=(flowState&&window.Flow&&!(flowState.id==='cold_streak'&&parseFloat(roi)>0))?window.Flow.badgeHTML(flowState):'';
 
     // Custom avatar / banner image from localStorage
     const avKey=tipsterUserId||username;
@@ -1218,6 +1249,21 @@ async function loadProfile(){
               <button class="sub-btn" id="subBtn" data-tipster-id="${tipsterUserId||''}" data-tipster-username="${username}" onclick="handleSubscribe()">Subscribe €10/mo</button>
             </div>
             <div class="badges-row" style="margin-top:14px">${badgesHtml}</div>
+            <div class="hero-quick-stats">
+              <div class="hqs-item"><span style="font-size:13px">⚡</span><span class="hqs-label">REL</span><span class="hqs-val" style="color:var(--ac)">${score>0?score:'—'}</span></div>
+              ${rank>0?`<div class="hqs-item"><span style="font-size:13px">🏆</span><span class="hqs-label">RANK</span><span class="hqs-val" style="color:var(--gold)">#${rank}</span></div>`:''}
+              <div class="hqs-item"><span style="font-size:13px">📈</span><span class="hqs-label">ROI</span><span class="hqs-val" style="color:#00E5A0">${parseFloat(roi)>=0?'+':''}${roi}%</span></div>
+              ${streak>=1?`<div class="hqs-item"><span style="font-size:13px">🔥</span><span class="hqs-val" style="color:#FF6B35">W${streak}</span></div>`:''}
+            </div>
+            <div class="community-impact">
+              <div class="ci-grid">
+                <div class="ci-stat"><div class="ci-value" id="ciFollowers">—</div><div class="ci-label">Followers</div></div>
+                <div class="ci-stat"><div class="ci-value" id="ciFollowing">—</div><div class="ci-label">Following</div></div>
+                <div class="ci-stat"><div class="ci-value" id="ciSubscribers">—</div><div class="ci-label">Subscribers</div></div>
+              </div>
+            </div>
+            <div id="followerCount" style="display:none"></div>
+            <div id="subscriberCount" style="display:none"></div>
             <div class="dna-tags">${getDNATags(allPicks).map(t=>`<span class="dna-tag ${t.cls}">${t.icon} ${t.label}</span>`).join('')}</div>
             ${favSportsHtml}
           </div>
@@ -1226,10 +1272,10 @@ async function loadProfile(){
       </div>
 
       <div class="stats-grid-6 reveal">${(()=>{const clvDisp=(rankingMeta&&rankingMeta.clvAvg!=null)?((rankingMeta.clvAvg>=0?'+':'')+rankingMeta.clvAvg.toFixed(1)+'%'):'—';const clvColor=(rankingMeta&&rankingMeta.clvAvg!=null)?(rankingMeta.clvAvg>=0?'var(--gr)':'var(--rd)'):'var(--mu)';const pnlDisp=rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl;const pnlPos=pnlDisp>=0;return`
-        <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu">${rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length}</div><div class="stat-lbl">Picks <span class="tip-trigger" data-tip="Total number of picks posted. 30+ picks is the minimum for statistical significance. 100+ gives high confidence in the numbers.">?</span></div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pnlPos?'pos':'neg'}">${pnlPos?'+':'−'}${Math.abs(pnlDisp).toFixed(2)}u</div><div class="stat-lbl">P&amp;L <span class="tip-trigger" data-tip="Total Profit & Loss in units across all settled picks. Positive means profit, negative means loss. 1u = 1 unit of bankroll.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu" id="svPicks">${rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length}</div><div class="stat-lbl">Picks <span class="tip-trigger" data-tip="Total number of picks posted. 30+ picks is the minimum for statistical significance. 100+ gives high confidence in the numbers.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val ${rPos?'pos':'neg'}" id="svROI">${rPos?'+':''}${roi}%</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu" id="svWR">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pnlPos?'pos':'neg'}" id="svPnL">${pnlPos?'+':'−'}${Math.abs(pnlDisp).toFixed(2)}u</div><div class="stat-lbl">P&amp;L <span class="tip-trigger" data-tip="Total Profit & Loss in units across all settled picks. Positive means profit, negative means loss. 1u = 1 unit of bankroll.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.36s"><div class="stat-val neu">${avg}</div><div class="stat-lbl">Avg Odds <span class="tip-trigger" data-tip="Average decimal odds across all picks. Higher avg odds = higher risk bets. A profitable tipster at 2.5+ avg odds has real edge.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${clvColor}">${clvDisp}</div><div class="stat-lbl">CLV Avg <span class="tip-trigger" data-tip="Closing Line Value — whether you consistently beat the closing market odds. The closing line is the sharpest price. Positive CLV means you are a sharp bettor.">?</span></div></div>
       `})()}</div>
@@ -1282,6 +1328,8 @@ async function loadProfile(){
           window.Follows.getFollowerCount(tipsterUserId).then(count=>{
             const el=document.getElementById('followerCount');
             if(el)el.textContent=count+(count===1?' follower':' followers');
+            const ci=document.getElementById('ciFollowers');
+            if(ci)countUp(ci,count);
           });
         }
       }
@@ -1289,6 +1337,42 @@ async function loadProfile(){
       if(window.initTooltips)window.initTooltips();
       initTipTriggers();
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
+
+      // FIX 1 — Banner watermark + floating particles
+      const _banner=document.querySelector('.profile-banner');
+      if(_banner&&!_banner.querySelector('._tip-wm')){
+        const _wm=document.createElement('img');
+        _wm.className='_tip-wm';_wm.src='/assets/logo/ledgr-icon.png';
+        _wm.style.cssText='position:absolute;right:-20px;top:-10px;height:180px;width:auto;opacity:0.04;pointer-events:none;z-index:0;transform:rotate(15deg)';
+        _banner.appendChild(_wm);
+        for(let i=0;i<5;i++){
+          const p=document.createElement('div');const size=2+Math.random()*3;
+          p.style.cssText=`position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:rgba(123,44,255,${0.2+Math.random()*0.2});left:${Math.random()*80}%;bottom:${Math.random()*60}%;pointer-events:none;z-index:0;animation:heroParticle ${6+i*2}s ease-in-out infinite;animation-delay:${i*1.2}s`;
+          _banner.appendChild(p);
+        }
+      }
+
+      // FIX 3 — Rotating conic ring around avatar
+      const _avWrap=document.querySelector('.avatar-wrap');
+      if(_avWrap&&!_avWrap.querySelector('._rot-ring')){
+        const _rotRing=document.createElement('div');_rotRing.className='_rot-ring';
+        _rotRing.style.cssText='position:absolute;inset:-4px;border-radius:50%;background:conic-gradient(var(--ac) 0deg,transparent 120deg,var(--ac) 240deg,transparent 360deg);animation:ringRotate 8s linear infinite;z-index:0;opacity:0.4;pointer-events:none';
+        _avWrap.style.position='relative';
+        _avWrap.insertBefore(_rotRing,_avWrap.firstChild);
+      }
+
+      // FIX 7 — Count-up on stat cards
+      const _picksNum=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
+      countUp(document.getElementById('svPicks'),_picksNum);
+      countUp(document.getElementById('svROI'),Math.abs(parseFloat(roi)),parseFloat(roi)>=0?'+':'−','%');
+      countUp(document.getElementById('svWR'),parseFloat(wr),'','%');
+      const _pnlAbs=Math.abs(rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl);
+      countUp(document.getElementById('svPnL'),_pnlAbs,pnl>=0?'+':'−','u');
+
+      // Trophy wall — add unlock date title attributes
+      document.querySelectorAll('.trophy-item:not(.locked)').forEach(function(el){
+        if(!el.title){el.title='Achievement earned';}
+      });
     },80);
 
   }catch(e){

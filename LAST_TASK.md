@@ -4,7 +4,49 @@ Date: 2026-05-24
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: progress runtime bug fix ✅ COMPLETE
+Current objective: tipster page visual improvements ✅ COMPLETE
+
+---
+
+## Last completed: tipster visual improvements (2026-05-24)
+
+`tipster/index.html` only. No backend changes.
+
+### FIX 1 — Hero banner watermark + particles
+- Pyramid watermark injected into `.profile-banner` via JS (opacity 0.04, rotated 15deg)
+- 5 ambient floating particles with `heroParticle` animation
+
+### FIX 2 — Hero identity quick-stats block
+- Added `.hero-quick-stats` row after `.badges-row`: REL / RANK / ROI / Streak
+- Values taken from already-computed `score`, `rank`, `roi`, `streak`
+
+### FIX 3 — Avatar animated rotating ring
+- Conic gradient ring injected into `.avatar-wrap` via JS
+- `ringRotate 8s linear infinite` CSS keyframe
+- `opacity:0.4` — subtle behind existing division ring
+
+### FIX 4 — Cold Streak badge logic fix
+- `flowBadgeHTML` now suppressed when `flowState.id === 'cold_streak' && parseFloat(roi) > 0`
+- Cold Streak only shows when tipster is actually losing AND ROI is non-positive
+
+### FIX 5 — Trophy Wall hover glow
+- Added `border-color:rgba(123,44,255,0.3)`, `box-shadow:0 0 16px rgba(123,44,255,0.25)`, `translateY(-2px)` on `.trophy-item:hover`
+- Not applied to `.locked` items
+
+### FIX 6 — Community Impact section
+- Replaced follower/subscriber text row with `.community-impact` grid: Followers, Following, Subscribers
+- `#followerCount`, `#subscriberCount` kept as hidden elements (existing JS still populates them)
+- `ciFollowers` mirrored from Follows.getFollowerCount callback with count-up
+- `ciSubscribers` mirrored from initSubscriptionUI subscriber count with count-up
+
+### FIX 7 — Stats count-up on load
+- Added `countUp()` helper function
+- Applied to `#svPicks`, `#svROI`, `#svWR`, `#svPnL` stat card elements
+- 800ms ease-out cubic animation
+
+### Modified files
+- `tipster/index.html`
+- `LAST_TASK.md`
 
 ---
 
