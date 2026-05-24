@@ -268,6 +268,50 @@ body::after { content:''; position:fixed; inset:0; background-image:radial-gradi
 .div-track-line{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);width:calc(100% - 80px);height:3px;background:rgba(255,255,255,0.06);border-radius:2px;z-index:0;overflow:hidden}
 .div-track-fill{height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);transition:width 1.2s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8px var(--ac);animation:linePulse 6s ease-in-out infinite}
 @keyframes linePulse{0%,100%{opacity:1;box-shadow:0 0 8px var(--ac)}50%{opacity:0.7;box-shadow:0 0 16px var(--ac)}}
+
+/* ── Current Target Card ── */
+.current-target-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;min-width:150px;margin-top:4px}
+.ct-eyebrow{font-size:8px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:5px}
+.ct-goal{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:0.05em;margin-bottom:1px;line-height:1}
+.ct-rp{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-bottom:7px}
+.ct-arrow{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);margin-bottom:4px}
+.ct-arrow-icon{font-size:14px;animation:arrowPulse 1.5s ease-in-out infinite;display:inline-block}
+@keyframes arrowPulse{0%,100%{transform:translateX(0)}50%{transform:translateX(4px)}}
+.ct-unlock{font-size:9px;color:var(--ac);font-family:'DM Mono',monospace;letter-spacing:0.04em}
+
+/* ── DNA Bars ── */
+.dna-bars{margin-top:16px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px}
+.dna-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dna-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--mu);text-transform:uppercase;width:84px;flex-shrink:0;text-align:right}
+.dna-track{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.dna-fill{height:100%;border-radius:2px;transition:width 0.9s cubic-bezier(0.4,0,0.2,1);width:0%}
+.dna-pct{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);width:26px;text-align:right;flex-shrink:0}
+
+/* ── Today's Focus ── */
+.todays-focus-card{background:rgba(123,44,255,0.04);border:1px solid rgba(123,44,255,0.15);border-radius:14px;padding:18px 22px;margin-bottom:16px}
+.tf-eyebrow{font-size:9px;letter-spacing:0.2em;color:var(--ac);font-family:'DM Mono',monospace;text-transform:uppercase;margin-bottom:12px}
+.tf-goal-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.tf-goal-item:last-child{border-bottom:none}
+.tf-goal-icon{font-size:13px;flex-shrink:0;width:20px;text-align:center}
+.tf-goal-text{font-family:'Syne',sans-serif;font-size:13px;flex:1}
+.tf-goal-done{color:var(--gr)}
+.tf-goal-pending{color:var(--mu2)}
+.tf-progress-text{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);margin-top:10px;letter-spacing:0.05em}
+
+/* ── Season Roadmap Blocks ── */
+.season-roadmap{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:20px}
+.roadmap-block{border-radius:10px;padding:10px 5px;text-align:center;border:1px solid var(--bd);background:var(--s2);position:relative;transition:transform 0.2s;cursor:default}
+.roadmap-block:hover{transform:translateY(-2px)}
+.roadmap-block.unlocked{border-color:rgba(0,229,160,0.3);background:rgba(0,229,160,0.04)}
+.roadmap-block.current{border-color:var(--ac);background:rgba(123,44,255,0.08);animation:blockPulse 2s ease-in-out infinite}
+.roadmap-block.locked{opacity:0.35}
+@keyframes blockPulse{0%,100%{box-shadow:0 0 0 0 rgba(123,44,255,0)}50%{box-shadow:0 0 0 6px rgba(123,44,255,0.1)}}
+.roadmap-icon{font-size:18px;display:block;margin-bottom:4px;line-height:1}
+.roadmap-name{font-family:'DM Mono',monospace;font-size:6px;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;margin-bottom:3px}
+.roadmap-reward{font-family:'Syne',sans-serif;font-size:8px;color:var(--mu2);line-height:1.3}
+.roadmap-status{position:absolute;top:-5px;right:-5px;width:14px;height:14px;border-radius:50%;background:var(--gr);border:1.5px solid #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:7px;color:#07060d;font-weight:700;line-height:1}
+@media(max-width:768px){.season-roadmap{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:480px){.season-roadmap{grid-template-columns:repeat(2,1fr)}}
 </style>
 
 </head>
@@ -661,6 +705,58 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
       // Fix 6: reactive performance status
       updatePerfStatus(picks);
 
+      // TODAY'S FOCUS
+      const _todayStr = new Date().toISOString().slice(0,10);
+      const _todayPicks = picks.filter(p => p.createdAt && p.createdAt.slice(0,10) === _todayStr);
+      const _todayWins  = _todayPicks.filter(p => p.result === 'win').length;
+      const _tfGoalsEl  = document.getElementById('tfGoals');
+      const _tfProgEl   = document.getElementById('tfProgress');
+      if (_tfGoalsEl) {
+        const _goals = [
+          {
+            text: streak >= 3 ? `Keep ${streak}W streak alive` : streak > 0 ? `Extend ${streak}W streak to 3` : 'Start or extend a win streak',
+            done: streak >= 3,
+            icon: streak >= 3 ? '🔥' : '⚡'
+          },
+          {
+            text: sharpScore >= 70 ? 'Sharp score maintained above 70' : `Push Sharp Score to 70 (${sharpScore.toFixed(0)} now)`,
+            done: sharpScore >= 70,
+            icon: sharpScore >= 70 ? '🎯' : '📐'
+          },
+          {
+            text: _todayPicks.length > 0 ? `${_todayPicks.length} pick${_todayPicks.length>1?'s':''} posted today${_todayWins>0?' · '+_todayWins+' win':''}` : 'Post at least one quality pick today',
+            done: _todayPicks.length > 0,
+            icon: _todayPicks.length > 0 ? '✅' : '📋'
+          }
+        ];
+        const _doneCount = _goals.filter(g => g.done).length;
+        _tfGoalsEl.innerHTML = _goals.map(g => `
+          <div class="tf-goal-item">
+            <span class="tf-goal-icon">${g.icon}</span>
+            <span class="tf-goal-text ${g.done?'tf-goal-done':'tf-goal-pending'}">${g.text}</span>
+          </div>`).join('');
+        if (_tfProgEl) _tfProgEl.textContent = `${_doneCount}/3 goals complete today`;
+      }
+
+      // DNA BARS
+      const _dnaBarsEl = document.getElementById('dnaBars');
+      if (_dnaBarsEl && picks.length >= 2) {
+        _dnaBarsEl.style.display = 'block';
+        const _aggPct  = Math.min(100, Math.round(Math.min(100, Math.max(0, ((avgOdds - 1) / 4) * 100))));
+        const _riskPct = Math.min(100, Math.round(Math.min(100, Math.max(0, (1 - roiVar / 100) * 100))));
+        const _consPct = Math.min(100, Math.round(roiVar));
+        const _valPct  = Math.min(100, Math.round(Math.min(100, Math.max(0, ((clvAvg + 10) / 20) * 100))));
+        const _sharpPct= Math.min(100, Math.round(Math.min(100, sharpScore)));
+        setTimeout(() => {
+          [['dnaAgg',_aggPct],['dnaRisk',_riskPct],['dnaCons',_consPct],['dnaVal',_valPct],['dnaSharp',_sharpPct]].forEach(([id,val]) => {
+            const _fill = document.getElementById(id);
+            const _pct  = document.getElementById(id+'Pct');
+            if (_fill) _fill.style.width = val + '%';
+            if (_pct)  _pct.textContent  = val + '%';
+          });
+        }, 400);
+      }
+
       // Fix 3: hover tooltips on division nodes
       const _TOOLTIP_REWARDS = {
         BRONZE:'Starter badge', SILVER:'Profile border', GOLD:'Gold username color',
@@ -777,6 +873,20 @@ function buildHTML(d) {
           ${streak >= 3 ? `<span class="hero-pill pill-streak">${streak}W Streak 🔥</span>` : ''}
           ${rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
           <span class="hero-pill ${sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}">Sharp: ${sharpScore.toFixed(0)}</span>
+          ${tier.name !== 'LEGENDARY' ? `
+          <div class="current-target-card">
+            <div class="ct-eyebrow">Current Target</div>
+            <div class="ct-goal" style="color:${nextTier.color}">${nextTier.name}</div>
+            <div class="ct-rp">${eloToNext.toLocaleString()} RP needed</div>
+            <div class="ct-arrow"><span class="ct-arrow-icon">→</span><span style="color:var(--mu2)">${tier.name}</span><span>&nbsp;→&nbsp;</span><span style="color:${nextTier.color}">${nextTier.name}</span></div>
+            <div class="ct-unlock">Unlock: ${_nextReward}</div>
+          </div>` : `
+          <div class="current-target-card">
+            <div class="ct-eyebrow">Status</div>
+            <div class="ct-goal" style="color:var(--gold)">LEGENDARY</div>
+            <div class="ct-rp">Max division reached</div>
+            <div class="ct-unlock" style="color:var(--gold)">🏆 HOF eligible</div>
+          </div>`}
         </div>`}
       </div>
     </div>
@@ -896,11 +1006,24 @@ function buildHTML(d) {
 
   return `
     ${heroHTML}
+    ${!isEmpty ? `
+    <div class="todays-focus-card" id="todaysFocusCard">
+      <div class="tf-eyebrow">TODAY'S FOCUS</div>
+      <div id="tfGoals"></div>
+      <div class="tf-progress-text" id="tfProgress"></div>
+    </div>` : ''}
     <div class="season-identity-card" id="seasonIdentityCard">
       <div class="si-eyebrow">YOUR SEASON IDENTITY</div>
       <div class="si-icon" id="siIcon">⚡</div>
       <div class="si-name" id="siName">TIPSTER</div>
       <div class="si-traits" id="siTraits">Post picks to reveal your identity</div>
+      <div class="dna-bars" id="dnaBars" style="display:none">
+        <div class="dna-bar-row"><span class="dna-label">Aggression</span><div class="dna-track"><div class="dna-fill" id="dnaAgg" style="background:linear-gradient(90deg,#FF6B35,#FF3355)"></div></div><span class="dna-pct" id="dnaAggPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Risk</span><div class="dna-track"><div class="dna-fill" id="dnaRisk" style="background:linear-gradient(90deg,#fbbf24,#FF6B35)"></div></div><span class="dna-pct" id="dnaRiskPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Consistency</span><div class="dna-track"><div class="dna-fill" id="dnaCons" style="background:linear-gradient(90deg,var(--ac),#00E5A0)"></div></div><span class="dna-pct" id="dnaConsPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Value Hunt</span><div class="dna-track"><div class="dna-fill" id="dnaVal" style="background:linear-gradient(90deg,#00E5A0,#38bdf8)"></div></div><span class="dna-pct" id="dnaValPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Sharpness</span><div class="dna-track"><div class="dna-fill" id="dnaSharp" style="background:linear-gradient(90deg,#b89fff,var(--ac))"></div></div><span class="dna-pct" id="dnaSharpPct">0%</span></div>
+      </div>
       <div id="evolutionPath" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px">
         <div style="font-size:10px;letter-spacing:0.15em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:8px;text-transform:uppercase">Unlock Next Evolution</div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
@@ -1355,22 +1478,19 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
     }catch(e){return 0;}
   })() : 0;
 
-  const seasonRewards = divOrder.map((div, idx) => {
+  const seasonRewards = `<div class="season-roadmap">` + divOrder.map((div, idx) => {
     const rw = DIV_REWARDS[div];
     const isPast = idx < currentDivIdx;
     const isCurrent = idx === currentDivIdx;
-    const isNext = idx === currentDivIdx + 1;
-    return `<div class="reward-item">
-      <div class="reward-check ${isPast?'done':isNext?'next-reward':'locked'}">${isPast?'✓':isNext?'▶':'🔒'}</div>
-      <div class="reward-div-name" style="color:${rw.color}">${div}</div>
-      <div class="reward-label-text">
-        <span>${rw.icon} ${rw.label}</span>
-        ${rw.sub?`<div style="font-size:10px;color:var(--mu);margin-top:1px">${rw.sub}</div>`:''}
-      </div>
-      ${isNext?`<span class="reward-next-badge">NEXT</span>`:''}
-      ${isCurrent?`<span style="font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:1px">CURRENT</span>`:''}
+    const stateClass = isPast ? 'unlocked' : isCurrent ? 'current' : 'locked';
+    const checkBadge = isPast ? `<span class="roadmap-status">✓</span>` : isCurrent ? `<span class="roadmap-status" style="background:var(--ac);color:#fff;font-size:6px">NOW</span>` : '';
+    return `<div class="roadmap-block ${stateClass}">
+      ${checkBadge}
+      <span class="roadmap-icon">${rw.icon}</span>
+      <div class="roadmap-name" style="color:${rw.color}">${div}</div>
+      <div class="roadmap-reward">${rw.label}</div>
     </div>`;
-  }).join('');
+  }).join('') + `</div>`;
 
   // Division change history from weekly snapshots
   let divHistoryHTML = '';
@@ -1438,7 +1558,7 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
       <div class="season-countdown-track">
         <div class="season-countdown-fill" style="width:${seasonPct}%"></div>
       </div>
-      <div class="season-rewards-track">${seasonRewards}</div>
+      ${seasonRewards}
       <div class="season-exclusive-tag">SEASON ${activeSeason?(activeSeason.number||'1'):'1'} EXCLUSIVE REWARDS — LOCKED TO THIS SEASON ONLY</div>
       ${divHistoryHTML}
       ${seasonHistoryHTML}
