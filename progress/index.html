@@ -229,6 +229,27 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 /* ── IDENTITY: JOURNEY / EVOLUTION ── */
 @keyframes riseUp{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.52;transform:translateX(-50%) translateY(-18px)}}
 .bg-horizon{position:fixed;bottom:-80px;left:50%;transform:translateX(-50%);width:1200px;height:380px;background:radial-gradient(ellipse,rgba(251,146,60,.07),rgba(251,191,36,.04) 30%,transparent 65%);pointer-events:none;z-index:0;animation:riseUp 11s ease-in-out infinite}
+/* ── Hero Next Reward ── */
+.hero-next-reward{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-family:var(--font-mono);font-size:10px;color:var(--mu);padding:5px 8px;background:rgba(255,255,255,.03);border-radius:5px}
+/* ── Momentum Analysis ── */
+.momentum-analysis{margin-top:12px;padding:10px 12px;background:rgba(255,255,255,.03);border-radius:6px;border-left:2px solid var(--ac);position:relative;z-index:1}
+.analysis-label{font-family:var(--font-mono);font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--mu);margin-bottom:3px}
+.analysis-text{font-family:'Syne',sans-serif;font-size:12px;color:var(--mu2);line-height:1.5}
+/* ── Season Reward Track ── */
+.season-rewards-track{margin-top:16px}
+.reward-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.reward-item:last-child{border-bottom:none}
+.reward-check{width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.reward-check.done{border-color:var(--gr);background:rgba(0,229,160,.1);color:var(--gr);font-size:10px}
+.reward-check.locked{opacity:0.35}
+.reward-check.next-reward{border-color:var(--ac);background:rgba(123,44,255,.1);color:var(--ac);animation:rewPulse 2s ease-in-out infinite}
+.reward-div-name{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;flex-shrink:0;min-width:72px}
+.reward-label-text{font-family:'Syne',sans-serif;font-size:12px;color:var(--mu2);flex:1}
+.reward-next-badge{font-family:var(--font-mono);font-size:7px;letter-spacing:1.5px;padding:2px 6px;background:var(--acg);border:1px solid rgba(123,44,255,.3);border-radius:3px;color:var(--ac);text-transform:uppercase}
+/* ── Timeline story ── */
+.tl-event-type{font-family:var(--font-mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;opacity:0.7}
+.tl-item.visible{animation:fadeUp 0.35s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
 </head>
@@ -483,6 +504,19 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
           el.style.transform = 'translateY(0)';
         }, 300 + i * 60);
       });
+
+      const _countObs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const vEl = entry.target.querySelector('.moment-value');
+            if (vEl && vEl.dataset.value) {
+              countUp(vEl, parseFloat(vEl.dataset.value), vEl.dataset.suffix||'', vEl.dataset.prefix||'');
+              _countObs.unobserve(entry.target);
+            }
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.moment-card').forEach(el => _countObs.observe(el));
     }, 50);
   });
 }
@@ -502,6 +536,11 @@ function buildHTML(d) {
   const divColor = tier.color;
   const initials = USERNAME.slice(0,2).toUpperCase();
   const isEmpty = picks.length === 0;
+
+  const _HERO_REWARDS = {BRONZE:'Basic Badge',SILVER:'Profile Border',GOLD:'Gold Name Color',PLATINUM:'Animated Ring',DIAMOND:'Particle FX',ELITE:'Elite Aura',LEGENDARY:'Hall of Fame Entry'};
+  const _nextReward = _HERO_REWARDS[nextTier.name] || 'Division Badge';
+  const _w7 = picks.filter(p => p.result==='win' && new Date(p.createdAt).getTime() >= Date.now()-7*24*3600*1000).length;
+  const _rpDelta = _w7 * 10;
 
   // ── Section 1: Hero ──
   const heroHTML = `
@@ -531,7 +570,10 @@ function buildHTML(d) {
                  ? `<div class="hero-bar-week" style="color:var(--gr)">↑ #${myRank} globally</div>`
                  : myRank > 0
                  ? `<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:2px">Season rank: #${myRank}${rankPct!=null?' · Top '+(100-rankPct)+'%':''}</div>`
-                 : '') : ''}`
+                 : '') : ''}
+               ${tier.name !== 'LEGENDARY'
+                 ? `<div class="hero-next-reward"><span>→ ${nextTier.name}: ${_nextReward}</span>${_rpDelta>0?`<span style="color:var(--gr)">↑ +${_rpDelta} RP this week</span>`:`<span style="color:var(--mu)">Post wins for RP</span>`}</div>`
+                 : `<div class="hero-next-reward"><span>🏆 Maximum division reached</span><span style="color:var(--gold)">LEGENDARY</span></div>`}`
           }
         </div>
         ${isEmpty ? '' : `
@@ -587,6 +629,10 @@ function buildHTML(d) {
         <div class="mom-stat"><div class="mom-stat-val">${recent14.length}</div><div class="mom-stat-lbl">Picks</div></div>
       </div>
       <div class="trend-row" style="color:${trendColor}">${trendIcon} ${trend.charAt(0).toUpperCase()+trend.slice(1)} vs previous 7 days</div>
+      <div class="momentum-analysis">
+        <div class="analysis-label">ANALYSIS</div>
+        <div class="analysis-text">${getMomentumAnalysis(recent14, roi14)}</div>
+      </div>
     </div>
   `;
 
@@ -699,20 +745,66 @@ function buildDivTrack(actualElo) {
     const state = i < currentIdx ? 'dt-past' : i === currentIdx ? 'dt-current' : 'dt-locked';
     const glow = i === currentIdx ? `box-shadow:0 0 0 3px ${t.color}44,0 0 16px ${t.color}33;border-color:${t.color};` : i < currentIdx ? `border-color:${t.color}88;` : '';
     const flt = TIER_FILTERS[t.name] || '';
-    return `<div class="dt-node ${state}"><div class="dt-icon" style="${glow}"><img src="/assets/logo/ledgr-icon.png" alt="" style="filter:${flt}"></div><span class="dt-label" style="${i===currentIdx?'color:'+t.color:''}">${t.name}</span></div>`;
+    const checkBadge = i < currentIdx ? `<span style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#00E5A0;border:1.5px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:8px;color:#07060d;font-weight:700;line-height:1;pointer-events:none">✓</span>` : '';
+    return `<div class="dt-node ${state}" onclick="showDivInfo('${t.name}')" style="cursor:pointer"><div class="dt-icon" style="${glow}">${checkBadge}<img src="/assets/logo/ledgr-icon.png" alt="" style="filter:${flt}"></div><span class="dt-label" style="${i===currentIdx?'color:'+t.color:''}">${t.name}</span></div>`;
   }).join('') + `</div>`;
 }
 
+function showDivInfo(divName) {
+  const INFO = {
+    BRONZE:   {desc:'Starting tier. Build your record to advance.',reward:'Basic Badge'},
+    SILVER:   {desc:'Earned with consistent early performance.',reward:'Profile Border'},
+    GOLD:     {desc:'Strong ROI and win rate required.',reward:'Gold Name Color'},
+    PLATINUM: {desc:'Top-tier metrics across all dimensions.',reward:'Animated Ring'},
+    DIAMOND:  {desc:'Elite consistency and CLV mastery.',reward:'Particle FX'},
+    ELITE:    {desc:'Reserved for the sharpest tipsters.',reward:'Elite Aura'},
+    LEGENDARY:{desc:'The highest division. Legends only.',reward:'Hall of Fame Entry'},
+  };
+  const info = INFO[divName] || {desc:'',reward:''};
+  const tier = ELO_TIERS.find(t => t.name === divName) || ELO_TIERS[0];
+  let box = document.getElementById('divTooltipBox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'divTooltipBox';
+    box.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:12px 18px;z-index:9999;min-width:220px;max-width:320px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.5);pointer-events:none;transition:opacity .2s ease;opacity:0';
+    document.body.appendChild(box);
+  }
+  box.innerHTML = `<div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:${tier.color};margin-bottom:4px">${divName}</div><div style="font-size:12px;color:#9a9a9a;font-family:'Syne',sans-serif;margin-bottom:6px">${info.desc}</div><div style="font-size:11px;color:#7B2CFF;font-family:'DM Mono',monospace">Reward: ${info.reward}</div>`;
+  box.style.opacity = '1';
+  clearTimeout(box._t);
+  box._t = setTimeout(() => { box.style.opacity = '0'; }, 2600);
+}
+
 function momentCard(icon, label, value, dateStr, divColor) {
+  let _dataAttrs = '';
+  if (value !== '—') {
+    const _m = value.match(/^([+\-#]?)(\d+\.?\d*)(.*)$/);
+    if (_m) _dataAttrs = `data-prefix="${_m[1]}" data-value="${_m[2]}" data-suffix="${_m[3]}"`;
+  }
   return `
     <div class="moment-card">
       <img src="/assets/logo/ledgr-icon.png" class="moment-watermark" alt="">
       <div class="moment-icon">${icon}</div>
-      <div class="moment-value" style="color:${value==='—'?'var(--mu)':divColor}">${value}</div>
+      <div class="moment-value" style="color:${value==='—'?'var(--mu)':divColor}" ${_dataAttrs}>${value}</div>
       <div class="moment-label">${label}</div>
       ${dateStr ? `<div class="moment-date">${dateStr}</div>` : ''}
     </div>
   `;
+}
+
+function countUp(el, target, suffix, prefix) {
+  const start = performance.now();
+  const duration = 1200;
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  const isInt = Number.isInteger(target) || ['W',''].includes(suffix);
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(1, elapsed / duration);
+    const val = easeOut(progress) * target;
+    el.textContent = (prefix||'') + (isInt ? Math.round(val) : val.toFixed(2)) + (suffix||'');
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 }
 
 function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, divColor) {
@@ -747,6 +839,9 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
 
   events.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
 
+  const TYPE_LABEL = {purple:'MILESTONE',green:'ACHIEVEMENT',gold:'RECORD',logo:'ORIGIN'};
+  const TYPE_COLOR = {purple:'var(--ac)',green:'var(--gr)',gold:'var(--gold)',logo:'var(--mu)'};
+
   return `<div class="tl-spine"><div class="tl-spine-fill" style="height:0%;--fill:100%"></div></div>` +
     events.map((ev, i) => {
       const dateStr = ev.date ? new Date(ev.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : 'Recently';
@@ -755,10 +850,14 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
       const iconContent = isFirst ? `<img src="/assets/logo/ledgr-icon.png" style="width:16px;height:16px;opacity:0.7" alt="">` : ev.icon;
       const bodyClass = `tl-body tl-body-${ev.type}`;
       const large = ev.large ? ' node-large' : '';
+      const typeKey = isFirst ? 'logo' : ev.type;
+      const typeLabel = TYPE_LABEL[typeKey] || 'EVENT';
+      const typeColor = TYPE_COLOR[typeKey] || 'var(--mu)';
       return `
         <div class="tl-item">
           <div class="tl-node ${nodeClass}${large}">${iconContent}</div>
           <div class="${bodyClass}">
+            <div class="tl-event-type" style="color:${typeColor}">${typeLabel}</div>
             <div class="tl-title">${ev.title}</div>
             <div class="tl-date">${dateStr}</div>
           </div>
@@ -879,6 +978,18 @@ function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank,
   }).join('');
 }
 
+function getMomentumAnalysis(recent14, roi14) {
+  const wins14 = recent14.filter(p=>p.result==='win').length;
+  const losses14 = recent14.filter(p=>p.result==='loss').length;
+  const total14 = wins14 + losses14;
+  if (total14 === 0) return 'No settled picks in the last 14 days. Time to get active.';
+  if (roi14 > 15 && wins14 >= 5) return 'Strong 14-day run — your edge is showing clearly. Keep the discipline.';
+  if (roi14 > 5) return 'Positive ROI trend over 14 days. Market value is on your side right now.';
+  if (roi14 < -10 && losses14 >= 5) return 'Rough patch — high loss count is dragging ROI. Consider sizing down until form returns.';
+  if (roi14 < 0) return 'ROI dipped negative over 14 days. One or two wins can swing this back quickly.';
+  return 'Flat ROI but steady volume. Consistent activity builds the sample — a few big wins will flip the curve.';
+}
+
 function buildSparkline(picks) {
   const now = Date.now();
   const cutoff = now - 14*24*3600*1000;
@@ -985,16 +1096,17 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
     }catch(e){return 0;}
   })() : 0;
 
-  const rewardsRow = divOrder.map((div, idx) => {
+  const seasonRewards = divOrder.map((div, idx) => {
     const rw = DIV_REWARDS[div];
     const isPast = idx < currentDivIdx;
     const isCurrent = idx === currentDivIdx;
-    const isLocked = idx > currentDivIdx;
-    const cls = isPast?'rew-unlocked':isCurrent?'rew-current':'rew-locked';
-    return `<div class="rew-item ${cls}" style="${isCurrent?'border-color:'+rw.color+';':isPast?'border-color:rgba(0,229,160,0.2);':''}">
-      <span class="rew-icon">${isPast?'✓':isLocked?'🔒':rw.icon}</span>
-      <div class="rew-div" style="color:${rw.color}">${div}</div>
-      <div class="rew-label">${rw.label}</div>
+    const isNext = idx === currentDivIdx + 1;
+    return `<div class="reward-item">
+      <div class="reward-check ${isPast?'done':isNext?'next-reward':'locked'}">${isPast?'✓':isNext?'▶':'🔒'}</div>
+      <div class="reward-div-name" style="color:${rw.color}">${div}</div>
+      <div class="reward-label-text">${rw.icon} ${rw.label}</div>
+      ${isNext?`<span class="reward-next-badge">NEXT</span>`:''}
+      ${isCurrent?`<span style="font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:1px">CURRENT</span>`:''}
     </div>`;
   }).join('');
 
@@ -1046,7 +1158,7 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
       <div class="season-countdown-track">
         <div class="season-countdown-fill" style="width:${seasonPct}%"></div>
       </div>
-      <div class="rewards-row">${rewardsRow}</div>
+      <div class="season-rewards-track">${seasonRewards}</div>
       ${divHistoryHTML}
       ${pastHTML}
     </div>
