@@ -1224,16 +1224,22 @@ async function loadData(){
     if(rankingsListRes&&rankingsListRes.ok){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
-    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all);
+    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all,rankingsTop5);
     if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
-    updateGreeting();
+    updateGreeting(all.filter(p=>p.userId===user.id));
   }catch(e){clearTimeout(abort);_renderDataError();}
 }
-function updateGreeting(){
+function getCurrentStreak(picks){
+  const settled=picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  if(!settled.length||settled[0].result!=='win')return 0;
+  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
+  return streak;
+}
+function updateGreeting(myPicks){
   const _ey=document.getElementById('heroEyebrow');if(!_ey||!user)return;
   const rm=window._myRankingMeta;
   const rank=rm&&rm.rank?rm.rank:null;
-  const streak=rm&&rm.streakType==='win'?(rm.currentStreak||0):0;
+  const streak=getCurrentStreak(myPicks||[]);
   if(rank===1){_ey.textContent='👑 '+user.username.toUpperCase()+' · #1 IN THE WORLD';}
   else if(streak>=5){_ey.textContent='🔥 '+user.username.toUpperCase()+' · W'+streak+' STREAK';}
   else if(streak>=3){_ey.textContent='🔥 '+user.username.toUpperCase()+' · ON A ROLL';}
@@ -1260,11 +1266,9 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const wins=myPicks.filter(p=>p.result==='win').length;
   const stake=myPicks.reduce((s,p)=>s+p.stake,0);const pnl=myPicks.reduce((s,p)=>s+p.pnl,0);
   const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';
-  const settled=[...myPicks].filter(p=>p.result!=='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  let streak=0;for(const p of settled){if(p.result==='win')streak++;else break;}
   const rm=window._myRankingMeta;
   const rel=rm?Math.round(rm.reliabilityScore):getReliability(myPicks).score;
-  const finalStreak=rm&&rm.streakType==='win'?rm.currentStreak:streak;
+  const finalStreak=getCurrentStreak(myPicks);
   const idROI=document.getElementById('idROI');if(idROI){idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');_animStatVal(idROI,(parseFloat(roi)>=0?'+':'')+roi+'%');}
   const finalRank=rm&&rm.rank?rm.rank:rank;
   const idRank=document.getElementById('idRank');if(idRank){idRank.className='id-stat-val ac';if(finalRank>0)_animStatVal(idRank,'#'+finalRank,true);else idRank.textContent='#—';}
@@ -1498,7 +1502,7 @@ function renderRivalCard(my,all){
 
 /* ══ ACTIVITY SPOTLIGHT ══ */
 var _slIdx=0,_slTimer=null;
-function renderSpotlight(all){
+function renderSpotlight(all,rankings){
   const el=document.getElementById('spotlightItems');if(!el)return;
   const cutoff=Date.now()-172800000;
   const recent=all.filter(p=>new Date(p.createdAt).getTime()>=cutoff);
@@ -1512,7 +1516,14 @@ function renderSpotlight(all){
   const topMk=Object.entries(mkM).sort((a,b)=>b[1]-a[1])[0];
   if(topMk&&topMk[1]>=2)items.push({c:'var(--ac)',badge:'TRENDING MARKET',val:topMk[0],sub:topMk[1]+' picks in 48h'});
   if(wins.length){const bO=[...wins].sort((a,b)=>parseFloat(b.odds)-parseFloat(a.odds))[0];if(parseFloat(bO.odds)>=2.5)items.push({c:'var(--gold)',badge:'LONGSHOT HIT',val:parseFloat(bO.odds).toFixed(2),sub:'@'+(bO.username||'—')+' · '+(bO.event||'').slice(0,28)});}
-  if(!items.length)items.push({c:'var(--mu)',badge:'ALL QUIET',val:'—',sub:'No major activity yet'});
+  if(!items.length){
+    const myPicks=all.filter(p=>p.userId===user.id);
+    if(rankings&&rankings.length>0){const top=rankings[0];const topRoi=top.roi!=null?parseFloat(top.roi).toFixed(1):'0';items.push({c:'var(--gold)',badge:'🏆 LEADERBOARD',val:'@'+(top.username||'—'),sub:'+'+topRoi+'% ROI — #1 ranked'});}
+    if(myPicks.length>0){const wins=myPicks.filter(p=>p.result==='win').length;items.push({c:'var(--ac)',badge:'📊 YOUR RECORD',val:myPicks.length+' PICKS',sub:wins+' verified wins on your ledger'});}
+    items.push({c:'var(--mu)',badge:'🔒 VERIFIED',val:'ZERO FAKES',sub:'All picks immutable — no edits ever'});
+    items.push({c:'var(--mu)',badge:'⚡ AUTO-GRADED',val:'LIVE RESULTS',sub:'Results verified automatically after kickoff'});
+    if(!items.length){const sp=el.closest('.spotlight-strip');if(sp)sp.style.display='none';return;}
+  }
   el.innerHTML=items.map(it=>`<div class="sl-item"><div class="sl-badge" style="color:${it.c}">${it.badge}</div><div class="sl-val" style="color:${it.c}">${it.val}</div><div class="sl-sub">${it.sub}</div></div>`).join('');
   if(_slTimer)clearInterval(_slTimer);_slIdx=0;
   if(items.length>2){_slTimer=setInterval(()=>{const w=document.getElementById('spotlightItems');if(!w)return;_slIdx=(_slIdx+1)%items.length;w.style.transform=`translateX(-${_slIdx*236}px)`;},4000);}
@@ -1831,10 +1842,15 @@ function renderTrending(all){
 function renderTrendingPicks(all){
   const localTails=getTails();
   const tpMap={};all.forEach(p=>{if(!p.username)return;if(!tpMap[p.username])tpMap[p.username]=[];tpMap[p.username].push(p);});
-  const hot=all.filter(p=>p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+  const validPicks=all.filter(p=>p.event&&p.event!=='undefined'&&p.odds&&p.odds<100);
+  const hot=validPicks.filter(p=>p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
   if(!hot.length){grid.innerHTML='<div class="empty">No hot picks right now</div>';return;}
   grid.innerHTML=hot.map((p,i)=>{
+    const ev=p.event&&p.event!=='undefined'?p.event:(p.homeTeam&&p.awayTeam?p.homeTeam+' vs '+p.awayTeam:null);
+    if(!ev)return'';
+    const mkt=p.market||'Pick';
+    const safeOdds=(p.odds&&p.odds<1000)?p.odds:null;
     const tipsterPicks=tpMap[p.username]||[];
     const badges=getPickBadges(p,tipsterPicks);
     const badgeHtml=renderStatusBadges(badges);
@@ -1847,15 +1863,15 @@ function renderTrendingPicks(all){
         </div>
       </div>
       ${badgeHtml?`<div class="pc-status-badges">${badgeHtml}</div>`:''}
-      <div class="pc-event">${p.event}</div>
-      <div class="pc-market">${p.market}</div>
+      <div class="pc-event">${ev}</div>
+      <div class="pc-market">${mkt}</div>
       <div class="pc-footer">
         <div>
-          <div class="pc-odds">${parseFloat(p.odds).toFixed(2)}</div>
+          ${safeOdds?`<div class="pc-odds">${parseFloat(safeOdds).toFixed(2)}</div>`:''}
           ${p.confidence?`<div class="conf-badge-mini">${p.confidence} conf</div>`:''}
         </div>
         <div class="pc-actions">
-          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${eo(p.event)}','${eo(p.market)}',${p.odds},'${eo(p.username)}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
+          <button class="tail-btn-sm ${isTailed?'tailed':''}" id="pcTail_${p.id}" onclick="tailTP('${p.id}','${eo(ev)}','${eo(mkt)}',${p.odds},'${eo(p.username)}',this)">${isTailed?'Tailed ✓':'Tail'}</button>
           <button class="view-btn-sm" onclick="window.location.href='/tipster?u=${p.username}'">View</button>
         </div>
       </div>
