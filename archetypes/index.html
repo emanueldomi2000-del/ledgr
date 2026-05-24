@@ -118,7 +118,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .locked-hint{font-size:9px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;line-height:1.5;margin-top:6px}
 
 /* ── VAULT CARD HOVER ── */
-.arch-vault-card{transition:all 0.25s ease;cursor:pointer}
+.arch-vault-card{position:relative;overflow:hidden;transition:all 0.25s ease;cursor:pointer}
 .arch-vault-card.common:hover{transform:translateY(-4px);border-color:#6B6B6B!important}
 .arch-vault-card.rare:hover{transform:translateY(-4px);border-color:#4FC3F7!important;box-shadow:0 0 16px rgba(79,195,247,0.25)}
 .arch-vault-card.epic:hover{transform:translateY(-4px);border-color:#7B2CFF!important;box-shadow:0 0 20px rgba(123,44,255,0.35)}
@@ -152,6 +152,31 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @keyframes charGlow{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:0.45;transform:scale(1.12)}}
 @keyframes dataStream{from{opacity:0.6;transform:scaleY(1)}to{opacity:0.1;transform:scaleY(0.3)}}
 .char-art-wrap{display:flex;justify-content:center;align-items:center;margin-bottom:8px;height:110px}
+
+/* ── DNA HERO ── */
+.dna-hero{position:relative;overflow:hidden;padding:48px 0 32px;text-align:center}
+.dna-scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--ac),transparent);animation:scanMove 3s ease-in-out infinite;opacity:0.6}
+@keyframes scanMove{0%{top:0%;opacity:0}10%{opacity:0.6}90%{opacity:0.6}100%{top:100%;opacity:0}}
+.dna-eyebrow{font-size:10px;letter-spacing:0.3em;color:var(--ac);font-family:'DM Mono',monospace;margin-bottom:12px;animation:eyebrowPulse 3s ease-in-out infinite}
+@keyframes eyebrowPulse{0%,100%{opacity:0.7}50%{opacity:1}}
+.dna-main-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,7vw,80px);color:var(--tx);letter-spacing:0.03em;line-height:1;margin-bottom:12px}
+.dna-subtitle{font-size:13px;color:var(--mu);font-family:'Syne',sans-serif;max-width:480px;margin:0 auto}
+@keyframes dnaParticle{0%,100%{transform:translate(0,0);opacity:0.3}33%{transform:translate(10px,-15px);opacity:0.6}66%{transform:translate(-8px,10px);opacity:0.2}}
+
+/* ── HOVER REVEAL ── */
+.arch-hover-reveal{position:absolute;inset:0;background:rgba(10,10,10,0.92);border-radius:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px;text-align:center;opacity:0;transition:opacity 0.2s ease;pointer-events:none}
+.arch-vault-card:hover .arch-hover-reveal{opacity:1}
+.arch-vault-card:hover{transform:translateY(-6px)}
+
+/* ── EVO ANIMATED LINES ── */
+.evo-connector{display:flex;flex-direction:column;align-items:center;padding:0 8px;gap:3px}
+.evo-line{width:40px;height:2px;background:linear-gradient(90deg,var(--ac),rgba(123,44,255,0.2));position:relative;overflow:hidden}
+.evo-line::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,white,transparent);animation:evoFlow 2s linear infinite}
+@keyframes evoFlow{from{left:-100%}to{left:100%}}
+.evo-condition{font-size:8px;color:var(--ac);font-family:'DM Mono',monospace;letter-spacing:0.05em;white-space:nowrap}
+
+/* ── MATCH BARS ── */
+.arch-match-bars{padding:0 4px}
 </style>
 </head>
 <body>
@@ -169,10 +194,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="main" id="app" style="display:none">
 
   <!-- HERO -->
-  <div class="hero">
-    <div class="hero-eyebrow">Archetype Vault</div>
-    <div class="hero-title">BETTING<br><span>DNA</span></div>
-    <p class="hero-sub">Your competitive identity, detected automatically from your pick history. 15 archetypes. Only one is you.</p>
+  <div class="dna-hero">
+    <div class="dna-scan-line"></div>
+    <div class="dna-eyebrow" id="dnaEyebrow">ANALYZING YOUR MIND</div>
+    <div class="dna-main-title">YOUR BETTING IDENTITY</div>
+    <div class="dna-subtitle" id="dnaSubtitle">The system detected behavioral patterns in your picks</div>
   </div>
 
   <!-- YOUR ARCHETYPE -->
@@ -376,6 +402,27 @@ function getArchetypeArt(id, color) {
   return arts[id] ? `<div class="char-art-wrap">${arts[id]}</div>` : `<div class="char-art-wrap" style="font-size:64px;line-height:1;filter:drop-shadow(0 0 20px ${color})">${ARCHETYPES_DATA.find(a=>a.id===id)?.icon||'?'}</div>`;
 }
 
+function getArchStats(name) {
+  const stats = {
+    'The Sniper':   [{label:'Aggression',val:'Low'},{label:'Accuracy',val:'Elite'},{label:'Volume',val:'Minimal'}],
+    'The Hunter':   [{label:'Risk',val:'High'},{label:'Value',val:'Elite'},{label:'Odds avg',val:'>3.0'}],
+    'The Sharp':    [{label:'CLV',val:'Elite'},{label:'Discipline',val:'High'},{label:'Market',val:'Expert'}],
+    'The Demon':    [{label:'Streak',val:'King'},{label:'Momentum',val:'Elite'},{label:'Volume',val:'High'}],
+    'The Grinder':  [{label:'Consistency',val:'Elite'},{label:'Volume',val:'High'},{label:'Variance',val:'Low'}],
+    'The Ghost':    [{label:'Picks',val:'<15'},{label:'ROI',val:'>30%'},{label:'Impact',val:'Maximum'}],
+    'The Kingmaker':[{label:'Followers',val:'>50'},{label:'Tails',val:'>100'},{label:'Influence',val:'Elite'}],
+    'Diamond Mind': [{label:'Reliability',val:'>80%'},{label:'All metrics',val:'Elite'},{label:'Rarity',val:'1.8%'}],
+    'Iceblood':     [{label:'Variance',val:'Near zero'},{label:'Emotion',val:'None'},{label:'Process',val:'Pure'}],
+    'Night Owl':    [{label:'Active hrs',val:'22-04'},{label:'Focus',val:'Elite'},{label:'Rarity',val:'5.1%'}],
+    'The Storm':    [{label:'Activity',val:'Burst'},{label:'ROI',val:'>0%'},{label:'Streaks',val:'Active'}],
+    'The Shark':    [{label:'Odds avg',val:'<1.7'},{label:'Win rate',val:'>72%'},{label:'Volume',val:'High'}],
+    'The Gambler':  [{label:'Risk',val:'Max'},{label:'Odds avg',val:'>5.0'},{label:'Edge',val:'Explosive'}],
+    'The Reaper':   [{label:'Patience',val:'Elite'},{label:'Odds avg',val:'>4.0'},{label:'ROI',val:'>10%'}],
+    'The Hybrid':   [{label:'Archetypes',val:'3+'},{label:'Versatility',val:'Max'},{label:'Match',val:'>40%'}],
+  };
+  return stats[name] || [{label:'Detecting',val:'...'}];
+}
+
 function showDNAIntro(archName, archColor) {
   if (sessionStorage.getItem('dna_intro_shown')) return;
   sessionStorage.setItem('dna_intro_shown', '1');
@@ -462,6 +509,7 @@ async function loadData() {
   renderCurrentCard(sorted);
   renderGrid(sorted);
   renderEvolution(sorted);
+  renderSecretSlots();
   if (primaryArchetype) showDNAIntro(primaryArchetype.name, primaryArchetype.color);
 }
 
@@ -506,7 +554,29 @@ function renderCurrentCard(sorted) {
       </div>
     </div>
     ${settled < 10 ? '<div style="margin-top:20px;padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:8px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">Post at least 10 settled picks for more accurate detection.</div>' : ''}
+    <div class="arch-match-bars" id="archMatchBars">
+      <div style="font-size:9px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin:16px 0 10px">BEHAVIORAL MATCH</div>
+    </div>
   </div>`;
+
+  const _traits = [
+    {label:'Precision',    val: Math.min(100, (userStats.winRate||0)*1.2)},
+    {label:'Discipline',   val: Math.min(100, 100-(userStats.highVariance?65:20))},
+    {label:'Value Edge',   val: Math.min(100, (userStats.sharpScore||0)*1.2)},
+    {label:'Consistency',  val: Math.min(100, confidence||0)}
+  ];
+  const _barsEl = document.getElementById('archMatchBars');
+  if (_barsEl) {
+    _traits.forEach(t => {
+      const row = document.createElement('div');
+      row.style.cssText = 'margin-bottom:8px';
+      row.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;color:var(--mu);font-family:'Syne'">${t.label}</span><span style="font-size:10px;color:var(--ac);font-family:'DM Mono'">${Math.round(t.val)}%</span></div><div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);width:0%;transition:width 1s ease" data-val="${t.val}"></div></div>`;
+      _barsEl.appendChild(row);
+    });
+    setTimeout(() => {
+      _barsEl.querySelectorAll('[data-val]').forEach(bar => { bar.style.width = bar.dataset.val + '%'; });
+    }, 400);
+  }
 }
 
 function renderGrid(sorted) {
@@ -542,6 +612,7 @@ function renderGrid(sorted) {
       <div class="arch-rarity">${a.rarity}% of bettors</div>
       ${isP || matched ? `<ul class="arch-conditions">${a.conditions.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
       ${close ? '<div class="arch-lock">— Within reach</div>' : ''}
+      <div class="arch-hover-reveal"><div style="font-size:9px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin-bottom:8px">POPULATION</div><div style="font-family:'Bebas Neue';font-size:28px;color:var(--ac)">${a.rarity}%</div><div style="margin-top:10px;width:100%">${getArchStats(a.name).map(s=>`<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="color:var(--mu);font-family:'Syne'">${s.label}</span><span style="color:var(--tx);font-family:'DM Mono'">${s.val}</span></div>`).join('')}</div></div>
     </div>`;
   }).join('');
 }
@@ -578,9 +649,9 @@ function renderEvolution(sorted) {
           <div class="evo-name" style="color:${p.color}">${p.name}</div>
           <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
         </div>
-        <div class="evo-arrow">→</div>
+        <div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">${paths[0]?.condition||''}</div></div>
         ${pathNodes[0]||''}
-        ${pathNodes[1]?`<div class="evo-arrow">→</div>${pathNodes[1]}`:''}
+        ${pathNodes[1]?`<div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">${paths[1]?.condition||''}</div></div>${pathNodes[1]}`:''}
       </div>`;
     return;
   }
@@ -597,14 +668,14 @@ function renderEvolution(sorted) {
         <div class="evo-name" style="color:${p.color}">${p.name}</div>
         <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
       </div>
-      <div class="evo-arrow">→</div>
+      <div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">NEXT PATH</div></div>
       <div class="evo-node">
         <div class="evo-icon">${others[0]?.icon||'?'}</div>
         <div class="evo-name">${others[0]?.name||'—'}</div>
         <div class="evo-pct">${others[0]?Math.round(others[0].sc)+'% match':'—'}</div>
         <div class="evo-req">${others[0]?others[0].conditions.slice(0,1).join(''):''}</div>
       </div>
-      <div class="evo-arrow">→</div>
+      <div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">NEXT PATH</div></div>
       <div class="evo-node">
         <div class="evo-icon">${others[1]?.icon||'?'}</div>
         <div class="evo-name">${others[1]?.name||'—'}</div>
@@ -614,11 +685,38 @@ function renderEvolution(sorted) {
     </div>`;
 }
 
+function renderSecretSlots() {
+  const secretSlots = [
+    {condition:'Maintain 75+ reliability over 50 picks'},
+    {condition:'Win 10 consecutive underdog picks'},
+    {condition:'Reach top 1% CLV across platform'}
+  ];
+  const vault = document.getElementById('archetypeGrid');
+  if (!vault) return;
+  secretSlots.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'arch-vault-card locked-secret';
+    card.style.cssText = 'background:rgba(255,255,255,0.01);border:1px dashed rgba(255,255,255,0.08);border-radius:12px;padding:20px 12px;text-align:center;cursor:not-allowed;';
+    card.innerHTML = `<div style="font-size:28px;opacity:0.2;margin-bottom:8px">?</div><div style="font-family:'Bebas Neue';font-size:16px;color:rgba(255,255,255,0.15);letter-spacing:0.1em;margin-bottom:8px">LOCKED</div><div style="font-size:9px;color:var(--mu);font-family:'Syne';line-height:1.5;font-style:italic">${s.condition}</div><div style="margin-top:8px;font-size:8px;letter-spacing:0.15em;color:rgba(255,107,255,0.5);font-family:'DM Mono'">MYTHIC</div>`;
+    vault.appendChild(card);
+  });
+}
+
 function showToast(msg,isErr){
   const t=document.getElementById('toast');t.textContent=msg;t.style.background=isErr?'#f87171':'#34d399';
   t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);
 }
 AppNav.init({ active: 'analytics' });
+
+// Hero particles
+setTimeout(() => {
+  for (let i = 0; i < 6; i++) {
+    const p = document.createElement('div');
+    const sz = 1 + Math.random() * 3;
+    p.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(123,44,255,${(0.3+Math.random()*0.3).toFixed(2)});left:${(Math.random()*90).toFixed(1)}%;top:${(Math.random()*90).toFixed(1)}%;pointer-events:none;animation:dnaParticle ${4+i*2}s ease-in-out infinite;animation-delay:${(i*0.8).toFixed(1)}s`;
+    document.querySelector('.dna-hero')?.appendChild(p);
+  }
+}, 100);
 </script>
 </body>
 </html>
