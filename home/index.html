@@ -1068,14 +1068,18 @@ function initScrollFade(){
 }
 
 window.onload=()=>{
-  const ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  let _ud=null;
+  try{_ud=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');}catch(e){}
   const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
-  if(!ud||!tk){window.location.href='/login';return;}
-  try{user=JSON.parse(ud);}catch(e){user={id:null,username:ud};}
-  if(!user||!user.username){window.location.href='/login';return;}
+  if(!_ud||!_ud.username||!tk){window.location.replace('/login');return;}
+  user=_ud;
 
   const _app=document.getElementById('app');if(_app)_app.style.display='block';
   const _ub=document.getElementById('userBadge');if(_ub)_ub.textContent='@'+user.username;
+  // Set avatar initials immediately — before picks fetch resolves
+  const _avEl=document.getElementById('idAv');
+  if(_avEl&&user.username){const _customAv=localStorage.getItem('ledgr_avatar_'+(user.id||user.username));if(_customAv){_avEl.innerHTML=`<img src="${_customAv}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block"><div class="id-verified">✓</div>`;}else{_avEl.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';}}
+  const _nmEl=document.getElementById('idName');if(_nmEl&&user.username)_nmEl.textContent='@'+user.username;
   if(window.Push)window.Push.init();
 
   const _ey=document.getElementById('heroEyebrow');
@@ -1144,7 +1148,7 @@ function _renderDataError(){
   ['hsROI','hsStreak','hsRank','hsRel'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dash;});
   ['idName','idROI','idRank','idStreak','idRel','idRankNum'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=dash;});
   const db=document.getElementById('divisionBadge');if(db)db.innerHTML='<span style="font-size:12px;color:var(--mu)">—</span>';
-  const feed=document.getElementById('communityFeed');if(feed)feed.innerHTML='<div class="empty">Could not load — <a href="" style="color:var(--ac)">Retry</a></div>';
+  const feed=document.getElementById('communityFeed');if(feed){const _ps=feed.parentElement;if(_ps)_ps.style.display='none';}
   const tp=document.getElementById('trendingPicksGrid');if(tp)tp.innerHTML='<div class="empty">—</div>';
   const rg=document.getElementById('risingGrid');if(rg)rg.innerHTML='<div class="empty" style="font-family:var(--font-mono);font-size:11px;color:var(--mu);padding:20px;text-align:center;grid-column:1/-1">—</div>';
   // Don't wipe miniLeaderboard — rankings fetch runs independently
@@ -1161,14 +1165,13 @@ async function loadData(){
   const ctrl=new AbortController();
   const abort=setTimeout(()=>ctrl.abort(),15000);
   // Fetch rankings independently so TOP TIPSTERS renders even if picks fail
-  fetch(API+'/rankings?limit=5',{cache:'no-store'}).then(async r=>{
-    if(!r.ok)return;
-    try{
-      const rd=await r.json();
-      const top5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);
-      if(top5&&top5.length)renderLeaderboard([],top5);
-    }catch(e){}
-  }).catch(()=>{});
+  {const _rkCtrl=new AbortController();
+  const _rkTok=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  const _rkTimer=setTimeout(()=>_rkCtrl.abort(),15000);
+  fetch(API+'/rankings?limit=5',{cache:'no-store',signal:_rkCtrl.signal,headers:_rkTok?{Authorization:'Bearer '+_rkTok}:{}}).then(async r=>{
+    clearTimeout(_rkTimer);if(!r.ok)return;
+    try{const rd=await r.json();const top5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);if(top5&&top5.length)renderLeaderboard([],top5);}catch(e){}
+  }).catch(()=>{clearTimeout(_rkTimer);const _lb=document.getElementById('miniLeaderboard');if(_lb&&_lb.parentElement)_lb.parentElement.style.display='none';});}
   try{
     const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
     const [picksRes,profileRes,rankingRes,rankingsListRes]=await Promise.all([
@@ -1253,7 +1256,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const idROI=document.getElementById('idROI');if(idROI){idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');_animStatVal(idROI,(parseFloat(roi)>=0?'+':'')+roi+'%');}
   const finalRank=rm&&rm.rank?rm.rank:rank;
   const idRank=document.getElementById('idRank');if(idRank){idRank.className='id-stat-val ac';if(finalRank>0)_animStatVal(idRank,'#'+finalRank,true);else idRank.textContent='#—';}
-  const idStreak=document.getElementById('idStreak');if(idStreak){idStreak.className='id-stat-val orange';if(finalStreak>0)_animStatVal(idStreak,finalStreak+'W 🔥',true);else idStreak.textContent='None yet';}
+  const idStreak=document.getElementById('idStreak');if(idStreak){idStreak.className='id-stat-val orange';_animStatVal(idStreak,finalStreak>0?finalStreak+'W 🔥':'0W',true);}
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'0/100';
   const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
@@ -1262,7 +1265,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
   const idRankNum=document.getElementById('idRankNum');if(idRankNum)idRankNum.textContent=rank>0?'#'+rank:'#—';
   const sharp=rm&&rm.sharpScore!=null?Math.round(rm.sharpScore):0;
-  const idSS=document.getElementById('idSharpScore');if(idSS){idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');if(sharp>0)_animStatVal(idSS,sharp+'/100',true);else idSS.textContent='—';}
+  const idSS=document.getElementById('idSharpScore');if(idSS){idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');_animStatVal(idSS,sharp+'/100',true);}
   const idBanner=document.getElementById('idDivBanner');
   if(idBanner){const bc={LEGENDARY:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(184,159,255,.6),rgba(251,191,36,.7))',ELITE:'linear-gradient(90deg,rgba(248,113,113,.8),rgba(251,146,60,.5))',DIAMOND:'linear-gradient(90deg,rgba(184,159,255,.9),rgba(123,44,255,.6))',PLATINUM:'linear-gradient(90deg,rgba(56,189,248,.8),rgba(52,211,153,.5))',GOLD:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(251,146,60,.5))',SILVER:'linear-gradient(90deg,rgba(148,163,184,.7),rgba(100,116,139,.4))',BRONZE:'linear-gradient(90deg,rgba(180,120,80,.8),rgba(180,120,80,.4))'};idBanner.style.background=bc[div.name]||bc.BRONZE;}
   const sorted=[...myPicks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
