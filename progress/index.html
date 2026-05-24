@@ -250,6 +250,18 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .tl-event-type{font-family:var(--font-mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;opacity:0.7}
 .tl-item.visible{animation:fadeUp 0.35s ease both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* ── Hero Identity ── */
+.hero-identity{text-align:center;margin-top:8px}
+.hero-username{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--tx);letter-spacing:0.05em}
+.hero-archetype{font-size:10px;color:var(--ac);font-family:'Syne',sans-serif;letter-spacing:0.12em;margin-top:1px}
+/* ── Season Identity Card ── */
+.season-identity-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 24px;text-align:center;margin-bottom:16px}
+.si-eyebrow{font-size:10px;letter-spacing:0.2em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:12px;text-transform:uppercase}
+.si-icon{font-size:40px;margin-bottom:8px}
+.si-name{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--ac);letter-spacing:0.05em;margin-bottom:8px}
+.si-traits{font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;line-height:1.8}
+/* ── Season Exclusive Tag ── */
+.season-exclusive-tag{text-align:center;font-size:9px;letter-spacing:0.15em;color:var(--ac);font-family:'DM Mono',monospace;margin-top:16px;padding:8px;border:1px solid rgba(123,44,255,0.2);border-radius:6px;background:rgba(123,44,255,0.05)}
 </style>
 
 </head>
@@ -499,6 +511,47 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
         Array.from(_avEl.childNodes).filter(n => n.nodeType === 3).forEach(n => n.remove());
       }
 
+      // Fix 1 (Round 3): archetype label
+      const _archetypeKey = localStorage.getItem('ledgr_archetype') || '';
+      const _archetypeEl = document.getElementById('heroArchetypeLabel');
+      if (_archetypeEl && _archetypeKey) _archetypeEl.textContent = _archetypeKey.toUpperCase();
+
+      // Fix 2: badge showcase below hero-identity
+      const _badgeShowcase = (()=>{ try{ return JSON.parse(localStorage.getItem('ledgr_badge_showcase')||'[]'); }catch(e){ return []; } })();
+      if (_badgeShowcase.length) {
+        const _identityEl = document.querySelector('.hero-identity');
+        if (_identityEl) {
+          const _badgeRow = document.createElement('div');
+          _badgeRow.style.cssText = 'display:flex;gap:4px;justify-content:center;margin-top:6px;flex-wrap:wrap';
+          _badgeShowcase.slice(0,5).forEach(id => {
+            const _b = document.createElement('span');
+            _b.style.cssText = 'font-size:15px;line-height:1;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08)';
+            _b.textContent = getBadgeEmoji(id);
+            _b.title = id.replace(/_/g,' ');
+            _badgeRow.appendChild(_b);
+          });
+          _identityEl.appendChild(_badgeRow);
+        }
+      }
+
+      // Fix 3: season identity card
+      const _ARCHETYPE_TRAITS = {
+        'Value Hunter': { icon:'🦅', traits:['Finds edge in mispriced lines','Targets +EV before markets correct','Waits for the right spot'] },
+        'Contrarian':   { icon:'🔄', traits:['Fades the public','Thrives when markets overcorrect','High CLV going against the grain'] },
+        'Sharp':        { icon:'🎯', traits:['Beats closing line consistently','Disciplined unit sizing','Process over results'] },
+        'Momentum':     { icon:'⚡', traits:['Rides hot streaks aggressively','Reads game flow and tempo','In-play specialist'] },
+        'Consistent':   { icon:'⚖️', traits:['Steady win rate above 55%','Low variance selections','Followers trust each pick'] },
+      };
+      const _at = _ARCHETYPE_TRAITS[_archetypeKey];
+      if (_at) {
+        const _siIcon = document.getElementById('siIcon');
+        const _siName = document.getElementById('siName');
+        const _siTraits = document.getElementById('siTraits');
+        if (_siIcon) _siIcon.textContent = _at.icon;
+        if (_siName) _siName.textContent = _archetypeKey.toUpperCase();
+        if (_siTraits) _siTraits.innerHTML = _at.traits.map(t=>`<div>· ${t}</div>`).join('');
+      }
+
       const spineFill = document.querySelector('.tl-spine-fill');
       if (spineFill) spineFill.style.height = '100%';
 
@@ -566,10 +619,14 @@ function buildHTML(d) {
       <div class="hero-noise"></div>
       <img src="/assets/logo/ledgr-icon.png" class="hero-watermark" alt="">
       <div class="hero-inner">
-        <div style="position:relative;flex-shrink:0">
+        <div style="position:relative;flex-shrink:0;display:flex;flex-direction:column;align-items:center">
           <div class="hero-av" style="background:linear-gradient(135deg,${divColor}40,${divColor}20)">
             <div class="hero-av-ring ${tier.ringCls}"></div>
             ${initials}
+          </div>
+          <div class="hero-identity">
+            <div class="hero-username">@${USERNAME}</div>
+            <div class="hero-archetype" id="heroArchetypeLabel">TIPSTER</div>
           </div>
         </div>
         <div class="hero-center">
@@ -717,6 +774,12 @@ function buildHTML(d) {
 
   return `
     ${heroHTML}
+    <div class="season-identity-card" id="seasonIdentityCard">
+      <div class="si-eyebrow">YOUR SEASON IDENTITY</div>
+      <div class="si-icon" id="siIcon">⚡</div>
+      <div class="si-name" id="siName">TIPSTER</div>
+      <div class="si-traits" id="siTraits">Post picks to reveal your identity</div>
+    </div>
     ${divTrack}
     ${div}
     <div class="two-col">
@@ -832,6 +895,18 @@ function countUp(el, target, suffix, prefix) {
     if (progress < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+}
+
+function getBadgeEmoji(id) {
+  const map = {
+    'first_win':'🥇','streak_3':'🔥','streak_5':'⚡','streak_10':'🌟',
+    'picks_10':'📋','picks_50':'📊','picks_100':'🏆','picks_250':'💎',
+    'roi_10':'📈','roi_20':'💹','roi_50':'🚀',
+    'sharp':'🎯','clv_master':'🧠','value_hunter':'🦅',
+    'contrarian':'🔄','consistent':'⚖️','underdog':'🐕',
+    'profit_100':'💰','profit_500':'💵','profit_1000':'🏦',
+  };
+  return map[id] || '🏅';
 }
 
 function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, divColor) {
@@ -1099,13 +1174,13 @@ function animateRadar() {
 function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, rankHistory) {
   rankHistory = rankHistory || [];
   const DIV_REWARDS = {
-    BRONZE:   { icon:'▲', label:'Basic Badge', color:'#b47850' },
-    SILVER:   { icon:'◆', label:'Profile Border', color:'#94a3b8' },
-    GOLD:     { icon:'★', label:'Gold Name', color:'#fbbf24' },
-    PLATINUM: { icon:'⬡', label:'Animated Ring', color:'#38bdf8' },
-    DIAMOND:  { icon:'✦', label:'Particle FX', color:'#b89fff' },
-    ELITE:    { icon:'⊕', label:'Elite Aura', color:'#e879a0' },
-    LEGENDARY:{ icon:'◉', label:'HOF Entry', color:'#fbbf24' },
+    BRONZE:   { icon:'🥉', label:'Starter Badge',    sub:'Bronze profile badge for your record',    color:'#b47850' },
+    SILVER:   { icon:'🔲', label:'Profile Border',   sub:'Silver frame appears on your profile',    color:'#94a3b8' },
+    GOLD:     { icon:'⭐', label:'Gold Name Color',  sub:'Your username glows in gold',             color:'#fbbf24' },
+    PLATINUM: { icon:'💫', label:'Animated Ring',    sub:'Pulsing platinum ring around avatar',     color:'#38bdf8' },
+    DIAMOND:  { icon:'💎', label:'Particle FX',      sub:'Diamond particles trail on your profile', color:'#b89fff' },
+    ELITE:    { icon:'👑', label:'Elite Aura',        sub:'Exclusive elite glow effect',             color:'#e879a0' },
+    LEGENDARY:{ icon:'🏆', label:'HOF Entry',         sub:'Permanent Hall of Fame listing',          color:'#fbbf24' },
   };
   const divOrder = ['BRONZE','SILVER','GOLD','PLATINUM','DIAMOND','ELITE','LEGENDARY'];
   const currentDivIdx = divOrder.indexOf(divisionName);
@@ -1135,17 +1210,14 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
     return `<div class="reward-item">
       <div class="reward-check ${isPast?'done':isNext?'next-reward':'locked'}">${isPast?'✓':isNext?'▶':'🔒'}</div>
       <div class="reward-div-name" style="color:${rw.color}">${div}</div>
-      <div class="reward-label-text">${rw.icon} ${rw.label}</div>
+      <div class="reward-label-text">
+        <span>${rw.icon} ${rw.label}</span>
+        ${rw.sub?`<div style="font-size:10px;color:var(--mu);margin-top:1px">${rw.sub}</div>`:''}
+      </div>
       ${isNext?`<span class="reward-next-badge">NEXT</span>`:''}
       ${isCurrent?`<span style="font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:1px">CURRENT</span>`:''}
     </div>`;
   }).join('');
-
-  const pastHTML = pastSeasons.length ? `
-    <div style="margin-top:12px;font-family:var(--font-mono);font-size:10px;color:var(--mu)">
-      ${pastSeasons.slice(0,3).map(s=>`<div style="padding:6px 0;border-bottom:1px solid var(--bd)">${s.name||'Past Season'} · ${s.champion?'Champion: @'+s.champion:'No champion'}</div>`).join('')}
-    </div>
-  ` : '';
 
   // Division change history from weekly snapshots
   let divHistoryHTML = '';
@@ -1181,6 +1253,30 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
     }
   }
 
+  const seasonHistoryHTML = (() => {
+    const items = [];
+    items.push({
+      name: activeSeason ? (activeSeason.name || 'Current Season') : 'Current Season',
+      status: 'ACTIVE',
+      rank: myRank,
+      division: divisionName,
+      isActive: true,
+    });
+    pastSeasons.slice(0,4).forEach(s => {
+      items.push({ name: s.name || 'Past Season', status: 'ENDED', champion: s.champion, isActive: false });
+    });
+    if (items.length <= 1 && !pastSeasons.length) return '';
+    return `<div style="margin-top:24px">
+      <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:12px">Season History</div>
+      ${items.map(it=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)">
+          <span style="font-family:var(--font-mono);font-size:7px;letter-spacing:1.5px;padding:2px 6px;border-radius:3px;${it.isActive?'background:rgba(123,44,255,0.15);color:var(--ac);border:1px solid rgba(123,44,255,0.3)':'background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid var(--bd)'}">${it.status}</span>
+          <span style="font-family:'Syne',sans-serif;font-size:13px;color:var(--tx);flex:1">${it.name}</span>
+          ${it.isActive?(it.rank?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">#${it.rank} · ${it.division}</span>`:`<span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">${it.division}</span>`):(it.champion?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold)">👑 @${it.champion}</span>`:`<span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">No champion</span>`)}
+        </div>`).join('')}
+    </div>`;
+  })();
+
   return `
     <div class="sec-title">Season Progression</div>
     <div class="season-hero">
@@ -1190,8 +1286,9 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
         <div class="season-countdown-fill" style="width:${seasonPct}%"></div>
       </div>
       <div class="season-rewards-track">${seasonRewards}</div>
+      <div class="season-exclusive-tag">SEASON ${activeSeason?(activeSeason.number||'1'):'1'} EXCLUSIVE REWARDS — LOCKED TO THIS SEASON ONLY</div>
       ${divHistoryHTML}
-      ${pastHTML}
+      ${seasonHistoryHTML}
     </div>
   `;
 }

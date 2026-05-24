@@ -481,7 +481,7 @@
     var logoHtml = '<a href="' + logoHref + '" class="an-logo">'
       + '<picture>'
       + '<source media="(max-width:768px)" srcset="/assets/logo/ledgr-icon.png">'
-      + '<img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:32px;width:auto;display:block;" loading="eager">'
+      + '<img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:34px;width:auto;display:block;" loading="eager">'
       + '</picture>'
       + '</a>';
 
