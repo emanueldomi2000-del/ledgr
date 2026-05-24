@@ -18,9 +18,10 @@
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
 <style>
-body{min-height:100vh;overflow-x:hidden}
+body{min-height:100vh;overflow-x:hidden;background-image:radial-gradient(circle,#ffffff08 1px,transparent 1px);background-size:24px 24px}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:1;opacity:.3}
 @keyframes bgBreathe{0%,100%{opacity:0.55}50%{opacity:1}}
+@keyframes breathe{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.15)}}
 .bg-glow{position:fixed;top:-300px;left:50%;transform:translateX(-50%);width:1000px;height:800px;background:radial-gradient(ellipse,rgba(123,44,255,0.14),transparent 65%);pointer-events:none;z-index:0;animation:bgBreathe 12s ease-in-out infinite}
 
 /* ══ PRESTIGE MOTION ══ */
@@ -579,6 +580,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </head>
 <body>
 <div class="bg-glow"></div>
+<div style="position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(123,44,255,0.06) 0%,transparent 70%);top:20%;left:50%;transform:translateX(-50%);animation:breathe 12s ease-in-out infinite;pointer-events:none;z-index:0;"></div>
 <div class="bg-grid"></div>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
@@ -619,7 +621,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="id-left">
         <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
         <div class="id-info">
-          <div class="id-eyebrow">YOUR RECORD</div>
+          <div class="id-eyebrow" id="idEyebrow">YOUR RECORD</div>
           <div class="id-name" id="idName"><span class="skel-inline" style="width:120px;height:24px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
           <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:80px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
         </div>
@@ -745,7 +747,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- LEFT COLUMN -->
       <div>
         <!-- MY PICKS -->
-        <div class="fade-in" style="margin-bottom:20px" id="myPicksSection">
+        <div style="display:none" id="myPicksSection">
           <div class="section-head-row">
             <h2>My Picks</h2>
             <a href="/tipster?u=__self__" id="myPicksViewAll" style="font-family:var(--font-mono);font-size:9px;color:var(--ac);text-decoration:none;letter-spacing:1px;display:none">VIEW ALL →</a>
@@ -778,7 +780,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         </div>
 
         <!-- COMMUNITY CHAT PREVIEW -->
-        <div class="fade-in" style="margin-bottom:20px">
+        <div style="display:none">
           <div class="section-head-row">
             <div style="display:flex;align-items:center;gap:8px">
               <h2>Community Chat</h2>
@@ -792,7 +794,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         </div>
 
         <!-- QUICK ACTIONS -->
-        <div class="qa-grid fade-in">
+        <div class="qa-grid fade-in" style="display:none">
           <a href="/dashboard" class="qa-btn" style="border-color:rgba(184,159,255,0.2)"><div class="qa-icon">＋</div><div class="qa-label">POST PICK</div></a>
           <a href="/compare" class="qa-btn"><div class="qa-icon">⚖</div><div class="qa-label">COMPARE</div></a>
           <a href="/simulator" class="qa-btn"><div class="qa-icon">📈</div><div class="qa-label">SIMULATOR</div></a>
@@ -1248,10 +1250,10 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const rm=window._myRankingMeta;
   const rel=rm?Math.round(rm.reliabilityScore):getReliability(myPicks).score;
   const finalStreak=rm&&rm.streakType==='win'?rm.currentStreak:streak;
-  const idROI=document.getElementById('idROI');if(idROI){idROI.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
+  const idROI=document.getElementById('idROI');if(idROI){idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');_animStatVal(idROI,(parseFloat(roi)>=0?'+':'')+roi+'%');}
   const finalRank=rm&&rm.rank?rm.rank:rank;
-  const idRank=document.getElementById('idRank');if(idRank)idRank.textContent=finalRank>0?'#'+finalRank:'#—';
-  const idStreak=document.getElementById('idStreak');if(idStreak)idStreak.textContent=finalStreak>0?finalStreak+'W 🔥':'None yet';
+  const idRank=document.getElementById('idRank');if(idRank){idRank.className='id-stat-val ac';if(finalRank>0)_animStatVal(idRank,'#'+finalRank,true);else idRank.textContent='#—';}
+  const idStreak=document.getElementById('idStreak');if(idStreak){idStreak.className='id-stat-val orange';if(finalStreak>0)_animStatVal(idStreak,finalStreak+'W 🔥',true);else idStreak.textContent='None yet';}
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'0/100';
   const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
@@ -1260,7 +1262,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
   const idRankNum=document.getElementById('idRankNum');if(idRankNum)idRankNum.textContent=rank>0?'#'+rank:'#—';
   const sharp=rm&&rm.sharpScore!=null?Math.round(rm.sharpScore):0;
-  const idSS=document.getElementById('idSharpScore');if(idSS){idSS.textContent=sharp>0?sharp+'/100':'—';idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');}
+  const idSS=document.getElementById('idSharpScore');if(idSS){idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');if(sharp>0)_animStatVal(idSS,sharp+'/100',true);else idSS.textContent='—';}
   const idBanner=document.getElementById('idDivBanner');
   if(idBanner){const bc={LEGENDARY:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(184,159,255,.6),rgba(251,191,36,.7))',ELITE:'linear-gradient(90deg,rgba(248,113,113,.8),rgba(251,146,60,.5))',DIAMOND:'linear-gradient(90deg,rgba(184,159,255,.9),rgba(123,44,255,.6))',PLATINUM:'linear-gradient(90deg,rgba(56,189,248,.8),rgba(52,211,153,.5))',GOLD:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(251,146,60,.5))',SILVER:'linear-gradient(90deg,rgba(148,163,184,.7),rgba(100,116,139,.4))',BRONZE:'linear-gradient(90deg,rgba(180,120,80,.8),rgba(180,120,80,.4))'};idBanner.style.background=bc[div.name]||bc.BRONZE;}
   const sorted=[...myPicks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
@@ -1526,6 +1528,18 @@ function renderProfileCard(all){
   if(window.checkStreak)window.checkStreak(my);
   renderHeroArch();
   _updateContextLine(my,rank,sorted.length);
+  const _ieEl=document.getElementById('idEyebrow');
+  if(_ieEl){
+    const _myStk=my.reduce((s,p)=>s+p.stake,0),_myPnl=my.reduce((s,p)=>s+p.pnl,0);
+    const _myRoi=_myStk>0?(_myPnl/_myStk)*100:0;
+    const _rm3=window._myRankingMeta;
+    const _fRank=_rm3&&_rm3.rank?_rm3.rank:rank;
+    const _fStr=_rm3&&_rm3.streakType==='win'?(_rm3.currentStreak||0):0;
+    if(_fStr>=5)_ieEl.textContent='YOU\'RE ON FIRE';
+    else if(_myRoi>20&&my.length>=5)_ieEl.textContent='YOU\'RE HEATING UP';
+    else if(_fRank<=10&&_fRank>0)_ieEl.textContent='ELITE TERRITORY';
+    else _ieEl.textContent='YOUR EDGE IS EVOLVING';
+  }
 }
 
 function _updateContextLine(myPicks,rank,totalTipsters){
@@ -2266,6 +2280,23 @@ function subscribeWS(){
     const p=ev.payload||{};
     if(window.divisionDownAnimation)window.divisionDownAnimation(p.toDivision||ev.division);
   });
+}
+
+/* ── STAT CARD COUNT-UP ── */
+function _animStatVal(el,finalText,intOnly){
+  const match=finalText.match(/[\d.]+/);
+  if(!match){el.textContent=finalText;return;}
+  const num=parseFloat(match[0]);
+  const idx=finalText.indexOf(match[0]);
+  const pre=finalText.slice(0,idx),suf=finalText.slice(idx+match[0].length);
+  const isInt=intOnly||Number.isInteger(num);
+  const dur=800,t0=performance.now();
+  function step(now){
+    const p=Math.min((now-t0)/dur,1),ease=1-Math.pow(1-p,3),cur=ease*num;
+    el.textContent=pre+(isInt?Math.floor(cur):cur.toFixed(1))+suf;
+    if(p<1)requestAnimationFrame(step);else el.textContent=finalText;
+  }
+  requestAnimationFrame(step);
 }
 </script>
 <img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">
