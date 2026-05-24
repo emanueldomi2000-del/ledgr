@@ -4,7 +4,65 @@ Date: 2026-05-24
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: tipster page visual improvements Round 2 ✅ COMPLETE
+Current objective: tipster profile final rework ✅ COMPLETE
+
+---
+
+## Last completed: tipster profile final rework (2026-05-24)
+
+`tipster/index.html` only. No backend changes.
+
+### FIX 1 — Removed duplicates
+- Removed `.hero-quick-stats` bar (REL/RANK/ROI/Streak — all in stats grid)
+- Removed `.community-impact` ci-grid (Followers/Following/Subscribers in hero)
+- Removed `rpgCardHTML` panel from sidebar
+- Removed `buildArchEvoPanel` from sidebar
+- Removed `reliabilityHtml` standalone box
+- Removed ELO standalone box
+- Removed BY SPORT sidebar panel
+- Removed Sharp Score perf-row (shown in gauge secondary row)
+- Removed Reliability perf-row (shown as gauge primary)
+
+### FIX 2 — Archetype-themed hero particles
+- `archParticleFloat` keyframe replaces `heroParticle`
+- 9 particles with archetype-keyed colors: value_hunter=gold, contrarian=red, momentum_rider=orange, arbitrage_pro=cyan, grinder=purple
+- `_archPColors` map in setTimeout
+
+### FIX 3 — Archetype merged into hero identity
+- `archHeroBlock`: inline block below `.badges-row` in hero identity
+- Shows: icon + name + LEVEL N TIPSTER + N PICKS + 3 traits + XP bar
+- `ahbXpFill` animated in setTimeout (1.2s ease, 300ms delay)
+- Replaces all separate archetype panels
+
+### FIX 4 — Reliability as primary gauge metric
+- Gauge uses `score` (reliability), pulsing via `relCirclePulse` animation
+- Sharp Score + ROI + Win Rate shown as secondary row beneath gauge
+- Duplicate perf-rows removed
+
+### FIX 5 — Community card (non-duplicating)
+- `.community-card` in right sidebar: FOLLOWERS (async) + SUBSCRIBERS (async) + TAIL RATE (win rate)
+- BEST WIN section showing top P&L pick
+- `ccFollowers` / `ccSubscribers` IDs updated in all async callbacks
+
+### FIX 6 — Activity tabs
+- Picks panel title changed from "ALL PICKS" to "ACTIVITY"
+- `.activity-tabs-bar` with PICKS / POSTS / NOTES buttons
+- `switchActivity(tab, btn)` function added
+- POSTS: "coming soon" placeholder
+- NOTES: private placeholder (Notes tab only shown to profile owner)
+
+### FIX 7 — Right sidebar simplified
+- Only: BETTING DNA + COMMUNITY card + PERFORMANCE + TROPHY WALL
+
+### FIX 8 — Animations
+- `relCirclePulse`: pulsing glow on reliability gauge (3s ease-in-out)
+- `archParticleFloat`: archetype-colored particles in banner
+- XP bar animated (1.2s cubic-bezier)
+- All existing hover/count-up/card-in animations preserved
+
+### Modified files
+- `tipster/index.html`
+- `LAST_TASK.md`
 
 ---
 
