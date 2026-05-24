@@ -305,11 +305,12 @@ body::before{content:'';position:fixed;inset:0;
 
 /* ══ HEADER UPGRADE — Sprint 12 ══ */
 .lb-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,72px)!important;color:var(--tx);letter-spacing:0.03em!important;line-height:1!important;margin-bottom:8px}
-@keyframes podEntrance{0%{opacity:0;transform:translateY(60px) scale(.75)}70%{transform:translateY(-10px) scale(1.03)}88%{transform:translateY(4px) scale(.99)}100%{opacity:1;transform:none}}
-.podium-card{animation:podEntrance .9s cubic-bezier(.34,1.56,.64,1) both!important}
-.podium-card.p2{animation-delay:.1s!important}
-.podium-card.p1{animation-delay:.25s!important}
-.podium-card.p3{animation-delay:.4s!important}
+@keyframes slideFromLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes riseUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideFromRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+.podium-card.p2{animation:slideFromLeft 0.6s ease 0.2s both!important}
+.podium-card.p1{animation:riseUp 0.7s ease 0.1s both!important}
+.podium-card.p3{animation:slideFromRight 0.6s ease 0.3s both!important}
 /* #1 breathing glow */
 @keyframes goldBreath{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.2),0 4px 24px rgba(0,0,0,.4)}50%{box-shadow:0 0 40px rgba(255,215,0,.4),0 0 60px rgba(255,215,0,.15),0 4px 24px rgba(0,0,0,.4)}}
 /* Podium particles */
@@ -328,8 +329,8 @@ body::before{content:'';position:fixed;inset:0;
 .lb-subtitle{font-size:13px;color:var(--mu);font-family:'Syne',sans-serif;letter-spacing:0.05em}
 /* Champion card */
 .champion-label{font-size:9px;letter-spacing:0.25em;color:#FFD700;font-family:'DM Mono',monospace;margin-bottom:8px;text-align:center}
-.pod-crown{font-size:28px;text-align:center;margin-bottom:8px;animation:crownFloat 3s ease-in-out infinite}
-@keyframes crownFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-6px) rotate(5deg)}}
+.pod-crown{font-size:28px;text-align:center;margin-bottom:8px;display:inline-block;animation:crownFloat 3s ease-in-out infinite;transform-origin:center bottom}
+@keyframes crownFloat{0%,100%{transform:translateY(0) rotate(-3deg);filter:drop-shadow(0 0 4px rgba(255,215,0,0.3))}50%{transform:translateY(-8px) rotate(3deg);filter:drop-shadow(0 0 12px rgba(255,215,0,0.6))}}
 @keyframes goldFloat{0%,100%{transform:translateY(0);opacity:0.5}50%{transform:translateY(-30px);opacity:0}}
 .champ-archetype{font-size:11px;color:var(--ac);font-family:'Syne',sans-serif;margin:4px 0;letter-spacing:0.1em}
 .champ-stats{display:flex;gap:12px;justify-content:center;font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin:6px 0}
@@ -691,14 +692,16 @@ function buildLbTicker(tipsters, picks) {
   const today = new Date().toDateString();
   const todayPicks = (picks||[]).filter(p=>new Date(p.createdAt).toDateString()===today).length;
   const roiVal = topRoi ? (topRoi.roi!=null?topRoi.roi:(topRoi.stake>0?(topRoi.pnl/topRoi.stake)*100:0)) : 0;
-  const msgs = [
-    `🔥 HOT TODAY: <span>${todayPicks||tipsters.length} picks posted</span>`,
-    topStreak ? `🏆 LONGEST STREAK: <span>@${topStreak.username} ${topStreak.streak}W</span>` : `🏆 LONGEST STREAK: <span>—</span>`,
-    topRoi ? `👑 GOAT ROI: <span>@${topRoi.username} ${roiVal>=0?'+':''}${roiVal.toFixed(1)}%</span>` : '',
-    `⚔️ TIPSTERS ACTIVE: <span>${tipsters.length}</span>`,
-    `🔒 VERIFIED RECORDS: <span>Zero fakes. Ever.</span>`
-  ].filter(Boolean);
-  const full = [...msgs,...msgs].map(m=>`<span class="lb-tick-item">${m}</span>`).join('');
+  const champ = tipsters[0];
+  const rank2 = tipsters[1];
+  const msgs = [];
+  if (topStreak) msgs.push(`🔥 HOT: <span>@${topStreak.username} ${topStreak.streak}W</span>`);
+  if (topRoi) msgs.push(`👑 GOAT ROI: <span>@${topRoi.username} ${roiVal>=0?'+':''}${roiVal.toFixed(1)}%</span>`);
+  if (todayPicks > 0) msgs.push(`📈 TODAY: <span>${todayPicks} picks posted</span>`);
+  if (champ && rank2) msgs.push(`⚔️ GAP: <span>@${champ.username} leads by ${((champ.roi||0)-(rank2.roi||0)).toFixed(1)}%</span>`);
+  msgs.push(`🔒 VERIFIED: <span>Zero fake records. Ever.</span>`);
+  if (msgs.length < 3) msgs.push(`⚡ ACTIVE: <span>${tipsters.length} tipsters competing</span>`);
+  const full = [...msgs,...msgs].map(m=>`<span class="lb-tick-item" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mu);flex-shrink:0;padding:0 24px;">${m}</span>`).join('');
   const el = document.getElementById('lbTicker');
   if (el) {
     el.innerHTML = full;
@@ -869,6 +872,17 @@ async function loadLeaderboard() {
     renderMovers(allTipsters);
     buildLbTicker(allTipsters, allPicks);
     renderLeaderboard();
+
+    // Update hero with live data
+    const _champUser = allTipsters[0]?.username;
+    const _lbSubtitle = document.querySelector('.lb-subtitle');
+    if (_lbSubtitle && _champUser) {
+      _lbSubtitle.innerHTML = `Current throne: <span style="color:var(--ac);">@${_champUser}</span> &nbsp;·&nbsp; <span style="color:var(--mu);">${allTipsters.length} tipsters competing</span>`;
+    }
+    const _lbEyebrow = document.querySelector('.lb-eyebrow');
+    if (_lbEyebrow) {
+      _lbEyebrow.innerHTML = 'SEASON 3 &nbsp;<span style="color:#00E5A0;font-size:9px;">● LIVE</span>';
+    }
   } catch (e) {
     clearTimeout(_xt);
     document.getElementById('lbTableWrap').style.display = 'none';
@@ -1061,7 +1075,8 @@ function renderLeaderboard() {
         <div class="podium-name">@${t.username}</div>
         ${i===0 ? `<div class="champ-archetype">${t.archetype||'The Sharp'}</div>
         <div class="champ-stats"><span>${t.picks} Picks</span><span>${wr.toFixed(0)}% WR</span><span>${roi>=0?'+':''}${roi.toFixed(1)}% ROI</span></div>
-        ${t.streak>0?`<div class="champ-streak">🔥 ${t.streak}W streak</div>`:''}` : ''}
+        ${t.streak>0?`<div class="champ-streak">🔥 ${t.streak}W streak</div>`:''}
+        <div class="champ-extras" id="champExtras"></div>` : ''}
         ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
         <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
         <div class="podium-picks-sub">${t.picks} picks · ${wr.toFixed(0)}% WR</div>
@@ -1095,6 +1110,24 @@ function renderLeaderboard() {
       setTimeout(() => {
         _p1Card.style.setProperty('animation', 'goldBreath 4s ease-in-out infinite', 'important');
       }, 1500);
+    }
+
+    // Champion extras: last win + rivalry
+    const _champ = top3[0];
+    const _rank2 = top3[1];
+    const _extrasEl = document.getElementById('champExtras');
+    if (_extrasEl) {
+      let _html = '';
+      const _champWins = allPicks.filter(p=>p.username===_champ.username && p.result==='win').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+      const _lastWin = _champWins[0];
+      if (_lastWin) {
+        _html += `<div style="margin-top:10px;padding:8px 12px;background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.15);border-radius:8px;font-size:11px;"><div style="color:var(--mu);font-family:'Syne';margin-bottom:3px;">LAST VERIFIED</div><div style="color:var(--tx);font-family:'DM Mono';">${_lastWin.event||'Pick'} <span style="color:#00E5A0;">+${(_lastWin.pnl||0).toFixed(0)}u</span></div></div>`;
+      }
+      if (_rank2) {
+        const _gap = ((_champ.roi||0)-(_rank2.roi||0)).toFixed(1);
+        _html += `<div style="margin-top:6px;font-size:10px;color:var(--mu);font-family:'Syne';text-align:center;">⚔️ Leading @${_rank2.username} by <span style="color:var(--ac);">${_gap}% ROI</span></div>`;
+      }
+      _extrasEl.innerHTML = _html;
     }
   } else {
     podiumEl.style.display = 'none';
@@ -1189,6 +1222,19 @@ function renderLeaderboard() {
     if (window.LEDGR && LEDGR.observeReveal) LEDGR.observeReveal();
   }, 60);
 }
+
+// Nav hide on scroll down, show on scroll up
+(function(){
+  let _lastScroll = 0;
+  const _nav = document.getElementById('appNav');
+  window.addEventListener('scroll', function(){
+    const cur = window.scrollY;
+    if (!_nav) return;
+    _nav.style.transition = 'transform 0.3s ease';
+    _nav.style.transform = (cur > _lastScroll && cur > 80) ? 'translateY(-100%)' : 'translateY(0)';
+    _lastScroll = cur;
+  }, { passive: true });
+})();
 
 loadLeaderboard();
 
