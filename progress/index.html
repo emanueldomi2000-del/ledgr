@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="/app-components.css">
 <style>
 body::before { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:0; opacity:0.3; }
+body::after { content:''; position:fixed; inset:0; background-image:radial-gradient(circle,#ffffff06 1px,transparent 1px); background-size:28px 28px; pointer-events:none; z-index:0; animation:gridBreathe 10s ease-in-out infinite; }
+@keyframes gridBreathe { 0%,100%{background-size:28px 28px;opacity:1} 50%{background-size:30px 30px;opacity:0.85} }
+@keyframes floatParticle { 0%,100%{transform:translate(0,0)} 33%{transform:translate(30px,-20px)} 66%{transform:translate(-20px,30px)} }
 
 /* Skeleton */
 .skel { display:inline-block; border-radius:6px; background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%); background-size:800px 100%; animation:shimmer 1.6s infinite linear; }
@@ -66,8 +69,8 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .hero-elo-nums { font-family:var(--font-mono); font-size:13px; color:var(--mu2); margin-bottom:8px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
 .hero-bar-track { height:10px; background:rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; margin-bottom:6px; position:relative; }
 .hero-bar-fill { height:100%; border-radius:8px; transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1); position:relative; overflow:hidden; }
-.hero-bar-fill::after { content:''; position:absolute; inset:0; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:barShimmer 2s linear infinite; }
-@keyframes barShimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+.hero-bar-fill::after { content:''; position:absolute; top:0;left:-100%;width:100%;height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:progressFlow 3s linear infinite; }
+@keyframes progressFlow { from{left:-100%} to{left:100%} }
 .hero-bar-sub { font-family:var(--font-mono); font-size:11px; color:var(--mu); margin-bottom:4px; }
 .hero-bar-week { font-family:var(--font-mono); font-size:10px; color:var(--gr); }
 
@@ -330,6 +333,16 @@ function computeEloFromDivScore(divScore) {
   return Math.max(0, Math.round((divScore / 100) * 3000));
 }
 
+function addParticles() {
+  if (document.querySelector('.progress-particle')) return;
+  for (let i = 0; i < 2; i++) {
+    const p = document.createElement('div');
+    p.className = 'progress-particle';
+    p.style.cssText = `position:fixed;width:${60+i*40}px;height:${60+i*40}px;border-radius:50%;background:radial-gradient(circle,rgba(123,44,255,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;animation:floatParticle ${18+i*6}s ease-in-out infinite;animation-delay:${i*7}s;top:${20+i*40}%;left:${10+i*60}%`;
+    document.body.appendChild(p);
+  }
+}
+
 function _currentWinStreak(picks) {
   const settled = [...picks].filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   let s = 0;
@@ -543,7 +556,13 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
   requestAnimationFrame(() => {
     setTimeout(() => {
       const fill = document.getElementById('heroBarFill');
-      if (fill) fill.style.width = eloPercent + '%';
+      if (fill) {
+        fill.style.width = '0%';
+        setTimeout(() => {
+          fill.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)';
+          fill.style.width = eloPercent + '%';
+        }, 300);
+      }
 
       // Fix 2: cinematic hero background
       const _heroCard = document.querySelector('.hero-card');
@@ -641,6 +660,55 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
 
       // Fix 6: reactive performance status
       updatePerfStatus(picks);
+
+      // Fix 3: hover tooltips on division nodes
+      const _TOOLTIP_REWARDS = {
+        BRONZE:'Starter badge', SILVER:'Profile border', GOLD:'Gold username color',
+        PLATINUM:'Animated profile ring', DIAMOND:'Particle trail effect',
+        ELITE:'Elite aura + 10% commission', LEGENDARY:'HOF statue + animated banner'
+      };
+      document.querySelectorAll('.dt-node[data-div]').forEach(node => {
+        const _dn = node.getAttribute('data-div');
+        const _dt = ELO_TIERS.find(t => t.name === _dn) || ELO_TIERS[0];
+        const _di = ELO_TIERS.indexOf(_dt);
+        const _ci = ELO_TIERS.findIndex(t => t.name === divisionName);
+        node.addEventListener('mouseenter', e => {
+          let tt = document.getElementById('divTooltip');
+          if (!tt) {
+            tt = document.createElement('div');
+            tt.id = 'divTooltip';
+            tt.style.cssText = "position:fixed;z-index:9999;background:#1a1a1a;border:1px solid var(--ac);border-radius:10px;padding:12px 16px;font-family:'Syne',sans-serif;font-size:12px;color:var(--tx);min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,0.4);pointer-events:none;display:none";
+            document.body.appendChild(tt);
+          }
+          const _status = _di === _ci ? `${actualElo.toLocaleString()} / ${_dt.max.toLocaleString()} RP` : _di < _ci ? 'Completed ✓' : 'Locked';
+          tt.innerHTML = `<div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${_dt.color};margin-bottom:4px">${_dn}</div><div style="color:var(--mu);margin-bottom:8px;font-size:11px">${_status}</div><div style="color:var(--tx);font-size:12px">🎁 ${_TOOLTIP_REWARDS[_dn] || 'Division reward'}</div>`;
+          tt.style.display = 'block';
+          tt.style.left = (e.clientX - 90) + 'px';
+          tt.style.top = (e.clientY + 16) + 'px';
+        });
+        node.addEventListener('mouseleave', () => { const tt = document.getElementById('divTooltip'); if (tt) tt.style.display = 'none'; });
+      });
+
+      // Fix 5: evolution path in season identity card
+      const _evolutions = {
+        'The Sniper': {next:'The Sharp', pct:74},
+        'The Sharp': {next:'The Documentarian', pct:63},
+        'The Demon': {next:'The Predator', pct:81},
+        'The Grinder': {next:'The Sharp', pct:68},
+        'The Hunter': {next:'The Demon', pct:72},
+      };
+      const _ev = _evolutions[_detected] || {next:'The Predator', pct:45};
+      const _evPath = document.getElementById('evolutionPath');
+      const _nextName = document.getElementById('nextArchName');
+      const _nextPct = document.getElementById('nextArchPct');
+      const _nextBar = document.getElementById('nextArchBar');
+      if (_evPath) _evPath.style.display = 'block';
+      if (_nextName) _nextName.textContent = _ev.next.toUpperCase();
+      if (_nextPct) _nextPct.textContent = _ev.pct + '%';
+      if (_nextBar) setTimeout(() => { _nextBar.style.width = _ev.pct + '%'; }, 400);
+
+      // Fix 6: floating particles
+      addParticles();
     }, 50);
   });
 }
@@ -833,6 +901,16 @@ function buildHTML(d) {
       <div class="si-icon" id="siIcon">⚡</div>
       <div class="si-name" id="siName">TIPSTER</div>
       <div class="si-traits" id="siTraits">Post picks to reveal your identity</div>
+      <div id="evolutionPath" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px">
+        <div style="font-size:10px;letter-spacing:0.15em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:8px;text-transform:uppercase">Unlock Next Evolution</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--ac)" id="nextArchName">THE PREDATOR</span>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--mu)" id="nextArchPct">73%</span>
+        </div>
+        <div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden">
+          <div id="nextArchBar" style="height:100%;background:linear-gradient(90deg,var(--ac),#00E5A0);border-radius:2px;width:0%;transition:width 1s ease"></div>
+        </div>
+      </div>
     </div>
     ${divTrack}
     ${div}
@@ -866,31 +944,27 @@ function buildHTML(d) {
 function buildDivTrack(actualElo) {
   const currentTier = getEloTier(actualElo);
   const currentIdx = ELO_TIERS.findIndex(t => t.name === currentTier.name);
-  const TIER_FILTERS = {
-    BRONZE:   'sepia(1) saturate(2) hue-rotate(10deg) brightness(0.8)',
-    SILVER:   'grayscale(1) brightness(1.4)',
-    GOLD:     'sepia(1) saturate(3) brightness(1.1)',
-    PLATINUM: 'hue-rotate(180deg) saturate(0.8) brightness(1.2)',
-    DIAMOND:  'hue-rotate(200deg) saturate(3) brightness(1.1)',
-    ELITE:    'hue-rotate(270deg) saturate(3)',
-    LEGENDARY:'',
+  const DIV_ICONS = {
+    BRONZE:'🥉', SILVER:'⚪', GOLD:'🟡', PLATINUM:'💠', DIAMOND:'💎', ELITE:'👑', LEGENDARY:'🔥'
+  };
+  const DIV_GLOWS = {
+    BRONZE:'rgba(205,127,50,0.5)', SILVER:'rgba(192,192,192,0.4)', GOLD:'rgba(255,215,0,0.5)',
+    PLATINUM:'rgba(79,195,247,0.5)', DIAMOND:'rgba(170,120,255,0.6)', ELITE:'rgba(123,44,255,0.7)', LEGENDARY:'rgba(255,215,0,0.7)'
   };
   return `<div class="div-track"><div class="div-track-line"><div class="div-track-fill" id="divTrackFill"></div></div>` + ELO_TIERS.map((t, i) => {
     const state = i < currentIdx ? 'dt-past' : i === currentIdx ? 'dt-current' : 'dt-locked';
-    const flt = TIER_FILTERS[t.name] || '';
-    const isLegendary = t.name === 'LEGENDARY';
-    const imgStyle = isLegendary && i === currentIdx
-      ? 'animation:hueShift 3s linear infinite'
-      : (flt ? 'filter:' + flt : '');
-    const iconStyle = i === currentIdx
+    const isCurrent = i === currentIdx;
+    const isPast = i < currentIdx;
+    const emoji = DIV_ICONS[t.name] || '●';
+    const glow = DIV_GLOWS[t.name] || 'rgba(123,44,255,0.5)';
+    const iconContainerStyle = isCurrent
       ? `animation:nodeGlow 3s ease-in-out infinite;--div-color:${t.color};border-color:${t.color}`
-      : i < currentIdx
-      ? `border-color:#00E5A0`
-      : '';
-    const checkBadge = i < currentIdx
+      : isPast ? `border-color:#00E5A0` : `opacity:0.3`;
+    const emojiStyle = `font-size:${isCurrent?'24px':isPast?'20px':'18px'};line-height:1;pointer-events:none${isCurrent?';filter:drop-shadow(0 0 6px '+glow+')':''}`;
+    const checkBadge = isPast
       ? `<span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#00E5A0;border:1.5px solid #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:8px;color:#07060d;font-weight:700;line-height:1;pointer-events:none;z-index:3">✓</span>`
       : '';
-    return `<div class="dt-node ${state}" onclick="showDivInfo('${t.name}')"><div class="dt-icon" style="${iconStyle}">${checkBadge}<img src="/assets/logo/ledgr-icon.png" alt="" style="${imgStyle}"></div><span class="dt-label" style="${i===currentIdx?'color:'+t.color:''}">${t.name}</span></div>`;
+    return `<div class="dt-node ${state}" onclick="showDivInfo('${t.name}')" data-div="${t.name}"><div class="dt-icon" style="${iconContainerStyle}">${checkBadge}<span style="${emojiStyle}">${emoji}</span></div><span class="dt-label" style="${isCurrent?'color:'+t.color:''}">${t.name}</span></div>`;
   }).join('') + `</div>`;
 }
 
@@ -976,7 +1050,7 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
 
   [10, 50, 100, 250].forEach(n => {
     if (picks.length >= n) {
-      events.push({type:'gold', icon:'#', title:`Pick #${n}`, date:picks[n-1]?.createdAt});
+      events.push({type:'gold', icon:'📋', title:`${n} Picks`, value:'Milestone reached', date:picks[n-1]?.createdAt});
     }
   });
 
@@ -984,14 +1058,14 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
   for (const p of settled) {
     if (p.result==='win'){cur++;if(cur>bestS){bestS=cur;streakDate=p.createdAt;}}else cur=0;
   }
-  if (bestS >= 5) events.push({type:'green', icon:'🔥', title:`${bestS}W Winning Streak`, date:streakDate, large:true});
+  if (bestS >= 5) events.push({type:'green', icon:'🔥', title:'Win Streak', value:`${bestS}W`, date:streakDate, large:true});
 
   const byDay = {};
   picks.forEach(p=>{const d=new Date(p.createdAt).toISOString().slice(0,10);byDay[d]=(byDay[d]||0)+(p.pnl||0);});
   const bestDay = Object.entries(byDay).sort((a,b)=>b[1]-a[1])[0];
-  if (bestDay && bestDay[1] > 0) events.push({type:'gold', icon:'💰', title:`Best Day: +${bestDay[1].toFixed(1)}u`, date:bestDay[0]+'T12:00:00Z'});
+  if (bestDay && bestDay[1] > 0) events.push({type:'gold', icon:'💰', title:'Best Day', value:`+${bestDay[1].toFixed(1)}u`, date:bestDay[0]+'T12:00:00Z'});
 
-  if (sharpScore >= 70) events.push({type:'green', icon:'✓', title:'Verified Sharp Achieved', date:null, large:true});
+  if (sharpScore >= 70) events.push({type:'green', icon:'🎯', title:'Verified Sharp', value:'Score: 70+', date:null, large:true});
 
   events.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
 
@@ -1008,6 +1082,7 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
           <div class="${dotClass}">${dotInner}</div>
           <div class="t-date">${dateStr}</div>
           <div class="t-event">${ev.icon && !isFirst ? `<span>${ev.icon}</span>` : ''}${ev.title}</div>
+          ${ev.value ? `<div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--gr);margin-top:2px">${ev.value}</div>` : ''}
         </div>
       `;
     }).join('');
