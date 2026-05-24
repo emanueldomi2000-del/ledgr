@@ -549,7 +549,7 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
       const _heroCard = document.querySelector('.hero-card');
       if (_heroCard) {
         _heroCard.style.background = getHeroBg(tier.name);
-        _heroCard.style.border = '1px solid ' + divColor + '33';
+        _heroCard.style.border = '1px solid ' + tier.color + '33';
       }
 
       // Avatar — use shared LedgrAvatar utility
