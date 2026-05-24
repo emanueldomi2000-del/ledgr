@@ -123,7 +123,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .arch-vault-card.rare:hover{transform:translateY(-4px);border-color:#4FC3F7!important;box-shadow:0 0 16px rgba(79,195,247,0.25)}
 .arch-vault-card.epic:hover{transform:translateY(-4px);border-color:#7B2CFF!important;box-shadow:0 0 20px rgba(123,44,255,0.35)}
 .arch-vault-card.legendary:hover{transform:translateY(-4px);border-color:#FFD700!important;box-shadow:0 0 24px rgba(255,215,0,0.4)}
-.arch-vault-card.mythic:hover{transform:translateY(-4px);border-color:#FF6BFF!important;box-shadow:0 0 24px rgba(255,107,255,0.4);animation:mythicBorder 2s linear infinite}
+.arch-vault-card.mythic:hover{border-color:#FF6BFF!important;box-shadow:0 0 24px rgba(255,107,255,0.4);animation:mythicGlitch 0.3s steps(2) infinite}
 @keyframes mythicBorder{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
 
 /* ── CSS CHARACTER ART ── */
@@ -177,6 +177,47 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* ── MATCH BARS ── */
 .arch-match-bars{padding:0 4px}
+
+/* ── ORB HERO ── */
+.arch-hero-visual{display:flex;justify-content:center;margin-bottom:16px}
+.arch-orb{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+.arch-orb::before{content:'';position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,var(--arch-color,rgba(123,44,255,0.3)) 0%,transparent 70%);opacity:0.25;animation:orbGlow 4s ease-in-out infinite}
+@keyframes orbGlow{0%,100%{opacity:0.2}50%{opacity:0.4}}
+.arch-orb-icon{font-size:52px;z-index:2;position:relative;filter:drop-shadow(0 0 20px var(--arch-color,#7B2CFF));animation:orbFloat 4s ease-in-out infinite}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.05)}}
+.arch-orb-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--arch-color,#7B2CFF);opacity:0.3;animation:ringPulse 3s ease-in-out infinite}
+.arch-orb-ring-2{inset:-16px;animation:ringPulse 3s ease-in-out infinite 1s;opacity:0.15}
+@keyframes ringPulse{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:0.1;transform:scale(1.05)}}
+.arch-class-label{font-size:9px;letter-spacing:0.25em;font-family:'DM Mono',monospace;margin-top:4px;margin-bottom:12px;padding:3px 10px;border-radius:20px;display:inline-block}
+
+/* ── RARITY VISUAL WEIGHT ── */
+.arch-vault-card.common{opacity:0.7;border-color:rgba(255,255,255,0.06)!important}
+.arch-vault-card.rare{border-color:rgba(79,195,247,0.2)!important}
+.arch-vault-card.epic{border-color:rgba(123,44,255,0.25)!important}
+.arch-vault-card.epic::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#7B2CFF,transparent);pointer-events:none}
+.arch-vault-card.legendary{border-color:rgba(255,215,0,0.25)!important}
+.arch-vault-card.legendary::after{content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.06),transparent);animation:legendaryShimmer 4s linear infinite;pointer-events:none}
+@keyframes legendaryShimmer{from{left:-100%}to{left:200%}}
+.arch-vault-card.mythic{border-color:rgba(255,107,255,0.3)!important;animation:mythicBorderCycle 3s linear infinite}
+@keyframes mythicBorderCycle{0%{border-color:rgba(255,107,255,0.3)}33%{border-color:rgba(123,44,255,0.3)}66%{border-color:rgba(79,195,247,0.3)}100%{border-color:rgba(255,107,255,0.3)}}
+@keyframes mythicGlitch{0%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,2px)}100%{transform:translate(0,0)}}
+
+/* ── CLASSIFIED LOCKED ── */
+@keyframes classifiedBlink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes glitchText{0%,100%{transform:translate(0)}25%{transform:translate(-1px,0)}75%{transform:translate(1px,0)}}
+
+/* ── POSSIBLE FUTURES ── */
+.pf-eyebrow{font-size:9px;letter-spacing:0.25em;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:8px}
+.pf-title{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--tx);letter-spacing:0.03em;margin-bottom:6px}
+.pf-subtitle{font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:24px}
+.pf-paths{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pf-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center;transition:all 0.2s ease;position:relative;overflow:hidden}
+.pf-card:hover{border-color:var(--ac);transform:translateY(-3px)}
+.pf-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pf-color,var(--ac)),transparent)}
+.pf-pct{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--pf-color,var(--ac));margin-bottom:4px}
+.pf-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--tx);margin-bottom:6px}
+.pf-trigger{font-size:10px;color:var(--ac);font-family:'Syne',sans-serif}
+@media(max-width:600px){.pf-paths{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -219,11 +260,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
   <!-- EVOLUTION PATH -->
   <div class="evolution-wrap">
-    <div class="section-hd">
-      <div class="s-eyebrow">Evolution Path</div>
-      <div class="s-title">WHERE YOU'RE HEADING</div>
-      <div class="s-sub">Your two closest archetypes based on current trajectory.</div>
-    </div>
     <div id="evolutionPath"><div style="display:flex;gap:16px;padding:16px 0"><div class="skel" style="flex:1;height:80px;border-radius:12px"></div><div class="skel" style="width:32px;height:32px;border-radius:50%;align-self:center"></div><div class="skel" style="flex:1;height:80px;border-radius:12px"></div></div></div>
   </div>
 
@@ -367,6 +403,27 @@ let user = null;
 let userStats = null;
 let primaryArchetype = null;
 let allScores = [];
+
+function getArchetypeHero(name) {
+  const configs = {
+    'The Sniper':    {icon:'🎯', color:'#7B2CFF', label:'PRECISION SPECIALIST'},
+    'The Sharp':     {icon:'📐', color:'#00E5A0', label:'MARKET READER'},
+    'The Demon':     {icon:'😈', color:'#FF3355', label:'STREAK MACHINE'},
+    'The Hunter':    {icon:'🐺', color:'#4FC3F7', label:'VALUE SEEKER'},
+    'The Ghost':     {icon:'👻', color:'#FF6BFF', label:'SHADOW OPERATOR'},
+    'The Grinder':   {icon:'⚙️', color:'#FFD700', label:'VOLUME KING'},
+    'The Kingmaker': {icon:'👑', color:'#FFD700', label:'INFLUENCE MASTER'},
+    'Iceblood':      {icon:'❄️', color:'#4FC3F7', label:'ZERO EMOTION'},
+    'Diamond Mind':  {icon:'💎', color:'#00E5A0', label:'ELITE ALL-ROUND'},
+    'The Reaper':    {icon:'💀', color:'#FF3355', label:'BIG ODDS HUNTER'},
+    'Night Owl':     {icon:'🌙', color:'#7B2CFF', label:'NIGHT OPERATOR'},
+    'The Hybrid':    {icon:'🧬', color:'#FF6BFF', label:'UNCLASSIFIABLE'},
+    'The Storm':     {icon:'⚡', color:'#FFD700', label:'BURST PLAYER'},
+    'The Shark':     {icon:'🦈', color:'#4FC3F7', label:'LOW ODDS SURGEON'},
+    'The Gambler':   {icon:'🎲', color:'#FF6B35', label:'HIGH RISK PROFILE'},
+  };
+  return configs[name] || {icon:'⚡', color:'#7B2CFF', label:'RISING TALENT'};
+}
 
 function getArchetypeArt(id, color) {
   const arts = {
@@ -531,23 +588,25 @@ function renderCurrentCard(sorted) {
   const p = primaryArchetype;
   const confidence = Math.round(p.sc);
   const onlyPct = Math.round(p.rarity);
+  const heroConfig = getArchetypeHero(p.name);
 
   const _rar=archetypeRarity[p.id]||{tier:'Common',color:'#6B6B6B'};
-  el.innerHTML = `<div class="current-card" style="background:linear-gradient(135deg,${p.color}08,transparent 60%),var(--s1);border-color:${p.color}33">
+  el.innerHTML = `<div class="current-card" style="background:linear-gradient(135deg,${heroConfig.color}08,transparent 60%),var(--s1);border-color:${heroConfig.color}33">
     <div class="current-inner">
-      <div class="ca-icon" style="color:${p.color}">${getArchetypeArt(p.id,p.color)}</div>
+      <div class="arch-hero-visual"><div class="arch-orb" style="--arch-color:${heroConfig.color}"><div class="arch-orb-icon">${heroConfig.icon}</div><div class="arch-orb-ring"></div><div class="arch-orb-ring arch-orb-ring-2"></div></div></div>
       <div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
           <div class="rarity-pill" style="color:${_rar.color};border:1px solid ${_rar.color}44;background:${_rar.color}11">${_rar.tier.toUpperCase()}</div>
-          <div class="ca-rarity" style="color:${p.color};border-color:${p.color}44;background:${p.color}11">Only ${onlyPct}% of bettors</div>
+          <div class="ca-rarity" style="color:${heroConfig.color};border-color:${heroConfig.color}44;background:${heroConfig.color}11">Only ${onlyPct}% of bettors</div>
         </div>
-        <div class="ca-name" style="color:${p.color}">${p.name.toUpperCase()}</div>
+        <div class="ca-name" style="color:${heroConfig.color}">${p.name.toUpperCase()}</div>
+        <div class="arch-class-label" style="color:${heroConfig.color};border:1px solid ${heroConfig.color}44;background:${heroConfig.color}11">${heroConfig.label}</div>
         <div class="ca-desc">${p.desc}</div>
         <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-bottom:8px">Detected from: ${sorted.slice(0,3).map(x=>x.name).join(' · ')}</div>
-        <div class="ca-conf-bar"><div class="ca-conf-fill" style="width:${confidence}%;background:${p.color}"></div></div>
+        <div class="ca-conf-bar"><div class="ca-conf-fill" style="width:${confidence}%;background:${heroConfig.color}"></div></div>
       </div>
       <div class="ca-stats">
-        <div class="ca-stat-row"><span class="ca-stat-lbl">WIN RATE</span><span class="ca-stat-val" style="color:${p.color}">${userStats.winRate}%</span></div>
+        <div class="ca-stat-row"><span class="ca-stat-lbl">WIN RATE</span><span class="ca-stat-val" style="color:${heroConfig.color}">${userStats.winRate}%</span></div>
         <div class="ca-stat-row"><span class="ca-stat-lbl">ROI</span><span class="ca-stat-val" style="color:${userStats.roi>=0?'var(--gr)':'var(--rd)'}">${userStats.roi>=0?'+':''}${userStats.roi.toFixed(1)}%</span></div>
         <div class="ca-stat-row"><span class="ca-stat-lbl">PICKS</span><span class="ca-stat-val">${userStats.picks}</span></div>
         <div class="ca-stat-row"><span class="ca-stat-lbl">MATCH</span><span class="ca-stat-val" style="color:${p.color}">${confidence}%</span></div>
@@ -555,22 +614,22 @@ function renderCurrentCard(sorted) {
     </div>
     ${settled < 10 ? '<div style="margin-top:20px;padding:10px 14px;background:rgba(251,191,36,0.06);border:1px solid rgba(251,191,36,0.15);border-radius:8px;font-family:var(--font-mono);font-size:10px;color:var(--gold)">Post at least 10 settled picks for more accurate detection.</div>' : ''}
     <div class="arch-match-bars" id="archMatchBars">
-      <div style="font-size:9px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin:16px 0 10px">BEHAVIORAL MATCH</div>
+      <div style="font-size:9px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin:16px 0 10px">CHARACTER TRAITS</div>
     </div>
   </div>`;
 
-  const _traits = [
-    {label:'Precision',    val: Math.min(100, (userStats.winRate||0)*1.2)},
-    {label:'Discipline',   val: Math.min(100, 100-(userStats.highVariance?65:20))},
-    {label:'Value Edge',   val: Math.min(100, (userStats.sharpScore||0)*1.2)},
-    {label:'Consistency',  val: Math.min(100, confidence||0)}
+  const _traitDefs = [
+    {label:'Kill Accuracy',  icon:'🎯', val: Math.min(100, (userStats.winRate||0)*1.2)},
+    {label:'Ice Control',    icon:'❄️', val: Math.min(100, 100-(userStats.highVariance?65:20))},
+    {label:'Trigger Freq',   icon:'⚡', val: Math.min(100, (userStats.sharpScore||0)*1.2)},
+    {label:'Execution Rate', icon:'🔒', val: Math.min(100, confidence||0)}
   ];
   const _barsEl = document.getElementById('archMatchBars');
   if (_barsEl) {
-    _traits.forEach(t => {
+    _traitDefs.forEach(t => {
       const row = document.createElement('div');
       row.style.cssText = 'margin-bottom:8px';
-      row.innerHTML = `<div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:10px;color:var(--mu);font-family:'Syne'">${t.label}</span><span style="font-size:10px;color:var(--ac);font-family:'DM Mono'">${Math.round(t.val)}%</span></div><div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);width:0%;transition:width 1s ease" data-val="${t.val}"></div></div>`;
+      row.innerHTML = `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:12px">${t.icon}</span><span style="font-size:10px;color:var(--mu);font-family:'Syne'">${t.label}</span><span style="font-size:10px;color:var(--ac);font-family:'DM Mono';margin-left:auto">${Math.round(t.val)}%</span></div><div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);width:0%;transition:width 1s ease" data-val="${t.val}"></div></div>`;
       _barsEl.appendChild(row);
     });
     setTimeout(() => {
@@ -620,84 +679,35 @@ function renderGrid(sorted) {
 function renderEvolution(sorted) {
   const el = document.getElementById('evolutionPath');
   if (!primaryArchetype) {
-    el.innerHTML = '<div class="loading-state">No archetype detected yet — keep posting picks.</div>';
+    el.innerHTML = `<div class="pf-eyebrow">EVOLUTION PATH</div><div class="pf-title">POSSIBLE FUTURES</div><div class="pf-subtitle">Your trajectory based on behavioral patterns</div><div class="loading-state" style="margin-top:24px">No archetype detected yet — keep posting picks.</div>`;
     return;
   }
   const p = primaryArchetype;
-  const paths = evolutionPaths[p.id];
-
-  if (paths) {
-    const pathNodes = paths.map(path => {
-      const target = ARCHETYPES_DATA.find(a => a.name === path.name);
-      const targetRar = target ? archetypeRarity[target.id] : null;
-      return `<div class="evo-node" style="position:relative">
-        <div class="evo-icon">${target?.icon||'?'}</div>
-        <div class="evo-name">${path.name}</div>
-        <div class="evo-pct" style="color:var(--mu)">${path.pct}% trajectory match</div>
-        <div class="evo-req" style="color:var(--ac);font-size:9px;margin-top:4px">${path.condition}</div>
-        ${targetRar?`<div class="rarity-pill" style="color:${targetRar.color};border:1px solid ${targetRar.color}44;background:${targetRar.color}11;display:block;margin:4px auto 0">${targetRar.tier.toUpperCase()}</div>`:''}
-      </div>`;
-    });
-
-    el.innerHTML = `
-      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-bottom:20px;line-height:1.6;border-left:2px solid var(--ac);padding-left:12px">
-        Your evolution is determined by behavior — volume, ROI trend, CLV, reliability and streak patterns.
-      </div>
-      <div class="evo-grid">
-        <div class="evo-node current" style="border-color:${p.color}44;background:${p.color}08">
-          <div class="evo-icon">${p.icon}</div>
-          <div class="evo-name" style="color:${p.color}">${p.name}</div>
-          <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
-        </div>
-        <div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">${paths[0]?.condition||''}</div></div>
-        ${pathNodes[0]||''}
-        ${pathNodes[1]?`<div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">${paths[1]?.condition||''}</div></div>${pathNodes[1]}`:''}
-      </div>`;
-    return;
+  const rawPaths = evolutionPaths[p.id] || [];
+  const evoData = [...rawPaths.slice(0,2)];
+  if (evoData.length < 3) {
+    const used = new Set([p.id, ...evoData.map(e=>ARCHETYPES_DATA.find(a=>a.name===e.name)?.id).filter(Boolean)]);
+    const fallback = sorted.find(x => x.id !== p.id && !used.has(x.id));
+    if (fallback) evoData.push({name:fallback.name, pct:Math.max(10,Math.round(fallback.sc)), condition:fallback.conditions[0]||'+ adapt'});
   }
-
-  // Fallback: score-based
-  const others = sorted.filter(x => x.id !== p.id).slice(0, 2);
-  el.innerHTML = `
-    <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-bottom:20px;line-height:1.6;border-left:2px solid var(--ac);padding-left:12px">
-      Your evolution is determined by behavior — volume, ROI trend, CLV, reliability and streak patterns.
-    </div>
-    <div class="evo-grid">
-      <div class="evo-node current" style="border-color:${p.color}44;background:${p.color}08">
-        <div class="evo-icon">${p.icon}</div>
-        <div class="evo-name" style="color:${p.color}">${p.name}</div>
-        <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
-      </div>
-      <div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">NEXT PATH</div></div>
-      <div class="evo-node">
-        <div class="evo-icon">${others[0]?.icon||'?'}</div>
-        <div class="evo-name">${others[0]?.name||'—'}</div>
-        <div class="evo-pct">${others[0]?Math.round(others[0].sc)+'% match':'—'}</div>
-        <div class="evo-req">${others[0]?others[0].conditions.slice(0,1).join(''):''}</div>
-      </div>
-      <div class="evo-connector"><div class="evo-line"></div><div class="evo-condition">NEXT PATH</div></div>
-      <div class="evo-node">
-        <div class="evo-icon">${others[1]?.icon||'?'}</div>
-        <div class="evo-name">${others[1]?.name||'—'}</div>
-        <div class="evo-pct">${others[1]?Math.round(others[1].sc)+'% match':'—'}</div>
-        <div class="evo-req">${others[1]?others[1].conditions.slice(0,1).join(''):''}</div>
-      </div>
-    </div>`;
+  const colors = ['#7B2CFF','#00E5A0','#4FC3F7'];
+  const pfCards = evoData.map((e,i)=>`<div class="pf-card" style="--pf-color:${colors[i]}"><div class="pf-pct">${e.pct}%</div><div class="pf-name">${e.name.toUpperCase()}</div><div class="pf-trigger">${e.condition}</div></div>`).join('');
+  el.innerHTML = `<div class="pf-eyebrow">EVOLUTION PATH</div><div class="pf-title">POSSIBLE FUTURES</div><div class="pf-subtitle">Your trajectory based on behavioral patterns</div><div class="pf-paths">${pfCards}</div>`;
 }
 
 function renderSecretSlots() {
-  const secretSlots = [
-    {condition:'Maintain 75+ reliability over 50 picks'},
-    {condition:'Win 10 consecutive underdog picks'},
-    {condition:'Reach top 1% CLV across platform'}
+  const secretVersions = [
+    {code:'SIG-7741', hint:'UNKNOWN SIGNAL DETECTED',  prob:'0.03%'},
+    {code:'CLF-0192', hint:'CLASSIFIED IDENTITY',       prob:'0.01%'},
+    {code:'???-????', hint:'SYSTEM ANOMALY',             prob:'UNDEFINED'},
   ];
   const vault = document.getElementById('archetypeGrid');
   if (!vault) return;
-  secretSlots.forEach(s => {
+  secretVersions.forEach(s => {
     const card = document.createElement('div');
     card.className = 'arch-vault-card locked-secret';
-    card.style.cssText = 'background:rgba(255,255,255,0.01);border:1px dashed rgba(255,255,255,0.08);border-radius:12px;padding:20px 12px;text-align:center;cursor:not-allowed;';
-    card.innerHTML = `<div style="font-size:28px;opacity:0.2;margin-bottom:8px">?</div><div style="font-family:'Bebas Neue';font-size:16px;color:rgba(255,255,255,0.15);letter-spacing:0.1em;margin-bottom:8px">LOCKED</div><div style="font-size:9px;color:var(--mu);font-family:'Syne';line-height:1.5;font-style:italic">${s.condition}</div><div style="margin-top:8px;font-size:8px;letter-spacing:0.15em;color:rgba(255,107,255,0.5);font-family:'DM Mono'">MYTHIC</div>`;
+    card.style.cssText = 'background:rgba(255,255,255,0.01);border:1px dashed rgba(255,107,255,0.15);border-radius:12px;padding:20px 12px;text-align:center;cursor:not-allowed;position:relative;overflow:hidden;';
+    card.innerHTML = `<div style="font-size:9px;letter-spacing:0.2em;color:rgba(255,107,255,0.5);font-family:'DM Mono';margin-bottom:8px;animation:classifiedBlink 2s steps(1) infinite">${s.hint}</div><div style="font-family:'Bebas Neue';font-size:28px;color:rgba(255,255,255,0.08);letter-spacing:0.1em;margin-bottom:6px;animation:glitchText 4s steps(2) infinite">[REDACTED]</div><div style="font-size:8px;color:var(--mu);font-family:'DM Mono';margin-bottom:6px">Probability: ${s.prob}</div><div style="font-size:8px;color:rgba(255,107,255,0.4);font-family:'DM Mono';letter-spacing:0.1em">MYTHIC</div>`;
     vault.appendChild(card);
   });
 }
