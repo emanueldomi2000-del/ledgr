@@ -332,11 +332,12 @@ async function loadProgress() {
   await wakeBackend();
   const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('mainContent').innerHTML='<div style="text-align:center;padding:80px;color:var(--mu);font-family:var(--font-mono)">Server is waking up — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></div>';},15000);
   try {
-    const [picksRes, rankingsRes, seasonsRes, historyRes] = await Promise.all([
+    const [picksRes, rankingsRes, seasonsRes, historyRes, profileRes] = await Promise.all([
       fetch(API + '/picks?userId=' + USER_ID, { cache: 'no-store', signal: _ctrl.signal, headers: { Authorization: 'Bearer ' + _t } }),
       fetch(API + '/rankings', { cache: 'no-store' }).catch(() => null),
       fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null),
       fetch(API + '/rankings/' + encodeURIComponent(USERNAME) + '/history', { cache: 'no-store' }).catch(() => null),
+      fetch(API + '/profile', { cache: 'no-store', signal: _ctrl.signal, headers: { Authorization: 'Bearer ' + _t } }).catch(() => null),
     ]);
 
     clearTimeout(_xt);
@@ -375,6 +376,14 @@ async function loadProgress() {
     let rankHistory = [];
     if (historyRes && historyRes.ok) {
       try { const h = await historyRes.json(); if (Array.isArray(h)) rankHistory = h; } catch(e) {}
+    }
+
+    if (profileRes && profileRes.ok) {
+      try {
+        const prof = await profileRes.json();
+        const _key = USER_ID || USERNAME;
+        if (prof.avatar_b64) localStorage.setItem('ledgr_avatar_' + _key, prof.avatar_b64);
+      } catch(e) {}
     }
 
     renderAll(myPicks, rankingMeta, myRank, totalTipsters, activeSeason, pastSeasons, rankHistory);
@@ -501,10 +510,14 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
         _heroCard.style.border = '1px solid ' + divColor + '33';
       }
 
-      // Fix 1: avatar from localStorage
-      const _savedAv = localStorage.getItem('ledgr_avatar_' + USER_ID) || localStorage.getItem('ledgr_avatar');
+      // Avatar — same key pattern as home/index.html (user.id || user.username)
       const _avEl = document.querySelector('.hero-av');
+      const _avKey = 'ledgr_avatar_' + (USER_ID || USERNAME);
+      const _savedAv = localStorage.getItem(_avKey)
+                    || localStorage.getItem('ledgr_avatar_' + USERNAME)
+                    || localStorage.getItem('ledgr_avatar');
       if (_avEl && _savedAv) {
+        _avEl.style.background = '';           // clear gradient shorthand so photo is not occluded
         _avEl.style.backgroundImage = 'url(' + _savedAv + ')';
         _avEl.style.backgroundSize = 'cover';
         _avEl.style.backgroundPosition = 'center';
@@ -534,23 +547,20 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
         }
       }
 
-      // Fix 3: season identity card
-      const _ARCHETYPE_TRAITS = {
-        'Value Hunter': { icon:'🦅', traits:['Finds edge in mispriced lines','Targets +EV before markets correct','Waits for the right spot'] },
-        'Contrarian':   { icon:'🔄', traits:['Fades the public','Thrives when markets overcorrect','High CLV going against the grain'] },
-        'Sharp':        { icon:'🎯', traits:['Beats closing line consistently','Disciplined unit sizing','Process over results'] },
-        'Momentum':     { icon:'⚡', traits:['Rides hot streaks aggressively','Reads game flow and tempo','In-play specialist'] },
-        'Consistent':   { icon:'⚖️', traits:['Steady win rate above 55%','Low variance selections','Followers trust each pick'] },
-      };
-      const _at = _ARCHETYPE_TRAITS[_archetypeKey];
-      if (_at) {
-        const _siIcon = document.getElementById('siIcon');
-        const _siName = document.getElementById('siName');
-        const _siTraits = document.getElementById('siTraits');
-        if (_siIcon) _siIcon.textContent = _at.icon;
-        if (_siName) _siName.textContent = _archetypeKey.toUpperCase();
-        if (_siTraits) _siTraits.innerHTML = _at.traits.map(t=>`<div>· ${t}</div>`).join('');
-      }
+      // Season identity card — detect archetype from actual picks data
+      const _detected = detectArchetype(picks) || 'The Sharp';
+      const _ad = archetypeData[_detected];
+      const _siIcon = document.getElementById('siIcon');
+      const _siName = document.getElementById('siName');
+      const _siTraits = document.getElementById('siTraits');
+      if (_ad && _siIcon) _siIcon.textContent = _ad.icon;
+      if (_ad && _siName) _siName.textContent = _detected.toUpperCase();
+      if (_ad && _siTraits) _siTraits.innerHTML = `
+        <div style="color:var(--mu);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:12px">${_ad.traits.join(' · ')}</div>
+        <div style="display:flex;gap:16px;justify-content:center">
+          <div>${_ad.plus.map(t=>`<div style="font-size:11px;color:var(--gr);font-family:'Syne',sans-serif">+ ${t}</div>`).join('')}</div>
+          <div>${_ad.minus.map(t=>`<div style="font-size:11px;color:var(--rd);font-family:'Syne',sans-serif">- ${t}</div>`).join('')}</div>
+        </div>`;
 
       const spineFill = document.querySelector('.tl-spine-fill');
       if (spineFill) spineFill.style.height = '100%';
@@ -1095,6 +1105,30 @@ function getMomentumAnalysis(recent14, roi14) {
   if (roi14 < 0) return 'ROI dipped negative over 14 days. One or two wins can swing this back quickly.';
   return 'Flat ROI but steady volume. Consistent activity builds the sample — a few big wins will flip the curve.';
 }
+
+function detectArchetype(picks) {
+  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
+  if (settled.length < 2) return null;
+  const wins = settled.filter(p => p.result === 'win');
+  const roi = wins.reduce((s,p)=>s+(p.pnl||0),0) / settled.reduce((s,p)=>s+(p.stake||1),0) * 100;
+  const wr = wins.length / settled.length;
+  const avgOdds = picks.length > 0 ? picks.reduce((s,p)=>s+(p.odds||2),0)/picks.length : 2;
+  let streak = 0;
+  for (const p of [...settled].reverse()) { if (p.result==='win') streak++; else break; }
+  if (streak >= 5) return 'The Demon';
+  if (picks.length < 30 && roi > 20 && wr > 0.65) return 'The Sniper';
+  if (avgOdds > 3.0 && roi > 0) return 'The Hunter';
+  if (picks.length > 100 && roi > 0) return 'The Grinder';
+  return 'The Sharp';
+}
+
+const archetypeData = {
+  'The Sniper':  { icon:'🎯', traits:['Elite precision','Lethal accuracy','Few shots'],               plus:['Sharpness','Precision'],   minus:['Volume'] },
+  'The Sharp':   { icon:'📐', traits:['Calculated','Controlled','High accuracy'],                      plus:['Sharpness','Discipline'],  minus:['Aggression'] },
+  'The Demon':   { icon:'😈', traits:['Unstoppable momentum','Streak machine'],                        plus:['Momentum','Consistency'],  minus:['Patience'] },
+  'The Grinder': { icon:'⚙️', traits:['Consistent','Relentless','Always profitable'],                 plus:['Volume','Reliability'],    minus:['Risk appetite'] },
+  'The Hunter':  { icon:'🐺', traits:['Value seeker','Underdog specialist'],                           plus:['CLV edge','Risk tolerance'],minus:['Hit rate'] },
+};
 
 function buildSparkline(picks) {
   const now = Date.now();
