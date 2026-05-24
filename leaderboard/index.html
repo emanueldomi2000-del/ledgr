@@ -22,7 +22,7 @@ body::before{content:'';position:fixed;inset:0;
   background:radial-gradient(ellipse,rgba(251,191,36,.04) 0%,transparent 70%);pointer-events:none;z-index:0}
 
 /* ── MAIN ── */
-.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:80px 24px 80px;position:relative;z-index:2}
 
 /* ── PAGE HEADER ── */
 .lb-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
@@ -94,7 +94,7 @@ body::before{content:'';position:fixed;inset:0;
 @keyframes conf-rise{0%{transform:translateY(0) scale(1) rotate(0);opacity:0}8%{opacity:1}85%{opacity:.7}100%{transform:translateY(-260px) scale(.3) rotate(360deg);opacity:0}}
 /* spring entrance */
 @keyframes pod-in{0%{opacity:0;transform:translateY(48px) scale(.78)}65%{transform:translateY(-8px) scale(1.02)}82%{transform:translateY(3px) scale(.99)}100%{opacity:1;transform:none}}
-.podium-card{position:relative;border-radius:18px;padding:28px 20px 20px;text-align:center;cursor:pointer;overflow:hidden;
+.podium-card{position:relative;border-radius:18px;padding:20px 16px 16px;text-align:center;cursor:pointer;overflow:hidden;
   transition:transform .3s cubic-bezier(.4,0,.2,1),box-shadow .3s;
   animation:pod-in .75s cubic-bezier(.34,1.56,.64,1) both}
 .podium-card.p2{animation-delay:.18s}
@@ -341,6 +341,9 @@ body::before{content:'';position:fixed;inset:0;
 @keyframes lbScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .lb-tick-item{flex-shrink:0}
 .lb-tick-item span{color:var(--tx)}
+/* Enhanced podium card glows */
+.podium-card.p2{box-shadow:0 0 24px rgba(192,192,192,0.12),0 0 48px rgba(192,192,192,0.05),0 14px 36px rgba(0,0,0,.35)!important}
+.podium-card.p3{box-shadow:0 0 24px rgba(205,127,50,0.12),0 0 48px rgba(205,127,50,0.05),0 14px 36px rgba(0,0,0,.35)!important}
 </style>
 </head>
 <body>
@@ -1049,6 +1052,7 @@ function renderLeaderboard() {
     podiumEl.style.display = 'grid';
     const top3 = list.slice(0, 3);
     const ORDER = [1, 0, 2]; // silver-center-gold, gold-center position
+    const getStr = v => { if (!v) return ''; if (typeof v === 'string') return v; if (typeof v === 'object') return v.name || v.label || v.value || ''; return String(v); };
     podiumEl.innerHTML = ORDER.map(i => {
       const t    = top3[i];
       const roi  = t.roi != null ? t.roi : (t.stake > 0 ? (t.pnl / t.stake * 100) : 0);
@@ -1058,7 +1062,7 @@ function renderLeaderboard() {
       const cls  = ['p1','p2','p3'][i];
       const eloDisplay = Math.max(0, (t.elo || 1000) - 1000);
       const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
-      const _avSz = i === 0 ? 96 : 72;
+      const _avSz = i === 0 ? 80 : 64;
       const _podPhoto = window.LedgrAvatar ? window.LedgrAvatar.get(t.userId || t.username) : null;
       const podAv = _podPhoto
         ? `<div style="width:${_avSz}px;height:${_avSz}px;border-radius:50%;overflow:hidden;margin:0 auto"><img src="${_podPhoto}" style="width:100%;height:100%;object-fit:cover" alt="@${t.username}"></div>`
@@ -1070,25 +1074,37 @@ function renderLeaderboard() {
       return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
         ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div>' : ''}
         ${i===0 ? '<div class="pod-crown">👑</div>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
-        <div style="margin:0 auto 12px;width:${_avSz}px">${podAv}</div>
-        ${i===0 ? '<div class="champion-label">CURRENT CHAMPION</div>' : ''}
-        <div class="podium-name">@${t.username}</div>
-        ${i===0 ? `<div class="champ-archetype">${t.archetype||'The Sharp'}</div>
-        <div class="champ-stats"><span>${t.picks} Picks</span><span>${wr.toFixed(0)}% WR</span><span>${roi>=0?'+':''}${roi.toFixed(1)}% ROI</span></div>
-        ${t.streak>0?`<div class="champ-streak">🔥 ${t.streak}W streak</div>`:''}
-        <div class="champ-extras" id="champExtras"></div>` : ''}
-        ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
-        <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
-        <div class="podium-picks-sub">${t.picks} picks · ${wr.toFixed(0)}% WR</div>
-        <div class="podium-stats">
-          <div class="ps-i"><div class="ps-v">${t.picks}</div><div class="ps-l">Picks</div></div>
-          <div class="ps-i"><div class="ps-v">${wr.toFixed(0)}%</div><div class="ps-l">Win Rate</div></div>
-          <div class="ps-i"><div class="ps-v">${t.streak>0?'W'+t.streak:'—'}</div><div class="ps-l">Streak</div></div>
-        </div>
-        <div class="podium-badges">${icons.map(ic=>`<span style="font-size:15px">${ic}</span>`).join('')}</div>
-        <div style="margin-bottom:6px">${divPill}</div>
-        ${archHtml}
-        ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak}-win streak</div>`:''}
+        <div style="margin:0 auto 10px;width:${_avSz}px">${podAv}</div>
+        ${i===0 ? `
+          <div style="text-align:center;padding:0 6px;">
+            <div style="font-size:9px;letter-spacing:0.2em;color:#FFD700;font-family:'DM Mono';margin-bottom:6px;">👑 CURRENT CHAMPION</div>
+            <div style="font-family:'Bebas Neue';font-size:20px;color:var(--tx);margin:4px 0 2px;">@${t.username}</div>
+            <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:8px;">${getStr(t.archetype)||'The Sharp'} · ${div.name}</div>
+            <div style="font-family:'Bebas Neue';font-size:34px;color:#00E5A0;line-height:1;margin-bottom:2px;">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+            <div style="font-size:9px;color:var(--mu);font-family:'DM Mono';margin-bottom:10px;letter-spacing:0.1em;">ROI</div>
+            <div style="display:flex;justify-content:center;gap:14px;margin-bottom:10px;">
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:16px;">${t.picks||0}</div><div style="font-size:8px;color:var(--mu);">PICKS</div></div>
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:16px;">${wr.toFixed(0)}%</div><div style="font-size:8px;color:var(--mu);">WIN RATE</div></div>
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:16px;">${Math.round(t.sharpScore||0)}</div><div style="font-size:8px;color:var(--mu);">SHARP</div></div>
+            </div>
+            ${t.streak>0?`<div style="font-size:11px;color:#FF6B35;font-family:'DM Mono';margin-bottom:6px;">🔥 ${t.streak}W streak active</div>`:''}
+            <div class="champ-extras" id="champExtras"></div>
+          </div>
+        ` : `
+          ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
+          <div class="podium-name">@${t.username}</div>
+          <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+          <div class="podium-picks-sub">${t.picks} picks · ${wr.toFixed(0)}% WR</div>
+          <div class="podium-stats">
+            <div class="ps-i"><div class="ps-v">${t.picks}</div><div class="ps-l">Picks</div></div>
+            <div class="ps-i"><div class="ps-v">${wr.toFixed(0)}%</div><div class="ps-l">Win Rate</div></div>
+            <div class="ps-i"><div class="ps-v">${t.streak>0?'W'+t.streak:'—'}</div><div class="ps-l">Streak</div></div>
+          </div>
+          <div class="podium-badges">${icons.map(ic=>`<span style="font-size:15px">${ic}</span>`).join('')}</div>
+          <div style="margin-bottom:6px">${divPill}</div>
+          ${archHtml}
+          ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak}-win streak</div>`:''}
+        `}
         <div class="podium-elo">⚡ ELO <span data-elo="${eloDisplay}">${eloDisplay}</span></div>
         <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
       </div>`;
@@ -1111,6 +1127,29 @@ function renderLeaderboard() {
         _p1Card.style.setProperty('animation', 'goldBreath 4s ease-in-out infinite', 'important');
       }, 1500);
     }
+
+    // Division-based podium background + watermark
+    (function(){
+      const _divStr = (function(){
+        const d = top3[0];
+        const r = d.roi!=null?d.roi:(d.stake>0?(d.pnl/d.stake)*100:0);
+        const w = d.winRate!=null?d.winRate*100:((d.wins+d.losses)>0?(d.wins/(d.wins+d.losses))*100:0);
+        if (window.Divisions) { const dv = window.Divisions.getFromStats(r,w,d.picks); return (dv.name||'').toLowerCase(); }
+        return 'diamond';
+      })();
+      const _bgs = {bronze:'radial-gradient(ellipse at top,rgba(205,127,50,.08) 0%,transparent 60%)',silver:'radial-gradient(ellipse at top,rgba(192,192,192,.07) 0%,transparent 60%)',gold:'radial-gradient(ellipse at top,rgba(255,215,0,.08) 0%,transparent 60%)',platinum:'radial-gradient(ellipse at top,rgba(79,195,247,.08) 0%,transparent 60%)',diamond:'radial-gradient(ellipse at top,rgba(170,120,255,.1) 0%,transparent 60%)',elite:'radial-gradient(ellipse at top,rgba(123,44,255,.12) 0%,transparent 60%)',legendary:'radial-gradient(ellipse at top,rgba(255,215,0,.1) 0%,rgba(123,44,255,.08) 60%,transparent 80%)'};
+      podiumEl.style.background = _bgs[_divStr] || _bgs.diamond;
+      podiumEl.style.borderRadius = '16px';
+      podiumEl.style.padding = '20px 12px';
+      podiumEl.style.position = 'relative';
+      if (!podiumEl.querySelector('._wm')) {
+        const _wm = document.createElement('img');
+        _wm.src = '/assets/logo/ledgr-icon.png';
+        _wm.className = '_wm';
+        _wm.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);height:180px;width:auto;opacity:0.025;pointer-events:none;z-index:0;';
+        podiumEl.insertBefore(_wm, podiumEl.firstChild);
+      }
+    })();
 
     // Champion extras: last win + rivalry
     const _champ = top3[0];
