@@ -560,6 +560,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .id-av{width:80px!important;height:80px!important;border-radius:18px!important;font-size:28px!important;box-shadow:0 0 32px rgba(184,159,255,.22)!important;flex-shrink:0}
 .id-info{display:flex;flex-direction:column;gap:7px}
 .id-eyebrow{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:3px;text-transform:uppercase}
+/* ══ STATUS STRIP ══ */
+.status-strip{display:flex;align-items:center;gap:12px;padding:8px 26px;border-bottom:1px solid rgba(255,255,255,.04);margin-bottom:0}
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;animation:statusPulse 2s ease-in-out infinite}
+@keyframes statusPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.3)}}
+.status-label{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700}
+.status-desc{font-family:var(--font-body);font-size:11px;color:var(--mu);flex:1}
 /* ══ IDENTITY HERO HEADER ══ */
 .id-hero-header{padding:22px 26px 0}
 .id-hero-eyebrow{font-size:11px;letter-spacing:0.15em;color:var(--mu);font-family:var(--font-body);text-transform:uppercase;margin-bottom:8px}
@@ -634,6 +640,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="hero-identity">
   <div class="identity-card" onclick="AppNav.goToProfile()">
     <div class="id-div-banner" id="idDivBanner"></div>
+    <div class="status-strip" id="statusStrip" style="display:none">
+      <div class="status-dot" id="statusDot"></div>
+      <div class="status-label" id="statusLabel"></div>
+      <div class="status-desc" id="statusDesc"></div>
+    </div>
     <div class="id-hero-header">
       <div class="id-hero-eyebrow" id="idEyebrow">YOUR RECORD</div>
       <div class="id-hero-headline" id="idHeroHeadline"></div>
@@ -679,6 +690,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       </div>
       <div style="margin-top:8px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
         <div id="sidSeasonBar" style="height:100%;background:linear-gradient(90deg,#fbbf24,#b89fff);border-radius:2px;width:0%;transition:width 1.2s ease"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px 10px">
+          <div style="font-family:var(--font-mono);font-size:7px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:3px">YOUR POSITION</div>
+          <div style="font-family:var(--font-display);font-size:18px;color:var(--ac)" id="seasonRank">#—</div>
+        </div>
+        <div style="background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,.12);border-radius:8px;padding:8px 10px">
+          <div style="font-family:var(--font-mono);font-size:7px;letter-spacing:2px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:3px">SEASON REWARD</div>
+          <div style="font-family:var(--font-display);font-size:11px;color:var(--gold);letter-spacing:1px">Legendary Badge</div>
+        </div>
       </div>
       <a href="/leaderboard" style="display:block;text-align:center;margin-top:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:rgba(251,191,36,.5);text-decoration:none">VIEW SEASON LEADERBOARD →</a>
     </div>
@@ -1184,7 +1205,7 @@ function _renderDataError(){
   // Don't wipe miniLeaderboard — rankings fetch runs independently
   const mv=document.querySelector('.mvp-wrap');if(mv)mv.style.display='none';
   const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';
-  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div class="mission-card"><div class="mission-icon">🎯</div><div class="mission-body"><div class="mission-title">Post your first verified pick</div><div class="mission-reward">Unlocks: First Blood badge</div></div><div class="mission-status todo">To do</div></div>';
+  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div class="mission-card"><div class="mission-icon">🎯</div><div class="mission-body"><div class="mission-title">Post your first verified pick</div><div class="mission-reward">+25 XP · First Blood badge</div></div><div class="mission-status todo">To do</div></div>';
   renderMyPicks([]);
 }
 
@@ -1321,13 +1342,35 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const pts=[0,...sorted.map(p=>{cum+=p.pnl;cumStake+=p.stake;return cumStake>0?(cum/cumStake)*100:0;})];
   if(pts.length>1){const min=Math.min(...pts),max=Math.max(...pts),range=max-min||1;const W=280,H=40;const svgPts=pts.map((v,i)=>`${(i/(pts.length-1||1))*W},${H-((v-min)/range)*(H-6)-3}`).join(' ');const isPos=pts[pts.length-1]>=0;const color=isPos?'#34d399':'#f87171';const graph=document.getElementById('idGraph');if(graph)graph.innerHTML=`<defs><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.2"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${H} ${svgPts} ${W},${H}" fill="url(#ig)"/><polyline points="${svgPts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;}
   const today=new Date().toDateString();const todayPicks=myPicks.filter(p=>new Date(p.createdAt).toDateString()===today);const todayWins=todayPicks.filter(p=>p.result==='win').length;const tails=getTails();const tailedToday=Object.values(tails).filter(t=>t&&new Date(t.ts).toDateString()===today).length;
-  const missions=[{icon:'🎯',text:'Post 1 pick today',reward:'Builds your verified record',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',reward:'Streak badge eligible at 3W',done:finalStreak>=1},{icon:'👥',text:'Tail 2 picks',reward:'Follower network XP',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',reward:'Boosts your Sharp Score',done:todayWins>=1}];
-  const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-card"><div class="mission-icon">${m.icon}</div><div class="mission-body"><div class="mission-title">${m.text}</div><div class="mission-reward">Unlocks: ${m.reward}</div></div><div class="mission-status ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</div></div>`).join('');
+  const missions=[{icon:'🎯',text:'Post 1 pick today',reward:'+25 XP · Sharp Score boost',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',reward:'+50 XP · Streak badge eligible',done:finalStreak>=1},{icon:'👥',text:'Tail 2 picks',reward:'+15 XP · Follower network XP',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',reward:'+75 XP · Boosts reliability score',done:todayWins>=1}];
+  const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-card"><div class="mission-icon">${m.icon}</div><div class="mission-body"><div class="mission-title">${m.text}</div><div class="mission-reward">${m.reward}</div></div><div class="mission-status ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</div></div>`).join('');
   if(window.Follows&&user&&user.id){window.Follows.getFollowerCount(user.id).then(count=>{const el=document.getElementById('idFollowers');if(el)el.textContent=count+(count===1?' follower':' followers');});}
   // Subscriber count for tipsters
   if(user&&user.id){fetch(API+'/subscribers/'+user.id).then(r=>r.json()).then(d=>{if(d.count>0){const el=document.getElementById('idSubscriberCount');if(el){el.textContent=d.count+(d.count===1?' subscriber':' subscribers');el.style.display='block';}}}).catch(()=>{});}
+  // Status strip
+  {const _stk=myPicks.reduce((s,p)=>s+p.stake,0),_pnl=myPicks.reduce((s,p)=>s+p.pnl,0);const _roi=_stk>0?(_pnl/_stk)*100:0;renderStatusStrip(myPicks,finalRank,finalStreak,_roi);}
   // Show season info in sidebar card
   loadSeasonInfo(rank);
+}
+
+function renderStatusStrip(picks, rank, streak, roi){
+  const strip=document.getElementById('statusStrip');
+  const dot=document.getElementById('statusDot');
+  const lbl=document.getElementById('statusLabel');
+  const desc=document.getElementById('statusDesc');
+  if(!strip||!dot||!lbl||!desc)return;
+  let state,color,label,description;
+  if(streak>=5){state='hot';color='#fb923c';label='HOT';description=streak+' wins in a row — you\'re on fire right now';}
+  else if(rank>0&&rank<=3){state='leading';color='#fbbf24';label='LEADING';description='Top 3 on the leaderboard — elite territory';}
+  else if(streak>=3){state='climbing';color='#34d399';label='CLIMBING';description=streak+' win streak — momentum is building';}
+  else if(roi<-5){state='cooling';color='#f87171';label='COOLING';description='Take a breath — consistency is how you recover';}
+  else if(rank>0&&rank<=10){state='climbing';color='#38bdf8';label='TOP 10';description='Ranked #'+rank+' — push for the podium';}
+  else{state='steady';color='#6b6b6b';label='STEADY';description='Record building — every pick counts';}
+  dot.style.background=color;
+  lbl.style.color=color;
+  lbl.textContent=label;
+  desc.textContent=description;
+  strip.style.display='flex';
 }
 
 function _showOffSeason(){
@@ -1354,6 +1397,7 @@ async function loadSeasonInfo(myRank){
     const progress=Math.min(100,Math.max(0,Math.round(((now-start)/(end-start))*100)));
     document.getElementById('sidSeasonDays').textContent=daysLeft>0?daysLeft+' days remaining':'Ending soon';
     document.getElementById('sidSeasonRank').textContent=myRank>0?'#'+myRank+' this season':'—';
+    const srEl=document.getElementById('seasonRank');if(srEl)srEl.textContent=myRank>0?'#'+myRank:'#—';
     setTimeout(()=>{const bar=document.getElementById('sidSeasonBar');if(bar)bar.style.width=progress+'%';},600);
   }catch(e){_showOffSeason();}
 }
@@ -1597,21 +1641,31 @@ function renderProfileCard(all){
     // Small eyebrow: time-based
     const _ieEl=document.getElementById('idEyebrow');
     if(_ieEl){const _hr=new Date().getHours();_ieEl.textContent=_hr<12?'☀️ MORNING GRIND':_hr<17?'⚡ AFTERNOON EDGE':'🌙 NIGHT SESSION';}
-    // Large headline
+    // Large headline — rank-aware
     const _hlEl=document.getElementById('idHeroHeadline');
+    const _totalTip=window._myRankingMeta&&window._myRankingMeta.totalTipsters||0;
+    const _chasing=_totalTip>1?_totalTip-1:0;
     if(_hlEl){
-      if(_fStr>=5)_hlEl.textContent='YOU\'RE ON FIRE';
-      else if(_myRoi>20&&my.length>=5)_hlEl.textContent='YOU\'RE HEATING UP';
-      else if(_fRank<=10&&_fRank>0)_hlEl.textContent='ELITE TERRITORY';
+      if(_fRank===1&&_fRank>0)_hlEl.textContent='KING OF THE HILL';
+      else if(_fRank<=3&&_fRank>0)_hlEl.textContent='ELITE TERRITORY';
+      else if(_fRank<=10&&_fRank>0)_hlEl.textContent='TOP 10 STATUS';
+      else if(_fStr>=5)_hlEl.textContent='YOU\'RE ON FIRE';
+      else if(_fStr>=3)_hlEl.textContent='MOMENTUM BUILDING';
+      else if(_myRoi<0&&my.length>=3)_hlEl.textContent='TIME TO RESET';
+      else if(my.length===0)_hlEl.textContent='YOUR JOURNEY STARTS';
       else _hlEl.textContent='YOUR EDGE IS EVOLVING';
     }
     // Context sentence
     const _ctEl=document.getElementById('idHeroContext');
     if(_ctEl){
-      if(_fRank===1)_ctEl.textContent='Undefeated at the top. Defend your throne.';
-      else if(_fStr>=3)_ctEl.textContent=_fStr+' wins in a row — momentum is real';
-      else if(_myRoi>20&&my.length>=5)_ctEl.textContent='Your ROI is beating '+Math.round(_myRoi/2)+'% of tipsters';
-      else _ctEl.textContent=my.length>0?my.length+' verified picks on your record':'Every legend starts with pick #1';
+      if(_fRank===1&&_fRank>0)_ctEl.textContent=(_chasing>0?_chasing+' tipsters are chasing your position.':'Defend your throne — you\'re at the top.');
+      else if(_fRank<=3&&_fRank>0)_ctEl.textContent=(_fRank-1)+' position'+(_fRank>2?'s':'')+' away from #1.';
+      else if(_fRank<=10&&_fRank>0)_ctEl.textContent='Ranked #'+_fRank+'. Push for the podium.';
+      else if(_fStr>=5)_ctEl.textContent=_fStr+' wins in a row. Don\'t stop now.';
+      else if(_fStr>=3)_ctEl.textContent=_fStr+' wins — '+(5-_fStr)+' away from your best run.';
+      else if(_myRoi<0&&my.length>=3)_ctEl.textContent='Consistency creates edge. One pick at a time.';
+      else if(my.length===0)_ctEl.textContent='Post your first pick and enter the arena.';
+      else _ctEl.textContent=my.length+' picks on your verified record.';
     }
   }
 }
@@ -1899,7 +1953,16 @@ function renderTrendingPicks(all){
   const validPicks=all.filter(p=>p.event&&p.event!=='undefined'&&p.odds&&p.odds<100);
   const hot=validPicks.filter(p=>p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
-  if(!hot.length){grid.innerHTML='<div class="empty">No hot picks right now</div>';return;}
+  if(!hot.length){
+    const fallbackInsights=[
+      {icon:'📊',title:'ROI IS EVERYTHING',sub:'Winners track every edge. Your record starts now.'},
+      {icon:'🎯',title:'VERIFIED PICKS ONLY',sub:'No fake records. Every result auto-graded.'},
+      {icon:'🔒',title:'IMMUTABLE LEDGER',sub:'Once posted, your pick is locked forever.'},
+      {icon:'⚡',title:'SHARP SCORE SYSTEM',sub:'Beat the closing odds — that\'s true edge.'}
+    ];
+    grid.innerHTML=fallbackInsights.map(f=>`<div class="pick-card" style="cursor:default"><div style="font-size:22px;margin-bottom:10px">${f.icon}</div><div class="pc-market">${f.title}</div><div class="pc-event" style="font-size:11px;color:var(--mu);margin-top:6px">${f.sub}</div></div>`).join('');
+    return;
+  }
   grid.innerHTML=hot.map((p,i)=>{
     const ev=p.event&&p.event!=='undefined'?p.event:(p.homeTeam&&p.awayTeam?p.homeTeam+' vs '+p.awayTeam:null);
     if(!ev)return'';
@@ -1967,7 +2030,16 @@ async function tailTP(id,event,market,odds,username,btn){
 function renderFeed(all){
   const feed=all.filter(p=>p.username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,14);
   const c=document.getElementById('communityFeed');
-  if(!feed.length){c.innerHTML='<div class="empty">No picks yet — check back after kickoff</div>';return;}
+  if(!feed.length){
+    const fallbackFeed=[
+      {icon:'🏆',badge:'PLATFORM',val:'100% Verified',sub:'Every result auto-graded by live data'},
+      {icon:'🔒',badge:'INTEGRITY',val:'Zero Fakes',sub:'Immutable pick records — no edits ever'},
+      {icon:'⚡',badge:'SHARP SCORE',val:'Beat the Market',sub:'Track CLV to prove your edge'},
+      {icon:'🎯',badge:'GET STARTED',val:'Post a Pick',sub:'Your first pick builds your verified record'}
+    ];
+    c.innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">`+fallbackFeed.map(f=>`<div style="background:rgba(255,255,255,.025);border:1px solid var(--bd);border-radius:12px;padding:14px"><div style="font-size:18px;margin-bottom:6px">${f.icon}</div><div style="font-family:var(--font-mono);font-size:8px;letter-spacing:2px;color:var(--mu);margin-bottom:4px">${f.badge}</div><div style="font-family:var(--font-display);font-size:16px;color:var(--tx);margin-bottom:4px">${f.val}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu2)">${f.sub}</div></div>`).join('')+`</div>`;
+    return;
+  }
   const tpMap={};all.forEach(p=>{if(!p.username)return;if(!tpMap[p.username])tpMap[p.username]=[];tpMap[p.username].push(p);});
   const tails=getTails();
   c.innerHTML=feed.map((p,i)=>{
