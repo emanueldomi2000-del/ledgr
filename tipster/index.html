@@ -443,6 +443,37 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .pgs-item{text-align:center}
 .pgs-val{font-family:'Bebas Neue',sans-serif;font-size:16px;line-height:1}
 .pgs-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;margin-top:2px}
+.gauge-pulse-wrap{display:inline-block;animation:relCirclePulse 3s ease-in-out infinite}
+@keyframes archParticleFloat{0%,100%{transform:translateY(0) scale(1);opacity:0.35}50%{transform:translateY(-22px) scale(1.15);opacity:0.08}}
+@keyframes relCirclePulse{0%,100%{filter:drop-shadow(0 0 0px rgba(123,44,255,0))}50%{filter:drop-shadow(0 0 10px rgba(123,44,255,0.4))}}
+.arch-hero-block{margin:10px 0 12px;padding:12px 0;border-top:1px solid rgba(255,255,255,0.05)}
+.ahb-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ahb-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.ahb-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;line-height:1.1}
+.ahb-level{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:2px;margin-top:2px}
+.ahb-traits{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.ahb-trait{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:20px;letter-spacing:0.5px}
+.ahb-xp-label{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);margin-bottom:3px;letter-spacing:0.5px}
+.ahb-xp-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.ahb-xp-fill{height:100%;border-radius:2px;width:0;transition:width 1.2s cubic-bezier(0.16,1,0.3,1)}
+.activity-tabs-bar{display:flex;gap:4px;margin-bottom:14px}
+.atab{padding:5px 14px;border:1px solid var(--bd);border-radius:7px;font-size:10px;font-family:'DM Mono',monospace;letter-spacing:1.5px;cursor:pointer;transition:all .18s;color:var(--mu);background:transparent;font-weight:600}
+.atab:hover{border-color:rgba(123,44,255,0.3);color:var(--tx)}
+.atab.active{border-color:rgba(123,44,255,0.4);color:var(--ac-l);background:rgba(123,44,255,0.08)}
+.activity-coming-soon{display:flex;flex-direction:column;align-items:center;padding:40px 24px;text-align:center}
+.acs-icon{font-size:32px;margin-bottom:12px;opacity:0.5}
+.acs-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--tx);margin-bottom:6px}
+.acs-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:0.5px;line-height:1.6;max-width:240px}
+.community-card{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-bottom:16px}
+.cc-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.cc-stats{display:flex;gap:8px;margin-bottom:0}
+.cc-stat{flex:1;text-align:center;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;padding:8px 4px}
+.cc-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--ac);line-height:1}
+.cc-lbl{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:0.8px;margin-top:2px}
+.cc-best{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}
+.cc-best-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.cc-best-pick{background:rgba(123,44,255,0.05);border:1px solid rgba(123,44,255,0.12);border-radius:7px;padding:8px 10px;transition:border-color .18s}
+.cc-best-pick:hover{border-color:rgba(123,44,255,0.25)}
 </style>
 </head>
 <body>
@@ -703,6 +734,15 @@ function filterPicks(filter,el){
   renderPicks();
 }
 
+function switchActivity(tab,btn){
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['Picks','Posts','Notes'].forEach(t=>{
+    const el=document.getElementById('activity'+t);
+    if(el)el.style.display=t.toLowerCase()===tab?'block':'none';
+  });
+}
+
 
 
 function getELOFromPicks(picks){
@@ -856,8 +896,8 @@ async function initSubscriptionUI(tipsterUserId){
       cntEl.textContent='· '+d.count+(d.count===1?' subscriber':' subscribers');
       cntEl.style.display='block';
     }
-    const ciSub=document.getElementById('ciSubscribers');
-    if(ciSub&&d.count>0)countUp(ciSub,d.count);
+    const ccSub=document.getElementById('ccSubscribers');
+    if(ccSub&&d.count>0)countUp(ccSub,d.count);
   }catch(_){}
 
   // Hide subscribe button on own profile or if not logged in
@@ -1193,20 +1233,20 @@ async function loadProfile(){
     const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(score,{size:120}):'';
     const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
 
-    // Archetype RPG card
+    // Archetype hero identity block + level system
     const _rpgPickCount=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
     const _rpgLevel=_rpgPickCount>=200?5:_rpgPickCount>=100?4:_rpgPickCount>=50?3:_rpgPickCount>=20?2:1;
     const _rpgLvlBreaks=[0,20,50,100,200,Infinity];
     const _rpgProg=_rpgLevel<5?Math.min((_rpgPickCount-_rpgLvlBreaks[_rpgLevel-1])/(_rpgLvlBreaks[_rpgLevel]-_rpgLvlBreaks[_rpgLevel-1])*100,100):100;
     const _archTraitMap={value_hunter:['Value Seeker','Odds Analyst','Edge Hunter'],contrarian:['Fade the Public','Anti-Consensus','Line Fader'],momentum_rider:['Streak Hunter','Form Rider','Hot Hand'],arbitrage_pro:['Market Mover','Line Shopper','Sharp Entry'],high_roller:['High Stakes','Max EV','Power Play'],grinder:['Volume Player','Consistent','Low Variance']};
     const _rpgTraits=displayArch&&_archTraitMap[displayArch.key]?_archTraitMap[displayArch.key]:['Versatile','Adaptive','Multi-Market'];
-    const rpgCardHTML=displayArch?`<div class="rpg-card"><div class="rpg-card-header"><div class="rpg-icon" style="background:${displayArch.color}15;border:1px solid ${displayArch.color}30">${displayArch.icon}</div><div><div class="rpg-name" style="color:${displayArch.color}">${displayArch.name}</div><div class="rpg-level">LEVEL ${_rpgLevel} · ${_rpgPickCount} PICKS</div></div></div><div class="rpg-traits">${_rpgTraits.map(t=>`<span class="rpg-trait" style="background:${displayArch.color}12;border:1px solid ${displayArch.color}28;color:${displayArch.color}cc">${t}</span>`).join('')}</div><div class="rpg-evo"><div class="rpg-evo-label"><span>LEVEL PROGRESS</span><span>${_rpgLevel<5?'NEXT: LV'+(_rpgLevel+1):'MAX LEVEL'}</span></div><div class="rpg-evo-bar"><div class="rpg-evo-fill" id="rpgEvoFill" data-prog="${Math.round(_rpgProg)}" style="background:${displayArch.color}"></div></div></div></div>`:'';
+    const archHeroBlock=displayArch?`<div class="arch-hero-block"><div class="ahb-row"><div class="ahb-icon" style="background:${displayArch.color}15;border:1px solid ${displayArch.color}30">${displayArch.icon}</div><div><div class="ahb-name" style="color:${displayArch.color}">${displayArch.name}</div><div class="ahb-level">LEVEL ${_rpgLevel} TIPSTER · ${_rpgPickCount} PICKS</div></div></div><div class="ahb-traits">${_rpgTraits.map(t=>`<span class="ahb-trait" style="background:${displayArch.color}10;border:1px solid ${displayArch.color}25;color:${displayArch.color}bb">• ${t}</span>`).join('')}</div><div class="ahb-xp-label"><span>XP PROGRESS</span><span>${_rpgLevel<5?'NEXT: LV'+(_rpgLevel+1):'MAX LEVEL'}</span></div><div class="ahb-xp-bar"><div class="ahb-xp-fill" id="ahbXpFill" data-prog="${Math.round(_rpgProg)}" style="background:${displayArch.color}"></div></div></div>`:'';
 
-    // Community Impact panel (right sidebar)
+    // Community card (single, non-duplicating)
     const _settledPicks=allPicks.filter(p=>p.result==='win'||p.result==='loss');
     const _tailRate=_settledPicks.length>0?Math.round((wins/_settledPicks.length)*100):0;
     const _bestWin=allPicks.filter(p=>p.result==='win'&&p.pnl>0).sort((a,b)=>b.pnl-a.pnl)[0];
-    const ciPanelHTML=`<div class="ci-panel"><div class="ci-panel-title">COMMUNITY IMPACT</div><div class="ci-stats-row"><div class="ci-stat-box"><div class="ci-stat-val" id="ciFollowers2">—</div><div class="ci-stat-lbl">FOLLOWERS</div></div><div class="ci-stat-box"><div class="ci-stat-val" style="color:var(--gr)">${_tailRate}%</div><div class="ci-stat-lbl">WIN RATE</div></div><div class="ci-stat-box"><div class="ci-stat-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</div><div class="ci-stat-lbl">RANK</div></div></div>${_bestWin?`<div class="most-tailed"><div class="most-tailed-label">BEST WIN</div><div class="most-tailed-pick"><div style="font-size:12px;color:var(--tx);font-weight:600;margin-bottom:4px">${_bestWin.event||'—'}</div><div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">${_bestWin.market||'—'}</span>${_bestWin.odds>0&&_bestWin.odds<1000?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold)">${_bestWin.odds}</span>`:''}<span style="font-family:var(--font-mono);font-size:10px;color:var(--gr);margin-left:auto">+${_bestWin.pnl.toFixed(2)}u</span></div></div></div>`:''}</div>`;
+    const communityCardHTML=`<div class="community-card"><div class="cc-title">COMMUNITY</div><div class="cc-stats"><div class="cc-stat"><div class="cc-val" id="ccFollowers">—</div><div class="cc-lbl">FOLLOWERS</div></div><div class="cc-stat"><div class="cc-val" id="ccSubscribers">—</div><div class="cc-lbl">SUBSCRIBERS</div></div><div class="cc-stat"><div class="cc-val" style="color:var(--gr)">${_tailRate}%</div><div class="cc-lbl">TAIL RATE</div></div></div>${_bestWin?`<div class="cc-best"><div class="cc-best-label">BEST WIN</div><div class="cc-best-pick"><div style="font-size:12px;color:var(--tx);font-weight:600;margin-bottom:3px">${(_bestWin.event&&_bestWin.event!=='undefined'?_bestWin.event:'—')}</div><div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">${_bestWin.market||'—'}</span>${_bestWin.odds>0&&_bestWin.odds<1000?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold)">${_bestWin.odds}</span>`:''}<span style="font-family:var(--font-mono);font-size:10px;color:var(--gr);margin-left:auto">+${_bestWin.pnl.toFixed(2)}u</span></div></div></div>`:''}</div>`;
 
     const divObj=rankingMeta&&rankingMeta.division
       ? (() => {
@@ -1295,21 +1335,7 @@ async function loadProfile(){
               <button class="sub-btn" id="subBtn" data-tipster-id="${tipsterUserId||''}" data-tipster-username="${username}" onclick="handleSubscribe()">Subscribe €10/mo</button>
             </div>
             <div class="badges-row" style="margin-top:14px">${badgesHtml}</div>
-            <div class="hero-quick-stats">
-              <div class="hqs-item"><span style="font-size:13px">⚡</span><span class="hqs-label">REL</span><span class="hqs-val" style="color:var(--ac)">${score>0?score:'—'}</span></div>
-              ${rank>0?`<div class="hqs-item"><span style="font-size:13px">🏆</span><span class="hqs-label">RANK</span><span class="hqs-val" style="color:var(--gold)">#${rank}</span></div>`:''}
-              <div class="hqs-item"><span style="font-size:13px">📈</span><span class="hqs-label">ROI</span><span class="hqs-val" style="color:#00E5A0">${parseFloat(roi)>=0?'+':''}${roi}%</span></div>
-              ${streak>=1?`<div class="hqs-item"><span style="font-size:13px">🔥</span><span class="hqs-val" style="color:#FF6B35">W${streak}</span></div>`:''}
-            </div>
-            <div class="community-impact">
-              <div class="ci-grid">
-                <div class="ci-stat"><div class="ci-value" id="ciFollowers">—</div><div class="ci-label">Followers</div></div>
-                <div class="ci-stat"><div class="ci-value" id="ciFollowing">—</div><div class="ci-label">Following</div></div>
-                <div class="ci-stat"><div class="ci-value" id="ciSubscribers">—</div><div class="ci-label">Subscribers</div></div>
-              </div>
-            </div>
-            <div id="followerCount" style="display:none"></div>
-            <div id="subscriberCount" style="display:none"></div>
+            ${archHeroBlock}
             <div class="dna-tags">${getDNATags(allPicks).map(t=>`<span class="dna-tag ${t.cls}">${t.icon} ${t.label}</span>`).join('')}</div>
             ${favSportsHtml}
           </div>
@@ -1328,18 +1354,38 @@ async function loadProfile(){
 
       <div class="content-grid reveal reveal-d1">
         <div class="panel">
-          <div class="panel-title" id="picksTitle">ALL PICKS <span class="panel-count">${allPicks.length}</span></div>
-          ${_pickFilterTabs(allPicks)}
-          <div id="picksList"></div>
+          <div class="panel-title" id="picksTitle">ACTIVITY</div>
+          <div class="activity-tabs-bar">
+            <button class="atab active" onclick="switchActivity('picks',this)">PICKS</button>
+            <button class="atab" onclick="switchActivity('posts',this)">POSTS</button>
+            ${(()=>{const _lu=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');return _lu&&_lu.id===tipsterUserId?'<button class="atab" onclick="switchActivity(\'notes\',this)">NOTES</button>':''})()}
+          </div>
+          <div id="activityPicks">
+            <div style="display:flex;align-items:center;margin-bottom:10px"><span style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:1px">${allPicks.length} VERIFIED PICKS</span></div>
+            ${_pickFilterTabs(allPicks)}
+            <div id="picksList"></div>
+          </div>
+          <div id="activityPosts" style="display:none">
+            <div class="activity-coming-soon">
+              <div class="acs-icon">📝</div>
+              <div class="acs-title">POSTS COMING SOON</div>
+              <div class="acs-sub">Tipsters will be able to share match analysis, previews and community updates</div>
+            </div>
+          </div>
+          <div id="activityNotes" style="display:none">
+            <div class="activity-coming-soon">
+              <div class="acs-icon">🔒</div>
+              <div class="acs-title">PRIVATE NOTES</div>
+              <div class="acs-sub">Your personal match research — only visible to you</div>
+            </div>
+          </div>
         </div>
         <div>
-          ${rpgCardHTML}
           ${buildDNAPanel(allPicks,displayArch)}
-          ${buildArchEvoPanel(allPicks,displayArch)}
+          ${communityCardHTML}
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
-            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div style="display:inline-block">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">RELIABILITY</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${score>=70?'Trusted source · Verified edge':score>=40?'Building trust · Solid track record':'Early stage · More picks needed'}</div><div class="perf-gauge-secondary"><div class="pgs-item"><div class="pgs-val" style="color:${ssColor}">${finalSharpScore>0?Math.round(finalSharpScore):'—'}</div><div class="pgs-label">SHARP</div></div><div class="pgs-item"><div class="pgs-val" style="color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</div><div class="pgs-label">ROI</div></div><div class="pgs-item"><div class="pgs-val" style="color:var(--tx)">${wr}%</div><div class="pgs-label">WIN RATE</div></div></div></div>`:''}
-            <div class="perf-row"><span class="perf-key">Sharp Score <span class="tip-trigger" data-tip="Sharp Score measures the quality of your picks — not just wins. It factors in ROI consistency, how many picks you have, the difficulty of your odds, and your CLV. A score above 70 means you are beating the market.">?</span></span><span class="perf-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0)+'/100':'—'}</span></div>
+            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div class="gauge-pulse-wrap">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">RELIABILITY</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${score>=70?'Trusted source · Verified edge':score>=40?'Building trust · Solid track record':'Early stage · More picks needed'}</div><div class="perf-gauge-secondary"><div class="pgs-item"><div class="pgs-val" style="color:${ssColor}">${finalSharpScore>0?Math.round(finalSharpScore):'—'}</div><div class="pgs-label">SHARP</div></div><div class="pgs-item"><div class="pgs-val" style="color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</div><div class="pgs-label">ROI</div></div><div class="pgs-item"><div class="pgs-val" style="color:var(--tx)">${wr}%</div><div class="pgs-label">WIN RATE</div></div></div></div>`:''}
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${recordBarHTML(wins,losses,pending)}</span></div>
             <div class="perf-row"><span class="perf-key">ROI <span class="tip-trigger" data-tip="Return on Investment. Shows your profit as a percentage of total stake. +10% ROI means for every €100 bet you made €10 profit on average.">?</span></span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
             <div class="perf-row"><span class="perf-key">Win Rate <span class="tip-trigger" data-tip="Percentage of picks that won. 60% means 6 out of every 10 picks were winners. High win rate alone does not mean profitability — odds matter too.">?</span></span><span class="perf-val">${wr}%</span></div>
@@ -1347,7 +1393,6 @@ async function loadProfile(){
             <div class="perf-row"><span class="perf-key">Avg Odds</span><span class="perf-val">${avg}</span></div>
             <div class="perf-row"><span class="perf-key">Best Win</span><span class="perf-val pos">+€${best.toFixed(2)}</span></div>
             <div class="perf-row"><span class="perf-key">Win Streak</span><span class="perf-val" style="color:${streak>=3?'var(--orange)':'var(--tx)'}">${streak>=3?'🔥 ':''} W${streak}</span></div>
-            <div class="perf-row"><span class="perf-key">Reliability <span class="tip-trigger" data-tip="Reliability Score combines ROI (40%), Win Rate (30%), pick volume (20%) and recent activity (10%). Ranges from 0 to 100. Above 70 is considered trustworthy.">?</span></span><span class="perf-val" style="color:${color}">${score>0?score+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Global Rank</span><span class="perf-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</span></div>
             <div class="perf-row"><span class="perf-key">ELO Rating <span class="tip-trigger" data-tip="ELO is a competitive ranking system borrowed from chess. It goes up when you win and down when you lose, weighted by the odds. Starting ELO is 0. Above 100 is advanced.">?</span></span><span class="perf-val" style="color:var(--ac-l)">${rankingMeta?Math.max(0,(rankingMeta.elo||1000)-1000):getELOFromPicks(allPicks)}</span></div>
             <div class="perf-row"><span class="perf-key">Best Streak Ever</span><span class="perf-val" style="color:var(--orange)">🔥 W${getBestStreak(allPicks)}</span></div>
@@ -1356,10 +1401,6 @@ async function loadProfile(){
             <div class="perf-row"><span class="perf-key">Fav Sport</span><span class="perf-val">${getFavSport(allPicks)}</span></div>
             <div class="pnl-chart" id="pnlChart"></div>
           </div>
-          ${ciPanelHTML}
-          ${reliabilityHtml}
-          ${(()=>{const elo=rankingMeta?Math.max(0,(rankingMeta.elo||1000)-1000):getELOFromPicks(allPicks);const{label,color:ec}=getELOLabel(elo);return`<div class="elo-box" style="margin-top:12px"><div class="elo-val" style="color:${ec}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
-          ${sportList.length>0?`<div class="panel" style="margin-top:16px"><div class="panel-title">BY SPORT</div>${sportList.map(([s,c])=>`<div class="sport-bar"><div class="sport-bar-label"><span>${sportIcon[s]||'🎯'} ${s}</span><span>${c} picks</span></div><div class="sbar"><div class="sbar-fill" style="width:${(c/allPicks.length*100).toFixed(0)}%"></div></div></div>`).join('')}</div>`:''}
           ${buildTrophyWallPanel(allPicks,badges,streak)}
         </div>
       </div>
@@ -1376,26 +1417,16 @@ async function loadProfile(){
           window.Follows.getFollowerCount(tipsterUserId).then(count=>{
             const el=document.getElementById('followerCount');
             if(el)el.textContent=count+(count===1?' follower':' followers');
-            const ci=document.getElementById('ciFollowers');
-            if(ci)countUp(ci,count);
-            const ci2=document.getElementById('ciFollowers2');
-            if(ci2)countUp(ci2,count);
-            // Populate hero identity strip
+            const cc=document.getElementById('ccFollowers');
+            if(cc)countUp(cc,count);
+            // Populate hero identity strip (social only — stats shown in grid)
             const strip=document.getElementById('heroIdentityStrip');
             if(strip){
-              const _rel=score>0?score+'<span class="his-label">/100</span>':'—';
-              const _rnk=rank>0?'<span class="his-label">RANK </span>#'+rank:'';
-              const _roi=(parseFloat(roi)>=0?'+':'')+roi+'%';
-              const _str=streak>=1?'<span class="his-label">W</span>'+streak+' STREAK':'';
-              const _fol=count+' FOLLOWERS';
               strip.innerHTML=[
-                rank>0?`<span class="his-item"><span class="his-label">RANK</span>&nbsp;<span class="his-val" style="color:var(--gold)">#${rank}</span></span>`:'',
-                score>0?`<span class="his-sep">·</span><span class="his-item"><span class="his-label">REL</span>&nbsp;<span class="his-val" style="color:var(--ac)">${score}</span></span>`:'',
-                `<span class="his-sep">·</span><span class="his-item"><span class="his-label">ROI</span>&nbsp;<span class="his-val" style="color:${parseFloat(roi)>=0?'var(--gr)':'var(--rd)'}">${parseFloat(roi)>=0?'+':''}${roi}%</span></span>`,
-                streak>=1?`<span class="his-sep">·</span><span class="his-item his-val" style="color:#FF6B35">🔥 W${streak}</span>`:'',
-                count>0?`<span class="his-sep">·</span><span class="his-item"><span class="his-val" style="color:var(--mu)">${count}</span>&nbsp;<span class="his-label">FOLLOWERS</span></span>`:'',
+                count>0?`<span class="his-item"><span class="his-val" style="color:var(--mu)">${count}</span>&nbsp;<span class="his-label">FOLLOWERS</span></span>`:'',
+                streak>=1?`${count>0?'<span class="his-sep">·</span>':''}<span class="his-item his-val" style="color:#FF6B35">🔥 W${streak} STREAK</span>`:'',
               ].filter(Boolean).join('');
-              strip.style.display='flex';
+              if(strip.innerHTML)strip.style.display='flex';
             }
           });
         }
@@ -1405,16 +1436,19 @@ async function loadProfile(){
       initTipTriggers();
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
 
-      // FIX 1 — Banner watermark + floating particles
+      // FIX 2 — Archetype-themed hero background particles
       const _banner=document.querySelector('.profile-banner');
       if(_banner&&!_banner.querySelector('._tip-wm')){
         const _wm=document.createElement('img');
         _wm.className='_tip-wm';_wm.src='/assets/logo/ledgr-icon.png';
         _wm.style.cssText='position:absolute;right:-20px;top:-10px;height:180px;width:auto;opacity:0.04;pointer-events:none;z-index:0;transform:rotate(15deg)';
         _banner.appendChild(_wm);
-        for(let i=0;i<5;i++){
-          const p=document.createElement('div');const size=2+Math.random()*3;
-          p.style.cssText=`position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:rgba(123,44,255,${0.2+Math.random()*0.2});left:${Math.random()*80}%;bottom:${Math.random()*60}%;pointer-events:none;z-index:0;animation:heroParticle ${6+i*2}s ease-in-out infinite;animation-delay:${i*1.2}s`;
+        const _archPColors={value_hunter:'rgba(251,191,36',contrarian:'rgba(255,51,85',momentum_rider:'rgba(251,146,60',arbitrage_pro:'rgba(56,189,248',high_roller:'rgba(251,191,36',grinder:'rgba(184,159,255'};
+        const _archKey=typeof displayArch!=='undefined'&&displayArch?displayArch.key:'';
+        const _pc=_archPColors[_archKey]||'rgba(123,44,255';
+        for(let i=0;i<9;i++){
+          const p=document.createElement('div');const size=1.5+Math.random()*2.5;
+          p.style.cssText=`position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${_pc},${0.12+Math.random()*0.2});left:${5+Math.random()*85}%;top:${10+Math.random()*75}%;pointer-events:none;z-index:0;animation:archParticleFloat ${7+i*1.6}s ease-in-out infinite;animation-delay:${i*0.9}s`;
           _banner.appendChild(p);
         }
       }
@@ -1428,9 +1462,9 @@ async function loadProfile(){
         _avWrap.insertBefore(_rotRing,_avWrap.firstChild);
       }
 
-      // FIX 3 — Animate RPG evolution bar
-      const _rpgFill=document.getElementById('rpgEvoFill');
-      if(_rpgFill){const _prog=parseInt(_rpgFill.dataset.prog)||0;setTimeout(()=>{_rpgFill.style.width=_prog+'%';},200);}
+      // Animate archetype XP bar in hero
+      const _xpFill=document.getElementById('ahbXpFill');
+      if(_xpFill){const _prog=parseInt(_xpFill.dataset.prog)||0;setTimeout(()=>{_xpFill.style.width=_prog+'%';},300);}
 
       // FIX 7 — Count-up on stat cards
       const _picksNum=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
