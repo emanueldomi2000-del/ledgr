@@ -22,7 +22,7 @@ body::before{content:'';position:fixed;inset:0;
   background:radial-gradient(ellipse,rgba(251,191,36,.04) 0%,transparent 70%);pointer-events:none;z-index:0}
 
 /* ── MAIN ── */
-.main{max-width:1120px;margin:0 auto;padding:80px 24px 80px;position:relative;z-index:2}
+.main{max-width:1120px;margin:0 auto;padding:32px 24px 80px;position:relative;z-index:2}
 
 /* ── PAGE HEADER ── */
 .lb-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
@@ -1261,19 +1261,6 @@ function renderLeaderboard() {
     if (window.LEDGR && LEDGR.observeReveal) LEDGR.observeReveal();
   }, 60);
 }
-
-// Nav hide on scroll down, show on scroll up
-(function(){
-  let _lastScroll = 0;
-  const _nav = document.getElementById('appNav');
-  window.addEventListener('scroll', function(){
-    const cur = window.scrollY;
-    if (!_nav) return;
-    _nav.style.transition = 'transform 0.3s ease';
-    _nav.style.transform = (cur > _lastScroll && cur > 80) ? 'translateY(-100%)' : 'translateY(0)';
-    _lastScroll = cur;
-  }, { passive: true });
-})();
 
 loadLeaderboard();
 
