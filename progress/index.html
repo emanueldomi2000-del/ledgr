@@ -69,8 +69,8 @@ body::after { content:''; position:fixed; inset:0; background-image:radial-gradi
 .hero-elo-nums { font-family:var(--font-mono); font-size:13px; color:var(--mu2); margin-bottom:8px; letter-spacing:1px; font-variant-numeric:tabular-nums; }
 .hero-bar-track { height:10px; background:rgba(255,255,255,0.06); border-radius:8px; overflow:hidden; margin-bottom:6px; position:relative; }
 .hero-bar-fill { height:100%; border-radius:8px; transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1); position:relative; overflow:hidden; }
-.hero-bar-fill::after { content:''; position:absolute; top:0;left:-150%;width:80%;height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.45),transparent); animation:rpSweep 4s ease-in-out infinite; animation-delay:1.5s; }
-@keyframes rpSweep { 0%{left:-150%} 100%{left:220%} }
+.hero-bar-fill::after { content:''; position:absolute; top:0;left:-100%;width:100%;height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent); animation:progressFlow 3s linear infinite; }
+@keyframes progressFlow { from{left:-100%} to{left:100%} }
 .hero-bar-sub { font-family:var(--font-mono); font-size:11px; color:var(--mu); margin-bottom:4px; }
 .hero-bar-week { font-family:var(--font-mono); font-size:10px; color:var(--gr); }
 
@@ -280,11 +280,12 @@ body::after { content:''; position:fixed; inset:0; background-image:radial-gradi
 .ct-unlock{font-size:9px;color:var(--ac);font-family:'DM Mono',monospace;letter-spacing:0.04em}
 
 /* ── DNA Bars ── */
-.dna-bars{margin-top:14px;border-top:1px solid rgba(255,255,255,0.06);padding-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.dna-bar-row{display:flex;flex-direction:column;gap:4px}
-.dna-label{font-size:10px;color:var(--mu);font-family:'Syne',sans-serif;display:flex;align-items:center;gap:4px}
-.dna-track{height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden}
-.dna-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);transition:width 1s ease;width:0%}
+.dna-bars{margin-top:16px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px}
+.dna-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.dna-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--mu);text-transform:uppercase;width:84px;flex-shrink:0;text-align:right}
+.dna-track{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.dna-fill{height:100%;border-radius:2px;transition:width 0.9s cubic-bezier(0.4,0,0.2,1);width:0%}
+.dna-pct{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);width:26px;text-align:right;flex-shrink:0}
 
 /* ── Today's Focus ── */
 .todays-focus-card{background:rgba(123,44,255,0.04);border:1px solid rgba(123,44,255,0.15);border-radius:14px;padding:18px 22px;margin-bottom:16px}
@@ -573,8 +574,6 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
 
   const biggestWin = wins > 0 ? Math.max(...picks.filter(p=>p.result==='win').map(p=>p.pnl||0)) : null;
   const biggestWinDate = biggestWin != null ? picks.find(p=>p.result==='win'&&Math.abs((p.pnl||0)-biggestWin)<0.01)?.createdAt : null;
-  const _bwPick = biggestWin != null ? picks.find(p=>p.result==='win'&&Math.abs((p.pnl||0)-biggestWin)<0.01) : null;
-  const _bwEvent = _bwPick ? (_bwPick.event && _bwPick.event !== 'undefined' ? 'Won on ' + _bwPick.event : 'Single pick record') : '';
 
   const byDay = {};
   picks.forEach(p => {
@@ -620,13 +619,12 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
       const _avEl = document.querySelector('.hero-av');
       if (window.LedgrAvatar) window.LedgrAvatar.apply(_avEl, USER_ID || USERNAME, USERNAME.slice(0,2).toUpperCase());
 
-      // Div track animated fill — division-index based (each div = equal visual slice)
+      // Div track animated fill
       const _dtFill = document.getElementById('divTrackFill');
       if (_dtFill) {
-        const _curIdx = ELO_TIERS.findIndex(t => t.name === tier.name);
-        const _n = ELO_TIERS.length - 1;
-        const _fillPct = Math.min(100, (_curIdx / _n + eloPercent / 100 / _n) * 100);
-        setTimeout(() => { _dtFill.style.width = _fillPct.toFixed(1) + '%'; }, 500);
+        const _maxElo = ELO_TIERS[ELO_TIERS.length - 1].max;
+        const _totalPct = Math.min(100, (actualElo / _maxElo) * 100);
+        setTimeout(() => { _dtFill.style.width = _totalPct.toFixed(1) + '%'; }, 100);
       }
 
       // Fix 1 (Round 3): archetype label
@@ -827,16 +825,6 @@ function buildHTML(d) {
   const initials = USERNAME.slice(0,2).toUpperCase();
   const isEmpty = picks.length === 0;
 
-  const _heroTitle = (() => {
-    if (myRank === 1)             return { sub:'KING OF THE HILL',  color:'var(--gold)' };
-    if (streak >= 5)              return { sub:'HEAT CHECK 🔥',     color:'#FF6B35' };
-    if (streak >= 3)              return { sub:'ON THE RISE ↑',     color:'var(--gr)' };
-    if (roi < -10 && losses > wins) return { sub:'COMEBACK SEASON', color:'var(--rd)' };
-    if (divScore > 80)            return { sub:'ELITE THRESHOLD',   color:'var(--ac)' };
-    if (isEmpty)                  return { sub:'',                  color:'' };
-    return                               { sub:'KEEP CLIMBING',     color:'var(--mu)' };
-  })();
-
   const _HERO_REWARDS = {BRONZE:'Basic Badge',SILVER:'Profile Border',GOLD:'Gold Name Color',PLATINUM:'Animated Ring',DIAMOND:'Particle FX',ELITE:'Elite Aura',LEGENDARY:'Hall of Fame Entry'};
   const _nextReward = _HERO_REWARDS[nextTier.name] || 'Division Badge';
   const _w7 = picks.filter(p => p.result==='win' && new Date(p.createdAt).getTime() >= Date.now()-7*24*3600*1000).length;
@@ -861,7 +849,6 @@ function buildHTML(d) {
         </div>
         <div class="hero-center">
           <div class="hero-div-name" style="color:${divColor}">${tier.name} ${roman}</div>
-          ${_heroTitle.sub ? `<div style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;color:${_heroTitle.color};margin-bottom:4px;margin-top:-2px">${_heroTitle.sub}</div>` : ''}
           <div class="hero-elo-nums">${actualElo.toLocaleString()} / ${tier.max.toLocaleString()} RP</div>
           <div class="hero-bar-track">
             <div class="hero-bar-fill" id="heroBarFill" style="width:0%;background:linear-gradient(90deg,${divColor}aa,${divColor})"></div>
@@ -998,10 +985,10 @@ function buildHTML(d) {
     </div>
   ` : `
     <div class="moments-grid">
-      ${momentCard('💰','Biggest Win',biggestWinStr,biggestWinDateStr,'#00E5A0',_bwEvent||'Single pick result')}
-      ${momentCard('🔥','Longest Streak',bestStreakStr,'All time','#FF6B35',bestStreak>=3?'Personal best run':'Build streak to unlock')}
-      ${momentCard('📅','Best Day',bestDayStr,bestDayDateStr,'#FFD700','Best 24h performance')}
-      ${momentCard('🏆','Best Rank',bestRankStr,'All time','var(--ac)',totalTipsters>0?'Out of '+totalTipsters+' tipsters':'All-time personal best')}
+      ${momentCard('💰','Biggest Win',biggestWinStr,biggestWinDateStr,'#00E5A0')}
+      ${momentCard('🔥','Longest Streak',bestStreakStr,'All time','#FF6B35')}
+      ${momentCard('📅','Best Day',bestDayStr,bestDayDateStr,'#FFD700')}
+      ${momentCard('🏆','Best Rank',bestRankStr,'All time','var(--ac)')}
     </div>
   `;
 
@@ -1031,11 +1018,11 @@ function buildHTML(d) {
       <div class="si-name" id="siName">TIPSTER</div>
       <div class="si-traits" id="siTraits">Post picks to reveal your identity</div>
       <div class="dna-bars" id="dnaBars" style="display:none">
-        <div class="dna-bar-row"><span class="dna-label">⚡ Aggression</span><div class="dna-track"><div class="dna-fill" id="dnaAgg"></div></div></div>
-        <div class="dna-bar-row"><span class="dna-label">🎯 Sharpness</span><div class="dna-track"><div class="dna-fill" id="dnaSharp"></div></div></div>
-        <div class="dna-bar-row"><span class="dna-label">🔥 Risk</span><div class="dna-track"><div class="dna-fill" id="dnaRisk"></div></div></div>
-        <div class="dna-bar-row"><span class="dna-label">🛡️ Consistency</span><div class="dna-track"><div class="dna-fill" id="dnaCons"></div></div></div>
-        <div class="dna-bar-row" style="grid-column:1/-1"><span class="dna-label">💎 Value</span><div class="dna-track"><div class="dna-fill" id="dnaVal"></div></div></div>
+        <div class="dna-bar-row"><span class="dna-label">Aggression</span><div class="dna-track"><div class="dna-fill" id="dnaAgg" style="background:linear-gradient(90deg,#FF6B35,#FF3355)"></div></div><span class="dna-pct" id="dnaAggPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Risk</span><div class="dna-track"><div class="dna-fill" id="dnaRisk" style="background:linear-gradient(90deg,#fbbf24,#FF6B35)"></div></div><span class="dna-pct" id="dnaRiskPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Consistency</span><div class="dna-track"><div class="dna-fill" id="dnaCons" style="background:linear-gradient(90deg,var(--ac),#00E5A0)"></div></div><span class="dna-pct" id="dnaConsPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Value Hunt</span><div class="dna-track"><div class="dna-fill" id="dnaVal" style="background:linear-gradient(90deg,#00E5A0,#38bdf8)"></div></div><span class="dna-pct" id="dnaValPct">0%</span></div>
+        <div class="dna-bar-row"><span class="dna-label">Sharpness</span><div class="dna-track"><div class="dna-fill" id="dnaSharp" style="background:linear-gradient(90deg,#b89fff,var(--ac))"></div></div><span class="dna-pct" id="dnaSharpPct">0%</span></div>
       </div>
       <div id="evolutionPath" style="display:none;margin-top:16px;border-top:1px solid rgba(255,255,255,0.06);padding-top:14px">
         <div style="font-size:10px;letter-spacing:0.15em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:8px;text-transform:uppercase">Unlock Next Evolution</div>
@@ -1087,7 +1074,7 @@ function buildDivTrack(actualElo) {
     BRONZE:'rgba(205,127,50,0.5)', SILVER:'rgba(192,192,192,0.4)', GOLD:'rgba(255,215,0,0.5)',
     PLATINUM:'rgba(79,195,247,0.5)', DIAMOND:'rgba(170,120,255,0.6)', ELITE:'rgba(123,44,255,0.7)', LEGENDARY:'rgba(255,215,0,0.7)'
   };
-  return `<div><div style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:0.2em;color:var(--mu);text-align:center;margin-bottom:12px;text-transform:uppercase">YOUR DIVISION PATH</div><div class="div-track"><div class="div-track-line"><div class="div-track-fill" id="divTrackFill"></div></div>` + ELO_TIERS.map((t, i) => {
+  return `<div class="div-track"><div class="div-track-line"><div class="div-track-fill" id="divTrackFill"></div></div>` + ELO_TIERS.map((t, i) => {
     const state = i < currentIdx ? 'dt-past' : i === currentIdx ? 'dt-current' : 'dt-locked';
     const isCurrent = i === currentIdx;
     const isPast = i < currentIdx;
@@ -1101,7 +1088,7 @@ function buildDivTrack(actualElo) {
       ? `<span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#00E5A0;border:1.5px solid #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:8px;color:#07060d;font-weight:700;line-height:1;pointer-events:none;z-index:3">✓</span>`
       : '';
     return `<div class="dt-node ${state}" onclick="showDivInfo('${t.name}')" data-div="${t.name}"><div class="dt-icon" style="${iconContainerStyle}">${checkBadge}<span style="${emojiStyle}">${emoji}</span></div><span class="dt-label" style="${isCurrent?'color:'+t.color:''}">${t.name}</span></div>`;
-  }).join('') + `</div></div>`;
+  }).join('') + `</div>`;
 }
 
 function showDivInfo(divName) {
@@ -1129,7 +1116,7 @@ function showDivInfo(divName) {
   box._t = setTimeout(() => { box.style.opacity = '0'; }, 2600);
 }
 
-function momentCard(icon, label, value, dateStr, divColor, sub) {
+function momentCard(icon, label, value, dateStr, divColor) {
   let _dataAttrs = '';
   if (value !== '—') {
     const _m = value.match(/^([+\-#]?)(\d+\.?\d*)(.*)$/);
@@ -1141,7 +1128,6 @@ function momentCard(icon, label, value, dateStr, divColor, sub) {
       <div class="moment-icon">${icon}</div>
       <div class="moment-value" style="color:${value==='—'?'var(--mu)':divColor}" ${_dataAttrs}>${value}</div>
       <div class="moment-label">${label}</div>
-      ${sub ? `<div style="font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;margin-top:4px;line-height:1.4">${sub}</div>` : ''}
       ${dateStr ? `<div class="moment-date">${dateStr}</div>` : ''}
     </div>
   `;
