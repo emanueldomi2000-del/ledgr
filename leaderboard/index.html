@@ -312,7 +312,8 @@ body::before{content:'';position:fixed;inset:0;
 .podium-card.p1{animation:riseUp 0.7s ease 0.1s both!important}
 .podium-card.p3{animation:slideFromRight 0.6s ease 0.3s both!important}
 /* #1 breathing glow */
-@keyframes goldBreath{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.2),0 4px 24px rgba(0,0,0,.4)}50%{box-shadow:0 0 40px rgba(255,215,0,.4),0 0 60px rgba(255,215,0,.15),0 4px 24px rgba(0,0,0,.4)}}
+@keyframes goldBreath{0%,100%{box-shadow:0 0 24px var(--champ-glow,rgba(255,215,0,.35))}50%{box-shadow:0 0 48px var(--champ-glow,rgba(255,215,0,.35)),0 0 80px var(--champ-glow,rgba(255,215,0,.35))}}
+@keyframes champFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 /* Podium particles */
 @keyframes podParticle{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-20px);opacity:0}}
 @keyframes goldRise{0%{transform:translateY(0);opacity:0.4}50%{opacity:0.2}100%{transform:translateY(-120px);opacity:0}}
@@ -337,8 +338,8 @@ body::before{content:'';position:fixed;inset:0;
 .champ-stats{display:flex;gap:12px;justify-content:center;font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin:6px 0}
 .champ-streak{font-size:12px;color:#FF6B35;font-family:'DM Mono',monospace}
 /* Scrolling ticker */
-.lb-ticker-wrap{height:36px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;display:flex;align-items:center;margin:16px 0}
-.lb-ticker-inner{display:flex;gap:48px;white-space:nowrap;animation:lbScroll linear infinite;font-family:'DM Mono',monospace;font-size:12px;color:var(--mu)}
+.lb-ticker-wrap{height:36px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;width:100%;display:flex;align-items:center;margin:16px 0}
+.lb-ticker-inner{display:flex;gap:0;white-space:nowrap;width:max-content;animation:lbScroll linear infinite;font-family:'DM Mono',monospace;font-size:12px;color:var(--mu)}
 @keyframes lbScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .lb-tick-item{flex-shrink:0}
 .lb-tick-item span{color:var(--tx)}
@@ -1125,6 +1126,9 @@ function renderLeaderboard() {
           <div style="font-size:10px;color:${i===1?'#C0C0C0':'#CD7F32'};font-family:'DM Mono',monospace;margin-top:8px;text-align:center;">
             ${i===1?(t.streak>0?`🔥 ${t.streak}W streak`:t.pnl>0?`💰 +${t.pnl.toFixed(0)}u total`:roi>0?`📈 +${roi.toFixed(1)}% ROI`:'⚔️ Chasing the throne'):(t.streak>0?`🔥 ${t.streak}W streak`:roi>0?`📈 +${roi.toFixed(1)}% ROI`:t.picks>0?`📊 ${t.picks} picks posted`:'⚔️ Fighting for podium')}
           </div>
+          <div style="margin-top:8px;padding:4px 10px;background:rgba(255,255,255,0.04);border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;color:${i===1?'#C0C0C0':'#CD7F32'};text-align:center;letter-spacing:0.05em;display:inline-block;">
+            ${i===1?(t.streak>0?`🔥 ${t.streak}W HOT`:'⚔️ CHASING'):(t.streak>0?`🔥 ${t.streak}W`:roi>0?'📈 CLIMBING':'⚔️ FIGHTING')}
+          </div>
         `}
         <div class="podium-elo">⚡ ELO <span data-elo="${eloDisplay}">${eloDisplay}</span></div>
         <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
@@ -1144,8 +1148,11 @@ function renderLeaderboard() {
     const _p1Card = podiumEl.querySelector('.podium-card.p1');
     if (_p1Card) {
       addPodiumParticles(_p1Card);
+      // FIX 6: division-based glow color
+      const getChampGlow = d => ({bronze:'rgba(205,127,50,0.3)',silver:'rgba(192,192,192,0.3)',gold:'rgba(255,215,0,0.35)',platinum:'rgba(79,195,247,0.3)',diamond:'rgba(170,120,255,0.35)',elite:'rgba(123,44,255,0.4)',legendary:'rgba(255,215,0,0.4)'}[(d||'').toLowerCase()] || 'rgba(170,120,255,0.35)');
+      _p1Card.style.setProperty('--champ-glow', getChampGlow(getStr(top3[0].division)));
       setTimeout(() => {
-        _p1Card.style.setProperty('animation', 'goldBreath 4s ease-in-out infinite', 'important');
+        _p1Card.style.setProperty('animation', 'goldBreath 4s ease-in-out infinite, champFloat 8s ease-in-out infinite', 'important');
       }, 1500);
       // Gold radial glow layer + inner watermark
       if (!_p1Card.querySelector('._p1glow')) {
@@ -1157,6 +1164,20 @@ function renderLeaderboard() {
         _wmInner.src = '/assets/logo/ledgr-icon.png';
         _wmInner.style.cssText = 'position:absolute;bottom:-10px;right:-10px;height:140px;width:auto;opacity:0.025;pointer-events:none;z-index:0;';
         _p1Card.appendChild(_wmInner);
+      }
+      // FIX 1: atmospheric banner background + faded pyramid
+      if (!_p1Card.querySelector('._atmbg')) {
+        const bannerPack = localStorage.getItem('ledgr_banner_pack') || 'midnight';
+        const bannerBgs = {midnight:'linear-gradient(135deg,#0A0A0A,#1a1a2e)','purple-fade':'linear-gradient(135deg,#0A0A0A,#2d1b69)','cosmic-nebula':'radial-gradient(ellipse,#1a0a3a,#0a0a1a)','dragon-aura':'radial-gradient(ellipse,#2a0a0a,#1a0505)','electric-void':'radial-gradient(ellipse,#0a0a2a,#050510)','crown-energy':'radial-gradient(ellipse,#1a1400,#0a0800)'};
+        const atmBg = document.createElement('div');
+        atmBg.className = '_atmbg';
+        atmBg.style.cssText = `position:absolute;top:0;left:0;width:100%;height:50%;background:${bannerBgs[bannerPack]||bannerBgs.midnight};opacity:0.15;pointer-events:none;z-index:0;border-radius:inherit;mask:linear-gradient(180deg,black 0%,transparent 100%);-webkit-mask:linear-gradient(180deg,black 0%,transparent 100%);`;
+        _p1Card.insertBefore(atmBg, _p1Card.firstChild);
+        const bigPyramid = document.createElement('img');
+        bigPyramid.className = '_atmbg';
+        bigPyramid.src = '/assets/logo/ledgr-icon.png';
+        bigPyramid.style.cssText = 'position:absolute;top:-10px;left:50%;transform:translateX(-50%) scale(1.8);height:120px;width:auto;opacity:0.03;filter:blur(2px);pointer-events:none;z-index:0;';
+        _p1Card.insertBefore(bigPyramid, _p1Card.firstChild);
       }
     }
 
@@ -1195,7 +1216,7 @@ function renderLeaderboard() {
       if (lastWin) storyItems.push(`⚡ Last win: ${lastWin.event||'Verified pick'} +${(lastWin.pnl||0).toFixed(0)}u`);
       if (_rank2 && _champ) {
         const gap = Math.abs((_champ.roi||0)-(_rank2.roi||0)).toFixed(0);
-        storyItems.push(`⚔️ Leading @${_rank2.username} by ${gap}% ROI`);
+        storyItems.push(parseFloat(gap) > 200 ? `👑 Dominating the field` : `⚔️ +${gap}% gap`);
       }
       if (storyItems.length > 0) {
         const storyEl = document.createElement('div');
