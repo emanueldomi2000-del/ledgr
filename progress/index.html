@@ -80,24 +80,24 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .pill-sharp-red { background:rgba(255,51,85,0.08); border:1px solid rgba(255,51,85,0.2); color:var(--rd); }
 
 /* ── Timeline ── */
-.timeline-wrap { position:relative; padding-left:28px; }
-.tl-spine { position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--bd); }
-.tl-spine-fill { position:absolute; left:0; top:0; width:2px; background:linear-gradient(to bottom,var(--ac),var(--ac-l)); transition:height 1.4s ease; }
-.tl-item { position:relative; margin-bottom:20px; opacity:0; transform:translateX(-10px); transition:opacity 0.4s ease,transform 0.4s ease; }
-.tl-item.visible { opacity:1; transform:translateX(0); }
-.tl-node { position:absolute; left:-32px; width:18px; height:18px; border-radius:50%; border:2px solid var(--bd); background:var(--bg); display:flex; align-items:center; justify-content:center; font-size:9px; top:4px; z-index:2; }
-.tl-node.node-green { border-color:var(--gr); background:rgba(0,229,160,0.1); box-shadow:0 0 8px rgba(0,229,160,0.2); }
-.tl-node.node-purple { border-color:var(--ac); background:var(--acg); box-shadow:0 0 8px rgba(123,44,255,0.2); }
-.tl-node.node-gold { border-color:var(--gold); background:rgba(251,191,36,0.08); box-shadow:0 0 8px rgba(251,191,36,0.2); }
-.tl-node.node-logo { border:none; background:transparent; }
-.tl-node.node-logo img { width:18px; height:18px; opacity:0.6; }
-.tl-node.node-large { width:24px; height:24px; left:-35px; font-size:12px; }
-.tl-body { background:var(--s1); border:1px solid var(--bd); border-radius:10px; padding:12px 14px; }
-.tl-body.tl-body-purple { border-color:rgba(123,44,255,0.2); }
-.tl-body.tl-body-gold { border-color:rgba(251,191,36,0.2); background:rgba(251,191,36,0.02); }
-.tl-body.tl-body-green { border-color:rgba(0,229,160,0.15); }
-.tl-title { font-family:var(--font-display); font-size:15px; font-weight:700; letter-spacing:0.5px; color:var(--tx); margin-bottom:2px; }
-.tl-date { font-family:var(--font-mono); font-size:9px; color:var(--mu); letter-spacing:1px; }
+.timeline-wrap { position:relative; padding-left:40px; }
+.timeline-spine { position:absolute; left:14px; top:8px; bottom:8px; width:2px; background:linear-gradient(180deg,var(--ac) 0%,rgba(123,44,255,0.2) 100%); transform:scaleY(0); transform-origin:top center; animation:spineGrow 1.2s ease-out 0.3s forwards; }
+@keyframes spineGrow { to { transform:scaleY(1); } }
+.t-entry { position:relative; margin-bottom:28px; opacity:0; animation:fadeSlideUp 0.4s ease forwards; }
+.t-entry:nth-child(1){animation-delay:0.3s}
+.t-entry:nth-child(2){animation-delay:0.5s}
+.t-entry:nth-child(3){animation-delay:0.7s}
+.t-entry:nth-child(4){animation-delay:0.9s}
+.t-entry:nth-child(5){animation-delay:1.1s}
+.t-entry:nth-child(6){animation-delay:1.3s}
+@keyframes fadeSlideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.t-dot { position:absolute; left:-33px; top:4px; width:14px; height:14px; border-radius:50%; background:var(--ac); border:2px solid #0A0A0A; box-shadow:0 0 8px var(--ac); }
+.t-dot.t-dot-green { background:var(--gr); box-shadow:0 0 8px var(--gr); }
+.t-dot.t-dot-gold { background:var(--gold); box-shadow:0 0 8px var(--gold); }
+.t-dot.t-dot-logo { background:transparent; border:none; box-shadow:none; width:16px; height:16px; left:-34px; top:2px; display:flex; align-items:center; justify-content:center; }
+.t-date { font-size:10px; color:var(--mu); font-family:'DM Mono',monospace; letter-spacing:0.1em; margin-bottom:3px; }
+.t-event { font-size:14px; color:var(--tx); font-family:'Syne',sans-serif; font-weight:600; display:flex; align-items:center; gap:8px; }
+.t-sub { font-size:12px; color:var(--mu); font-family:'Syne',sans-serif; margin-top:2px; }
 
 /* ── Next Unlocks ── */
 .unlock-item { margin-bottom:16px; }
@@ -145,13 +145,12 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 
 /* ── Big Moments ── */
 .moments-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.moment-card { background:var(--s1); border:1px solid var(--bd); border-radius:12px; padding:24px; position:relative; overflow:hidden; transition:border-color 0.2s,box-shadow 0.2s; }
-.moment-card:hover { border-color:rgba(123,44,255,0.3); box-shadow:0 4px 20px rgba(123,44,255,0.08); }
-.moment-watermark { position:absolute; top:12px; right:12px; width:24px; height:24px; opacity:0.08; }
-.moment-icon { font-size:24px; margin-bottom:8px; }
-.moment-value { font-family:var(--font-display); font-size:48px; font-weight:700; line-height:1; margin-bottom:4px; }
-.moment-label { font-family:var(--font-body); font-size:10px; color:var(--mu); letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
-.moment-date { font-family:var(--font-mono); font-size:10px; color:var(--mu); }
+.moment-card { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:24px; display:flex; flex-direction:column; align-items:flex-start; gap:8px; position:relative; overflow:hidden; transition:all 0.3s ease; cursor:default; }
+.moment-card:hover { border-color:var(--ac); box-shadow:0 0 24px rgba(123,44,255,0.15); transform:translateY(-2px); }
+.moment-watermark { position:absolute; top:12px; right:12px; width:24px; height:24px; opacity:0.06; }
+.moment-value { font-family:'Bebas Neue',sans-serif; font-size:48px; line-height:1; letter-spacing:0.02em; }
+.moment-label { font-size:10px; letter-spacing:0.15em; color:var(--mu); font-family:'Syne',sans-serif; text-transform:uppercase; }
+.moment-date { font-size:10px; color:var(--mu); font-family:'DM Mono',monospace; }
 
 /* ── Animations ── */
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
@@ -203,28 +202,29 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .unlock-bar-fill.fill-near{background:linear-gradient(90deg,var(--ac),var(--ac-l))}
 .unlock-reward{font-size:11px;color:var(--ac);font-family:'Syne',sans-serif;margin-top:4px}
 /* ── Career Highlights / Moment float ── */
-@keyframes momentFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-.moment-icon{font-size:24px;margin-bottom:8px;display:inline-block;animation:momentFloat 4s ease-in-out infinite}
-.moment-card:nth-child(1) .moment-icon{animation-delay:0s}
+@keyframes iconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.moment-icon{font-size:32px;display:inline-block;animation:iconFloat 4s ease-in-out infinite}
 .moment-card:nth-child(2) .moment-icon{animation-delay:1s}
 .moment-card:nth-child(3) .moment-icon{animation-delay:2s}
 .moment-card:nth-child(4) .moment-icon{animation-delay:3s}
 
 /* ── DIVISION TRACK ── */
-.div-track{display:flex;align-items:flex-end;justify-content:center;gap:0;padding:20px 0 0;position:relative;margin-bottom:8px}
-.div-track::before{content:'';position:absolute;bottom:24px;left:50%;transform:translateX(-50%);width:calc(100% - 80px);height:2px;background:linear-gradient(90deg,var(--bd),var(--bd2),var(--bd));z-index:0;border-radius:2px}
-.dt-node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;flex:1;cursor:default}
-.dt-icon{width:40px;height:40px;border-radius:50%;border:2px solid rgba(255,255,255,.06);background:var(--s2);display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;position:relative}
-.dt-icon img{width:22px;height:22px;opacity:.35}
-.dt-node.dt-past .dt-icon{border-color:rgba(255,255,255,.12)}
-.dt-node.dt-past .dt-icon img{opacity:.55}
-.dt-node.dt-current .dt-icon{width:52px;height:52px;border-width:2.5px;margin-bottom:4px}
-.dt-node.dt-current .dt-icon img{width:28px;height:28px;opacity:.9}
-.dt-node.dt-locked .dt-icon img{opacity:.18}
+.div-track{display:flex;align-items:flex-end;justify-content:center;gap:0;padding:24px 0 8px;position:relative;margin-bottom:8px}
+.div-track::before{content:'';position:absolute;bottom:36px;left:50%;transform:translateX(-50%);width:calc(100% - 80px);height:2px;background:linear-gradient(90deg,var(--bd),rgba(255,255,255,.08),var(--bd));z-index:0;border-radius:2px}
+.dt-node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;flex:1;cursor:pointer;transition:all 0.3s ease}
+.dt-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;position:relative}
+.dt-icon img{width:24px;height:24px;transition:filter 0.3s}
+.dt-node.dt-past .dt-icon{background:rgba(0,229,160,.1);border-color:#00E5A0}
+.dt-node.dt-past .dt-icon img{opacity:.7}
+.dt-node.dt-current .dt-icon{width:64px;height:64px;margin-bottom:4px}
+.dt-node.dt-current .dt-icon img{width:32px;height:32px;opacity:1}
+.dt-node.dt-locked .dt-icon{opacity:.4}
+.dt-node.dt-locked .dt-icon img{opacity:.25}
 .dt-label{font-family:var(--font-mono);font-size:7px;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase;opacity:.55;white-space:nowrap}
 .dt-node.dt-current .dt-label{opacity:1;font-weight:700}
 .dt-node.dt-past .dt-label{opacity:.7}
-@keyframes dtNodeGlow{0%,100%{box-shadow:0 0 0 0 currentColor}60%{box-shadow:0 0 0 6px transparent}}
+@keyframes nodeGlow{0%,100%{box-shadow:0 0 0 0 var(--div-color,#7B2CFF);opacity:1}50%{box-shadow:0 0 20px 4px var(--div-color,#7B2CFF);opacity:.9}}
+@keyframes hueShift{from{filter:hue-rotate(0deg) saturate(3)}to{filter:hue-rotate(360deg) saturate(3)}}
 
 /* ── IDENTITY: JOURNEY / EVOLUTION ── */
 @keyframes riseUp{0%,100%{opacity:.3;transform:translateX(-50%) translateY(0)}50%{opacity:.52;transform:translateX(-50%) translateY(-18px)}}
@@ -482,6 +482,23 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
       const fill = document.getElementById('heroBarFill');
       if (fill) fill.style.width = eloPercent + '%';
 
+      // Fix 2: cinematic hero background
+      const _heroCard = document.querySelector('.hero-card');
+      if (_heroCard) {
+        _heroCard.style.background = getHeroBg(tier.name);
+        _heroCard.style.border = '1px solid ' + divColor + '33';
+      }
+
+      // Fix 1: avatar from localStorage
+      const _savedAv = localStorage.getItem('ledgr_avatar_' + USER_ID) || localStorage.getItem('ledgr_avatar');
+      const _avEl = document.querySelector('.hero-av');
+      if (_avEl && _savedAv) {
+        _avEl.style.backgroundImage = 'url(' + _savedAv + ')';
+        _avEl.style.backgroundSize = 'cover';
+        _avEl.style.backgroundPosition = 'center';
+        Array.from(_avEl.childNodes).filter(n => n.nodeType === 3).forEach(n => n.remove());
+      }
+
       const spineFill = document.querySelector('.tl-spine-fill');
       if (spineFill) spineFill.style.height = '100%';
 
@@ -672,17 +689,17 @@ function buildHTML(d) {
 
   const momentsHTML = isEmpty ? `
     <div class="moments-grid">
-      ${momentCard('💰','Biggest Win','—','Not yet achieved',divColor)}
-      ${momentCard('🔥','Longest Streak','—','Not yet achieved',divColor)}
-      ${momentCard('📅','Best Day','—','Not yet achieved',divColor)}
-      ${momentCard('🏆','Best Rank','—','Not yet achieved',divColor)}
+      ${momentCard('💰','Biggest Win','—','Not yet achieved','#00E5A0')}
+      ${momentCard('🔥','Longest Streak','—','Not yet achieved','#FF6B35')}
+      ${momentCard('📅','Best Day','—','Not yet achieved','#FFD700')}
+      ${momentCard('🏆','Best Rank','—','Not yet achieved','var(--ac)')}
     </div>
   ` : `
     <div class="moments-grid">
-      ${momentCard('💰','Biggest Win',biggestWinStr,biggestWinDateStr,divColor)}
-      ${momentCard('🔥','Longest Streak',bestStreakStr,'All time',divColor)}
-      ${momentCard('📅','Best Day',bestDayStr,bestDayDateStr,divColor)}
-      ${momentCard('🏆','Best Rank',bestRankStr,'All time',divColor)}
+      ${momentCard('💰','Biggest Win',biggestWinStr,biggestWinDateStr,'#00E5A0')}
+      ${momentCard('🔥','Longest Streak',bestStreakStr,'All time','#FF6B35')}
+      ${momentCard('📅','Best Day',bestDayStr,bestDayDateStr,'#FFD700')}
+      ${momentCard('🏆','Best Rank',bestRankStr,'All time','var(--ac)')}
     </div>
   `;
 
@@ -730,23 +747,33 @@ function buildHTML(d) {
 }
 
 function buildDivTrack(actualElo) {
-  const TIER_FILTERS = {
-    BRONZE:   'sepia(1) saturate(1.3) hue-rotate(20deg) brightness(0.9)',
-    SILVER:   'saturate(0.2) brightness(0.82)',
-    GOLD:     'sepia(1) saturate(3) hue-rotate(5deg) brightness(1.15)',
-    PLATINUM: 'sepia(1) saturate(3) hue-rotate(175deg) brightness(1.1)',
-    DIAMOND:  'sepia(1) saturate(2.5) hue-rotate(215deg) brightness(1.1)',
-    ELITE:    'sepia(1) saturate(2.5) hue-rotate(280deg) brightness(0.95)',
-    LEGENDARY:'sepia(1) saturate(4) hue-rotate(0deg) brightness(1.25)',
-  };
   const currentTier = getEloTier(actualElo);
   const currentIdx = ELO_TIERS.findIndex(t => t.name === currentTier.name);
+  const TIER_FILTERS = {
+    BRONZE:   'sepia(1) saturate(2) hue-rotate(10deg) brightness(0.8)',
+    SILVER:   'grayscale(1) brightness(1.4)',
+    GOLD:     'sepia(1) saturate(3) brightness(1.1)',
+    PLATINUM: 'hue-rotate(180deg) saturate(0.8) brightness(1.2)',
+    DIAMOND:  'hue-rotate(200deg) saturate(3) brightness(1.1)',
+    ELITE:    'hue-rotate(270deg) saturate(3)',
+    LEGENDARY:'',
+  };
   return `<div class="div-track">` + ELO_TIERS.map((t, i) => {
     const state = i < currentIdx ? 'dt-past' : i === currentIdx ? 'dt-current' : 'dt-locked';
-    const glow = i === currentIdx ? `box-shadow:0 0 0 3px ${t.color}44,0 0 16px ${t.color}33;border-color:${t.color};` : i < currentIdx ? `border-color:${t.color}88;` : '';
     const flt = TIER_FILTERS[t.name] || '';
-    const checkBadge = i < currentIdx ? `<span style="position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#00E5A0;border:1.5px solid var(--bg);display:flex;align-items:center;justify-content:center;font-size:8px;color:#07060d;font-weight:700;line-height:1;pointer-events:none">✓</span>` : '';
-    return `<div class="dt-node ${state}" onclick="showDivInfo('${t.name}')" style="cursor:pointer"><div class="dt-icon" style="${glow}">${checkBadge}<img src="/assets/logo/ledgr-icon.png" alt="" style="filter:${flt}"></div><span class="dt-label" style="${i===currentIdx?'color:'+t.color:''}">${t.name}</span></div>`;
+    const isLegendary = t.name === 'LEGENDARY';
+    const imgStyle = isLegendary && i === currentIdx
+      ? 'animation:hueShift 3s linear infinite'
+      : (flt ? 'filter:' + flt : '');
+    const iconStyle = i === currentIdx
+      ? `animation:nodeGlow 3s ease-in-out infinite;--div-color:${t.color};border-color:${t.color}`
+      : i < currentIdx
+      ? `border-color:#00E5A0`
+      : '';
+    const checkBadge = i < currentIdx
+      ? `<span style="position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:#00E5A0;border:1.5px solid #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:8px;color:#07060d;font-weight:700;line-height:1;pointer-events:none;z-index:3">✓</span>`
+      : '';
+    return `<div class="dt-node ${state}" onclick="showDivInfo('${t.name}')"><div class="dt-icon" style="${iconStyle}">${checkBadge}<img src="/assets/logo/ledgr-icon.png" alt="" style="${imgStyle}"></div><span class="dt-label" style="${i===currentIdx?'color:'+t.color:''}">${t.name}</span></div>`;
   }).join('') + `</div>`;
 }
 
@@ -809,7 +836,7 @@ function countUp(el, target, suffix, prefix) {
 
 function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, divColor) {
   const events = [];
-  if (!picks.length) return '<div class="tl-item visible"><div class="tl-node node-logo"><img src="/assets/logo/ledgr-icon.png" alt=""></div><div class="tl-body"><div class="tl-title">Your journey starts here</div><div class="tl-date">Every legend begins with pick #1</div></div></div>';
+  if (!picks.length) return '<div class="timeline-spine"></div><div class="t-entry"><div class="t-dot t-dot-logo"><img src="/assets/logo/ledgr-icon.png" style="width:14px;height:14px;opacity:0.6" alt=""></div><div class="t-date">START</div><div class="t-event">Your journey starts here</div><div class="t-sub">Every legend begins with pick #1</div></div>';
 
   const settled = picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
 
@@ -839,28 +866,19 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
 
   events.sort((a,b)=>new Date(a.date||0)-new Date(b.date||0));
 
-  const TYPE_LABEL = {purple:'MILESTONE',green:'ACHIEVEMENT',gold:'RECORD',logo:'ORIGIN'};
-  const TYPE_COLOR = {purple:'var(--ac)',green:'var(--gr)',gold:'var(--gold)',logo:'var(--mu)'};
+  const DOT_CLASS = {purple:'',green:'t-dot-green',gold:'t-dot-gold',logo:'t-dot-logo'};
 
-  return `<div class="tl-spine"><div class="tl-spine-fill" style="height:0%;--fill:100%"></div></div>` +
+  return `<div class="timeline-spine"></div>` +
     events.map((ev, i) => {
       const dateStr = ev.date ? new Date(ev.date).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'2-digit'}) : 'Recently';
       const isFirst = i === 0;
-      const nodeClass = isFirst ? 'node-logo' : `node-${ev.type}`;
-      const iconContent = isFirst ? `<img src="/assets/logo/ledgr-icon.png" style="width:16px;height:16px;opacity:0.7" alt="">` : ev.icon;
-      const bodyClass = `tl-body tl-body-${ev.type}`;
-      const large = ev.large ? ' node-large' : '';
-      const typeKey = isFirst ? 'logo' : ev.type;
-      const typeLabel = TYPE_LABEL[typeKey] || 'EVENT';
-      const typeColor = TYPE_COLOR[typeKey] || 'var(--mu)';
+      const dotClass = isFirst ? 't-dot t-dot-logo' : `t-dot ${DOT_CLASS[ev.type]||''}`;
+      const dotInner = isFirst ? `<img src="/assets/logo/ledgr-icon.png" style="width:14px;height:14px;opacity:0.7" alt="">` : '';
       return `
-        <div class="tl-item">
-          <div class="tl-node ${nodeClass}${large}">${iconContent}</div>
-          <div class="${bodyClass}">
-            <div class="tl-event-type" style="color:${typeColor}">${typeLabel}</div>
-            <div class="tl-title">${ev.title}</div>
-            <div class="tl-date">${dateStr}</div>
-          </div>
+        <div class="t-entry">
+          <div class="${dotClass}">${dotInner}</div>
+          <div class="t-date">${dateStr}</div>
+          <div class="t-event">${ev.icon && !isFirst ? `<span>${ev.icon}</span>` : ''}${ev.title}</div>
         </div>
       `;
     }).join('');
@@ -976,6 +994,19 @@ function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank,
       </div>
     `;
   }).join('');
+}
+
+function getHeroBg(division) {
+  const bgs = {
+    BRONZE:   'radial-gradient(ellipse at top left, rgba(205,127,50,0.15) 0%, transparent 60%), #0d0d0d',
+    SILVER:   'radial-gradient(ellipse at top left, rgba(192,192,192,0.12) 0%, transparent 60%), #0d0d0d',
+    GOLD:     'radial-gradient(ellipse at top left, rgba(255,215,0,0.12) 0%, transparent 60%), #0d0d0d',
+    PLATINUM: 'radial-gradient(ellipse at top left, rgba(79,195,247,0.12) 0%, transparent 60%), #0d0d0d',
+    DIAMOND:  'radial-gradient(ellipse at top left, rgba(170,120,255,0.18) 0%, transparent 60%), #0d0d0d',
+    ELITE:    'radial-gradient(ellipse at top left, rgba(123,44,255,0.22) 0%, transparent 60%), #0d0d0d',
+    LEGENDARY:'radial-gradient(ellipse at top left, rgba(255,215,0,0.15) 0%, transparent 40%), radial-gradient(ellipse at bottom right, rgba(123,44,255,0.15) 0%, transparent 40%), #0d0d0d',
+  };
+  return bgs[division] || bgs.BRONZE;
 }
 
 function getMomentumAnalysis(recent14, roi14) {
