@@ -301,13 +301,10 @@ body::before{content:'';position:fixed;inset:0;
 @keyframes spotBreath{0%,100%{opacity:.3}50%{opacity:.6}}
 .bg-spot-l{position:fixed;top:-120px;left:-60px;width:800px;height:600px;background:radial-gradient(ellipse at top left,rgba(251,191,36,.055),transparent 60%);pointer-events:none;z-index:0;animation:spotBreath 10s ease-in-out infinite}
 .bg-spot-r{position:fixed;top:-120px;right:-60px;width:800px;height:600px;background:radial-gradient(ellipse at top right,rgba(251,191,36,.04),transparent 60%);pointer-events:none;z-index:0;animation:spotBreath 10s ease-in-out infinite 5s}
-.lb-eyebrow{font-family:var(--font-mono);font-size:9px;letter-spacing:4px;color:var(--mu);text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.lb-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.5}
+.lb-eyebrow{font-size:11px;letter-spacing:0.25em;color:var(--ac);font-family:'DM Mono',monospace;margin-bottom:8px;display:block}
 
 /* ══ HEADER UPGRADE — Sprint 12 ══ */
-.lb-title{font-size:clamp(44px,6vw,80px)!important;letter-spacing:5px!important;line-height:.9!important}
-.lb-title span{color:var(--ac);text-shadow:0 0 40px rgba(184,159,255,.35)}
-.lb-header{margin-bottom:32px!important;align-items:flex-start!important}
+.lb-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,6vw,72px)!important;color:var(--tx);letter-spacing:0.03em!important;line-height:1!important;margin-bottom:8px}
 @keyframes podEntrance{0%{opacity:0;transform:translateY(60px) scale(.75)}70%{transform:translateY(-10px) scale(1.03)}88%{transform:translateY(4px) scale(.99)}100%{opacity:1;transform:none}}
 .podium-card{animation:podEntrance .9s cubic-bezier(.34,1.56,.64,1) both!important}
 .podium-card.p2{animation-delay:.1s!important}
@@ -326,6 +323,23 @@ body::before{content:'';position:fixed;inset:0;
 .tm-label{font-size:9px;letter-spacing:.15em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:2px;text-transform:uppercase}
 .tm-value{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--tx)}
 .tm-sub{font-size:10px;color:var(--mu);font-family:'Syne',sans-serif}
+/* ── KINGDOM OF SHARPS HERO ── */
+.lb-hero{margin-bottom:24px}
+.lb-subtitle{font-size:13px;color:var(--mu);font-family:'Syne',sans-serif;letter-spacing:0.05em}
+/* Champion card */
+.champion-label{font-size:9px;letter-spacing:0.25em;color:#FFD700;font-family:'DM Mono',monospace;margin-bottom:8px;text-align:center}
+.pod-crown{font-size:28px;text-align:center;margin-bottom:8px;animation:crownFloat 3s ease-in-out infinite}
+@keyframes crownFloat{0%,100%{transform:translateY(0) rotate(-5deg)}50%{transform:translateY(-6px) rotate(5deg)}}
+@keyframes goldFloat{0%,100%{transform:translateY(0);opacity:0.5}50%{transform:translateY(-30px);opacity:0}}
+.champ-archetype{font-size:11px;color:var(--ac);font-family:'Syne',sans-serif;margin:4px 0;letter-spacing:0.1em}
+.champ-stats{display:flex;gap:12px;justify-content:center;font-size:11px;color:var(--mu);font-family:'DM Mono',monospace;margin:6px 0}
+.champ-streak{font-size:12px;color:#FF6B35;font-family:'DM Mono',monospace}
+/* Scrolling ticker */
+.lb-ticker-wrap{height:36px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;display:flex;align-items:center;margin:16px 0}
+.lb-ticker-inner{display:flex;gap:48px;white-space:nowrap;animation:lbScroll linear infinite;font-family:'DM Mono',monospace;font-size:12px;color:var(--mu)}
+@keyframes lbScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.lb-tick-item{flex-shrink:0}
+.lb-tick-item span{color:var(--tx)}
 </style>
 </head>
 <body>
@@ -340,38 +354,26 @@ body::before{content:'';position:fixed;inset:0;
 <!-- ═══ MAIN ═══ -->
 <div class="main">
 
-  <!-- Header -->
-  <div class="lb-header">
-    <div>
-      <div class="lb-eyebrow">COMPETITION ARENA</div>
-      <div class="lb-title">LEADER<span>BOARD</span></div>
-      <div class="lb-sub">Real picks · Verified records · Zero fake ROI</div>
-    </div>
-    <div class="lb-live-chip"><div class="lb-live-dot"></div>LIVE RANKINGS</div>
+  <!-- Hero -->
+  <div class="lb-hero">
+    <div class="lb-eyebrow">SEASON 3</div>
+    <div class="lb-title">KINGDOM OF SHARPS</div>
+    <div class="lb-subtitle">Top performers fighting for rank supremacy</div>
   </div>
 
-  <!-- Live stats bar -->
-  <div class="live-bar reveal">
-    <div class="lb-stat-box">
-      <div class="lsb-label"><div class="lsb-live-dot"></div>🔥 HOT TODAY</div>
-      <div class="lsb-val" id="sbToday">—</div>
-      <div class="lsb-sub" id="sbTodaySub">Last 24 hours</div>
-    </div>
-    <div class="lb-stat-box">
-      <div class="lsb-label">💰 BIGGEST WIN</div>
-      <div class="lsb-val" id="sbBigWin">—</div>
-      <div class="lsb-sub" id="sbBigWinSub">Best P&L in 24h</div>
-    </div>
-    <div class="lb-stat-box">
-      <div class="lsb-label">⚡ MOST ACTIVE</div>
-      <div class="lsb-val" id="sbActive" style="font-size:18px">—</div>
-      <div class="lsb-sub" id="sbActiveSub">—</div>
-    </div>
-    <div class="lb-stat-box">
-      <div class="lsb-label">👑 GOAT ROI</div>
-      <div class="lsb-val" id="sbTopROI" style="color:var(--gr)">—</div>
-      <div class="lsb-sub" id="sbTopSub">—</div>
-    </div>
+  <!-- Podium (first thing visible) -->
+  <div class="podium-section reveal reveal-d1" id="podium" style="display:none"></div>
+
+  <!-- Ticker -->
+  <div class="lb-ticker-wrap">
+    <div class="lb-ticker-inner" id="lbTicker"></div>
+  </div>
+  <!-- Hidden stat elements for JS compatibility -->
+  <div style="display:none">
+    <div id="sbToday"></div><div id="sbTodaySub"></div>
+    <div id="sbBigWin"></div><div id="sbBigWinSub"></div>
+    <div id="sbActive"></div><div id="sbActiveSub"></div>
+    <div id="sbTopROI"></div><div id="sbTopSub"></div>
   </div>
 
   <!-- Today's Movers -->
@@ -431,9 +433,6 @@ body::before{content:'';position:fixed;inset:0;
     <button class="filter-btn" onclick="filterBy('Football',this)">🏈 FOOTBALL</button>
     <button class="filter-btn" onclick="filterBy('MMA/Boxing',this)">🥊 MMA</button>
   </div>
-
-  <!-- Podium -->
-  <div class="podium-section reveal reveal-d1" id="podium" style="display:none"></div>
 
   <!-- Table -->
   <div class="lb-table-wrap reveal reveal-d2" id="lbTableWrap" style="display:none">
@@ -681,6 +680,35 @@ function renderMovers(tipsters) {
   el.style.display = 'block';
 }
 
+// Scrolling ticker bar
+function buildLbTicker(tipsters, picks) {
+  const topStreak = [...tipsters].filter(t=>t.streak>0).sort((a,b)=>b.streak-a.streak)[0];
+  const topRoi = [...tipsters].filter(t=>t.picks>=5).sort((a,b)=>{
+    const rA = a.roi!=null?a.roi:(a.stake>0?(a.pnl/a.stake)*100:0);
+    const rB = b.roi!=null?b.roi:(b.stake>0?(b.pnl/b.stake)*100:0);
+    return rB-rA;
+  })[0];
+  const today = new Date().toDateString();
+  const todayPicks = (picks||[]).filter(p=>new Date(p.createdAt).toDateString()===today).length;
+  const roiVal = topRoi ? (topRoi.roi!=null?topRoi.roi:(topRoi.stake>0?(topRoi.pnl/topRoi.stake)*100:0)) : 0;
+  const msgs = [
+    `🔥 HOT TODAY: <span>${todayPicks||tipsters.length} picks posted</span>`,
+    topStreak ? `🏆 LONGEST STREAK: <span>@${topStreak.username} ${topStreak.streak}W</span>` : `🏆 LONGEST STREAK: <span>—</span>`,
+    topRoi ? `👑 GOAT ROI: <span>@${topRoi.username} ${roiVal>=0?'+':''}${roiVal.toFixed(1)}%</span>` : '',
+    `⚔️ TIPSTERS ACTIVE: <span>${tipsters.length}</span>`,
+    `🔒 VERIFIED RECORDS: <span>Zero fakes. Ever.</span>`
+  ].filter(Boolean);
+  const full = [...msgs,...msgs].map(m=>`<span class="lb-tick-item">${m}</span>`).join('');
+  const el = document.getElementById('lbTicker');
+  if (el) {
+    el.innerHTML = full;
+    requestAnimationFrame(() => {
+      const w = el.scrollWidth / 2;
+      el.style.animationDuration = Math.max(10, w / 35) + 's';
+    });
+  }
+}
+
 // Confetti spawn for #1 podium
 function spawnConfetti(container) {
   const CONF_COLORS = ['#fbbf24','#f59e0b','#b89fff','#34d399','#f43f5e','#38bdf8'];
@@ -839,6 +867,7 @@ async function loadLeaderboard() {
     _buildTipstersFromRankings();
     updateStats();
     renderMovers(allTipsters);
+    buildLbTicker(allTipsters, allPicks);
     renderLeaderboard();
   } catch (e) {
     clearTimeout(_xt);
@@ -1015,19 +1044,24 @@ function renderLeaderboard() {
       const cls  = ['p1','p2','p3'][i];
       const eloDisplay = Math.max(0, (t.elo || 1000) - 1000);
       const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
+      const _avSz = i === 0 ? 96 : 72;
       const _podPhoto = window.LedgrAvatar ? window.LedgrAvatar.get(t.userId || t.username) : null;
       const podAv = _podPhoto
-        ? `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto"><img src="${_podPhoto}" style="width:100%;height:100%;object-fit:cover" alt="@${t.username}"></div>`
+        ? `<div style="width:${_avSz}px;height:${_avSz}px;border-radius:50%;overflow:hidden;margin:0 auto"><img src="${_podPhoto}" style="width:100%;height:100%;object-fit:cover" alt="@${t.username}"></div>`
         : (window.Divisions
-          ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:72,height:72,borderRadius:'50%',classes:'podium-av-inner'})
-          : `<div style="width:72px;height:72px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`);
+          ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:_avSz,height:_avSz,borderRadius:'50%',classes:'podium-av-inner'})
+          : `<div style="width:${_avSz}px;height:${_avSz}px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`);
       const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
       return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
         ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div>' : ''}
-        ${i===0 ? '<span class="podium-crown">👑</span>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
-        <div style="margin:0 auto 12px;width:72px">${podAv}</div>
+        ${i===0 ? '<div class="pod-crown">👑</div>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
+        <div style="margin:0 auto 12px;width:${_avSz}px">${podAv}</div>
+        ${i===0 ? '<div class="champion-label">CURRENT CHAMPION</div>' : ''}
         <div class="podium-name">@${t.username}</div>
+        ${i===0 ? `<div class="champ-archetype">${t.archetype||'The Sharp'}</div>
+        <div class="champ-stats"><span>${t.picks} Picks</span><span>${wr.toFixed(0)}% WR</span><span>${roi>=0?'+':''}${roi.toFixed(1)}% ROI</span></div>
+        ${t.streak>0?`<div class="champ-streak">🔥 ${t.streak}W streak</div>`:''}` : ''}
         ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
         <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
         <div class="podium-picks-sub">${t.picks} picks · ${wr.toFixed(0)}% WR</div>
