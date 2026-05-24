@@ -346,6 +346,33 @@ body::before{content:'';position:fixed;inset:0;
 /* Enhanced podium card glows */
 .podium-card.p2{box-shadow:0 0 24px rgba(192,192,192,0.12),0 0 48px rgba(192,192,192,0.05),0 14px 36px rgba(0,0,0,.35)!important}
 .podium-card.p3{box-shadow:0 0 24px rgba(205,127,50,0.12),0 0 48px rgba(205,127,50,0.05),0 14px 36px rgba(0,0,0,.35)!important}
+
+/* ── IMMERSION LAYER ── */
+/* Nav transparency on scroll */
+#appNav{transition:background .4s ease,backdrop-filter .4s ease,box-shadow .4s ease!important}
+#appNav.nav-at-top{background:rgba(7,6,13,0)!important;backdrop-filter:none!important;box-shadow:none!important;border-bottom-color:transparent!important}
+/* Champion skill bars */
+.skill-bars{margin:10px 0 6px;padding:0 4px}
+.skill-bar-row{display:flex;align-items:center;gap:8px;margin:5px 0}
+.skill-bar-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);width:70px;text-align:right;flex-shrink:0;letter-spacing:0.06em;text-transform:uppercase}
+.skill-bar-track{flex:1;height:2px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:2px;transform-origin:left;transform:scaleX(0);transition:transform 1s cubic-bezier(.4,0,.2,1)}
+.skill-bar-val{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);width:22px;text-align:left;flex-shrink:0}
+/* Champion status chips */
+.champ-status{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:6px 0 4px}
+.champ-status-chip{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:3px 8px;white-space:nowrap}
+/* Light sweep across champion card */
+@keyframes p1Sweep{0%,100%{left:-50%;opacity:0}5%{opacity:1}65%{opacity:0.5}85%{left:150%;opacity:0}}
+.p1-sweep{position:absolute;top:0;width:25%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.05),transparent);pointer-events:none;z-index:1;left:-50%;animation:p1Sweep 14s ease-in-out 4s infinite}
+/* Hero live chip */
+.hero-live{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:9px;color:var(--gr);background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.18);border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle}
+.hero-live-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:live-pulse 1.5s ease-in-out infinite;flex-shrink:0}
+/* Ambient particles */
+@keyframes ambFloat{0%{transform:translateY(0) translateX(0);opacity:0}8%{opacity:1}85%{opacity:0.3}100%{transform:translateY(-280px) translateX(25px);opacity:0}}
+/* Side card labels */
+.side-card-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;padding:3px 10px;border-radius:10px;display:inline-block}
+.side-card-label.silver{color:#C0C0C0;background:rgba(192,192,192,0.05);border:1px solid rgba(192,192,192,0.1)}
+.side-card-label.bronze{color:#CD7F32;background:rgba(205,127,50,0.05);border:1px solid rgba(205,127,50,0.1)}
 </style>
 </head>
 <body>
@@ -890,7 +917,7 @@ async function loadLeaderboard() {
     if (_lbSubtitle && _champUser) {
       const _champObj = allTipsters[0];
       const _champRoiVal = _champObj?.roi != null ? _champObj.roi : 0;
-      _lbSubtitle.innerHTML = `Current throne: <span style="color:var(--ac);font-weight:600;">@${_champUser}</span> &nbsp;·&nbsp; <span style="color:#FFD700;">+${_champRoiVal.toFixed(1)}% ROI leader</span>`;
+      _lbSubtitle.innerHTML = `Current throne: <span style="color:var(--ac);font-weight:600;">@${_champUser}</span> &nbsp;·&nbsp; <span style="color:#FFD700;">+${_champRoiVal.toFixed(1)}% ROI leader</span><span class="hero-live"><span class="hero-live-dot"></span>LIVE</span> <span style="color:var(--mu);font-size:11px;font-family:'DM Mono',monospace;">${allTipsters.length} competing</span>`;
     }
     const _lbEyebrow = document.querySelector('.lb-eyebrow');
     if (_lbEyebrow) {
@@ -1090,21 +1117,29 @@ function renderLeaderboard() {
       const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
       return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
-        ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div>' : ''}
-        ${i===0 ? '<div class="pod-crown">👑</div>' : `<span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
+        ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div><div class="p1-sweep"></div>' : ''}
+        ${i===0 ? '<div class="pod-crown">👑</div>' : `<div class="side-card-label ${i===1?'silver':'bronze'}">${i===1?'⚔ CHASING THE THRONE':'🔥 FIGHTING FOR PODIUM'}</div><span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
         <div style="margin:0 auto 10px;width:${_avSz}px">${podAv}</div>
         ${i===0 ? `
           <div style="text-align:center;padding:0 6px;">
             <div style="font-size:9px;letter-spacing:0.2em;color:#FFD700;font-family:'DM Mono';margin-bottom:6px;">👑 CURRENT CHAMPION</div>
             <div style="font-family:'Bebas Neue';font-size:20px;color:var(--tx);margin:4px 0 2px;">@${t.username}</div>
             <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:4px;">${getStr(t.archetype)||'The Sharp'} · ${div.name}</div>
+            <div class="champ-status">
+              ${t.streak>0?`<span class="champ-status-chip" style="color:#FF6B35;border-color:rgba(255,107,53,0.2)">🔥 ${t.streak}W streak</span>`:''}
+              <span class="champ-status-chip" style="color:#FFD700;border-color:rgba(255,215,0,0.15)">⚔ ${top3[1]?`+${Math.abs((t.roi||0)-(top3[1].roi||0)).toFixed(0)}% lead`:'Uncontested'}</span>
+              ${(t.sharpScore||0)>70?`<span class="champ-status-chip" style="color:#00E5A0;border-color:rgba(0,229,160,0.15)">📈 Sharp</span>`:''}
+            </div>
             <div style="font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;margin:4px 0 8px;padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;">"${getEgoLine(t, top3[1])}"</div>
-            <div style="font-family:'Bebas Neue';font-size:34px;color:#00E5A0;line-height:1;margin-bottom:2px;">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+            <div style="font-family:'Bebas Neue';font-size:34px;color:#00E5A0;line-height:1;margin-bottom:2px;" data-countup="${roi.toFixed(1)}" data-countup-prefix="${roi>=0?'+':''}" data-countup-suffix="%">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
             <div style="font-size:9px;color:var(--mu);font-family:'DM Mono';margin-bottom:10px;letter-spacing:0.1em;">ROI</div>
             <div style="display:flex;justify-content:center;gap:20px;margin:12px 0;">
               <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:28px;color:var(--tx);line-height:1;">${t.picks||0}</div><div style="font-size:9px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono';">PICKS</div></div>
               <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:28px;color:var(--tx);line-height:1;">${wr.toFixed(0)}%</div><div style="font-size:9px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono';">WIN RATE</div></div>
               <div style="text-align:center;"><div style="font-family:'Bebas Neue';font-size:28px;color:${(t.sharpScore||0)>70?'#00E5A0':(t.sharpScore||0)>40?'#FFD700':'#FF3355'};line-height:1;">${Math.round(t.sharpScore||0)}</div><div style="font-size:9px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono';">SHARP</div></div>
+            </div>
+            <div class="skill-bars">
+              ${(()=>{const ss=Math.min(100,t.sharpScore||0);const rel=Math.min(100,t.reliabilityScore!=null?t.reliabilityScore:getReliability(t).score);const clv=Math.min(100,Math.max(0,((t.clvAvg||0)+5)*10));const vol=Math.min(100,((t.picks||0)/150)*100);return [{label:'SHARPNESS',val:ss,color:'#00E5A0'},{label:'RELIABILITY',val:rel,color:'#7B2CFF'},{label:'CLV',val:clv,color:'#FFD700'},{label:'VOLUME',val:vol,color:'#FF6B35'}].map(b=>`<div class="skill-bar-row"><div class="skill-bar-label">${b.label}</div><div class="skill-bar-track"><div class="skill-bar-fill" data-bar="${b.val}" style="background:${b.color}"></div></div><div class="skill-bar-val">${Math.round(b.val)}</div></div>`).join('');})()}
             </div>
             ${t.streak>0?`<div style="font-size:11px;color:#FF6B35;font-family:'DM Mono';margin-bottom:6px;">🔥 ${t.streak}W streak active</div>`:''}
             <div class="champ-extras" id="champExtras"></div>
@@ -1180,6 +1215,39 @@ function renderLeaderboard() {
         _p1Card.insertBefore(bigPyramid, _p1Card.firstChild);
       }
     }
+
+    // Mouse tilt parallax on p1 card
+    if (_p1Card) {
+      _p1Card.style.willChange = 'transform';
+      _p1Card.addEventListener('mousemove', function(e) {
+        const r = this.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        this.style.transform = `perspective(700px) rotateY(${x*7}deg) rotateX(${-y*6}deg) scale(1.02)`;
+      });
+      _p1Card.addEventListener('mouseleave', function() { this.style.transform = ''; });
+    }
+    // Skill bar + ROI count-up (after paint)
+    setTimeout(() => {
+      if (!_p1Card) return;
+      _p1Card.querySelectorAll('.skill-bar-fill[data-bar]').forEach(bar => {
+        bar.style.transform = `scaleX(${Math.min(1, parseFloat(bar.dataset.bar) / 100)})`;
+      });
+      const roiEl = _p1Card.querySelector('[data-countup]');
+      if (roiEl) {
+        const target = parseFloat(roiEl.dataset.countup);
+        const prefix = roiEl.dataset.countupPrefix || '';
+        const suffix = roiEl.dataset.countupSuffix || '';
+        const dur = 900; const t0 = Date.now();
+        const tick = () => {
+          const p = Math.min((Date.now()-t0)/dur, 1);
+          const e = 1-Math.pow(1-p,3);
+          roiEl.textContent = prefix + (target*e).toFixed(1) + suffix;
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      }
+    }, 250);
 
     // Division-based podium background + watermark
     (function(){
@@ -1320,6 +1388,26 @@ function renderLeaderboard() {
 }
 
 loadLeaderboard();
+
+// Nav transparency: clear at top, blur on scroll
+(function(){
+  const nav = document.getElementById('appNav');
+  if (!nav) return;
+  const update = () => { if (window.scrollY < 30) nav.classList.add('nav-at-top'); else nav.classList.remove('nav-at-top'); };
+  update();
+  window.addEventListener('scroll', update, {passive:true});
+})();
+
+// Ambient floating background particles
+(function(){
+  const cols=['rgba(123,44,255,0.22)','rgba(255,215,0,0.15)','rgba(0,229,160,0.15)','rgba(255,255,255,0.12)'];
+  for(let i=0;i<10;i++){
+    const p=document.createElement('div');
+    const sz=1+Math.random()*2;
+    p.style.cssText=`position:fixed;border-radius:50%;pointer-events:none;z-index:0;width:${sz}px;height:${sz}px;background:${cols[Math.random()*cols.length|0]};left:${Math.random()*100}%;top:${40+Math.random()*55}%;animation:ambFloat ${18+Math.random()*22}s ease-in-out ${Math.random()*20}s infinite;`;
+    document.body.appendChild(p);
+  }
+})();
 
 // Pause pulsing animations on off-screen elements
 (function() {
