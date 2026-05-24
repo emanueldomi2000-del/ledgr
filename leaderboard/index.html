@@ -389,6 +389,13 @@ body::before{content:'';position:fixed;inset:0;
 /* Hero eyebrow inline dot */
 .lb-eyebrow-live{display:inline-flex;align-items:center;gap:6px;color:var(--gr)}
 .lb-eyebrow-sep{color:var(--mu);margin:0 6px;opacity:0.4}
+/* Hero ambient animations */
+@keyframes heroGradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes heroLightStreak{0%{transform:translateX(-120%) skewX(-20deg);opacity:0}8%{opacity:1}80%{opacity:0.3}100%{transform:translateX(220%) skewX(-20deg);opacity:0}}
+.lb-hero{position:relative;overflow:hidden}
+.lb-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,44,255,0.04),rgba(255,215,0,0.03),rgba(0,229,160,0.03),rgba(123,44,255,0.04));background-size:400% 400%;animation:heroGradientShift 18s ease-in-out infinite;pointer-events:none;z-index:0;border-radius:12px}
+.hero-streak{position:absolute;top:0;left:0;width:60px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.06),transparent);pointer-events:none;z-index:1;animation:heroLightStreak 22s ease-in-out 3s infinite}
+.lb-hero>*{position:relative;z-index:2}
 </style>
 </head>
 <body>
@@ -404,7 +411,8 @@ body::before{content:'';position:fixed;inset:0;
 <div class="main">
 
   <!-- Hero -->
-  <div class="lb-hero">
+  <div class="lb-hero" style="padding:20px 0 12px">
+    <div class="hero-streak"></div>
     <div class="lb-eyebrow">SEASON 3<span class="lb-eyebrow-sep">•</span><span class="lb-eyebrow-live"><span style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite;display:inline-block;flex-shrink:0"></span>LIVE</span></div>
     <div class="lb-title">KINGDOM OF SHARPS</div>
     <div class="lb-subtitle">Top performers fighting for rank supremacy</div>
