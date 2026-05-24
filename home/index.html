@@ -592,6 +592,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </div>
 <div id="app" style="display:none">
 <div class="pick-toast" id="pickToast"></div>
+<div id="wakeStatus" style="display:none;text-align:center;color:#6B6B6B;font-size:12px;padding:10px 0 2px;font-family:'Syne',sans-serif;letter-spacing:1px"></div>
 
 <!-- ══════════════ HERO ══════════════ -->
 <div class="main">
@@ -1101,6 +1102,11 @@ window.onload=()=>{
   loadData();
   loadChatPreview();
   subscribeWS();
+  // Hide spotlight section if still loading after 5s (cold start fallback)
+  setTimeout(()=>{
+    const _si=document.getElementById('spotlightItems');
+    if(_si){const _b=_si.querySelector('.sl-badge');if(_b&&_b.textContent==='LOADING'){const _sp=_si.closest('.spotlight-strip');if(_sp)_sp.style.display='none';}}
+  },5000);
 };
 
 async function loadChatPreview(){
@@ -1154,16 +1160,22 @@ function _renderDataError(){
   // Don't wipe miniLeaderboard — rankings fetch runs independently
   const mv=document.querySelector('.mvp-wrap');if(mv)mv.style.display='none';
   const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';
-  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">—</div>';
+  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div class="mission-row"><span class="mission-icon">🎯</span><span class="mission-text">Post your first verified pick</span><span class="mission-badge todo">To do</span></div>';
   renderMyPicks([]);
 }
 
-async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
+async function wakeBackend(){
+  const wakeEl=document.getElementById('wakeStatus');
+  if(wakeEl){wakeEl.textContent='Connecting to server...';wakeEl.style.display='block';}
+  try{await fetch(API+'/health',{signal:AbortSignal.timeout(8000)});}catch(e){}
+  if(wakeEl)wakeEl.style.display='none';
+}
 
 async function loadData(){
   await wakeBackend();
+  await new Promise(r=>setTimeout(r,2000));
   const ctrl=new AbortController();
-  const abort=setTimeout(()=>ctrl.abort(),15000);
+  const abort=setTimeout(()=>ctrl.abort(),20000);
   // Fetch rankings independently so TOP TIPSTERS renders even if picks fail
   {const _rkCtrl=new AbortController();
   const _rkTok=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
@@ -1522,10 +1534,12 @@ function renderProfileCard(all){
   const div=rmPc&&rmPc.division&&D[rmPc.division]?D[rmPc.division]:getDivision(my);
   const db=document.getElementById('divisionBadge');
   if(db){
-    if(window.Divisions){db.className='division-badge';db.innerHTML=window.Divisions.pillHTML(div,'md');}
-    else{db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;}
-    renderIdentityPanel(my, rank, sorted.length);
+    try{
+      if(window.Divisions){db.className='division-badge';db.innerHTML=window.Divisions.pillHTML(div,'md');}
+      else{db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;}
+    }catch(e){}
   }
+  renderIdentityPanel(my, rank, sorted.length);
   if(window.checkRankUp)window.checkRankUp(my);
   if(window.checkBadgeUnlock)window.checkBadgeUnlock(my);
   if(window.checkStreak)window.checkStreak(my);
