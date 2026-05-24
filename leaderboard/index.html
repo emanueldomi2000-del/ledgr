@@ -313,6 +313,19 @@ body::before{content:'';position:fixed;inset:0;
 .podium-card.p2{animation-delay:.1s!important}
 .podium-card.p1{animation-delay:.25s!important}
 .podium-card.p3{animation-delay:.4s!important}
+/* #1 breathing glow */
+@keyframes goldBreath{0%,100%{box-shadow:0 0 20px rgba(255,215,0,.2),0 4px 24px rgba(0,0,0,.4)}50%{box-shadow:0 0 40px rgba(255,215,0,.4),0 0 60px rgba(255,215,0,.15),0 4px 24px rgba(0,0,0,.4)}}
+/* Podium particles */
+@keyframes podParticle{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-20px);opacity:0}}
+/* Today's movers */
+.todays-movers{margin:0 0 24px}
+.tm-title{font-size:10px;letter-spacing:.2em;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:12px;text-transform:uppercase}
+.tm-cards{display:flex;gap:12px;flex-wrap:wrap}
+.tm-card{flex:1;min-width:160px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:10px}
+.tm-icon{font-size:20px;flex-shrink:0}
+.tm-label{font-size:9px;letter-spacing:.15em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:2px;text-transform:uppercase}
+.tm-value{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--tx)}
+.tm-sub{font-size:10px;color:var(--mu);font-family:'Syne',sans-serif}
 </style>
 </head>
 <body>
@@ -340,25 +353,31 @@ body::before{content:'';position:fixed;inset:0;
   <!-- Live stats bar -->
   <div class="live-bar reveal">
     <div class="lb-stat-box">
-      <div class="lsb-label"><div class="lsb-live-dot"></div>PICKS TODAY</div>
+      <div class="lsb-label"><div class="lsb-live-dot"></div>🔥 HOT TODAY</div>
       <div class="lsb-val" id="sbToday">—</div>
       <div class="lsb-sub" id="sbTodaySub">Last 24 hours</div>
     </div>
     <div class="lb-stat-box">
-      <div class="lsb-label">BIGGEST WIN TODAY</div>
+      <div class="lsb-label">💰 BIGGEST WIN</div>
       <div class="lsb-val" id="sbBigWin">—</div>
       <div class="lsb-sub" id="sbBigWinSub">Best P&L in 24h</div>
     </div>
     <div class="lb-stat-box">
-      <div class="lsb-label">MOST ACTIVE TODAY</div>
+      <div class="lsb-label">⚡ MOST ACTIVE</div>
       <div class="lsb-val" id="sbActive" style="font-size:18px">—</div>
       <div class="lsb-sub" id="sbActiveSub">—</div>
     </div>
     <div class="lb-stat-box">
-      <div class="lsb-label">#1 ALL-TIME ROI</div>
+      <div class="lsb-label">👑 GOAT ROI</div>
       <div class="lsb-val" id="sbTopROI" style="color:var(--gr)">—</div>
       <div class="lsb-sub" id="sbTopSub">—</div>
     </div>
+  </div>
+
+  <!-- Today's Movers -->
+  <div class="todays-movers" id="todaysMovers" style="display:none">
+    <div class="tm-title">TODAY'S MOVERS</div>
+    <div class="tm-cards" id="tmCards"></div>
   </div>
 
   <!-- Controls -->
@@ -582,10 +601,10 @@ async function _ensurePicksLoaded() {
   return _picksLoading;
 }
 
-// ELO counter animation
+// ELO counter animation (target is 0-based display value)
 function animateElo(el, target) {
-  if (!el) return;
-  const start = Math.max(800, target - 200);
+  if (!el || isNaN(target)) return;
+  const start = Math.max(0, target - 150);
   const duration = 1000;
   const t0 = performance.now();
   function tick(now) {
@@ -595,6 +614,71 @@ function animateElo(el, target) {
     if (p < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+}
+
+// Count-up for numeric stat boxes
+function countUpEl(el, target) {
+  if (!el || isNaN(target) || target <= 0) return;
+  const dur = 700;
+  const t0 = Date.now();
+  const tick = () => {
+    const p = Math.min((Date.now() - t0) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * e);
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// Gold particles inside #1 podium card
+function addPodiumParticles(cardEl) {
+  if (cardEl._particles) return;
+  cardEl._particles = true;
+  for (let i = 0; i < 4; i++) {
+    const p = document.createElement('div');
+    p.style.cssText = `position:absolute;width:${3+i}px;height:${3+i}px;border-radius:50%;background:rgba(255,215,0,0.45);pointer-events:none;z-index:3;animation:podParticle ${3+i*1.5}s ease-in-out infinite;animation-delay:${i*0.7}s;left:${20+i*20}%;bottom:${10+i*10}%`;
+    cardEl.appendChild(p);
+  }
+}
+
+// Today's movers section
+function renderMovers(tipsters) {
+  const el = document.getElementById('todaysMovers');
+  const cards = document.getElementById('tmCards');
+  if (!el || !cards || !tipsters || !tipsters.length) return;
+  const topStreak = [...tipsters].filter(t => t.streak > 0).sort((a, b) => b.streak - a.streak)[0];
+  const topRoi = [...tipsters].filter(t => t.picks >= 5).sort((a, b) => {
+    const rA = a.roi != null ? a.roi : 0;
+    const rB = b.roi != null ? b.roi : 0;
+    return rB - rA;
+  })[0];
+  const activeCount = tipsters.filter(t => t.picks >= 1).length;
+  cards.innerHTML = `
+    <div class="tm-card">
+      <div class="tm-icon">🔥</div>
+      <div>
+        <div class="tm-label">LONGEST STREAK</div>
+        <div class="tm-value">${topStreak ? '@' + topStreak.username : '—'}</div>
+        <div class="tm-sub">${topStreak ? topStreak.streak + 'W active' : 'No active streaks'}</div>
+      </div>
+    </div>
+    <div class="tm-card">
+      <div class="tm-icon">👑</div>
+      <div>
+        <div class="tm-label">LEADING ROI</div>
+        <div class="tm-value">${topRoi ? '@' + topRoi.username : '—'}</div>
+        <div class="tm-sub">${topRoi ? (topRoi.roi >= 0 ? '+' : '') + (topRoi.roi != null ? topRoi.roi.toFixed(1) : '0.0') + '%' : ''}</div>
+      </div>
+    </div>
+    <div class="tm-card">
+      <div class="tm-icon">⚔️</div>
+      <div>
+        <div class="tm-label">MOST COMPETITIVE</div>
+        <div class="tm-value">${tipsters.length} tipsters</div>
+        <div class="tm-sub">${activeCount} with picks</div>
+      </div>
+    </div>`;
+  el.style.display = 'block';
 }
 
 // Confetti spawn for #1 podium
@@ -754,6 +838,7 @@ async function loadLeaderboard() {
 
     _buildTipstersFromRankings();
     updateStats();
+    renderMovers(allTipsters);
     renderLeaderboard();
   } catch (e) {
     clearTimeout(_xt);
@@ -816,6 +901,7 @@ function updateStats() {
     const ts = rankingsData.todayStats;
     const total = (ts.winsToday || 0) + (ts.lossesToday || 0);
     document.getElementById('sbToday').textContent = total || '—';
+    if (total) countUpEl(document.getElementById('sbToday'), total);
     document.getElementById('sbTodaySub').textContent = total ? 'Last 24 hours' : 'No picks yet today';
     document.getElementById('sbBigWin').textContent = ts.bigWinPnl != null ? (ts.bigWinPnl >= 0 ? '+' : '') + Number(ts.bigWinPnl).toFixed(1) + 'u' : '—';
     document.getElementById('sbBigWinSub').textContent = ts.bigWinPnl != null ? 'Best P&L in 24h' : 'No wins yet today';
@@ -828,6 +914,7 @@ function updateStats() {
     const yesterday = now - 86400000;
     const todayPicks = allPicks.filter(p => new Date(p.createdAt).getTime() >= yesterday);
     document.getElementById('sbToday').textContent = todayPicks.length || '—';
+    if (todayPicks.length) countUpEl(document.getElementById('sbToday'), todayPicks.length);
     document.getElementById('sbTodaySub').textContent = todayPicks.length ? `across ${new Set(todayPicks.map(p=>p.username)).size} tipsters` : 'No picks yet today';
     const todayWins = todayPicks.filter(p => p.result === 'win' && p.pnl > 0).sort((a,b) => b.pnl - a.pnl);
     const bigW = todayWins[0];
@@ -926,10 +1013,14 @@ function renderLeaderboard() {
       const div  = _divFromRanking(t);
       const icons= getBadgeIcons(t).slice(0, 3);
       const cls  = ['p1','p2','p3'][i];
+      const eloDisplay = Math.max(0, (t.elo || 1000) - 1000);
       const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
-      const podAv = window.Divisions
-        ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:72,height:72,borderRadius:'50%',classes:'podium-av-inner'})
-        : `<div style="width:72px;height:72px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`;
+      const _podPhoto = window.LedgrAvatar ? window.LedgrAvatar.get(t.userId || t.username) : null;
+      const podAv = _podPhoto
+        ? `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto"><img src="${_podPhoto}" style="width:100%;height:100%;object-fit:cover" alt="@${t.username}"></div>`
+        : (window.Divisions
+          ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:72,height:72,borderRadius:'50%',classes:'podium-av-inner'})
+          : `<div style="width:72px;height:72px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`);
       const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
       return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
@@ -949,7 +1040,7 @@ function renderLeaderboard() {
         <div style="margin-bottom:6px">${divPill}</div>
         ${archHtml}
         ${t.streak>=3?`<div class="podium-streak">🔥 ${t.streak}-win streak</div>`:''}
-        <div class="podium-elo">⚡ ELO <span data-elo="${t.elo!=null?t.elo:0}">${t.elo!=null?t.elo:0}</span></div>
+        <div class="podium-elo">⚡ ELO <span data-elo="${eloDisplay}">${eloDisplay}</span></div>
         <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
       </div>`;
     }).join('');
@@ -962,6 +1053,15 @@ function renderLeaderboard() {
     podiumEl.querySelectorAll('[data-elo]').forEach(el => {
       animateElo(el, parseInt(el.dataset.elo));
     });
+
+    // #1 card: particles + breathing glow (after entrance animation)
+    const _p1Card = podiumEl.querySelector('.podium-card.p1');
+    if (_p1Card) {
+      addPodiumParticles(_p1Card);
+      setTimeout(() => {
+        _p1Card.style.setProperty('animation', 'goldBreath 4s ease-in-out infinite', 'important');
+      }, 1500);
+    }
   } else {
     podiumEl.style.display = 'none';
   }
@@ -997,14 +1097,15 @@ function renderLeaderboard() {
     const ss = t.sharpScore || 0;
     const ssColor = ss >= 70 ? 'var(--gr)' : ss >= 40 ? 'var(--gold)' : 'var(--rd)';
     const _elo = t.elo != null ? t.elo : 0;
-    const eloClass = _elo >= 1200 ? 'top' : _elo < 900 ? 'low' : '';
+    const _displayElo = Math.max(0, _elo - 1000);
+    const eloClass = _displayElo >= 800 ? 'top' : _displayElo < 200 ? 'low' : '';
     const usernameColor = globalRank === 1 ? 'var(--gold)' : globalRank <= 10 ? 'var(--ac-light)' : '';
     const usernamePfx = globalRank === 1 ? '👑 ' : '';
     const sharpMark = ss > 70 ? `<span style="color:var(--gr);font-size:11px;margin-left:4px">✓ Sharp</span>` : '';
 
     return `<div class="lb-row" style="--ri:${idx}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
       <div class="rank-cell">
-        <div class="rank-num ${rankCls}">${globalRank}</div>
+        <div class="rank-num ${rankCls}">${globalRank}${roi > 20 ? `<span style="font-size:9px;color:#00E5A0;font-family:'DM Mono',monospace;margin-left:2px">▲</span>` : roi < 0 ? `<span style="font-size:9px;color:#FF3355;font-family:'DM Mono',monospace;margin-left:2px">▼</span>` : ''}</div>
         ${move}
       </div>
       <div class="tipster-col">
@@ -1027,7 +1128,7 @@ function renderLeaderboard() {
         <div class="lsv neu">${t.picks}</div>
         <div class="lsl">PICKS</div>
       </div>
-      <div class="streak-col">${t.streak>=3?'🔥 W'+t.streak:'—'}</div>
+      <div class="streak-col">${t.streak>0?'🔥'+t.streak+'W':'—'}</div>
       <div class="rel-col">
         ${score>0
           ? `<div class="rel-score" style="color:${color}">${score}</div>
@@ -1038,7 +1139,7 @@ function renderLeaderboard() {
       <div class="elo-cell">
         ${ss > 0
           ? `<div class="elo-val" style="color:${ssColor}" data-elo="${Math.round(ss)}">${Math.round(ss)}</div><div class="elo-lbl">SHARP</div>`
-          : `<div class="elo-badge ${eloClass}" data-elo="${_elo}">${_elo}</div><div class="elo-lbl">ELO</div>`}
+          : `<div class="elo-badge ${eloClass}" data-elo="${_displayElo}">${_displayElo}</div><div class="elo-lbl">ELO</div>`}
       </div>
       <button class="follow-btn" data-user-id="${t.userId||''}" onclick="event.stopPropagation()">Follow</button>
     </div>`;
