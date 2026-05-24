@@ -554,12 +554,27 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .hero{display:none!important}
 .identity-card{padding:0!important;cursor:pointer}
 .id-div-banner{height:3px;width:100%;border-radius:20px 20px 0 0;background:linear-gradient(90deg,rgba(180,120,80,.7),rgba(180,120,80,.4));transition:background .6s}
-.id-card-main{display:grid;grid-template-columns:auto 1fr;align-items:center;padding:22px 26px 0;position:relative;overflow:hidden}
+.id-card-main{display:grid;grid-template-columns:auto 1fr;align-items:center;padding:0 26px 0;position:relative;overflow:hidden}
 .id-card-main::after{content:'▲';position:absolute;right:-20px;bottom:-50px;font-size:260px;color:rgba(255,255,255,.04);pointer-events:none;line-height:1;user-select:none;font-family:var(--font-display);letter-spacing:0}
 .id-left{display:flex;align-items:center;gap:20px;padding-right:28px;border-right:1px solid rgba(255,255,255,.05)}
 .id-av{width:80px!important;height:80px!important;border-radius:18px!important;font-size:28px!important;box-shadow:0 0 32px rgba(184,159,255,.22)!important;flex-shrink:0}
 .id-info{display:flex;flex-direction:column;gap:7px}
 .id-eyebrow{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:3px;text-transform:uppercase}
+/* ══ IDENTITY HERO HEADER ══ */
+.id-hero-header{padding:22px 26px 0}
+.id-hero-eyebrow{font-size:11px;letter-spacing:0.15em;color:var(--mu);font-family:var(--font-body);text-transform:uppercase;margin-bottom:8px}
+.id-hero-headline{font-family:var(--font-display);font-size:clamp(28px,4vw,48px);color:var(--tx);letter-spacing:0.02em;margin-bottom:4px;line-height:1;min-height:1.1em}
+.id-hero-context{font-size:13px;color:var(--mu);font-family:var(--font-body);margin-bottom:20px}
+/* ══ MISSION CARDS ══ */
+.mission-card{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;margin-bottom:8px}
+.mission-card:last-child{margin-bottom:0}
+.mission-card .mission-icon{font-size:20px;flex-shrink:0}
+.mission-body{flex:1}
+.mission-title{font-size:13px;color:var(--tx);font-family:var(--font-body);font-weight:500}
+.mission-reward{font-size:11px;color:var(--ac);margin-top:2px;font-family:var(--font-body)}
+.mission-status{font-family:var(--font-mono);font-size:9px;padding:2px 8px;border-radius:10px;flex-shrink:0}
+.mission-status.done{background:rgba(52,211,153,0.12);color:var(--gr);border:1px solid rgba(52,211,153,0.15)}
+.mission-status.todo{background:rgba(255,255,255,0.04);color:var(--mu);border:1px solid rgba(255,255,255,0.06)}
 .id-name{font-size:36px!important;letter-spacing:3px!important;line-height:1!important;margin-bottom:0!important}
 @keyframes divBadgePulse{0%,100%{opacity:1}55%{opacity:.65}}
 .id-division{animation:divBadgePulse 3s ease-in-out infinite;width:fit-content}
@@ -581,6 +596,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <body>
 <div class="bg-glow"></div>
 <div style="position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(123,44,255,0.06) 0%,transparent 70%);top:20%;left:50%;transform:translateX(-50%);animation:breathe 12s ease-in-out infinite;pointer-events:none;z-index:0;"></div>
+<svg style="position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.015;pointer-events:none;z-index:0;" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ffffff" stroke-width="0.5"/></pattern></defs><rect width="100%" height="100%" fill="url(#grid)"/></svg>
 <div class="bg-grid"></div>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
@@ -618,11 +634,15 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="hero-identity">
   <div class="identity-card" onclick="AppNav.goToProfile()">
     <div class="id-div-banner" id="idDivBanner"></div>
+    <div class="id-hero-header">
+      <div class="id-hero-eyebrow" id="idEyebrow">YOUR RECORD</div>
+      <div class="id-hero-headline" id="idHeroHeadline"></div>
+      <div class="id-hero-context" id="idHeroContext"></div>
+    </div>
     <div class="id-card-main">
       <div class="id-left">
         <div class="id-av" id="idAv">?<div class="id-verified">✓</div></div>
         <div class="id-info">
-          <div class="id-eyebrow" id="idEyebrow">YOUR RECORD</div>
           <div class="id-name" id="idName"><span class="skel-inline" style="width:120px;height:24px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
           <div class="id-division div-bronze" id="idDiv"><span class="skel-inline" style="width:80px;height:12px;display:inline-block;background:var(--s2);border-radius:4px;vertical-align:middle"></span></div>
         </div>
@@ -816,6 +836,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </div>
         <a href="/leaderboard" class="view-all">View full leaderboard →</a>
+        <div style="margin-top:20px;border-top:1px solid rgba(255,255,255,0.05);padding-top:16px">
+          <div class="panel-title" style="margin-bottom:12px">| MARKET HEAT</div>
+          <div id="marketHeat"><div class="skel skel-text" style="width:80%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:60%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:70%;height:11px"></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1160,7 +1184,7 @@ function _renderDataError(){
   // Don't wipe miniLeaderboard — rankings fetch runs independently
   const mv=document.querySelector('.mvp-wrap');if(mv)mv.style.display='none';
   const ms=document.querySelector('.matchup-section');if(ms)ms.style.display='none';
-  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div class="mission-row"><span class="mission-icon">🎯</span><span class="mission-text">Post your first verified pick</span><span class="mission-badge todo">To do</span></div>';
+  const dm=document.getElementById('dailyMissions');if(dm)dm.innerHTML='<div class="mission-card"><div class="mission-icon">🎯</div><div class="mission-body"><div class="mission-title">Post your first verified pick</div><div class="mission-reward">Unlocks: First Blood badge</div></div><div class="mission-status todo">To do</div></div>';
   renderMyPicks([]);
 }
 
@@ -1224,10 +1248,17 @@ async function loadData(){
     if(rankingsListRes&&rankingsListRes.ok){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
-    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all,rankingsTop5);
+    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all,rankingsTop5);renderMarketHeat(all);
     if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
     updateGreeting(all.filter(p=>p.userId===user.id));
   }catch(e){clearTimeout(abort);_renderDataError();}
+}
+function applyAvatarAura(division){
+  const av=document.getElementById('idAv');if(!av)return;
+  const auras={Bronze:'0 0 16px rgba(205,127,50,0.4)',Silver:'0 0 16px rgba(192,192,192,0.4)',Gold:'0 0 20px rgba(255,215,0,0.45)',Platinum:'0 0 20px rgba(79,195,247,0.45)',Diamond:'0 0 24px rgba(170,120,255,0.5), 0 0 48px rgba(170,120,255,0.2)',Elite:'0 0 28px rgba(123,44,255,0.6), 0 0 56px rgba(123,44,255,0.25)',Legendary:'0 0 32px rgba(255,215,0,0.5), 0 0 64px rgba(123,44,255,0.3)'};
+  const nameMap={LEGENDARY:'Legendary',ELITE:'Elite',DIAMOND:'Diamond',PLATINUM:'Platinum',GOLD:'Gold',SILVER:'Silver',BRONZE:'Bronze'};
+  av.style.boxShadow=auras[nameMap[division]||'Bronze']||auras.Bronze;
+  av.style.transition='box-shadow 1s ease';
 }
 function getCurrentStreak(picks){
   const settled=picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
@@ -1277,6 +1308,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
   if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
+  applyAvatarAura(div.name);
   const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
   const idRankNum=document.getElementById('idRankNum');if(idRankNum)idRankNum.textContent=rank>0?'#'+rank:'#—';
@@ -1289,8 +1321,8 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const pts=[0,...sorted.map(p=>{cum+=p.pnl;cumStake+=p.stake;return cumStake>0?(cum/cumStake)*100:0;})];
   if(pts.length>1){const min=Math.min(...pts),max=Math.max(...pts),range=max-min||1;const W=280,H=40;const svgPts=pts.map((v,i)=>`${(i/(pts.length-1||1))*W},${H-((v-min)/range)*(H-6)-3}`).join(' ');const isPos=pts[pts.length-1]>=0;const color=isPos?'#34d399':'#f87171';const graph=document.getElementById('idGraph');if(graph)graph.innerHTML=`<defs><linearGradient id="ig" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${color}" stop-opacity="0.2"/><stop offset="100%" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><polygon points="0,${H} ${svgPts} ${W},${H}" fill="url(#ig)"/><polyline points="${svgPts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`;}
   const today=new Date().toDateString();const todayPicks=myPicks.filter(p=>new Date(p.createdAt).toDateString()===today);const todayWins=todayPicks.filter(p=>p.result==='win').length;const tails=getTails();const tailedToday=Object.values(tails).filter(t=>t&&new Date(t.ts).toDateString()===today).length;
-  const missions=[{icon:'🎯',text:'Post 1 pick today',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',done:streak>=1},{icon:'👥',text:'Tail 2 picks',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',done:todayWins>=1}];
-  const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-row"><span class="mission-icon">${m.icon}</span><span class="mission-text">${m.text}</span><span class="mission-badge ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</span></div>`).join('');
+  const missions=[{icon:'🎯',text:'Post 1 pick today',reward:'Builds your verified record',done:todayPicks.length>=1},{icon:'🔥',text:'Keep your streak alive',reward:'Streak badge eligible at 3W',done:finalStreak>=1},{icon:'👥',text:'Tail 2 picks',reward:'Follower network XP',done:tailedToday>=2},{icon:'📈',text:'Win a pick today',reward:'Boosts your Sharp Score',done:todayWins>=1}];
+  const missionsEl=document.getElementById('dailyMissions');if(missionsEl)missionsEl.innerHTML=missions.map(m=>`<div class="mission-card"><div class="mission-icon">${m.icon}</div><div class="mission-body"><div class="mission-title">${m.text}</div><div class="mission-reward">Unlocks: ${m.reward}</div></div><div class="mission-status ${m.done?'done':'todo'}">${m.done?'✓ Done':'To do'}</div></div>`).join('');
   if(window.Follows&&user&&user.id){window.Follows.getFollowerCount(user.id).then(count=>{const el=document.getElementById('idFollowers');if(el)el.textContent=count+(count===1?' follower':' followers');});}
   // Subscriber count for tipsters
   if(user&&user.id){fetch(API+'/subscribers/'+user.id).then(r=>r.json()).then(d=>{if(d.count>0){const el=document.getElementById('idSubscriberCount');if(el){el.textContent=d.count+(d.count===1?' subscriber':' subscribers');el.style.display='block';}}}).catch(()=>{});}
@@ -1556,17 +1588,31 @@ function renderProfileCard(all){
   if(window.checkStreak)window.checkStreak(my);
   renderHeroArch();
   _updateContextLine(my,rank,sorted.length);
-  const _ieEl=document.getElementById('idEyebrow');
-  if(_ieEl){
+  {
     const _myStk=my.reduce((s,p)=>s+p.stake,0),_myPnl=my.reduce((s,p)=>s+p.pnl,0);
     const _myRoi=_myStk>0?(_myPnl/_myStk)*100:0;
     const _rm3=window._myRankingMeta;
     const _fRank=_rm3&&_rm3.rank?_rm3.rank:rank;
-    const _fStr=_rm3&&_rm3.streakType==='win'?(_rm3.currentStreak||0):0;
-    if(_fStr>=5)_ieEl.textContent='YOU\'RE ON FIRE';
-    else if(_myRoi>20&&my.length>=5)_ieEl.textContent='YOU\'RE HEATING UP';
-    else if(_fRank<=10&&_fRank>0)_ieEl.textContent='ELITE TERRITORY';
-    else _ieEl.textContent='YOUR EDGE IS EVOLVING';
+    const _fStr=getCurrentStreak(my);
+    // Small eyebrow: time-based
+    const _ieEl=document.getElementById('idEyebrow');
+    if(_ieEl){const _hr=new Date().getHours();_ieEl.textContent=_hr<12?'☀️ MORNING GRIND':_hr<17?'⚡ AFTERNOON EDGE':'🌙 NIGHT SESSION';}
+    // Large headline
+    const _hlEl=document.getElementById('idHeroHeadline');
+    if(_hlEl){
+      if(_fStr>=5)_hlEl.textContent='YOU\'RE ON FIRE';
+      else if(_myRoi>20&&my.length>=5)_hlEl.textContent='YOU\'RE HEATING UP';
+      else if(_fRank<=10&&_fRank>0)_hlEl.textContent='ELITE TERRITORY';
+      else _hlEl.textContent='YOUR EDGE IS EVOLVING';
+    }
+    // Context sentence
+    const _ctEl=document.getElementById('idHeroContext');
+    if(_ctEl){
+      if(_fRank===1)_ctEl.textContent='Undefeated at the top. Defend your throne.';
+      else if(_fStr>=3)_ctEl.textContent=_fStr+' wins in a row — momentum is real';
+      else if(_myRoi>20&&my.length>=5)_ctEl.textContent='Your ROI is beating '+Math.round(_myRoi/2)+'% of tipsters';
+      else _ctEl.textContent=my.length>0?my.length+' verified picks on your record':'Every legend starts with pick #1';
+    }
   }
 }
 
@@ -1839,6 +1885,14 @@ function renderTrending(all){
   if(topR){const roi=topR[1].stake>0?((topR[1].pnl/topR[1].stake)*100).toFixed(1):0;document.getElementById('trendROI').textContent='@'+topR[0];document.getElementById('trendROISub').textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';}else{document.getElementById('trendROI').textContent='No data yet';document.getElementById('trendROISub').textContent='Pending results';}
 }
 
+function renderMarketHeat(all){
+  const el=document.getElementById('marketHeat');if(!el)return;
+  const sportCounts={};all.forEach(p=>{if(!p.sport)return;sportCounts[p.sport]=(sportCounts[p.sport]||0)+1;});
+  const sorted2=Object.entries(sportCounts).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const icons={Soccer:'⚽',Basketball:'🏀',Football:'🏈',Tennis:'🎾','MMA/Boxing':'🥊',Baseball:'⚾'};
+  if(!sorted2.length){el.innerHTML='<div style="color:var(--mu);font-size:12px;padding:8px 0">No activity yet</div>';return;}
+  el.innerHTML=sorted2.map(([sport,count])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="font-size:13px;color:var(--tx)">${icons[sport]||'🎯'} ${sport}</span><span style="font-size:12px;color:var(--ac);font-family:var(--font-mono)">${count} pick${count>1?'s':''}</span></div>`).join('');
+}
 function renderTrendingPicks(all){
   const localTails=getTails();
   const tpMap={};all.forEach(p=>{if(!p.username)return;if(!tpMap[p.username])tpMap[p.username]=[];tpMap[p.username].push(p);});
@@ -1983,7 +2037,7 @@ function renderLeaderboard(all,rankingsTop5){
       </div>
       <div class="tip-right">
         <div class="tip-roi ${roiPos?'':'neg'}">${roiPos?'+':''}${roi.toFixed(1)}%</div>
-        ${streak>=3?`<div class="tip-streak">🔥 W${streak}</div>`:''}
+        ${streak>0?`<div class="tip-streak">🔥 W${streak}</div>`:''}
         <div class="elo-mini">ELO ${t.elo!=null?Math.max(0,t.elo-1000):'—'}</div>
       </div>
     </a>`;
@@ -2007,7 +2061,7 @@ function renderLeaderboard(all,rankingsTop5){
       </div>
       <div class="tip-right">
         <div class="tip-roi ${roiPos?'':'neg'}">${roiPos?'+':''}${roi}%</div>
-        ${streak>=3?`<div class="tip-streak">🔥 W${streak}</div>`:''}
+        ${streak>0?`<div class="tip-streak">🔥 W${streak}</div>`:''}
         <div class="elo-mini">ELO ${getELO(t.allPicks)}</div>
       </div>
     </a>`;
