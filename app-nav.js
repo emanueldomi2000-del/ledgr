@@ -22,16 +22,19 @@
 
   // ── CSS ───────────────────────────────────────────────────────────────────
   var CSS = [
-    /* Top nav */
+    /* Top nav — floating dock */
+    'body{padding-top:72px}',
     '#appNav{',
-      'position:sticky;top:0;',
-      'z-index:var(--nav-z,50);',
+      'position:fixed;top:12px;left:50%;transform:translateX(-50%);',
+      'width:calc(100% - 32px);max-width:1100px;box-sizing:border-box;',
+      'z-index:100;',
       'height:var(--nav-h,52px);',
       'display:flex;align-items:center;justify-content:space-between;',
-      'padding:0 28px;',
-      'background:rgba(10,10,10,0.5);',
-      'backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);',
-      'border-bottom:1px solid rgba(255,255,255,0.06);',
+      'padding:0 24px;',
+      'background:rgba(12,12,12,0.45);',
+      'backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);',
+      'border:1px solid rgba(255,255,255,0.06);',
+      'border-radius:16px;',
       'flex-shrink:0;',
     '}',
 

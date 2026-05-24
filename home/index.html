@@ -62,7 +62,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .stat:first-child{padding-left:0}
 .stat:last-child{border-right:none}
 .stat-label{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-.stat-val{font-family:var(--font-display);font-size:42px;letter-spacing:1px;line-height:1;margin-bottom:4px;color:var(--tx);transition:all .3s}
+.stat-val{font-family:var(--font-display);font-size:42px;letter-spacing:1px;line-height:1;margin-bottom:2px;color:var(--tx);transition:all .3s}
+.stat-delta{font-family:var(--font-mono);font-size:10px;margin-bottom:4px}
 .stat-val.pos{color:var(--gr)}.stat-val.neg{color:var(--rd)}
 .stat:hover .stat-val{transform:scale(1.04);text-shadow:0 0 20px currentColor}
 .sparkline{width:100%;height:20px;margin-top:6px}
@@ -701,6 +702,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div style="font-family:var(--font-display);font-size:11px;color:var(--gold);letter-spacing:1px">Legendary Badge</div>
         </div>
       </div>
+      <div id="seasonPercentile" style="margin-top:8px;font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;text-align:center"></div>
       <a href="/leaderboard" style="display:block;text-align:center;margin-top:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:rgba(251,191,36,.5);text-decoration:none">VIEW SEASON LEADERBOARD →</a>
     </div>
   </div>
@@ -727,10 +729,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="main">
   <div class="stats-wrap fade-in">
     <div class="stats-row">
-      <div class="stat"><div class="stat-label">Picks</div><div class="stat-val" id="statTotal"><span class="skel" style="width:48px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp0" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
-      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR"><span class="skel" style="width:56px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp1" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
-      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI"><span class="skel" style="width:64px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp2" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
-      <div class="stat"><div class="stat-label">P&amp;L</div><div class="stat-val" id="statPnL"><span class="skel" style="width:72px;height:36px;display:inline-block"></span></div><svg class="sparkline" id="sp3" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">Picks</div><div class="stat-val" id="statTotal"><span class="skel" style="width:48px;height:36px;display:inline-block"></span></div><div class="stat-delta" id="statTotalDelta"></div><svg class="sparkline" id="sp0" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">Win Rate</div><div class="stat-val" id="statWR"><span class="skel" style="width:56px;height:36px;display:inline-block"></span></div><div class="stat-delta" id="statWRDelta"></div><svg class="sparkline" id="sp1" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">ROI</div><div class="stat-val" id="statROI"><span class="skel" style="width:64px;height:36px;display:inline-block"></span></div><div class="stat-delta" id="statROIDelta" style="color:var(--mu)"></div><svg class="sparkline" id="sp2" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
+      <div class="stat"><div class="stat-label">P&amp;L</div><div class="stat-val" id="statPnL"><span class="skel" style="width:72px;height:36px;display:inline-block"></span></div><div class="stat-delta" id="statPnLDelta" style="color:var(--mu)"></div><svg class="sparkline" id="sp3" viewBox="0 0 100 20" preserveAspectRatio="none"></svg></div>
     </div>
   </div>
 
@@ -1349,27 +1351,55 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   if(user&&user.id){fetch(API+'/subscribers/'+user.id).then(r=>r.json()).then(d=>{if(d.count>0){const el=document.getElementById('idSubscriberCount');if(el){el.textContent=d.count+(d.count===1?' subscriber':' subscribers');el.style.display='block';}}}).catch(()=>{});}
   // Status strip
   {const _stk=myPicks.reduce((s,p)=>s+p.stake,0),_pnl=myPicks.reduce((s,p)=>s+p.pnl,0);const _roi=_stk>0?(_pnl/_stk)*100:0;renderStatusStrip(myPicks,finalRank,finalStreak,_roi);}
+  // Season percentile
+  if(finalRank>0&&totalTipsters>0){const _behind=Math.max(0,totalTipsters-finalRank);const _pct=Math.round((_behind/totalTipsters)*100);const _pctEl=document.getElementById('seasonPercentile');if(_pctEl)_pctEl.textContent='Top '+(100-_pct)+'% · '+_behind+' player'+(_behind!==1?'s':'')+' behind you';}
   // Show season info in sidebar card
   loadSeasonInfo(rank);
 }
 
+function _computeDivScore(picks){
+  const wins=picks.filter(p=>p.result==='win').length;const losses=picks.filter(p=>p.result==='loss').length;
+  const stake=picks.reduce((s,p)=>s+p.stake,0);const pnl=picks.reduce((s,p)=>s+p.pnl,0);
+  const roi=stake>0?(pnl/stake)*100:0;const wr=(wins+losses)>0?(wins/(wins+losses))*100:0;
+  return Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
+}
+function _getNextDivThreshold(score){
+  for(const t of[20,35,50,65,80,92,100]){if(score<t)return t;}
+  return 100;
+}
 function renderStatusStrip(picks, rank, streak, roi){
   const strip=document.getElementById('statusStrip');
   const dot=document.getElementById('statusDot');
   const lbl=document.getElementById('statusLabel');
   const desc=document.getElementById('statusDesc');
   if(!strip||!dot||!lbl||!desc)return;
-  let state,color,label,description;
-  if(streak>=5){state='hot';color='#fb923c';label='HOT';description=streak+' wins in a row — you\'re on fire right now';}
-  else if(rank>0&&rank<=3){state='leading';color='#fbbf24';label='LEADING';description='Top 3 on the leaderboard — elite territory';}
-  else if(streak>=3){state='climbing';color='#34d399';label='CLIMBING';description=streak+' win streak — momentum is building';}
-  else if(roi<-5){state='cooling';color='#f87171';label='COOLING';description='Take a breath — consistency is how you recover';}
-  else if(rank>0&&rank<=10){state='climbing';color='#38bdf8';label='TOP 10';description='Ranked #'+rank+' — push for the podium';}
-  else{state='steady';color='#6b6b6b';label='STEADY';description='Record building — every pick counts';}
+  const totalTipsters=(window._myRankingMeta&&window._myRankingMeta.totalTipsters)||0;
+  const last5=picks.filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,5);
+  const recentLosses=last5.filter(p=>p.result==='loss').length;
+  let color,labelText,descText;
+  if(rank===1&&rank>0){
+    const chasing=Math.max(0,(totalTipsters||10)-1);
+    color='#FFD700';labelText='⚡ STATUS: LEADING';
+    descText=chasing>0?chasing+' users are chasing your position':'You\'re at the top — defend it';
+  }else if(streak>=5){
+    color='#FF6B35';labelText='🔥 STATUS: HOT';
+    descText=streak+' win streak — momentum is real';
+  }else if(recentLosses>=3){
+    color='#FF3355';labelText='⚠ STATUS: COOLING';
+    descText=recentLosses+' losses in last 5 picks';
+  }else if(streak>=2){
+    color='#00E5A0';labelText='⚡ STATUS: CLIMBING';
+    const divScore=_computeDivScore(picks);
+    const toNext=Math.max(0,_getNextDivThreshold(divScore)-divScore);
+    descText=toNext>0?toNext+' points from next division':'Division upgrade within reach';
+  }else{
+    color='#6B6B6B';labelText='● STATUS: STEADY';
+    descText='Building your verified record';
+  }
   dot.style.background=color;
   lbl.style.color=color;
-  lbl.textContent=label;
-  desc.textContent=description;
+  lbl.textContent=labelText;
+  desc.textContent=descText;
   strip.style.display='flex';
 }
 
@@ -1453,6 +1483,19 @@ function renderStats(all){
   const settled=[...my].filter(p=>p.result!=='pending').reverse();let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
   const hsS=document.getElementById('hsStreak');if(hsS)hsS.textContent=st>0?st+'W':'—';
   if(st>=3){const spEl=document.getElementById('streakPill');if(spEl){spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);if(window.Moments)window.Moments.applyStreak(spEl,st);}const stEl=document.getElementById('streakText');if(stEl)stEl.textContent=st+' WIN STREAK';}
+  // Stat deltas
+  {
+    const _td=new Date().toDateString();const _todayCt=my.filter(p=>new Date(p.createdAt).toDateString()===_td).length;
+    const _dTotal=document.getElementById('statTotalDelta');if(_dTotal){_dTotal.style.color='#00E5A0';_dTotal.textContent=_todayCt>0?'+'+_todayCt+' today':'verified';}
+    const _settledAsc=[...my].filter(p=>p.result!=='pending').sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
+    const _last10=_settledAsc.slice(-10);const _prev10=_settledAsc.slice(-20,-10);
+    const _wr10=_last10.length?(_last10.filter(p=>p.result==='win').length/_last10.length*100):0;
+    const _wrPrev=_prev10.length?(_prev10.filter(p=>p.result==='win').length/_prev10.length*100):0;
+    const _wrDelta=Math.round(_wr10-_wrPrev);
+    const _dWR=document.getElementById('statWRDelta');if(_dWR&&_last10.length){_dWR.style.color=_wrDelta>=0?'#00E5A0':'#FF3355';_dWR.textContent=(_wrDelta>=0?'↑':'↓')+Math.abs(_wrDelta)+'% vs last 10';}
+    const _dROI=document.getElementById('statROIDelta');if(_dROI)_dROI.textContent='verified';
+    const _dPnL=document.getElementById('statPnLDelta');if(_dPnL)_dPnL.textContent='verified';
+  }
   let cP=0,cS=0,w2=0,t2=0;const pA=[],rA=[],wA=[],pkA=[];
   my.forEach((p,i)=>{cP+=p.pnl;cS+=p.stake;if(p.result==='win')w2++;if(p.result!=='pending')t2++;pA.push(cP);rA.push(cS>0?(cP/cS)*100:0);wA.push(t2>0?(w2/t2)*100:0);pkA.push(i+1);});
   if(my.length>1){drawSparkline('sp0',pkA,true);drawSparkline('sp1',wA,parseFloat(wr)>=50);drawSparkline('sp2',rA,parseFloat(roi)>=0);drawSparkline('sp3',pA,pnl>=0);}
@@ -1954,13 +1997,27 @@ function renderTrendingPicks(all){
   const hot=validPicks.filter(p=>p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
   if(!hot.length){
-    const fallbackInsights=[
-      {icon:'📊',title:'ROI IS EVERYTHING',sub:'Winners track every edge. Your record starts now.'},
-      {icon:'🎯',title:'VERIFIED PICKS ONLY',sub:'No fake records. Every result auto-graded.'},
-      {icon:'🔒',title:'IMMUTABLE LEDGER',sub:'Once posted, your pick is locked forever.'},
-      {icon:'⚡',title:'SHARP SCORE SYSTEM',sub:'Beat the closing odds — that\'s true edge.'}
-    ];
-    grid.innerHTML=fallbackInsights.map(f=>`<div class="pick-card" style="cursor:default"><div style="font-size:22px;margin-bottom:10px">${f.icon}</div><div class="pc-market">${f.title}</div><div class="pc-event" style="font-size:11px;color:var(--mu);margin-top:6px">${f.sub}</div></div>`).join('');
+    const recent=all.filter(p=>p.result==='win'&&p.odds&&p.odds<20&&p.event&&p.event!=='undefined').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
+    if(recent.length>0){
+      grid.innerHTML=recent.map(p=>{
+        const ev=p.event;const mkt=p.market||'Pick';
+        return`<div class="pick-card">
+          <div class="pc-top"><div><div class="pc-user" onclick="window.location.href='/tipster?u=${p.username}'">${p.username||'—'}</div><div class="pc-sport">${SPORT_ICON[p.sport]||'🎯'} ${p.sport}</div></div><span class="badge badge-win" style="font-size:9px">✓ WIN</span></div>
+          <div class="pc-event">${ev}</div><div class="pc-market">${mkt}</div>
+          <div class="pc-footer"><div class="pc-odds">${parseFloat(p.odds).toFixed(2)}</div></div>
+        </div>`;
+      }).join('');
+    }else{
+      const totalPicks=all.length;
+      const dynamicCard=totalPicks>0
+        ?{icon:'📈',title:totalPicks+' PICKS ON RECORD',sub:'Real verified performance data'}
+        :{icon:'🎯',title:'POST FIRST PICK',sub:'Your picks appear here for others to follow'};
+      const staticCards=[
+        {icon:'🔒',title:'VERIFIED ONLY',sub:'Every result auto-graded by live data'},
+        {icon:'⚡',title:'SHARP SCORE',sub:'Beat closing odds to prove your edge'}
+      ];
+      grid.innerHTML=[dynamicCard,...staticCards].map(f=>`<div class="pick-card" style="cursor:default"><div style="font-size:22px;margin-bottom:10px">${f.icon}</div><div class="pc-market">${f.title}</div><div class="pc-event" style="font-size:11px;color:var(--mu);margin-top:6px">${f.sub}</div></div>`).join('');
+    }
     return;
   }
   grid.innerHTML=hot.map((p,i)=>{
