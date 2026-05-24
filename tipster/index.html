@@ -413,6 +413,36 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .hqs-item{display:flex;align-items:center;gap:5px}
 .hqs-label{font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:0.05em}
 .hqs-val{font-family:'Bebas Neue',sans-serif;font-size:14px}
+.hero-id-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0 8px;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05)}
+.his-item{display:inline-flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.04em}
+.his-label{color:var(--mu);font-size:9px;text-transform:uppercase}
+.his-val{color:var(--tx);font-weight:600}
+.his-sep{color:rgba(255,255,255,0.1);margin:0 2px}
+.profile-bio-quote{font-size:13px;color:var(--mu);line-height:1.65;margin-bottom:10px;max-width:480px;font-family:var(--font-body);font-style:italic;border-left:2px solid var(--ac);padding-left:12px;opacity:0.85}
+.rpg-card{background:linear-gradient(135deg,rgba(18,18,18,0.95),rgba(30,18,45,0.7));border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;margin-bottom:16px;position:relative;overflow:hidden}
+.rpg-card-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.rpg-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.rpg-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;line-height:1.1}
+.rpg-level{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;margin-top:2px}
+.rpg-traits{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.rpg-trait{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:20px;letter-spacing:0.5px}
+.rpg-evo{margin-top:10px}
+.rpg-evo-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-bottom:5px;display:flex;justify-content:space-between}
+.rpg-evo-bar{height:3px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden}
+.rpg-evo-fill{height:100%;border-radius:2px;width:0;transition:width 1.1s cubic-bezier(0.16,1,0.3,1)}
+.ci-panel{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:16px;margin-bottom:16px}
+.ci-panel-title{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
+.ci-stats-row{display:flex;gap:8px;margin-bottom:0}
+.ci-stat-box{flex:1;text-align:center;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:10px 4px}
+.ci-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--ac);line-height:1}
+.ci-stat-lbl{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:0.8px;margin-top:3px}
+.most-tailed{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}
+.most-tailed-label{font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.most-tailed-pick{background:rgba(123,44,255,0.06);border:1px solid rgba(123,44,255,0.15);border-radius:8px;padding:8px 12px}
+.perf-gauge-secondary{display:flex;justify-content:center;gap:20px;margin:8px 0 4px;padding:8px 0;border-top:1px solid rgba(255,255,255,0.05)}
+.pgs-item{text-align:center}
+.pgs-val{font-family:'Bebas Neue',sans-serif;font-size:16px;line-height:1}
+.pgs-label{font-family:'DM Mono',monospace;font-size:8px;color:var(--mu);letter-spacing:1px;margin-top:2px}
 </style>
 </head>
 <body>
@@ -643,7 +673,7 @@ function renderPicks(){
       </div>
       <div class="pick-mid-row">
         <span class="pick-market">${p.market}</span>
-        <span class="pick-odds-large">${p.odds}</span>
+        ${(p.odds>0&&p.odds<1000)?`<span class="pick-odds-large">${p.odds}</span>`:''}
       </div>
       <div class="pick-bot-row">
         <span class="pick-stake-lbl">${p.stake}u stake</span>
@@ -1160,8 +1190,23 @@ async function loadProfile(){
     // Use backend-authoritative stats when available, fall back to client-computed
     const finalSharpScore = rankingMeta ? rankingMeta.sharpScore : sharpScore;
     const ssColor=finalSharpScore>=70?'var(--gr)':finalSharpScore>=40?'var(--gold)':'var(--rd)';
-    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(finalSharpScore,{size:120}):'';
+    const gaugeHTML=window.sharpGaugeHTML?window.sharpGaugeHTML(score,{size:120}):'';
     const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
+
+    // Archetype RPG card
+    const _rpgPickCount=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
+    const _rpgLevel=_rpgPickCount>=200?5:_rpgPickCount>=100?4:_rpgPickCount>=50?3:_rpgPickCount>=20?2:1;
+    const _rpgLvlBreaks=[0,20,50,100,200,Infinity];
+    const _rpgProg=_rpgLevel<5?Math.min((_rpgPickCount-_rpgLvlBreaks[_rpgLevel-1])/(_rpgLvlBreaks[_rpgLevel]-_rpgLvlBreaks[_rpgLevel-1])*100,100):100;
+    const _archTraitMap={value_hunter:['Value Seeker','Odds Analyst','Edge Hunter'],contrarian:['Fade the Public','Anti-Consensus','Line Fader'],momentum_rider:['Streak Hunter','Form Rider','Hot Hand'],arbitrage_pro:['Market Mover','Line Shopper','Sharp Entry'],high_roller:['High Stakes','Max EV','Power Play'],grinder:['Volume Player','Consistent','Low Variance']};
+    const _rpgTraits=displayArch&&_archTraitMap[displayArch.key]?_archTraitMap[displayArch.key]:['Versatile','Adaptive','Multi-Market'];
+    const rpgCardHTML=displayArch?`<div class="rpg-card"><div class="rpg-card-header"><div class="rpg-icon" style="background:${displayArch.color}15;border:1px solid ${displayArch.color}30">${displayArch.icon}</div><div><div class="rpg-name" style="color:${displayArch.color}">${displayArch.name}</div><div class="rpg-level">LEVEL ${_rpgLevel} · ${_rpgPickCount} PICKS</div></div></div><div class="rpg-traits">${_rpgTraits.map(t=>`<span class="rpg-trait" style="background:${displayArch.color}12;border:1px solid ${displayArch.color}28;color:${displayArch.color}cc">${t}</span>`).join('')}</div><div class="rpg-evo"><div class="rpg-evo-label"><span>LEVEL PROGRESS</span><span>${_rpgLevel<5?'NEXT: LV'+(_rpgLevel+1):'MAX LEVEL'}</span></div><div class="rpg-evo-bar"><div class="rpg-evo-fill" id="rpgEvoFill" data-prog="${Math.round(_rpgProg)}" style="background:${displayArch.color}"></div></div></div></div>`:'';
+
+    // Community Impact panel (right sidebar)
+    const _settledPicks=allPicks.filter(p=>p.result==='win'||p.result==='loss');
+    const _tailRate=_settledPicks.length>0?Math.round((wins/_settledPicks.length)*100):0;
+    const _bestWin=allPicks.filter(p=>p.result==='win'&&p.pnl>0).sort((a,b)=>b.pnl-a.pnl)[0];
+    const ciPanelHTML=`<div class="ci-panel"><div class="ci-panel-title">COMMUNITY IMPACT</div><div class="ci-stats-row"><div class="ci-stat-box"><div class="ci-stat-val" id="ciFollowers2">—</div><div class="ci-stat-lbl">FOLLOWERS</div></div><div class="ci-stat-box"><div class="ci-stat-val" style="color:var(--gr)">${_tailRate}%</div><div class="ci-stat-lbl">WIN RATE</div></div><div class="ci-stat-box"><div class="ci-stat-val" style="color:var(--gold)">${rank>0?'#'+rank:'—'}</div><div class="ci-stat-lbl">RANK</div></div></div>${_bestWin?`<div class="most-tailed"><div class="most-tailed-label">BEST WIN</div><div class="most-tailed-pick"><div style="font-size:12px;color:var(--tx);font-weight:600;margin-bottom:4px">${_bestWin.event||'—'}</div><div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">${_bestWin.market||'—'}</span>${_bestWin.odds>0&&_bestWin.odds<1000?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold)">${_bestWin.odds}</span>`:''}<span style="font-family:var(--font-mono);font-size:10px;color:var(--gr);margin-left:auto">+${_bestWin.pnl.toFixed(2)}u</span></div></div></div>`:''}</div>`;
 
     const divObj=rankingMeta&&rankingMeta.division
       ? (() => {
@@ -1200,7 +1245,7 @@ async function loadProfile(){
     // Bio and social from profile config
     const bio=profileCfg.bio?profileCfg.bio.replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';
     const social=profileCfg.social||{};
-    const bioHtml=bio?`<div class="profile-bio">${bio}</div>`:'';
+    const bioHtml=bio?`<div class="profile-bio-quote">${bio}</div>`:'';
     const socialHtml=(social.twitter||social.instagram)?`<div class="profile-social">${social.twitter?`<a href="https://x.com/${social.twitter}" target="_blank" rel="noopener" class="social-link social-link-x">𝕏 @${social.twitter}</a>`:''} ${social.instagram?`<a href="https://instagram.com/${social.instagram}" target="_blank" rel="noopener" class="social-link social-link-ig">📸 @${social.instagram}</a>`:''}</div>`:'';
 
     // Banner: custom image overrides gradient
@@ -1235,6 +1280,7 @@ async function loadProfile(){
               ${finalSharpScore>70?`<span style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.25);color:#00e5a0;font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;animation:sharpPulse 3s ease-in-out infinite">✓ VERIFIED SHARP</span>`:''}
             </div>
             <div class="profile-username">@${username}</div>
+            <div id="heroIdentityStrip" class="hero-id-strip" style="display:none"></div>
             ${dnaSummaryTxt?`<div class="dna-sum">${dnaSummaryTxt}</div>`:''}
             ${bioHtml}
             ${socialHtml}
@@ -1287,11 +1333,12 @@ async function loadProfile(){
           <div id="picksList"></div>
         </div>
         <div>
+          ${rpgCardHTML}
           ${buildDNAPanel(allPicks,displayArch)}
           ${buildArchEvoPanel(allPicks,displayArch)}
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
-            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 12px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div style="display:inline-block">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">Sharp Score</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${finalSharpScore>=70?'Top performer · Verified edge':finalSharpScore>=40?'Building edge':'Early track record'}</div>${displayArch?`<div style="margin-top:8px"><span style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:1px;border:1px solid ${displayArch.color}44;background:${displayArch.color}11;color:${displayArch.color}">${displayArch.icon} ${displayArch.name}</span></div>`:''}</div>`:''}
+            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div style="display:inline-block">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">RELIABILITY</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${score>=70?'Trusted source · Verified edge':score>=40?'Building trust · Solid track record':'Early stage · More picks needed'}</div><div class="perf-gauge-secondary"><div class="pgs-item"><div class="pgs-val" style="color:${ssColor}">${finalSharpScore>0?Math.round(finalSharpScore):'—'}</div><div class="pgs-label">SHARP</div></div><div class="pgs-item"><div class="pgs-val" style="color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${roi}%</div><div class="pgs-label">ROI</div></div><div class="pgs-item"><div class="pgs-val" style="color:var(--tx)">${wr}%</div><div class="pgs-label">WIN RATE</div></div></div></div>`:''}
             <div class="perf-row"><span class="perf-key">Sharp Score <span class="tip-trigger" data-tip="Sharp Score measures the quality of your picks — not just wins. It factors in ROI consistency, how many picks you have, the difficulty of your odds, and your CLV. A score above 70 means you are beating the market.">?</span></span><span class="perf-val" style="color:${ssColor}">${finalSharpScore>0?finalSharpScore.toFixed(0)+'/100':'—'}</span></div>
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${recordBarHTML(wins,losses,pending)}</span></div>
             <div class="perf-row"><span class="perf-key">ROI <span class="tip-trigger" data-tip="Return on Investment. Shows your profit as a percentage of total stake. +10% ROI means for every €100 bet you made €10 profit on average.">?</span></span><span class="perf-val ${rPos?'pos':'neg'}">${rPos?'+':''}${roi}%</span></div>
@@ -1309,6 +1356,7 @@ async function loadProfile(){
             <div class="perf-row"><span class="perf-key">Fav Sport</span><span class="perf-val">${getFavSport(allPicks)}</span></div>
             <div class="pnl-chart" id="pnlChart"></div>
           </div>
+          ${ciPanelHTML}
           ${reliabilityHtml}
           ${(()=>{const elo=rankingMeta?Math.max(0,(rankingMeta.elo||1000)-1000):getELOFromPicks(allPicks);const{label,color:ec}=getELOLabel(elo);return`<div class="elo-box" style="margin-top:12px"><div class="elo-val" style="color:${ec}">${elo}</div><div><div class="elo-lbl">ELO Rating</div><div class="elo-desc">${label}</div></div></div>`;})()}
           ${sportList.length>0?`<div class="panel" style="margin-top:16px"><div class="panel-title">BY SPORT</div>${sportList.map(([s,c])=>`<div class="sport-bar"><div class="sport-bar-label"><span>${sportIcon[s]||'🎯'} ${s}</span><span>${c} picks</span></div><div class="sbar"><div class="sbar-fill" style="width:${(c/allPicks.length*100).toFixed(0)}%"></div></div></div>`).join('')}</div>`:''}
@@ -1330,6 +1378,25 @@ async function loadProfile(){
             if(el)el.textContent=count+(count===1?' follower':' followers');
             const ci=document.getElementById('ciFollowers');
             if(ci)countUp(ci,count);
+            const ci2=document.getElementById('ciFollowers2');
+            if(ci2)countUp(ci2,count);
+            // Populate hero identity strip
+            const strip=document.getElementById('heroIdentityStrip');
+            if(strip){
+              const _rel=score>0?score+'<span class="his-label">/100</span>':'—';
+              const _rnk=rank>0?'<span class="his-label">RANK </span>#'+rank:'';
+              const _roi=(parseFloat(roi)>=0?'+':'')+roi+'%';
+              const _str=streak>=1?'<span class="his-label">W</span>'+streak+' STREAK':'';
+              const _fol=count+' FOLLOWERS';
+              strip.innerHTML=[
+                rank>0?`<span class="his-item"><span class="his-label">RANK</span>&nbsp;<span class="his-val" style="color:var(--gold)">#${rank}</span></span>`:'',
+                score>0?`<span class="his-sep">·</span><span class="his-item"><span class="his-label">REL</span>&nbsp;<span class="his-val" style="color:var(--ac)">${score}</span></span>`:'',
+                `<span class="his-sep">·</span><span class="his-item"><span class="his-label">ROI</span>&nbsp;<span class="his-val" style="color:${parseFloat(roi)>=0?'var(--gr)':'var(--rd)'}">${parseFloat(roi)>=0?'+':''}${roi}%</span></span>`,
+                streak>=1?`<span class="his-sep">·</span><span class="his-item his-val" style="color:#FF6B35">🔥 W${streak}</span>`:'',
+                count>0?`<span class="his-sep">·</span><span class="his-item"><span class="his-val" style="color:var(--mu)">${count}</span>&nbsp;<span class="his-label">FOLLOWERS</span></span>`:'',
+              ].filter(Boolean).join('');
+              strip.style.display='flex';
+            }
           });
         }
       }
@@ -1360,6 +1427,10 @@ async function loadProfile(){
         _avWrap.style.position='relative';
         _avWrap.insertBefore(_rotRing,_avWrap.firstChild);
       }
+
+      // FIX 3 — Animate RPG evolution bar
+      const _rpgFill=document.getElementById('rpgEvoFill');
+      if(_rpgFill){const _prog=parseInt(_rpgFill.dataset.prog)||0;setTimeout(()=>{_rpgFill.style.width=_prog+'%';},200);}
 
       // FIX 7 — Count-up on stat cards
       const _picksNum=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
