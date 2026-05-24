@@ -407,6 +407,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-prestige"></div>
 <div class="bg-vignette"></div>
 <div class="toast" id="toast"></div>
+<script src="/shared/avatar.js"></script>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
 <script>AppNav.init({ active: 'tipster' });</script>
@@ -1095,7 +1096,7 @@ async function loadProfile(){
         if(bp.bio!=null)profileCfg.bio=bp.bio;
         if(bp.social_twitter!=null||bp.social_instagram!=null)profileCfg.social={twitter:bp.social_twitter||'',instagram:bp.social_instagram||''};
         const avKey=tipsterUserId||username;
-        if(bp.avatar_b64)localStorage.setItem('ledgr_avatar_'+avKey,bp.avatar_b64);
+        if(bp.avatar_b64){if(window.LedgrAvatar)window.LedgrAvatar.save(avKey,bp.avatar_b64);else localStorage.setItem('ledgr_avatar_'+avKey,bp.avatar_b64);}
         if(bp.banner_b64)localStorage.setItem('ledgr_banner_img_'+avKey,bp.banner_b64);
         localStorage.setItem('ledgr_profile_'+username,JSON.stringify({...profileCfg,savedAt:Date.now()}));
       }catch(e){}
@@ -1144,7 +1145,7 @@ async function loadProfile(){
 
     // Custom avatar / banner image from localStorage
     const avKey=tipsterUserId||username;
-    const customAv=localStorage.getItem('ledgr_avatar_'+avKey);
+    const customAv=window.LedgrAvatar ? window.LedgrAvatar.get(avKey) : localStorage.getItem('ledgr_avatar_'+avKey);
     const customBannerImg=localStorage.getItem('ledgr_banner_img_'+avKey);
 
     // Build avatar HTML — use custom image if available, otherwise initials + division glow

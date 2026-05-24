@@ -210,7 +210,6 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 
 /* ── DIVISION TRACK ── */
 .div-track{display:flex;align-items:flex-end;justify-content:center;gap:0;padding:24px 0 8px;position:relative;margin-bottom:8px}
-.div-track::before{content:'';position:absolute;bottom:36px;left:50%;transform:translateX(-50%);width:calc(100% - 80px);height:2px;background:linear-gradient(90deg,var(--bd),rgba(255,255,255,.08),var(--bd));z-index:0;border-radius:2px}
 .dt-node{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;flex:1;cursor:pointer;transition:all 0.3s ease}
 .dt-icon{width:48px;height:48px;border-radius:50%;border:2px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;position:relative}
 .dt-icon img{width:24px;height:24px;transition:filter 0.3s}
@@ -262,12 +261,17 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
 .si-traits{font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;line-height:1.8}
 /* ── Season Exclusive Tag ── */
 .season-exclusive-tag{text-align:center;font-size:9px;letter-spacing:0.15em;color:var(--ac);font-family:'DM Mono',monospace;margin-top:16px;padding:8px;border:1px solid rgba(123,44,255,0.2);border-radius:6px;background:rgba(123,44,255,0.05)}
+/* ── Division Track Fill ── */
+.div-track-line{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);width:calc(100% - 80px);height:3px;background:rgba(255,255,255,0.06);border-radius:2px;z-index:0;overflow:hidden}
+.div-track-fill{height:100%;width:0%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);transition:width 1.2s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 8px var(--ac);animation:linePulse 6s ease-in-out infinite}
+@keyframes linePulse{0%,100%{opacity:1;box-shadow:0 0 8px var(--ac)}50%{opacity:0.7;box-shadow:0 0 16px var(--ac)}}
 </style>
 
 </head>
 <body>
 <div class="bg-glow"></div>
 <div class="bg-horizon"></div>
+<script src="/shared/avatar.js"></script>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
 <script>AppNav.init({active:'progress'});</script>
@@ -324,6 +328,44 @@ const DIV_SCORE = {
 
 function computeEloFromDivScore(divScore) {
   return Math.max(0, Math.round((divScore / 100) * 3000));
+}
+
+function _currentWinStreak(picks) {
+  const settled = [...picks].filter(p=>p.result==='win'||p.result==='loss').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let s = 0;
+  for (const p of settled) { if (p.result==='win') s++; else break; }
+  return s;
+}
+
+function updatePerfStatus(picks) {
+  const card = document.getElementById('perfStatusCard');
+  const msg  = document.getElementById('perfStatusMsg');
+  const icon = document.getElementById('perfStatusIcon');
+  const ttl  = document.getElementById('perfStatusTitle');
+  if (!card || !msg) return;
+  const last5 = picks.slice(-5);
+  const recentWins  = last5.filter(p=>p.result==='win').length;
+  const recentLoss  = last5.filter(p=>p.result==='loss').length;
+  const streak = _currentWinStreak(picks);
+  if (streak >= 3 || recentWins >= 4) {
+    card.style.background   = 'rgba(0,229,160,0.06)';
+    card.style.borderColor  = 'rgba(0,229,160,0.2)';
+    if (ttl) ttl.style.color = '#00E5A0';
+    if (icon) icon.textContent = '🔥';
+    msg.textContent = 'Strong upward trend — keep the momentum going';
+  } else if (recentLoss >= 3) {
+    card.style.background   = 'rgba(255,51,85,0.06)';
+    card.style.borderColor  = 'rgba(255,51,85,0.2)';
+    if (ttl) ttl.style.color = '#FF3355';
+    if (icon) icon.textContent = '⚠';
+    msg.textContent = 'Consistency weakening — focus on selectivity';
+  } else {
+    card.style.background   = 'rgba(123,44,255,0.06)';
+    card.style.borderColor  = 'rgba(123,44,255,0.2)';
+    if (ttl) ttl.style.color = 'var(--ac)';
+    if (icon) icon.textContent = '⚡';
+    msg.textContent = 'Stable performance — building consistent edge';
+  }
 }
 
 async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
@@ -510,18 +552,16 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
         _heroCard.style.border = '1px solid ' + divColor + '33';
       }
 
-      // Avatar — same key pattern as home/index.html (user.id || user.username)
+      // Avatar — use shared LedgrAvatar utility
       const _avEl = document.querySelector('.hero-av');
-      const _avKey = 'ledgr_avatar_' + (USER_ID || USERNAME);
-      const _savedAv = localStorage.getItem(_avKey)
-                    || localStorage.getItem('ledgr_avatar_' + USERNAME)
-                    || localStorage.getItem('ledgr_avatar');
-      if (_avEl && _savedAv) {
-        _avEl.style.background = '';           // clear gradient shorthand so photo is not occluded
-        _avEl.style.backgroundImage = 'url(' + _savedAv + ')';
-        _avEl.style.backgroundSize = 'cover';
-        _avEl.style.backgroundPosition = 'center';
-        Array.from(_avEl.childNodes).filter(n => n.nodeType === 3).forEach(n => n.remove());
+      if (window.LedgrAvatar) window.LedgrAvatar.apply(_avEl, USER_ID || USERNAME, USERNAME.slice(0,2).toUpperCase());
+
+      // Div track animated fill
+      const _dtFill = document.getElementById('divTrackFill');
+      if (_dtFill) {
+        const _maxElo = ELO_TIERS[ELO_TIERS.length - 1].max;
+        const _totalPct = Math.min(100, (actualElo / _maxElo) * 100);
+        setTimeout(() => { _dtFill.style.width = _totalPct.toFixed(1) + '%'; }, 100);
       }
 
       // Fix 1 (Round 3): archetype label
@@ -589,14 +629,18 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             const vEl = entry.target.querySelector('.moment-value');
-            if (vEl && vEl.dataset.value) {
+            if (vEl && vEl.dataset.value && !vEl.dataset.animated) {
+              vEl.dataset.animated = '1';
               countUp(vEl, parseFloat(vEl.dataset.value), vEl.dataset.suffix||'', vEl.dataset.prefix||'');
               _countObs.unobserve(entry.target);
             }
           }
         });
-      }, { threshold: 0.5 });
+      }, { threshold: 0.6 });
       document.querySelectorAll('.moment-card').forEach(el => _countObs.observe(el));
+
+      // Fix 6: reactive performance status
+      updatePerfStatus(picks);
     }, 50);
   });
 }
@@ -675,9 +719,9 @@ function buildHTML(d) {
       const _msg=_isAtRisk
         ?(pointsAbove<0?Math.abs(pointsAbove)+' pts below safety threshold — push to secure your division':'Only '+pointsAbove+' pts above '+divisionName+' threshold')
         :divisionName==='BRONZE'?'Build your record to rank up from Bronze':'+'+pointsAbove+' pts above '+divisionName+' threshold — division is secure';
-      return`<div class="perf-status-card${_isAtRisk?'':' safe'}">
-        <div class="perf-status-header"><span class="perf-status-icon">${_isAtRisk?'⚠':'✓'}</span><span class="perf-status-title">PERFORMANCE STATUS</span></div>
-        <div class="perf-status-msg">${_msg}</div>
+      return`<div class="perf-status-card${_isAtRisk?'':' safe'}" id="perfStatusCard">
+        <div class="perf-status-header"><span class="perf-status-icon" id="perfStatusIcon">${_isAtRisk?'⚠':'✓'}</span><span class="perf-status-title" id="perfStatusTitle">PERFORMANCE STATUS</span></div>
+        <div class="perf-status-msg" id="perfStatusMsg">${_msg}</div>
         <div class="perf-bar-track"><div class="perf-bar-fill" id="perfBarFill" style="width:${_safetyPct}%"></div></div>
         <div class="perf-bar-labels"><span>Safe</span><span>Danger</span></div>
       </div>`;
@@ -831,7 +875,7 @@ function buildDivTrack(actualElo) {
     ELITE:    'hue-rotate(270deg) saturate(3)',
     LEGENDARY:'',
   };
-  return `<div class="div-track">` + ELO_TIERS.map((t, i) => {
+  return `<div class="div-track"><div class="div-track-line"><div class="div-track-fill" id="divTrackFill"></div></div>` + ELO_TIERS.map((t, i) => {
     const state = i < currentIdx ? 'dt-past' : i === currentIdx ? 'dt-current' : 'dt-locked';
     const flt = TIER_FILTERS[t.name] || '';
     const isLegendary = t.name === 'LEGENDARY';
