@@ -106,6 +106,52 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 @media(max-width:768px){.current-inner{grid-template-columns:1fr;text-align:center}.ca-stats{min-width:unset}.evo-grid{grid-template-columns:1fr;gap:8px}.evo-arrow{transform:rotate(90deg)}}
 @media(max-width:600px){.arch-grid{grid-template-columns:repeat(2,1fr)}.hero-title{font-size:64px}}
+
+/* ── RARITY ── */
+.rarity-pill{display:inline-block;font-size:8px;letter-spacing:0.15em;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:20px;margin-bottom:6px}
+
+/* ── LOCKED CARDS ── */
+.arch-card.locked-card{opacity:0.5;filter:grayscale(0.8);cursor:not-allowed;text-align:center;padding:20px 12px}
+.arch-card.locked-card:hover{opacity:0.75;filter:grayscale(0.5);transform:none}
+.locked-icon{font-size:28px;opacity:0.35;margin-bottom:8px}
+.locked-name{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--mu);letter-spacing:0.05em;margin-bottom:6px}
+.locked-hint{font-size:9px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;line-height:1.5;margin-top:6px}
+
+/* ── VAULT CARD HOVER ── */
+.arch-vault-card{transition:all 0.25s ease;cursor:pointer}
+.arch-vault-card.common:hover{transform:translateY(-4px);border-color:#6B6B6B!important}
+.arch-vault-card.rare:hover{transform:translateY(-4px);border-color:#4FC3F7!important;box-shadow:0 0 16px rgba(79,195,247,0.25)}
+.arch-vault-card.epic:hover{transform:translateY(-4px);border-color:#7B2CFF!important;box-shadow:0 0 20px rgba(123,44,255,0.35)}
+.arch-vault-card.legendary:hover{transform:translateY(-4px);border-color:#FFD700!important;box-shadow:0 0 24px rgba(255,215,0,0.4)}
+.arch-vault-card.mythic:hover{transform:translateY(-4px);border-color:#FF6BFF!important;box-shadow:0 0 24px rgba(255,107,255,0.4);animation:mythicBorder 2s linear infinite}
+@keyframes mythicBorder{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+
+/* ── CSS CHARACTER ART ── */
+.css-char{position:relative;width:80px;height:100px;margin:0 auto}
+.char-head{width:36px;height:36px;border-radius:50%;position:absolute;top:0;left:50%;transform:translateX(-50%)}
+.char-body{width:44px;height:48px;border-radius:8px 8px 4px 4px;position:absolute;top:34px;left:50%;transform:translateX(-50%)}
+.char-hood{width:42px;height:24px;border-radius:50% 50% 0 0;position:absolute;top:-4px;left:50%;transform:translateX(-50%);z-index:2}
+.char-visor{width:30px;height:8px;border-radius:4px;position:absolute;top:14px;left:50%;transform:translateX(-50%);box-shadow:0 0 8px rgba(123,44,255,0.8);z-index:3}
+.char-scope{width:20px;height:3px;border-radius:2px;position:absolute;top:24px;right:0}
+.char-horns{width:8px;height:16px;border-radius:4px 4px 0 0;background:#FF3355;position:absolute;top:-10px;left:10px}
+.char-horns::after{content:'';width:8px;height:16px;border-radius:4px 4px 0 0;background:#FF3355;position:absolute;left:18px}
+.char-flames{width:44px;height:20px;position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(255,100,0,0.6),transparent);animation:flameFlicker 0.8s ease-in-out infinite alternate}
+.char-glasses{width:32px;height:6px;position:absolute;top:14px;left:50%;transform:translateX(-50%);border:2px solid #00E5A0;border-radius:2px}
+.char-glasses::before{content:'';position:absolute;left:-8px;top:-1px;width:8px;height:8px;border-radius:50%;border:2px solid #00E5A0}
+.char-glasses::after{content:'';position:absolute;right:-8px;top:-1px;width:8px;height:8px;border-radius:50%;border:2px solid #00E5A0}
+.char-data{width:6px;height:20px;position:absolute;top:40px;right:2px;background:linear-gradient(180deg,#00E5A0 0%,transparent 100%);opacity:0.6;animation:dataStream 2s linear infinite}
+.char-glow{position:absolute;inset:-10px;border-radius:50%;opacity:0.3;animation:charGlow 3s ease-in-out infinite;pointer-events:none}
+.char-ears{width:44px;height:20px;position:absolute;top:2px;left:50%;transform:translateX(-50%)}
+.char-ears::before{content:'';width:10px;height:20px;border-radius:40% 40% 0 0;background:#1e1e2e;position:absolute;left:0;top:-8px}
+.char-ears::after{content:'';width:10px;height:20px;border-radius:40% 40% 0 0;background:#1e1e2e;position:absolute;right:0;top:-8px}
+.sniper-glow{background:radial-gradient(circle,#7B2CFF,transparent)}
+.demon-glow{background:radial-gradient(circle,#FF3355,transparent)}
+.hunter-glow{background:radial-gradient(circle,#fbbf24,transparent)}
+.sharp-glow{background:radial-gradient(circle,#00E5A0,transparent)}
+@keyframes flameFlicker{from{transform:translateX(-50%) scaleY(1)}to{transform:translateX(-50%) scaleY(1.2)}}
+@keyframes charGlow{0%,100%{opacity:0.2;transform:scale(1)}50%{opacity:0.45;transform:scale(1.12)}}
+@keyframes dataStream{from{opacity:0.6;transform:scaleY(1)}to{opacity:0.1;transform:scaleY(0.3)}}
+.char-art-wrap{display:flex;justify-content:center;align-items:center;margin-bottom:8px;height:110px}
 </style>
 </head>
 <body>
@@ -253,10 +299,115 @@ const ARCHETYPES_DATA = [
    score(s,all){const n=all?all.filter(x=>x.id!=='hybrid'&&x.sc>=40).length:0;return n>=3?80:0;}},
 ];
 
+const archetypeRarity = {
+  'grinder':     {tier:'Common',    color:'#6B6B6B'},
+  'storm':       {tier:'Common',    color:'#6B6B6B'},
+  'gambler':     {tier:'Common',    color:'#6B6B6B'},
+  'hunter':      {tier:'Rare',      color:'#4FC3F7'},
+  'shark':       {tier:'Rare',      color:'#4FC3F7'},
+  'demon':       {tier:'Rare',      color:'#4FC3F7'},
+  'sniper':      {tier:'Epic',      color:'#7B2CFF'},
+  'sharp':       {tier:'Epic',      color:'#7B2CFF'},
+  'kingmaker':   {tier:'Epic',      color:'#7B2CFF'},
+  'reaper':      {tier:'Epic',      color:'#7B2CFF'},
+  'iceblood':    {tier:'Legendary', color:'#FFD700'},
+  'hybrid':      {tier:'Legendary', color:'#FFD700'},
+  'diamond-mind':{tier:'Legendary', color:'#FFD700'},
+  'night-owl':   {tier:'Legendary', color:'#FFD700'},
+  'ghost':       {tier:'Mythic',    color:'#FF6BFF'},
+};
+
+const unlockConditions = {
+  'diamond-mind': 'Reach 80%+ reliability over 50 picks',
+  'ghost':        'Maintain ROI >30% with <15 picks',
+  'night-owl':    'Win 5+ picks between 22:00–04:00',
+  'reaper':       'Win 3+ picks at odds >4.0',
+  'kingmaker':    'Reach 50+ followers',
+  'iceblood':     'Zero emotional variance over 30 picks',
+  'hybrid':       'Score 40%+ on three archetypes simultaneously',
+};
+
+const evolutionPaths = {
+  'sniper':      [{name:'The Sharp',    condition:'+CLV edge',         pct:74},{name:'The Ghost',    condition:'+Volume drop',      pct:62}],
+  'hunter':      [{name:'The Demon',    condition:'+Hot streak',       pct:68},{name:'The Sharp',    condition:'+CLV improves',     pct:55}],
+  'grinder':     [{name:'The Sharp',    condition:'+ROI consistency',  pct:71},{name:'The Hunter',   condition:'+Underdog bets',    pct:48}],
+  'demon':       [{name:'The Kingmaker',condition:'+Followers grow',   pct:65},{name:'The Sharp',    condition:'+Metric quality',   pct:58}],
+  'shark':       [{name:'The Sharp',    condition:'+CLV positive',     pct:70},{name:'Iceblood',     condition:'+Low variance kept',pct:55}],
+  'gambler':     [{name:'The Reaper',   condition:'+ROI turns positive',pct:60},{name:'The Hunter', condition:'+Value betting',     pct:45}],
+  'sharp':       [{name:'Diamond Mind', condition:'+Reliability hits 80%',pct:72},{name:'The Ghost',condition:'+Volume reduces',   pct:58}],
+};
+
 let user = null;
 let userStats = null;
 let primaryArchetype = null;
 let allScores = [];
+
+function getArchetypeArt(id, color) {
+  const arts = {
+    sniper: `<div class="css-char" style="--char-glow-color:${color}">
+      <div class="char-glow sniper-glow"></div>
+      <div class="char-hood" style="background:#0d0d1a"></div>
+      <div class="char-head" style="background:#1e1e2e;box-shadow:0 0 12px ${color}"></div>
+      <div class="char-visor" style="background:rgba(123,44,255,0.6)"></div>
+      <div class="char-body" style="background:#0d0d1a"></div>
+      <div class="char-scope" style="background:${color};box-shadow:0 0 6px ${color}"></div>
+    </div>`,
+    demon: `<div class="css-char">
+      <div class="char-glow demon-glow"></div>
+      <div class="char-horns"></div>
+      <div class="char-head" style="background:#2a0a0a;box-shadow:0 0 12px #FF3355"></div>
+      <div class="char-body" style="background:#1a0505"></div>
+      <div class="char-flames"></div>
+    </div>`,
+    hunter: `<div class="css-char">
+      <div class="char-glow hunter-glow"></div>
+      <div class="char-ears"></div>
+      <div class="char-head" style="background:#1e1a0e;box-shadow:0 0 12px ${color}"></div>
+      <div class="char-body" style="background:#15120a"></div>
+    </div>`,
+    sharp: `<div class="css-char">
+      <div class="char-glow sharp-glow"></div>
+      <div class="char-head" style="background:#0a1a1a;box-shadow:0 0 12px #00E5A0"></div>
+      <div class="char-glasses"></div>
+      <div class="char-body" style="background:#051010"></div>
+      <div class="char-data"></div>
+    </div>`,
+  };
+  return arts[id] ? `<div class="char-art-wrap">${arts[id]}</div>` : `<div class="char-art-wrap" style="font-size:64px;line-height:1;filter:drop-shadow(0 0 20px ${color})">${ARCHETYPES_DATA.find(a=>a.id===id)?.icon||'?'}</div>`;
+}
+
+function showDNAIntro(archName, archColor) {
+  if (sessionStorage.getItem('dna_intro_shown')) return;
+  sessionStorage.setItem('dna_intro_shown', '1');
+
+  const overlay = document.createElement('div');
+  overlay.id = 'dnaIntro';
+  overlay.style.cssText = 'position:fixed;inset:0;background:#0A0A0A;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:\'Bebas Neue\',sans-serif;cursor:pointer';
+  overlay.innerHTML = `
+    <div id="dnaStep1" style="text-align:center;opacity:0;transition:opacity 0.5s">
+      <div style="font-size:11px;letter-spacing:0.3em;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:20px">ANALYZING BETTING PATTERNS</div>
+      <div style="width:200px;height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden;margin:0 auto">
+        <div id="dnaBar" style="height:100%;width:0%;background:linear-gradient(90deg,#7B2CFF,#00E5A0);transition:width 1.5s ease;border-radius:2px"></div>
+      </div>
+    </div>
+    <div id="dnaStep2" style="text-align:center;opacity:0;transition:opacity 0.5s;position:absolute">
+      <div style="font-size:13px;letter-spacing:0.3em;color:#00E5A0;font-family:'DM Mono',monospace">MATCH FOUND</div>
+    </div>
+    <div id="dnaStep3" style="text-align:center;opacity:0;transition:opacity 0.5s;position:absolute">
+      <div style="font-size:10px;letter-spacing:0.3em;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:10px">YOUR BETTING DNA IS</div>
+      <div style="font-size:clamp(48px,10vw,80px);color:${archColor||'var(--ac)'};letter-spacing:0.05em;text-shadow:0 0 40px ${archColor||'rgba(123,44,255,0.5)'}">${(archName||'UNKNOWN').toUpperCase()}</div>
+      <div style="font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;margin-top:10px;letter-spacing:1px">Only a small percentage of bettors match this profile</div>
+      <div style="margin-top:20px;font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:1px;opacity:0.5">tap to continue</div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  setTimeout(()=>{document.getElementById('dnaStep1').style.opacity='1';setTimeout(()=>{document.getElementById('dnaBar').style.width='100%';},100);},100);
+  setTimeout(()=>{document.getElementById('dnaStep1').style.opacity='0';setTimeout(()=>{document.getElementById('dnaStep2').style.opacity='1';},300);},2200);
+  setTimeout(()=>{document.getElementById('dnaStep2').style.opacity='0';setTimeout(()=>{document.getElementById('dnaStep3').style.opacity='1';},300);},3400);
+  const dismiss=()=>{overlay.style.cssText+=';transition:opacity 0.4s;opacity:0';setTimeout(()=>overlay.remove(),400);};
+  setTimeout(dismiss,5800);
+  overlay.addEventListener('click',dismiss);
+}
 
 window.onload = () => {
   const ud = localStorage.getItem('ledgr_user') || localStorage.getItem('user');
@@ -311,6 +462,7 @@ async function loadData() {
   renderCurrentCard(sorted);
   renderGrid(sorted);
   renderEvolution(sorted);
+  if (primaryArchetype) showDNAIntro(primaryArchetype.name, primaryArchetype.color);
 }
 
 function renderCurrentCard(sorted) {
@@ -332,11 +484,15 @@ function renderCurrentCard(sorted) {
   const confidence = Math.round(p.sc);
   const onlyPct = Math.round(p.rarity);
 
+  const _rar=archetypeRarity[p.id]||{tier:'Common',color:'#6B6B6B'};
   el.innerHTML = `<div class="current-card" style="background:linear-gradient(135deg,${p.color}08,transparent 60%),var(--s1);border-color:${p.color}33">
     <div class="current-inner">
-      <div class="ca-icon" style="color:${p.color}">${p.icon}</div>
+      <div class="ca-icon" style="color:${p.color}">${getArchetypeArt(p.id,p.color)}</div>
       <div>
-        <div class="ca-rarity" style="color:${p.color};border-color:${p.color}44;background:${p.color}11">Only ${onlyPct}% of bettors</div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <div class="rarity-pill" style="color:${_rar.color};border:1px solid ${_rar.color}44;background:${_rar.color}11">${_rar.tier.toUpperCase()}</div>
+          <div class="ca-rarity" style="color:${p.color};border-color:${p.color}44;background:${p.color}11">Only ${onlyPct}% of bettors</div>
+        </div>
         <div class="ca-name" style="color:${p.color}">${p.name.toUpperCase()}</div>
         <div class="ca-desc">${p.desc}</div>
         <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-bottom:8px">Detected from: ${sorted.slice(0,3).map(x=>x.name).join(' · ')}</div>
@@ -362,16 +518,30 @@ function renderGrid(sorted) {
     const sc = Math.round(a.sc);
     const matched = sc >= 40;
     const close = sc >= 20 && !matched;
-    const grey = sc < 20;
+    const grey = sc < 20 && !isP;
+    const rar = archetypeRarity[a.id] || {tier:'Common', color:'#6B6B6B'};
+    const rarCls = rar.tier.toLowerCase();
+    const rarPill = `<div class="rarity-pill" style="color:${rar.color};border:1px solid ${rar.color}44;background:${rar.color}11">${rar.tier.toUpperCase()}</div>`;
 
-    return `<div class="arch-card ${isP?'is-primary matched':(matched?'matched unlocked':(close?'unlocked':'greyed'))}" style="${isP?`background:${a.color}10;border-color:${a.color}44`:matched?`border-color:${a.color}33`:''}" >
+    if (grey) {
+      const unlockHint = unlockConditions[a.id] || 'Keep posting picks to unlock';
+      return `<div class="arch-card locked-card arch-vault-card ${rarCls}">
+        ${rarPill}
+        <div class="locked-icon">🔒</div>
+        <div class="locked-name">?????</div>
+        <div class="locked-hint">${unlockHint}</div>
+      </div>`;
+    }
+
+    return `<div class="arch-card arch-vault-card ${rarCls} ${isP?'is-primary matched':(matched?'matched unlocked':'unlocked')}" style="${isP?`background:${a.color}10;border-color:${a.color}44`:matched?`border-color:${a.color}33`:''}">
       ${isP ? `<div class="arch-primary-badge" style="background:${a.color}">YOUR DNA</div>` : sc>0?`<div class="arch-match-badge">${sc}%</div>`:''}
+      ${rarPill}
       <div class="arch-icon">${a.icon}</div>
       <div class="arch-name" style="${isP||matched?`color:${a.color}`:'color:var(--mu2)'}">${a.name}</div>
       <div class="arch-desc">${a.desc}</div>
       <div class="arch-rarity">${a.rarity}% of bettors</div>
       ${isP || matched ? `<ul class="arch-conditions">${a.conditions.map(c=>`<li>${c}</li>`).join('')}</ul>` : ''}
-      ${grey ? '<div class="arch-lock">— Not yet matched</div>' : ''}
+      ${close ? '<div class="arch-lock">— Within reach</div>' : ''}
     </div>`;
   }).join('');
 }
@@ -382,30 +552,66 @@ function renderEvolution(sorted) {
     el.innerHTML = '<div class="loading-state">No archetype detected yet — keep posting picks.</div>';
     return;
   }
-  const others = sorted.filter(x => x.id !== primaryArchetype.id).slice(0, 2);
   const p = primaryArchetype;
+  const paths = evolutionPaths[p.id];
 
-  el.innerHTML = `<div class="evo-grid">
-    <div class="evo-node current" style="border-color:${p.color}44;background:${p.color}08">
-      <div class="evo-icon">${p.icon}</div>
-      <div class="evo-name" style="color:${p.color}">${p.name}</div>
-      <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
+  if (paths) {
+    const pathNodes = paths.map(path => {
+      const target = ARCHETYPES_DATA.find(a => a.name === path.name);
+      const targetRar = target ? archetypeRarity[target.id] : null;
+      return `<div class="evo-node" style="position:relative">
+        <div class="evo-icon">${target?.icon||'?'}</div>
+        <div class="evo-name">${path.name}</div>
+        <div class="evo-pct" style="color:var(--mu)">${path.pct}% trajectory match</div>
+        <div class="evo-req" style="color:var(--ac);font-size:9px;margin-top:4px">${path.condition}</div>
+        ${targetRar?`<div class="rarity-pill" style="color:${targetRar.color};border:1px solid ${targetRar.color}44;background:${targetRar.color}11;display:block;margin:4px auto 0">${targetRar.tier.toUpperCase()}</div>`:''}
+      </div>`;
+    });
+
+    el.innerHTML = `
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-bottom:20px;line-height:1.6;border-left:2px solid var(--ac);padding-left:12px">
+        Your evolution is determined by behavior — volume, ROI trend, CLV, reliability and streak patterns.
+      </div>
+      <div class="evo-grid">
+        <div class="evo-node current" style="border-color:${p.color}44;background:${p.color}08">
+          <div class="evo-icon">${p.icon}</div>
+          <div class="evo-name" style="color:${p.color}">${p.name}</div>
+          <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
+        </div>
+        <div class="evo-arrow">→</div>
+        ${pathNodes[0]||''}
+        ${pathNodes[1]?`<div class="evo-arrow">→</div>${pathNodes[1]}`:''}
+      </div>`;
+    return;
+  }
+
+  // Fallback: score-based
+  const others = sorted.filter(x => x.id !== p.id).slice(0, 2);
+  el.innerHTML = `
+    <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--mu);letter-spacing:1px;margin-bottom:20px;line-height:1.6;border-left:2px solid var(--ac);padding-left:12px">
+      Your evolution is determined by behavior — volume, ROI trend, CLV, reliability and streak patterns.
     </div>
-    <div class="evo-arrow">→</div>
-    <div class="evo-node">
-      <div class="evo-icon">${others[0]?.icon||'?'}</div>
-      <div class="evo-name">${others[0]?.name||'—'}</div>
-      <div class="evo-pct">${others[0]?Math.round(others[0].sc)+'% match':'—'}</div>
-      <div class="evo-req">${others[0] ? others[0].conditions.slice(0,1).join('') : ''}</div>
-    </div>
-    <div class="evo-arrow">→</div>
-    <div class="evo-node">
-      <div class="evo-icon">${others[1]?.icon||'?'}</div>
-      <div class="evo-name">${others[1]?.name||'—'}</div>
-      <div class="evo-pct">${others[1]?Math.round(others[1].sc)+'% match':'—'}</div>
-      <div class="evo-req">${others[1] ? others[1].conditions.slice(0,1).join('') : ''}</div>
-    </div>
-  </div>`;
+    <div class="evo-grid">
+      <div class="evo-node current" style="border-color:${p.color}44;background:${p.color}08">
+        <div class="evo-icon">${p.icon}</div>
+        <div class="evo-name" style="color:${p.color}">${p.name}</div>
+        <div class="evo-pct">Current · ${Math.round(p.sc)}% match</div>
+      </div>
+      <div class="evo-arrow">→</div>
+      <div class="evo-node">
+        <div class="evo-icon">${others[0]?.icon||'?'}</div>
+        <div class="evo-name">${others[0]?.name||'—'}</div>
+        <div class="evo-pct">${others[0]?Math.round(others[0].sc)+'% match':'—'}</div>
+        <div class="evo-req">${others[0]?others[0].conditions.slice(0,1).join(''):''}</div>
+      </div>
+      <div class="evo-arrow">→</div>
+      <div class="evo-node">
+        <div class="evo-icon">${others[1]?.icon||'?'}</div>
+        <div class="evo-name">${others[1]?.name||'—'}</div>
+        <div class="evo-pct">${others[1]?Math.round(others[1].sc)+'% match':'—'}</div>
+        <div class="evo-req">${others[1]?others[1].conditions.slice(0,1).join(''):''}</div>
+      </div>
+    </div>`;
 }
 
 function showToast(msg,isErr){
