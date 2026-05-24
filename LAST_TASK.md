@@ -4,11 +4,50 @@ Date: 2026-05-24
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: tipster page visual improvements ✅ COMPLETE
+Current objective: tipster page visual improvements Round 2 ✅ COMPLETE
 
 ---
 
-## Last completed: tipster visual improvements (2026-05-24)
+## Last completed: tipster Round 2 improvements (2026-05-24)
+
+`tipster/index.html` only. No backend changes.
+
+### FIX 1 — Reliability as primary gauge metric
+- `gaugeHTML` now uses `score` (reliability 0-100) instead of `finalSharpScore`
+- Gauge label changed from "Sharp Score" to "RELIABILITY"
+- Sublabel updated: "Trusted source · Verified edge" / "Building trust…" / "Early stage…" based on `score` threshold
+- Added `.perf-gauge-secondary` row below gauge: Sharp Score | ROI | Win Rate
+
+### FIX 2 — Hero identity strip
+- Added `<div id="heroIdentityStrip">` placeholder after `.profile-username`
+- Populated async inside Follows.getFollowerCount callback: RANK | REL | ROI | Streak | Followers
+- Strip hidden (`display:none`) until followers count resolves; flex layout when shown
+
+### FIX 3 — Archetype RPG card
+- New `.rpg-card` panel at top of right sidebar (before DNA panel)
+- Computed: `_rpgLevel` (1-5 based on pick count: 0/20/50/100/200), `_rpgProg` (% to next level)
+- Trait map keyed by `displayArch.key`: value_hunter, contrarian, momentum_rider, etc.
+- Evolution bar (`id="rpgEvoFill"`) animated via setTimeout with 1.1s ease transition
+
+### FIX 4 — Community Impact panel (right sidebar)
+- New `.ci-panel` panel after performance section in right sidebar
+- Stats: FOLLOWERS (async countUp from ciFollowers2) | WIN RATE (computed) | RANK
+- "BEST WIN" section: best pnl win pick shown with event / market / odds / P&L
+- `ciFollowers2` mirrored in Follows.getFollowerCount callback alongside existing `ciFollowers`
+
+### FIX 5 — Bio as styled signature quote
+- `bioHtml` now uses `.profile-bio-quote` class: `font-style:italic`, `border-left:2px solid var(--ac)`, `padding-left:12px`
+
+### FIX 6 — Pick cards odds validation
+- `<span class="pick-odds-large">` only rendered when `p.odds > 0 && p.odds < 1000`
+
+### Modified files
+- `tipster/index.html`
+- `LAST_TASK.md`
+
+---
+
+## Last completed: tipster Round 1 improvements (2026-05-24)
 
 `tipster/index.html` only. No backend changes.
 
