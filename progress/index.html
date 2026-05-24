@@ -174,12 +174,41 @@ body::before { content:''; position:fixed; inset:0; background-image:url("data:i
   .hero-av { width:64px; height:64px; font-size:22px; }
 }
 
-/* ── Demotion Warning ── */
-.demotion-banner { display:flex; align-items:center; gap:10px; margin-top:10px; padding:9px 14px; border-radius:8px; font-family:var(--font-mono); font-size:11px; letter-spacing:0.5px; }
-.demotion-banner.at-risk { background:rgba(255,51,85,0.07); border:1px solid rgba(255,51,85,0.25); color:#ff8899; }
-.demotion-banner.safe { background:rgba(0,229,160,0.05); border:1px solid rgba(0,229,160,0.18); color:var(--gr); }
-.demotion-banner .db-icon { font-size:14px; flex-shrink:0; }
-.demotion-banner .db-pts { font-family:var(--font-display); font-size:14px; font-weight:700; margin-right:4px; }
+/* ── Performance Status Card ── */
+.perf-status-card{background:rgba(255,51,85,0.06);border:1px solid rgba(255,51,85,0.2);border-radius:10px;padding:12px 16px;margin-top:10px}
+.perf-status-card.safe{background:rgba(0,229,160,0.04);border-color:rgba(0,229,160,0.15)}
+.perf-status-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.perf-status-icon{font-size:14px}
+.perf-status-title{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:0.1em;color:#FF3355}
+.perf-status-card.safe .perf-status-title{color:var(--gr)}
+.perf-status-msg{font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:10px}
+.perf-bar-track{height:4px;background:#1a1a1a;border-radius:2px;position:relative;margin-bottom:4px}
+.perf-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#00E5A0,#FF3355);transition:width 0.8s ease}
+.perf-bar-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:4px}
+/* ── Timeline animated line ── */
+@keyframes timelineGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.tl-spine{animation:timelineGrow 1s ease-out forwards;transform-origin:top}
+/* ── Primary Trait ── */
+.primary-trait{margin-top:16px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;text-align:center;width:100%}
+.trait-label{font-size:10px;letter-spacing:0.15em;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:4px}
+.trait-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--ac);letter-spacing:0.05em}
+.trait-desc{font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;margin-top:4px;line-height:1.5}
+/* ── Unlock gaming style ── */
+.unlock-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.unlock-icon{font-size:14px;flex-shrink:0}
+.unlock-name{font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--tx);flex:1}
+.unlock-progress{font-family:var(--font-mono);font-size:10px;color:var(--mu)}
+.unlock-bar-track{height:8px;background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden}
+.unlock-bar-fill{height:100%;border-radius:6px;transition:width 0.8s cubic-bezier(0.34,1.15,0.64,1);background:var(--ac)}
+.unlock-bar-fill.fill-near{background:linear-gradient(90deg,var(--ac),var(--ac-l))}
+.unlock-reward{font-size:11px;color:var(--ac);font-family:'Syne',sans-serif;margin-top:4px}
+/* ── Career Highlights / Moment float ── */
+@keyframes momentFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.moment-icon{font-size:24px;margin-bottom:8px;display:inline-block;animation:momentFloat 4s ease-in-out infinite}
+.moment-card:nth-child(1) .moment-icon{animation-delay:0s}
+.moment-card:nth-child(2) .moment-icon{animation-delay:1s}
+.moment-card:nth-child(3) .moment-icon{animation-delay:2s}
+.moment-card:nth-child(4) .moment-icon{animation-delay:3s}
 
 /* ── DIVISION TRACK ── */
 .div-track{display:flex;align-items:flex-end;justify-content:center;gap:0;padding:20px 0 0;position:relative;margin-bottom:8px}
@@ -432,6 +461,9 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
       const fill = document.getElementById('heroBarFill');
       if (fill) fill.style.width = eloPercent + '%';
 
+      const spineFill = document.querySelector('.tl-spine-fill');
+      if (spineFill) spineFill.style.height = '100%';
+
       document.querySelectorAll('[data-unlock-target]').forEach(el => {
         el.style.width = el.getAttribute('data-unlock-target') + '%';
       });
@@ -495,7 +527,11 @@ function buildHTML(d) {
                <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:12px">Every legend begins with pick #1</div>
                <a href="/dashboard" style="display:inline-flex;align-items:center;gap:8px;background:var(--ac);color:#07060d;padding:9px 22px;border-radius:9px;font-family:var(--font-display);font-size:14px;letter-spacing:2px;text-decoration:none;box-shadow:0 4px 20px rgba(184,159,255,.3)">POST FIRST PICK →</a>`
             : `<div class="hero-bar-sub">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
-               ${picks.length >= 5 ? `<div class="hero-bar-week" style="color:var(--gr)">↑ ${myRank > 0 ? '#'+myRank+' globally' : 'Unranked'}</div>` : ''}`
+               ${picks.length >= 5 ? (myRank > 0 && myRank <= 10
+                 ? `<div class="hero-bar-week" style="color:var(--gr)">↑ #${myRank} globally</div>`
+                 : myRank > 0
+                 ? `<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:2px">Season rank: #${myRank}${rankPct!=null?' · Top '+(100-rankPct)+'%':''}</div>`
+                 : '') : ''}`
           }
         </div>
         ${isEmpty ? '' : `
@@ -506,20 +542,20 @@ function buildHTML(d) {
         </div>`}
       </div>
     </div>
-    ${(!isEmpty && demotionAtRisk) ? `
-    <div class="demotion-banner at-risk">
-      <span class="db-icon">↓</span>
-      <span>⚠️ At risk of demotion</span>
-      <span style="margin-left:auto">
-        <span class="db-pts">${pointsAbove < 0 ? Math.abs(pointsAbove) + ' pts below' : pointsAbove + ' pts above'}</span>
-        <span style="color:rgba(255,136,153,0.6)">${divisionName} threshold (${divScore} / ${(({BRONZE:0,SILVER:20,GOLD:35,PLATINUM:50,DIAMOND:65,ELITE:80,LEGENDARY:92})[divisionName] || 0)})</span>
-      </span>
-    </div>` : (!isEmpty && !demotionAtRisk && divisionName !== 'BRONZE' && picks.length > 0) ? `
-    <div class="demotion-banner safe">
-      <span class="db-icon">↑</span>
-      <span>Division secure</span>
-      <span style="margin-left:auto;color:rgba(0,229,160,0.6)">+${pointsAbove} pts above ${divisionName} threshold</span>
-    </div>` : ''}
+    ${!isEmpty && picks.length > 0 ? (()=>{
+      const _thresh={BRONZE:0,SILVER:20,GOLD:35,PLATINUM:50,DIAMOND:65,ELITE:80,LEGENDARY:92}[divisionName]||1;
+      const _safetyPct=divisionName!=='BRONZE'?Math.min(100,Math.max(0,Math.round((divScore/_thresh)*100))):100;
+      const _isAtRisk=demotionAtRisk;
+      const _msg=_isAtRisk
+        ?(pointsAbove<0?Math.abs(pointsAbove)+' pts below safety threshold — push to secure your division':'Only '+pointsAbove+' pts above '+divisionName+' threshold')
+        :divisionName==='BRONZE'?'Build your record to rank up from Bronze':'+'+pointsAbove+' pts above '+divisionName+' threshold — division is secure';
+      return`<div class="perf-status-card${_isAtRisk?'':' safe'}">
+        <div class="perf-status-header"><span class="perf-status-icon">${_isAtRisk?'⚠':'✓'}</span><span class="perf-status-title">PERFORMANCE STATUS</span></div>
+        <div class="perf-status-msg">${_msg}</div>
+        <div class="perf-bar-track"><div class="perf-bar-fill" id="perfBarFill" style="width:${_safetyPct}%"></div></div>
+        <div class="perf-bar-labels"><span>Safe</span><span>Danger</span></div>
+      </div>`;
+    })() : ''}
   `;
 
   const timeline = buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, tier.color);
@@ -564,12 +600,20 @@ function buildHTML(d) {
       ${buildRadar(flatRadarAxes, divColor)}
       <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:10px;text-align:center;letter-spacing:1px">Radar unlocks after 5 picks</div>
     </div>
-  ` : `
-    <div class="radar-card">
+  ` : (() => {
+    const _axes={Consistency:radarAxes[0].value,Sharpness:radarAxes[1].value,CLV:radarAxes[2].value,Volume:radarAxes[3].value,Reliability:radarAxes[4].value,Safety:radarAxes[5].value};
+    const _primary=Object.entries(_axes).sort((a,b)=>b[1]-a[1])[0];
+    const _desc={Consistency:'Your picks are predictable and steady.',Sharpness:'Your strongest edge is beating market movement.',Safety:'You manage risk better than most tipsters.',Reliability:'Followers can trust your track record.',CLV:'You consistently find value before the market closes.',Volume:'Your sample size gives your stats real credibility.'};
+    return`<div class="radar-card">
       <div class="sec-title" style="align-self:flex-start;width:100%">Skill Profile</div>
       ${buildRadar(radarAxes, divColor)}
-    </div>
-  `;
+      <div class="primary-trait">
+        <div class="trait-label">PRIMARY TRAIT</div>
+        <div class="trait-name">${_primary[0].toUpperCase()}</div>
+        <div class="trait-desc">${_desc[_primary[0]]||''}</div>
+      </div>
+    </div>`;
+  })();
 
   const seasonHTML = buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, rankHistory);
 
@@ -632,7 +676,7 @@ function buildHTML(d) {
     ${seasonHTML}
     ${div}
     <div class="panel">
-      <div class="sec-title">Big Moments</div>
+      <div class="sec-title">Career Highlights</div>
       ${momentsHTML}
     </div>
     ${bottomCTA}
@@ -724,15 +768,25 @@ function buildTimeline(picks, wins, losses, myRank, totalTipsters, sharpScore, d
 }
 
 function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank, totalTipsters, streak, divisionName) {
+  const REWARDS = {
+    '🔥 Hot Streak Badge':'🔥 Fire avatar border',
+    '💰 500u Profit':'Profit Hunter badge',
+    '📈 CLV Master':'Sharp edge badge',
+    '📋 50 Picks':'Gold profile badge',
+    '📋 100 Picks':'Veteran badge + rank boost',
+    '🎯 Verified Sharp':'Animated profile ring + ✓ badge',
+    '✦ Diamond Division':'Diamond particle effects',
+  };
   if (picks.length === 0) {
     return [
-      { label:'🩸 First Blood', text:'0/1 wins',   pct:0 },
-      { label:'📋 Apprentice',  text:'0/10 picks', pct:0 },
-      { label:'🔥 Heat Check',  text:'0/3 streak', pct:0 },
+      { label:'🩸 First Blood', text:'0/1 wins',   pct:0, reward:'First Blood badge' },
+      { label:'📋 Apprentice',  text:'0/10 picks', pct:0, reward:'Apprentice profile badge' },
+      { label:'🔥 Heat Check',  text:'0/3 streak', pct:0, reward:'🔥 Fire avatar border' },
     ].map(u => `
       <div class="unlock-item">
-        <div class="unlock-label"><span>${u.label}</span><span class="unlock-prog-text">${u.text}</span></div>
-        <div class="unlock-track"><div class="unlock-fill" style="width:0%"></div></div>
+        <div class="unlock-top"><span class="unlock-icon">🔒</span><span class="unlock-name">${u.label}</span><span class="unlock-progress">${u.text}</span></div>
+        <div class="unlock-bar-track"><div class="unlock-bar-fill" style="width:0%"></div></div>
+        <div class="unlock-reward">Reward: ${u.reward}</div>
       </div>`).join('');
   }
 
@@ -808,15 +862,18 @@ function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank,
   return shown.map(u => {
     const pct = Math.min(100, Math.round((u.current / u.target) * 100));
     const near = pct >= 80;
+    const rewardText = REWARDS[u.label] || (u.label.includes('Division') ? u.label.split(' ')[0]+' division badge' : 'Achievement badge');
     return `
       <div class="unlock-item">
-        <div class="unlock-label">
-          <span>${u.label}</span>
-          <span class="unlock-prog-text">${u.text}</span>
+        <div class="unlock-top">
+          <span class="unlock-icon">${pct>=100?'✓':'🔒'}</span>
+          <span class="unlock-name">${u.label}</span>
+          <span class="unlock-progress">${u.text}</span>
         </div>
-        <div class="unlock-track">
-          <div class="unlock-fill${near?' fill-near':''}" style="width:0%" data-unlock-target="${pct}"></div>
+        <div class="unlock-bar-track">
+          <div class="unlock-bar-fill${near?' fill-near':''}" style="width:0%" data-unlock-target="${pct}"></div>
         </div>
+        <div class="unlock-reward">Reward: ${rewardText}</div>
       </div>
     `;
   }).join('');
