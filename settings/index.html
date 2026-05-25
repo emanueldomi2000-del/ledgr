@@ -162,8 +162,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .border-card:hover:not(.b-locked){border-color:var(--bd2);transform:translateY(-2px)}
 .border-card.selected{border-color:var(--ac);background:var(--acg)}
 .border-card.b-locked{cursor:not-allowed;opacity:.55}
-.border-av-wrap{position:relative;width:56px;height:56px;margin:0 auto 12px}
-.border-av{width:56px;height:56px;border-radius:var(--r-lg,14px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:16px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
+.border-av-wrap{position:relative;width:60px;height:60px;margin:0 auto 12px}
+.border-av{width:60px;height:60px;border-radius:var(--r-lg,14px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:17px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
 .border-ring{position:absolute;inset:-4px;border-radius:50%}
 .border-name{font-family:var(--font-mono);font-size:8px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:3px}
 .border-tier{font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:.5px}
@@ -312,13 +312,18 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .arch-clear-btn{background:transparent;border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:4px 12px;font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all .2s;margin-left:auto;flex-shrink:0}
 .arch-clear-btn:hover{border-color:var(--bd2);color:var(--tx)}
 
-/* ── IDENTITY LAB HERO ── */
-.ilab-hero{margin-bottom:48px;position:relative}
-.ilab-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--ac);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.ilab-eyebrow::before{content:'';width:24px;height:1px;background:var(--ac);opacity:.5}
-.ilab-title{font-family:var(--font-display);font-size:clamp(52px,6vw,80px);letter-spacing:-1px;line-height:.82;color:var(--tx);margin-bottom:18px}
-.ilab-title span{-webkit-text-stroke:1px var(--ac);color:transparent}
-.ilab-sub{font-size:14px;color:var(--mu2);line-height:1.7;max-width:480px}
+/* ── FORGE HERO ── */
+.forge-hero{position:relative;overflow:hidden;padding:48px 0 40px;margin-bottom:40px}
+.forge-bg-glow{position:absolute;top:-50%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(123,44,255,0.08) 0%,transparent 70%);pointer-events:none;animation:forgeBreathe 8s ease-in-out infinite}
+@keyframes forgeBreathe{0%,100%{opacity:.6;transform:translateX(-50%) scale(1)}50%{opacity:1;transform:translateX(-50%) scale(1.1)}}
+.forge-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+@keyframes forgeParticle{0%,100%{transform:translate(0,0);opacity:.3}33%{transform:translate(12px,-18px);opacity:.7}66%{transform:translate(-8px,14px);opacity:.2}}
+.forge-eyebrow{font-size:10px;letter-spacing:.3em;color:var(--ac);font-family:var(--font-mono);margin-bottom:12px;position:relative;z-index:1}
+.forge-title{font-family:var(--font-display);font-size:clamp(56px,9vw,108px);color:var(--tx);line-height:.88;letter-spacing:.02em;margin-bottom:16px;position:relative;z-index:1}
+.forge-title span{color:var(--ac)}
+.forge-lines{display:flex;gap:24px;flex-wrap:wrap;position:relative;z-index:1}
+.forge-lines span{font-size:12px;color:var(--mu);font-family:var(--font-body)}
+.forge-lines span::before{content:'◉ ';color:var(--ac);font-size:8px}
 
 /* ── ILAB SECTION HEADER ── */
 .ilab-section-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:14px;border-bottom:1px solid rgba(123,44,255,0.12)}
@@ -328,32 +333,75 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* ── ALERT SYSTEM ── */
 .alert-master-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0 18px;border-bottom:1px solid var(--bd);margin-bottom:12px}
-.alert-system{display:flex;flex-direction:column;gap:6px}
-.alert-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:10px;transition:all .2s}
-.alert-item:hover{background:rgba(123,44,255,0.03);border-color:rgba(123,44,255,0.1)}
-.alert-icon-wrap{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.alert-text{flex:1}
-.alert-name{font-size:13px;font-weight:600;color:var(--tx)}
-.alert-desc{font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:2px}
+.alert-system-grid{display:flex;flex-direction:column;gap:8px}
+.als-card{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;transition:border-color .2s}
+.als-card:hover{border-color:rgba(123,44,255,0.3)}
+.als-icon{font-size:20px;flex-shrink:0}
+.als-body{flex:1}
+.als-name{font-size:13px;font-family:var(--font-body);font-weight:500;color:var(--tx)}
+.als-desc{font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:2px}
+.als-toggle{position:relative;width:44px;height:24px;flex-shrink:0;cursor:pointer;display:inline-block}
+.als-toggle input{opacity:0;width:0;height:0;position:absolute}
+.als-slider{position:absolute;inset:0;background:#1E1E1E;border-radius:12px;border:1px solid #2A2A2A;transition:all .2s}
+.als-slider::before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#6B6B6B;top:2px;left:2px;transition:all .2s}
+.als-toggle input:checked+.als-slider{background:rgba(123,44,255,0.2);border-color:var(--ac)}
+.als-toggle input:checked+.als-slider::before{background:var(--ac);transform:translateX(20px);box-shadow:0 0 8px rgba(123,44,255,0.5)}
 
-/* ── CHARACTER FX ── */
-.char-fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-top:4px}
-.cfx-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 14px 16px;text-align:center;position:relative;transition:all .2s;cursor:pointer;overflow:hidden}
-.cfx-card:hover:not(.cfx-locked){border-color:rgba(123,44,255,0.3);background:rgba(123,44,255,0.04);transform:translateY(-2px)}
-.cfx-card.cfx-locked{opacity:.5;cursor:not-allowed}
-.cfx-card.cfx-active{border-color:var(--ac);background:rgba(123,44,255,0.06);box-shadow:0 0 24px rgba(123,44,255,0.12)}
-.cfx-card.cfx-active::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,44,255,0.08),transparent 60%);pointer-events:none}
-.cfx-icon{font-size:30px;margin-bottom:10px;display:block}
-.cfx-name{font-family:var(--font-display);font-size:13px;letter-spacing:1px;color:var(--tx);margin-bottom:4px}
-.cfx-tier{font-family:var(--font-mono);font-size:8px;letter-spacing:.5px}
-.cfx-tier.locked{color:var(--mu)}
-.cfx-tier.unlocked{color:var(--gr)}
-.cfx-tier.premium{color:var(--ac)}
-.cfx-lock-icon{position:absolute;top:8px;right:8px;font-size:12px;opacity:.5}
+/* ── BANNER ANIMATIONS ── */
+.bp-tier-pill{position:absolute;top:7px;left:7px;font-family:var(--font-mono);font-size:8px;letter-spacing:.8px;padding:2px 7px;border-radius:4px;z-index:3;pointer-events:none;font-weight:700}
+.bp-tier-pill.basic{background:rgba(107,107,107,0.35);color:#9b9b9b}
+.bp-tier-pill.epic{background:rgba(123,44,255,0.35);color:#b89fff}
+.bp-tier-pill.legendary{background:rgba(255,215,0,0.25);color:#ffd700}
+.banner-unlock{font-size:9px;font-family:var(--font-mono);color:var(--mu);margin-top:3px;letter-spacing:.3px}
+.bp-card:hover:not(.locked){transform:translateY(-3px) scale(1.02);box-shadow:0 0 20px rgba(123,44,255,0.25)}
+/* banner anim overlays */
+.banner-anim-cosmic{position:relative;overflow:hidden}
+.banner-anim-cosmic::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(100,50,200,0.3),transparent);animation:cosmicShift 6s ease-in-out infinite alternate}
+@keyframes cosmicShift{from{opacity:.4}to{opacity:1}}
+.banner-anim-electric{position:relative;overflow:hidden}
+.banner-anim-electric::before{content:'';position:absolute;top:0;left:20%;width:1px;height:100%;background:linear-gradient(180deg,transparent,rgba(150,100,255,0.6),transparent);animation:electricBolt 3s steps(1) infinite;opacity:0}
+@keyframes electricBolt{0%,90%,100%{opacity:0;left:20%}91%{opacity:1;left:20%}92%{opacity:0;left:60%}93%{opacity:1;left:60%}94%{opacity:0}}
+.banner-anim-dragon{position:relative;overflow:hidden}
+.banner-anim-dragon::after{content:'';position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(0deg,rgba(150,0,0,0.25),transparent);animation:dragonSmoke 4s ease-in-out infinite alternate;filter:blur(4px)}
+@keyframes dragonSmoke{from{transform:scaleY(1);opacity:.4}to{transform:scaleY(1.3);opacity:.8}}
+.banner-anim-flame{position:relative;overflow:hidden}
+.banner-anim-flame::after{content:'';position:absolute;bottom:0;left:0;right:0;height:35%;background:radial-gradient(ellipse at 50% 100%,rgba(255,80,0,0.3),transparent);animation:flameRise 2s ease-in-out infinite alternate}
+@keyframes flameRise{from{height:35%;opacity:.4}to{height:50%;opacity:.7}}
+.banner-anim-galaxy{animation:galaxyHue 10s linear infinite}
+@keyframes galaxyHue{from{filter:hue-rotate(0deg) brightness(.8)}to{filter:hue-rotate(360deg) brightness(1)}}
+.banner-anim-crown{position:relative;overflow:hidden}
+.banner-anim-crown::before{content:'';position:absolute;top:0;left:0;right:0;height:30%;background:linear-gradient(180deg,rgba(255,215,0,0.15),transparent);animation:crownEnergy 3s ease-in-out infinite alternate}
+@keyframes crownEnergy{from{opacity:.3}to{opacity:.8}}
+.banner-anim-neonrift{position:relative;overflow:hidden}
+.banner-anim-neonrift::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,100,50,0.1),rgba(100,0,150,0.1));animation:neonShift 6s ease-in-out infinite alternate}
+@keyframes neonShift{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(90deg)}}
+.banner-anim-phantom{position:relative;overflow:hidden}
+.banner-anim-phantom::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,rgba(184,159,255,0.15),transparent 55%);animation:bpPhantom 4s ease-in-out infinite}
+.banner-anim-diamond{position:relative;overflow:hidden}
+.banner-anim-diamond::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 60% 60%,rgba(56,189,248,0.2),transparent 60%);animation:bpDiamond 5s ease-in-out infinite alternate}
+.banner-anim-crimson{position:relative;overflow:hidden}
+.banner-anim-crimson::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,rgba(255,51,85,0.2),transparent 60%);animation:bpCrimson 6s ease-in-out infinite alternate}
+
+/* ── BORDER ANIMATIONS ── */
+@keyframes diamondShimmer{0%,100%{border-color:rgba(79,195,247,0.4)}50%{border-color:rgba(79,195,247,1)}}
+@keyframes infernoRing{0%,100%{box-shadow:0 0 6px #FF6B35,0 0 12px #FF3300}50%{box-shadow:0 0 12px #FF6B35,0 0 24px #FF3300}}
+@keyframes dragonBorder{0%,100%{border-color:#FF3355;box-shadow:0 0 8px #FF3355}50%{border-color:#FFD700;box-shadow:0 0 16px #FFD700}}
+
+/* ── POWER GRID ── */
+.power-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.pw-card{position:relative;overflow:hidden;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:16px;text-align:center;transition:all .2s ease}
+.pw-card:not(.pw-locked):hover{border-color:var(--pw-color,var(--ac));box-shadow:0 0 16px color-mix(in srgb,var(--pw-color,var(--ac)) 30%,transparent);transform:translateY(-2px)}
+.pw-card.pw-locked{opacity:.45;cursor:not-allowed}
+.pw-glow{position:absolute;top:-20px;left:50%;transform:translateX(-50%);width:80px;height:40px;background:radial-gradient(ellipse,var(--pw-color,var(--ac)),transparent);opacity:0;transition:opacity .2s;pointer-events:none}
+.pw-card:not(.pw-locked):hover .pw-glow{opacity:.15}
+.pw-icon{font-size:28px;margin-bottom:8px}
+.pw-name{font-family:var(--font-display);font-size:16px;color:var(--tx);margin-bottom:4px;letter-spacing:.5px}
+.pw-desc{font-size:10px;color:var(--mu);font-family:var(--font-body);line-height:1.4;margin-bottom:8px}
+.pw-lock{font-size:9px;color:var(--mu);font-family:var(--font-mono);letter-spacing:.05em}
 
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{grid-template-columns:1fr}.preview-panel{position:relative;top:0}}
-@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.char-fx-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.power-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 
 </head>
@@ -375,10 +423,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 
   <div id="app" style="display:none">
-    <div class="ilab-hero">
-      <div class="ilab-eyebrow">Profile Customization</div>
-      <h1 class="ilab-title">IDENTITY<br><span>LAB</span></h1>
-      <p class="ilab-sub">Build a profile that commands respect on the leaderboard.</p>
+    <div class="forge-hero">
+      <div class="forge-bg-glow"></div>
+      <div class="forge-particles" id="forgeParticles"></div>
+      <div class="forge-eyebrow">⬡ LEDGR IDENTITY SYSTEM</div>
+      <div class="forge-title">LEGEND<br><span>CREATOR</span></div>
+      <div class="forge-lines">
+        <span>Build your presence.</span>
+        <span>Unlock your aura.</span>
+        <span>Create your identity.</span>
+      </div>
     </div>
 
     <div class="settings-layout">
@@ -508,13 +562,26 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </section>
 
-        <!-- 03 SYSTEM -->
+        <!-- 03 POWER -->
         <section class="settings-section">
           <div class="ilab-section-header">
             <div class="ilab-section-num">03</div>
             <div>
+              <div class="ilab-section-name">POWER</div>
+              <div class="ilab-section-desc">FX · Aura · Animations</div>
+            </div>
+          </div>
+          <div class="power-grid" id="powerGrid"></div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:12px">FX unlock as you climb divisions · visible on your public profile · save to apply</div>
+        </section>
+
+        <!-- 04 SYSTEM -->
+        <section class="settings-section">
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">04</div>
+            <div>
               <div class="ilab-section-name">SYSTEM</div>
-              <div class="ilab-section-desc">Alerts, privacy, odds format, and timezone.</div>
+              <div class="ilab-section-desc">Alerts · Privacy · Account</div>
             </div>
           </div>
 
@@ -529,70 +596,65 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <div class="toggle-thumb"></div>
             </label>
           </div>
-          <div class="alert-system">
-            <div class="alert-item">
-              <div class="alert-icon-wrap" style="background:rgba(251,146,60,0.1)">🔥</div>
-              <div class="alert-text">
-                <div class="alert-name">Win Streaks</div>
-                <div class="alert-desc">Followed tipsters hit a win streak</div>
+          <div class="alert-system-grid">
+            <div class="als-card" data-alert="streak">
+              <div class="als-icon">🔥</div>
+              <div class="als-body">
+                <div class="als-name">Win Streak Alerts</div>
+                <div class="als-desc">Notified at 3W, 5W, 10W milestones</div>
               </div>
-              <label class="toggle-wrap">
+              <label class="als-toggle">
                 <input type="checkbox" id="alertWinStreak" onchange="savePref('alertWinStreak',this.checked)" checked>
-                <div class="toggle-track"></div>
-                <div class="toggle-thumb"></div>
+                <span class="als-slider"></span>
               </label>
             </div>
-            <div class="alert-item">
-              <div class="alert-icon-wrap" style="background:rgba(251,191,36,0.1)">👑</div>
-              <div class="alert-text">
-                <div class="alert-name">Rank Changes</div>
-                <div class="alert-desc">Followed tipsters move up the leaderboard</div>
+            <div class="als-card" data-alert="rank">
+              <div class="als-icon">👑</div>
+              <div class="als-body">
+                <div class="als-name">Rank Changes</div>
+                <div class="als-desc">Followed tipsters move up the leaderboard</div>
               </div>
-              <label class="toggle-wrap">
+              <label class="als-toggle">
                 <input type="checkbox" id="alertRankChanges" onchange="savePref('alertRankChanges',this.checked)" checked>
-                <div class="toggle-track"></div>
-                <div class="toggle-thumb"></div>
+                <span class="als-slider"></span>
               </label>
             </div>
-            <div class="alert-item">
-              <div class="alert-icon-wrap" style="background:rgba(248,113,113,0.1)">⚔️</div>
-              <div class="alert-text">
-                <div class="alert-name">Rival Activity</div>
-                <div class="alert-desc">Tipsters near your rank are on a run</div>
+            <div class="als-card" data-alert="rival">
+              <div class="als-icon">⚔️</div>
+              <div class="als-body">
+                <div class="als-name">Rival Activity</div>
+                <div class="als-desc">Tipsters near your rank are on a run</div>
               </div>
-              <label class="toggle-wrap">
+              <label class="als-toggle">
                 <input type="checkbox" id="alertRivalActivity" onchange="savePref('alertRivalActivity',this.checked)">
-                <div class="toggle-track"></div>
-                <div class="toggle-thumb"></div>
+                <span class="als-slider"></span>
               </label>
             </div>
-            <div class="alert-item">
-              <div class="alert-icon-wrap" style="background:rgba(52,211,153,0.1)">📈</div>
-              <div class="alert-text">
-                <div class="alert-name">Leaderboard Movement</div>
-                <div class="alert-desc">Your position changes on the main leaderboard</div>
+            <div class="als-card" data-alert="leaderboard">
+              <div class="als-icon">📈</div>
+              <div class="als-body">
+                <div class="als-name">Leaderboard Movement</div>
+                <div class="als-desc">Your position changes on the main leaderboard</div>
               </div>
-              <label class="toggle-wrap">
+              <label class="als-toggle">
                 <input type="checkbox" id="alertLeaderboard" onchange="savePref('alertLeaderboard',this.checked)" checked>
-                <div class="toggle-track"></div>
-                <div class="toggle-thumb"></div>
+                <span class="als-slider"></span>
               </label>
             </div>
-            <div class="alert-item">
-              <div class="alert-icon-wrap" style="background:rgba(79,195,247,0.1)">💎</div>
-              <div class="alert-text">
-                <div class="alert-name">Division Changes</div>
-                <div class="alert-desc">Promotions, demotions, and rank milestones</div>
+            <div class="als-card" data-alert="division">
+              <div class="als-icon">💎</div>
+              <div class="als-body">
+                <div class="als-name">Division Changes</div>
+                <div class="als-desc">Promotions, demotions, and rank milestones</div>
               </div>
-              <label class="toggle-wrap">
+              <label class="als-toggle">
                 <input type="checkbox" id="alertDivision" onchange="savePref('alertDivision',this.checked)" checked>
-                <div class="toggle-track"></div>
-                <div class="toggle-thumb"></div>
+                <span class="als-slider"></span>
               </label>
             </div>
           </div>
 
-          <div class="pref-row">
+          <div class="pref-row" style="margin-top:16px">
             <div>
               <div class="pref-label">Hide from Leaderboard</div>
               <div class="pref-sub">Your profile won't appear in public rankings</div>
@@ -635,54 +697,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <option value="Asia/Dubai">Dubai</option>
             </select>
           </div>
-        </section>
-
-        <!-- 04 POWER -->
-        <section class="settings-section">
-          <div class="ilab-section-header">
-            <div class="ilab-section-num">04</div>
-            <div>
-              <div class="ilab-section-name">POWER</div>
-              <div class="ilab-section-desc">Character FX — visual effects unlocked by division rank.</div>
-            </div>
-          </div>
-          <div class="char-fx-grid">
-            <div class="cfx-card cfx-active" onclick="toggleFX('eye-glow',this)">
-              <span class="cfx-icon">👁️</span>
-              <div class="cfx-name">EYE GLOW</div>
-              <div class="cfx-tier unlocked">UNLOCKED</div>
-            </div>
-            <div class="cfx-card" onclick="toggleFX('profile-aura',this)">
-              <span class="cfx-icon">🌀</span>
-              <div class="cfx-name">PROFILE AURA</div>
-              <div class="cfx-tier premium">SILVER+</div>
-            </div>
-            <div class="cfx-card cfx-locked">
-              <div class="cfx-lock-icon">🔒</div>
-              <span class="cfx-icon">✨</span>
-              <div class="cfx-name">PARTICLE TRAIL</div>
-              <div class="cfx-tier locked">GOLD+</div>
-            </div>
-            <div class="cfx-card cfx-locked">
-              <div class="cfx-lock-icon">🔒</div>
-              <span class="cfx-icon">⚡</span>
-              <div class="cfx-name">PROFILE ENTRANCE</div>
-              <div class="cfx-tier locked">PLATINUM+</div>
-            </div>
-            <div class="cfx-card cfx-locked">
-              <div class="cfx-lock-icon">🔒</div>
-              <span class="cfx-icon">🎭</span>
-              <div class="cfx-name">IDLE ANIMATION</div>
-              <div class="cfx-tier locked">DIAMOND+</div>
-            </div>
-            <div class="cfx-card cfx-locked">
-              <div class="cfx-lock-icon">🔒</div>
-              <span class="cfx-icon">🏆</span>
-              <div class="cfx-name">NAMEPLATE FX</div>
-              <div class="cfx-tier locked">ELITE+</div>
-            </div>
-          </div>
-          <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:14px">Character FX unlock as you climb divisions · visible on your public profile · save to apply</div>
         </section>
 
         <!-- 05 BETTING DNA -->
@@ -826,6 +840,33 @@ const BANNER_PACKS = [
   {id:'crown-energy',  name:'CROWN ENERGY',  tier:'legendary',divReq:'Legend',   cssClass:'bp-crown-energy'},
 ];
 
+const BANNER_CFG = {
+  'midnight':       {tier:'Basic',    unlock:null,                     anim:'none'},
+  'purple-fade':    {tier:'Basic',    unlock:null,                     anim:'none'},
+  'frost':          {tier:'Basic',    unlock:null,                     anim:'none'},
+  'carbon':         {tier:'Basic',    unlock:null,                     anim:'none'},
+  'dark-smoke':     {tier:'Basic',    unlock:null,                     anim:'none'},
+  'cosmic-nebula':  {tier:'Epic',     unlock:'Reach Gold division',    anim:'cosmic'},
+  'diamond-storm':  {tier:'Epic',     unlock:'Reach Platinum division',anim:'diamond'},
+  'crimson-energy': {tier:'Epic',     unlock:'Win 50 picks',           anim:'crimson'},
+  'electric-void':  {tier:'Epic',     unlock:'Reach Diamond division', anim:'electric'},
+  'phantom-pulse':  {tier:'Epic',     unlock:'Reliability 70+',        anim:'phantom'},
+  'galaxy-motion':  {tier:'Legendary',unlock:'Reach Elite division',   anim:'galaxy'},
+  'dragon-aura':    {tier:'Legendary',unlock:'The Demon Archetype Lv.3',anim:'dragon'},
+  'eternal-flame':  {tier:'Legendary',unlock:'5W streak achieved',     anim:'flame'},
+  'neon-rift':      {tier:'Legendary',unlock:'Reach Diamond division', anim:'neonrift'},
+  'crown-energy':   {tier:'Legendary',unlock:'Ranked #1 globally',     anim:'crown'},
+};
+
+const POWER_ITEMS = [
+  {id:'eye-glow',  name:'Eye Glow',       icon:'👁️', desc:'Glowing eyes on your avatar',       unlock:'Diamond division', locked:true,  color:'#7B2CFF'},
+  {id:'aura',      name:'Profile Aura',   icon:'✨',  desc:'Pulsing aura around your card',      unlock:'Elite division',   locked:true,  color:'#FFD700'},
+  {id:'particles', name:'Particle Trail', icon:'💫',  desc:'Particles follow your picks',        unlock:'Diamond division', locked:true,  color:'#4FC3F7'},
+  {id:'entrance',  name:'Card Entrance',  icon:'⚡',  desc:'Animated appearance effect',         unlock:'Gold division',    locked:false, color:'#00E5A0'},
+  {id:'idle',      name:'Idle Animation', icon:'🌊',  desc:'Subtle movement on your avatar',     unlock:'Platinum division',locked:true,  color:'#7B2CFF'},
+  {id:'nameplate', name:'Nameplate FX',   icon:'🔤',  desc:'Animated username glow effect',      unlock:'Silver division',  locked:false, color:'#00E5A0'},
+];
+
 const DIV_ORDER = ['Bronze','Silver','Gold','Platinum','Diamond','Elite','Legend'];
 
 const BORDERS = [
@@ -935,14 +976,18 @@ function renderBannerPacks(){
     grid.innerHTML=packs.map(b=>{
       const locked=!divUnlocked(b.divReq);
       const sel=config.bannerPack===b.id;
+      const cfg=BANNER_CFG[b.id]||{tier:'Basic',unlock:null,anim:'none'};
+      const animCls=cfg.anim!=='none'?` banner-anim-${cfg.anim}`:'';
+      const tierKey=cfg.tier.toLowerCase();
       return`<div class="bp-card${sel?' selected':''}${locked?' locked':''}" onclick="selectBannerPack('${b.id}',${locked})" id="bp_${b.id}">
-        <div class="bp-preview ${b.cssClass}">
+        <div class="bp-preview ${b.cssClass}${animCls}">
+          <div class="bp-tier-pill ${tierKey}">${cfg.tier.toUpperCase()}</div>
           <div class="bp-ck">✓</div>
           ${locked?`<div class="bp-lock"><div class="bp-lock-icon">🔒</div><div class="bp-lock-req">${b.divReq}+</div></div>`:''}
         </div>
         <div class="bp-info">
           <div class="bp-name">${b.name}</div>
-          <div class="bp-tier-lbl ${tier}">${tier.toUpperCase()}</div>
+          <div class="banner-unlock">${locked&&cfg.unlock?'🔒 '+cfg.unlock:'✓ Unlocked'}</div>
         </div>
       </div>`;
     }).join('');
@@ -1475,12 +1520,31 @@ function _updateArchBanner(){
   }
 }
 
-/* ── CHARACTER FX ── */
+/* ── POWER GRID ── */
+function renderPowerGrid(){
+  const grid=document.getElementById('powerGrid');
+  if(!grid)return;
+  grid.innerHTML=POWER_ITEMS.map(p=>`
+    <div class="pw-card ${p.locked?'pw-locked':''}" style="--pw-color:${p.color}">
+      <div class="pw-glow"></div>
+      <div class="pw-icon">${p.icon}</div>
+      <div class="pw-name">${p.name}</div>
+      <div class="pw-desc">${p.desc}</div>
+      ${p.locked
+        ?`<div class="pw-lock">🔒 ${p.unlock}</div>`
+        :`<label class="als-toggle" style="margin:0 auto">
+            <input type="checkbox" id="pw-${p.id}" onchange="savePref('pw_${p.id}',this.checked)">
+            <span class="als-slider"></span>
+          </label>`}
+    </div>
+  `).join('');
+}
+
 function toggleFX(id,card){
-  if(!card||card.classList.contains('cfx-locked'))return;
-  card.classList.toggle('cfx-active');
-  savePref('cfx_'+id,card.classList.contains('cfx-active'));
-  showToast(card.classList.contains('cfx-active')?'FX ENABLED — save to apply':'FX DISABLED');
+  if(!card||card.classList.contains('pw-locked'))return;
+  card.classList.toggle('pw-active');
+  savePref('cfx_'+id,card.classList.contains('pw-active'));
+  showToast(card.classList.contains('pw-active')?'FX ENABLED — save to apply':'FX DISABLED');
 }
 
 /* ── INIT ── */
@@ -1514,11 +1578,16 @@ window.onload=()=>{
   const savedPrice=localStorage.getItem('ledgr_my_sub_price');
   if(savedPrice)document.getElementById('subPrice').value=savedPrice;
 
+  // Forge hero particles
+  const fp=document.getElementById('forgeParticles');
+  if(fp){for(let i=0;i<8;i++){const p=document.createElement('div');p.style.cssText=`position:absolute;border-radius:50%;pointer-events:none;width:${1+Math.random()*3}px;height:${1+Math.random()*3}px;background:rgba(123,44,255,${(0.2+Math.random()*0.3).toFixed(2)});left:${(Math.random()*100).toFixed(1)}%;top:${(Math.random()*100).toFixed(1)}%;animation:forgeParticle ${5+i*2}s ease-in-out ${(i*0.6).toFixed(1)}s infinite;`;fp.appendChild(p);}}
+
   loadPrefs();
   renderThemes();
   renderBannerPacks();
   renderBorders();
   renderSports();
+  renderPowerGrid();
   loadIdentitySettings();
   applyPreview();
   renderArchetypePicker();
