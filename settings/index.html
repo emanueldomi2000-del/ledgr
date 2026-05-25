@@ -1189,15 +1189,26 @@ function renderBanners(){
   });
 }
 
-function selectBannerPack(packId){
-  try{
-    config.bannerPack=packId;
-    localStorage.setItem('ledgr_banner_pack',packId);
-    if(typeof LedgrIdentity!=='undefined'){LedgrIdentity.save('banner_pack',packId);LedgrIdentity.applyBanner();}
-    document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.dataset.pack===packId));
-    updatePreviewBanner(packId);
-    if(typeof showToast==='function')showToast('✓ Banner saved everywhere');
-  }catch(e){console.error('selectBannerPack error:',e);}
+function selectBannerPack(id) {
+  localStorage.setItem('ledgr_banner_pack', id);
+  document.querySelectorAll('[data-pack]').forEach(function(c) {
+    c.classList.toggle('selected', c.getAttribute('data-pack') === id);
+  });
+  var lpBanner = document.getElementById('lpBanner');
+  if(lpBanner) {
+    lpBanner.className = 'lp-banner';
+    lpBanner.classList.add('bp-' + id);
+  }
+  var token = localStorage.getItem('ledgr_token');
+  if(!token) { showToast('✓ Saved locally'); return; }
+  fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ bannerPack: id })
+  }).then(function(r) {
+    if(r.ok) showToast('✓ Banner saved');
+    else showToast('✓ Saved locally');
+  }).catch(function() { showToast('✓ Saved locally'); });
 }
 
 /* ── RENDER BORDERS ── */
@@ -1227,15 +1238,28 @@ function renderBorders(){
   }).join('');
 }
 
-function selectBorder(borderId){
-  try{
-    config.border=borderId;
-    localStorage.setItem('ledgr_avatar_border',borderId);
-    if(typeof LedgrIdentity!=='undefined'){LedgrIdentity.save('avatar_border',borderId);}
-    document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===borderId));
-    updatePreviewBorder(borderId);
-    if(typeof showToast==='function')showToast('✓ Border saved everywhere');
-  }catch(e){console.error('selectBorder error:',e);}
+function selectBorder(id) {
+  localStorage.setItem('ledgr_avatar_border', id);
+  document.querySelectorAll('[data-border]').forEach(function(c) {
+    c.classList.toggle('selected', c.getAttribute('data-border') === id);
+  });
+  var lpAv = document.getElementById('lpAvatar');
+  if(lpAv) {
+    lpAv.className.split(' ').forEach(function(cls) {
+      if(cls.startsWith('ab-')) lpAv.classList.remove(cls);
+    });
+    if(id !== 'none') lpAv.classList.add('ab-' + id);
+  }
+  var token = localStorage.getItem('ledgr_token');
+  if(!token) { showToast('✓ Saved locally'); return; }
+  fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ avatarBorder: id })
+  }).then(function(r) {
+    if(r.ok) showToast('✓ Border saved');
+    else showToast('✓ Saved locally');
+  }).catch(function() { showToast('✓ Saved locally'); });
 }
 
 /* ── RENDER SPORTS ── */
@@ -1263,22 +1287,23 @@ function renderThemes(){
   grid.innerHTML=`<div class="theme-swatches-row">${swatches}</div><div class="theme-preview-bar"><div class="tpb-inner" id="themePreviewBar" style="background:${cur}"></div></div>`;
 }
 
-function selectTheme(color){
-  const t=THEMES.find(x=>x.color===color);
-  if(t)config.theme=t.id;
-  config.profileTheme=color;
-  document.documentElement.style.setProperty('--ac-light',color+'cc');
-  document.documentElement.style.setProperty('--profile-glow',color+'59');
-  document.documentElement.style.setProperty('--profile-highlight',color+'cc');
-  document.documentElement.style.setProperty('--profile-card-border',color);
-  LedgrIdentity.save('profile_theme',color);
-  LedgrIdentity.applyTheme();
-  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected',s.dataset.color===color));
-  const tpb=document.getElementById('themePreviewBar');
-  if(tpb)tpb.style.background=color;
-  applyPreview();
-  updateLivePreview('theme',color);
-  showToast('✓ Theme saved everywhere');
+function selectTheme(color) {
+  localStorage.setItem('ledgr_profile_theme', color);
+  document.documentElement.style.setProperty('--ac', color);
+  document.querySelectorAll('.theme-swatch').forEach(function(s) {
+    s.classList.toggle('selected', s.getAttribute('data-color') === color);
+  });
+  var tpb = document.getElementById('themePreviewBar');
+  if(tpb) tpb.style.background = color;
+  updateLivePreview('theme', color);
+  showToast('✓ Theme saved');
+  var token = localStorage.getItem('ledgr_token');
+  if(!token) return;
+  fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body: JSON.stringify({ profileTheme: color })
+  }).catch(function() {});
 }
 
 /* ── LIVE PREVIEW ── */
@@ -1915,12 +1940,20 @@ window.onload=()=>{
   initLivePreview();
   renderArchetypePicker();
 
-  // Restore saved selections from localStorage
-  const _savedBanner=localStorage.getItem('ledgr_banner_pack')||'midnight';
-  document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.dataset.pack===_savedBanner));
-  const _savedBorder=localStorage.getItem('ledgr_avatar_border')||'none';
-  document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===_savedBorder));
-  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected',s.dataset.color===_savedTheme));
+  // Restore saved selections
+  var savedBanner = localStorage.getItem('ledgr_banner_pack') || 'midnight';
+  document.querySelectorAll('[data-pack]').forEach(function(c) {
+    c.classList.toggle('selected', c.getAttribute('data-pack') === savedBanner);
+  });
+  var savedBorder = localStorage.getItem('ledgr_avatar_border') || 'none';
+  document.querySelectorAll('[data-border]').forEach(function(c) {
+    c.classList.toggle('selected', c.getAttribute('data-border') === savedBorder);
+  });
+  var savedThemeRestore = localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
+  document.documentElement.style.setProperty('--ac', savedThemeRestore);
+  document.querySelectorAll('.theme-swatch').forEach(function(s) {
+    s.classList.toggle('selected', s.getAttribute('data-color') === savedThemeRestore);
+  });
 
   loadMySubscriptions();
   loadMySubscribers();

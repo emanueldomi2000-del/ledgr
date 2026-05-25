@@ -53,6 +53,74 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .banner-noise{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1}
 .banner-overlay{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to top,var(--bg) 0%,transparent 100%);z-index:2}
 
+/* ── BANNER PACK CLASSES (bp-*) ── */
+.bp-midnight{background:#050508}
+.bp-carbon{background:linear-gradient(135deg,#0a0a0a,#181818)}
+.bp-frost{background:linear-gradient(135deg,#030d1a,#051929,#081e35)}
+.bp-purple-fade{background:linear-gradient(135deg,#050508,#1a0a3a)}
+.bp-electric-storm{background:linear-gradient(135deg,#050515,#0c0a28,#150c35);position:relative;overflow:hidden}
+.bp-electric-storm::after{content:'';position:absolute;top:0;left:20%;width:2px;height:100%;background:linear-gradient(180deg,transparent,rgba(120,80,255,0.9),transparent);animation:bpBolt 3s steps(1) infinite;opacity:0}
+@keyframes bpBolt{0%,80%,100%{opacity:0}81%,83%{opacity:1}82%,84%{opacity:0}85%,87%{opacity:.7}86%,88%{opacity:0}}
+.bp-cosmic-rift{background:radial-gradient(ellipse at 30% 50%,#1a0535,#050510,#000)}
+.bp-frost-core{background:linear-gradient(135deg,#030e1e,#061a30,#0a2040)}
+.bp-neon-pulse{background:linear-gradient(135deg,#0a0520,#0d0838,#14063d)}
+.bp-dragon-soul{background:radial-gradient(ellipse at 50% 120%,#3a0008,#0f0000,#040000)}
+.bp-crown-energy{background:radial-gradient(ellipse at 50% -30%,#1f1600,#0a0800,#040400)}
+.bp-eternal-flame{background:linear-gradient(180deg,#020100,#0f0500,#1a0800)}
+.bp-void-emperor{background:#000}
+.bp-singularity{background:radial-gradient(circle at 50% 50%,#050010,#000)}
+.bp-time-collapse{background:conic-gradient(from 0deg,#000,#050015,#000,#050010,#000)}
+.bp-unknown-signal{background:#000}
+.bp-galaxy-motion{background:#000510}
+
+/* ── AVATAR BORDER CLASSES (ab-*) for tipster profile ── */
+.ab-clean{border:2px solid rgba(184,159,255,0.22)!important}
+.ab-bronze-frame{border:2px solid #cd7f32!important;box-shadow:0 0 8px rgba(205,127,50,0.3)}
+.ab-crystal-orbit{border:2px solid rgba(79,195,247,0.4)!important}
+.ab-pulse-ring{border:2px solid rgba(150,100,255,0.6)!important;animation:abHeartbeat 1.4s ease-in-out infinite}
+@keyframes abHeartbeat{0%{box-shadow:0 0 0 0 rgba(150,100,255,0.4)}40%{box-shadow:0 0 0 6px rgba(150,100,255,0)}100%{box-shadow:0 0 0 0 rgba(150,100,255,0)}}
+.ab-frost-edge{border:2px solid rgba(147,210,255,0.8)!important;box-shadow:0 0 12px rgba(147,210,255,0.3);animation:abFrost 3s ease-in-out infinite}
+@keyframes abFrost{0%,100%{border-color:rgba(147,210,255,0.4)}50%{border-color:rgba(220,245,255,1);box-shadow:0 0 20px rgba(147,210,255,0.5)}}
+.ab-electric-surge{border:2px solid transparent!important;background:linear-gradient(#1a1a2a,#1a1a2a) padding-box,conic-gradient(#7B2CFF,#fff 45deg,#7B2CFF 90deg,#4FC3F7 180deg,#fff 225deg,#7B2CFF) border-box;animation:abElecRun .5s linear infinite;box-shadow:0 0 10px rgba(123,44,255,0.5)}
+@keyframes abElecRun{from{background:linear-gradient(#1a1a2a,#1a1a2a) padding-box,conic-gradient(from 0deg,#7B2CFF,#fff 45deg,#7B2CFF 90deg,#4FC3F7 180deg,#fff 225deg,#7B2CFF) border-box}to{background:linear-gradient(#1a1a2a,#1a1a2a) padding-box,conic-gradient(from 360deg,#7B2CFF,#fff 45deg,#7B2CFF 90deg,#4FC3F7 180deg,#fff 225deg,#7B2CFF) border-box}}
+.ab-inferno-core{border:2px solid #FF6B35!important;box-shadow:0 0 12px rgba(255,107,53,0.5);animation:abInferno 1.5s ease-in-out infinite}
+@keyframes abInferno{0%,100%{border-color:#FF6B35}50%{border-color:#FFD700;box-shadow:0 0 24px rgba(255,107,53,0.8)}}
+.ab-cosmic-rift{border:3px solid transparent!important;background:linear-gradient(#0a0a1a,#0a0a1a) padding-box,conic-gradient(#7B2CFF,#4FC3F7,#00E5A0,#FFD700,#FF6BFF,#7B2CFF) border-box;animation:abCosmicHue 3s linear infinite;box-shadow:0 0 12px rgba(123,44,255,0.4)}
+@keyframes abCosmicHue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+.ab-dragon-soul{border:3px solid #FF3355!important;animation:abDragonFire 2s ease-in-out infinite;box-shadow:0 0 16px rgba(255,51,85,0.5);position:relative;overflow:visible}
+.ab-dragon-soul::before,.ab-dragon-soul::after{content:'🔥';position:absolute;font-size:11px;top:50%;left:50%;animation:abFireOrbit 2.5s linear infinite;pointer-events:none}
+.ab-dragon-soul::after{content:'🐉';font-size:10px;animation:abFireOrbit 2.5s linear infinite reverse;animation-delay:-1.25s}
+@keyframes abFireOrbit{from{transform:rotate(0deg) translateX(56px) rotate(0deg)}to{transform:rotate(360deg) translateX(56px) rotate(-360deg)}}
+@keyframes abDragonFire{0%,100%{border-color:#FF3355}50%{border-color:#FFD700;box-shadow:0 0 28px rgba(255,215,0,0.6)}}
+.ab-crown-halo{border:3px solid transparent!important;background:linear-gradient(#1a1400,#1a1400) padding-box,conic-gradient(#FFD700,#FFA500,rgba(255,255,255,0.5),#FFD700,#FFA500,rgba(255,255,255,0.5),#FFD700) border-box;box-shadow:0 0 20px rgba(255,215,0,0.4);animation:abCrownPulse 2s ease-in-out infinite;position:relative;overflow:visible}
+.ab-crown-halo::before{content:'⭐';font-size:9px;position:absolute;top:50%;left:50%;animation:abStarOrbit 3s linear infinite}
+.ab-crown-halo::after{content:'👑';font-size:9px;position:absolute;top:-18px;left:50%;transform:translateX(-50%);animation:abCrownBob 1.5s ease-in-out infinite}
+@keyframes abStarOrbit{from{transform:rotate(0deg) translateX(54px)}to{transform:rotate(360deg) translateX(54px)}}
+@keyframes abCrownBob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-3px)}}
+@keyframes abCrownPulse{0%,100%{box-shadow:0 0 16px rgba(255,215,0,0.3)}50%{box-shadow:0 0 32px rgba(255,215,0,0.7)}}
+.ab-void-king{border:3px solid rgba(80,0,160,0.9)!important;box-shadow:0 0 20px rgba(80,0,160,0.5);animation:abVoid 3s ease-in-out infinite}
+@keyframes abVoid{0%,100%{border-color:rgba(80,0,160,0.9)}50%{border-color:rgba(150,0,255,1);box-shadow:0 0 36px rgba(120,0,220,0.8)}}
+.ab-celestial-orbit{border:2px solid rgba(170,120,255,0.4)!important;animation:abCelestial 4s ease-in-out infinite;position:relative;overflow:visible}
+.ab-celestial-orbit::before{content:'🌍';font-size:8px;position:absolute;top:50%;left:50%;animation:abPlanet1 3s linear infinite}
+.ab-celestial-orbit::after{content:'🌙';font-size:6px;position:absolute;top:50%;left:50%;animation:abPlanet2 5s linear infinite reverse}
+@keyframes abPlanet1{from{transform:rotate(0deg) translateX(56px) rotate(0deg)}to{transform:rotate(360deg) translateX(56px) rotate(-360deg)}}
+@keyframes abPlanet2{from{transform:rotate(120deg) translateX(62px) rotate(-120deg)}to{transform:rotate(480deg) translateX(62px) rotate(-480deg)}}
+@keyframes abCelestial{0%,100%{border-color:rgba(170,120,255,0.3)}50%{border-color:rgba(170,120,255,0.8);box-shadow:0 0 24px rgba(170,120,255,0.4)}}
+.ab-time-collapse{border:2px solid rgba(255,107,255,0.7)!important;animation:abTimeGlitch 1.5s steps(4) infinite}
+@keyframes abTimeGlitch{0%{border-color:rgba(255,107,255,0.7);transform:translate(0)}25%{border-color:rgba(79,195,247,0.9);transform:translate(-2px,1px) skewX(-2deg)}50%{border-color:rgba(255,51,85,0.8);transform:translate(2px,-1px) skewX(2deg)}75%{border-color:rgba(255,215,0,0.7);transform:translate(-1px,2px)}100%{border-color:rgba(255,107,255,0.7);transform:translate(0)}}
+.ab-singularity{border:3px solid transparent!important;background:radial-gradient(circle at 50%,#000005,#050010) padding-box,conic-gradient(#FF6BFF 0deg,#000 60deg,#7B2CFF 120deg,#000 180deg,#4FC3F7 240deg,#000 300deg,#FF6BFF 360deg) border-box;box-shadow:0 0 28px rgba(255,107,255,0.4);animation:abSingSpin 1.2s linear infinite;position:relative;overflow:visible}
+@keyframes abSingSpin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+.ab-unknown-signal{border:2px solid rgba(0,255,80,0.4)!important;animation:abSignal .8s steps(3) infinite}
+@keyframes abSignal{0%{border-color:rgba(0,255,80,0.4);transform:translate(0)}33%{border-color:rgba(0,200,255,0.6);transform:translate(-1px,0)}66%{border-color:rgba(255,0,100,0.5);transform:translate(1px,0)}}
+.ab-redacted{animation:abRedacted 4s linear infinite}
+@keyframes abRedacted{0%{border:3px solid #FF6BFF!important}20%{border:3px solid #7B2CFF!important}40%{border:3px solid #FF3355!important;transform:skewX(-1deg)}60%{border:3px solid #00E5A0!important}80%{border:3px solid #FFD700!important;transform:skewX(1deg)}100%{border:3px solid #FF6BFF!important}}
+.ab-halloween{border:2px solid rgba(255,120,0,0.7)!important;animation:abHalloween .4s steps(2) infinite}
+@keyframes abHalloween{0%{box-shadow:0 0 8px rgba(255,120,0,0.5)}50%{box-shadow:0 0 14px rgba(255,120,0,0.8)}}
+.ab-winter-elite{border:2px solid rgba(147,210,255,0.7)!important;animation:abWinter 4s ease-in-out infinite}
+@keyframes abWinter{0%,100%{border-color:rgba(147,210,255,0.4)}50%{border-color:rgba(220,245,255,0.9);box-shadow:0 0 20px rgba(147,210,255,0.5)}}
+.ab-summer-champion{border:3px solid transparent!important;background:linear-gradient(#1a1200,#1a1200) padding-box,conic-gradient(#FFD700,#FF6B35,#FFD700,#FFA500,#FFD700) border-box;animation:abSummerGlow 2s ease-in-out infinite;box-shadow:0 0 12px rgba(255,215,0,0.3)}
+@keyframes abSummerGlow{0%,100%{box-shadow:0 0 10px rgba(255,215,0,0.3)}50%{box-shadow:0 0 24px rgba(255,215,0,0.6)}}
+
 /* ── PROFILE BODY ── */
 .profile-body{background:var(--bg);padding:0 40px 28px;position:relative}
 .profile-top{display:flex;align-items:flex-start;gap:24px;padding-top:0;margin-bottom:20px;flex-wrap:wrap}
@@ -1191,8 +1259,9 @@ async function loadProfile(){
       try{
         const bp=await profileRes.json();
         if(bp.archetype!=null)profileCfg.archetype=bp.archetype;
-        if(bp.banner)profileCfg.banner=bp.banner;
-        if(bp.border)profileCfg.border=bp.border;
+        if(bp.bannerPack||bp.banner)profileCfg.banner=bp.bannerPack||bp.banner;
+        if(bp.avatarBorder||bp.border)profileCfg.border=bp.avatarBorder||bp.border;
+        if(bp.profileTheme)localStorage.setItem('ledgr_profile_theme',bp.profileTheme);
         if(Array.isArray(bp.fav_sports))profileCfg.favSports=bp.fav_sports;
         if(bp.bio!=null)profileCfg.bio=bp.bio;
         if(bp.social_twitter!=null||bp.social_instagram!=null)profileCfg.social={twitter:bp.social_twitter||'',instagram:bp.social_instagram||''};
@@ -1440,6 +1509,33 @@ async function loadProfile(){
       if(window.initTooltips)window.initTooltips();
       initTipTriggers();
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
+
+      // Apply saved cosmetics (banner pack, avatar border, theme)
+      (function() {
+        var savedBanner = (profileCfg && profileCfg.banner) || localStorage.getItem('ledgr_banner_pack') || 'midnight';
+        localStorage.setItem('ledgr_banner_pack', savedBanner);
+        var bannerEl = document.querySelector('.profile-banner');
+        if(bannerEl) {
+          bannerEl.className.split(' ').filter(Boolean).forEach(function(c) {
+            if(c.startsWith('bp-')) bannerEl.classList.remove(c);
+          });
+          bannerEl.classList.add('bp-' + savedBanner);
+        }
+
+        var savedBorder = (profileCfg && profileCfg.border) || localStorage.getItem('ledgr_avatar_border') || 'none';
+        localStorage.setItem('ledgr_avatar_border', savedBorder);
+        var avatarEl = document.querySelector('.avatar-big');
+        if(avatarEl && savedBorder !== 'none') {
+          avatarEl.style.overflow = 'visible';
+          avatarEl.className.split(' ').filter(Boolean).forEach(function(c) {
+            if(c.startsWith('ab-')) avatarEl.classList.remove(c);
+          });
+          avatarEl.classList.add('ab-' + savedBorder);
+        }
+
+        var savedTheme = localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
+        document.documentElement.style.setProperty('--ac', savedTheme);
+      })();
 
       // FIX 2 — Archetype-themed hero background particles
       const _banner=document.querySelector('.profile-banner');
