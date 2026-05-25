@@ -220,9 +220,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @media(max-width:600px){.pf-paths{grid-template-columns:1fr}}
 
 /* ── CINEMATIC HERO CARD ── */
-.arch-hero-card{display:flex;gap:32px;align-items:center;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:28px;position:relative;overflow:hidden;min-height:260px}
-.arch-hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--arch-c,#7B2CFF),transparent)}
-.arch-portrait-area{flex-shrink:0;width:180px;display:flex;align-items:center;justify-content:center}
+.arch-hero-card{display:flex;gap:0;align-items:stretch;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:0;position:relative;overflow:hidden;min-height:260px}
+.arch-hero-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--arch-c,#7B2CFF),transparent);z-index:3}
+.arch-portrait-area{flex:0 0 40%;min-height:260px;background:linear-gradient(160deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%);border-right:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.arch-portrait-area::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.012) 3px,rgba(255,255,255,0.012) 4px);pointer-events:none;z-index:0}
 .arch-portrait{position:relative;width:160px;height:160px;display:flex;align-items:center;justify-content:center}
 .p-ring{position:absolute;border-radius:50%;border:1px solid var(--arch-c,#7B2CFF);animation:ringExpand 4s ease-in-out infinite}
 .p-ring-1{inset:0;opacity:0.4;animation-delay:0s}
@@ -234,7 +235,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .portrait-icon{font-size:72px;position:relative;z-index:2;animation:iconFloat 5s ease-in-out infinite;filter:drop-shadow(0 0 24px var(--arch-c,#7B2CFF))}
 @keyframes iconFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.05)}}
 .portrait-particles{position:absolute;inset:0;pointer-events:none}
-.arch-identity-area{flex:1}
+.arch-identity-area{flex:1;padding:32px 28px}
 .arch-rarity-pill{display:inline-block;font-size:8px;letter-spacing:0.2em;font-family:'DM Mono',monospace;padding:2px 10px;border-radius:20px;margin-bottom:8px}
 .arch-hero-card .arch-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,52px);color:var(--arch-c,var(--ac));letter-spacing:0.02em;line-height:1;margin-bottom:4px}
 .arch-class{font-size:9px;letter-spacing:0.25em;color:var(--mu);font-family:'DM Mono',monospace;margin-bottom:10px}
@@ -247,7 +248,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .as-item{text-align:center}
 .as-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--tx)}
 .as-lbl{font-size:8px;letter-spacing:0.15em;color:var(--mu);font-family:'DM Mono',monospace}
-@media(max-width:768px){.arch-hero-card{flex-direction:column}.arch-portrait-area{width:100%}}
+@media(max-width:768px){.arch-hero-card{flex-direction:column}.arch-portrait-area{flex:none;width:100%;min-height:220px;border-right:none;border-bottom:1px solid rgba(255,255,255,0.04)}.arch-identity-area{padding:24px 20px}}
 
 /* ── VAULT RARITY SIZES ── */
 .arch-vault-card.mythic::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,107,255,0.05),transparent,rgba(123,44,255,0.05));animation:mythicShift 4s ease infinite alternate;pointer-events:none}
@@ -262,15 +263,46 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .evo-branch::before{content:'';position:absolute;left:-24px;top:50%;width:24px;height:2px;background:rgba(123,44,255,0.3);transform:translateY(-50%);animation:branchFlow 2s linear infinite}
 @keyframes branchFlow{0%{background:rgba(123,44,255,0.1)}50%{background:rgba(123,44,255,0.5)}100%{background:rgba(123,44,255,0.1)}}
 .evo-branch:hover{border-color:var(--ac);transform:translateX(4px)}
-.evo-branch-pct{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--ac);min-width:50px}
+.evo-branch-pct{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--ac);min-width:60px;line-height:1}
 .evo-branch-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--tx)}
 .evo-branch-trigger{font-size:10px;color:var(--ac);font-family:'Syne',sans-serif}
 
 /* ── SCAN PROCESS ── */
 .scan-process{max-width:600px}
-.sp-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,5vw,52px);letter-spacing:0.02em;color:var(--tx);margin-bottom:24px}
 @keyframes stepReveal{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 @keyframes dotPulse{0%,100%{opacity:0.3}50%{opacity:1}}
+
+/* ── CHARACTER PORTRAIT KEYFRAMES ── */
+@keyframes visorPulse{0%,100%{opacity:0.9}50%{opacity:0.5}}
+@keyframes ghostGlitch{0%,100%{transform:translate(0)}25%{transform:translate(-2px,1px)}75%{transform:translate(2px,-1px)}}
+@keyframes glitchLine{0%{top:30%;opacity:0.4}33%{top:50%}66%{top:70%}100%{top:85%;opacity:0}}
+
+/* ── VAULT GHOST MYTHIC SCANLINES ── */
+.arch-vault-card[data-arch="The Ghost"]{border-color:rgba(255,107,255,0.3)!important;background:rgba(255,107,255,0.03)!important}
+.arch-vault-card[data-arch="The Ghost"]::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,107,255,0.03) 2px,rgba(255,107,255,0.03) 4px);pointer-events:none;animation:scanlines 8s linear infinite}
+@keyframes scanlines{from{background-position:0 0}to{background-position:0 100px}}
+.arch-vault-card[data-arch="The Ghost"]:hover{animation:vaultGlitch 0.4s steps(3) infinite!important}
+@keyframes vaultGlitch{0%{transform:translate(0);filter:hue-rotate(0deg)}33%{transform:translate(-2px,1px);filter:hue-rotate(30deg)}66%{transform:translate(2px,-1px);filter:hue-rotate(-30deg)}100%{transform:translate(0);filter:hue-rotate(0deg)}}
+
+/* ── POSSIBLE FUTURES HEADER ── */
+.pf-hero-header{margin-bottom:24px}
+.pf-scanning-text{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,48px);color:var(--tx);letter-spacing:0.05em;margin-bottom:4px}
+.pf-scanning-text span{color:var(--ac);animation:textShift 4s ease-in-out infinite}
+@keyframes textShift{0%,100%{opacity:1}50%{opacity:0.6}}
+.pf-current-state{font-size:12px;color:var(--mu);font-family:'Syne',sans-serif;margin-bottom:20px}
+.pf-current-state span{color:var(--ac);font-weight:600}
+
+/* ── TERMINAL SCAN ── */
+.terminal-scan{background:rgba(0,0,0,0.6);border:1px solid rgba(0,229,160,0.2);border-radius:10px;padding:20px;font-family:'DM Mono',monospace;font-size:12px;max-width:600px}
+.ts-header{color:var(--mu);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.ts-prompt{color:#00E5A0}
+.ts-cmd{color:var(--tx)}
+.ts-cursor{animation:cursorBlink 1s steps(1) infinite}
+@keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
+.ts-line{padding:4px 0;color:var(--mu);opacity:0;animation:termReveal 0.3s ease forwards}
+.ts-line.success{color:#00E5A0}
+.ts-line.highlight{color:var(--ac)}
+@keyframes termReveal{from{opacity:0;transform:translateX(-4px)}to{opacity:1;transform:translateX(0)}}
 </style>
 </head>
 <body>
@@ -319,7 +351,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <!-- SCAN PROCESS -->
   <div>
     <div class="scan-process">
-      <div class="sp-title">SCAN PROCESS</div>
       <div id="spSteps"></div>
     </div>
   </div>
@@ -511,6 +542,50 @@ function getArchStats(name) {
   return stats[name] || [{label:'Detecting',val:'...'}];
 }
 
+function buildCharacterPortrait(name, color) {
+  const chars = {
+    'The Sniper': `
+      <div style="position:relative;width:120px;height:160px;margin:0 auto;">
+        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:56px;height:30px;border-radius:50% 50% 0 0;background:#0d0d1a;"></div>
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:50px;height:50px;border-radius:50% 50% 40% 40%;background:linear-gradient(180deg,#1a1a2e,#0d0d1a);box-shadow:0 0 20px ${color}66;"></div>
+        <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:36px;height:8px;border-radius:4px;background:${color};opacity:0.9;box-shadow:0 0 12px ${color},0 0 24px ${color}88;animation:visorPulse 2s ease-in-out infinite;"></div>
+        <div style="position:absolute;top:44px;left:50%;transform:translateX(-50%);width:40px;height:12px;border-radius:4px;background:#111122;border-top:2px solid ${color}44;"></div>
+        <div style="position:absolute;top:48px;left:50%;transform:translateX(-50%);width:60px;height:80px;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#1a1a2e,#0d0d18);border:1px solid ${color}33;"></div>
+        <div style="position:absolute;top:70px;right:4px;width:28px;height:4px;border-radius:2px;background:${color};opacity:0.7;box-shadow:0 0 8px ${color};"></div>
+        <div style="position:absolute;top:68px;right:2px;width:6px;height:8px;border-radius:1px;background:${color};box-shadow:0 0 6px ${color};"></div>
+      </div>`,
+    'The Ghost': `
+      <div style="position:relative;width:120px;height:160px;margin:0 auto;animation:ghostGlitch 4s steps(2) infinite;">
+        <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:70px;height:100px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,rgba(255,107,255,0.15),transparent);border:1px solid rgba(255,107,255,0.3);box-shadow:0 0 30px rgba(255,107,255,0.2);"></div>
+        <div style="position:absolute;top:35px;left:30px;width:12px;height:16px;border-radius:50%;background:#FF6BFF;box-shadow:0 0 10px #FF6BFF;"></div>
+        <div style="position:absolute;top:35px;right:30px;width:12px;height:16px;border-radius:50%;background:#FF6BFF;box-shadow:0 0 10px #FF6BFF;"></div>
+        <div style="position:absolute;top:50px;left:0;right:0;height:2px;background:rgba(255,107,255,0.4);animation:glitchLine 3s steps(1) infinite;"></div>
+      </div>`,
+    'The Demon': `
+      <div style="position:relative;width:120px;height:160px;margin:0 auto;">
+        <div style="position:absolute;top:-5px;left:24px;width:10px;height:22px;border-radius:50% 50% 0 0;background:#FF3355;transform:rotate(-10deg);box-shadow:0 0 8px #FF3355;"></div>
+        <div style="position:absolute;top:-5px;right:24px;width:10px;height:22px;border-radius:50% 50% 0 0;background:#FF3355;transform:rotate(10deg);box-shadow:0 0 8px #FF3355;"></div>
+        <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:48px;height:48px;border-radius:40%;background:linear-gradient(180deg,#2a0505,#1a0000);box-shadow:0 0 20px #FF335566;"></div>
+        <div style="position:absolute;top:24px;left:30px;width:10px;height:6px;border-radius:50%;background:#FF3355;box-shadow:0 0 8px #FF3355;"></div>
+        <div style="position:absolute;top:24px;right:30px;width:10px;height:6px;border-radius:50%;background:#FF3355;box-shadow:0 0 8px #FF3355;"></div>
+        <div style="position:absolute;top:56px;left:50%;transform:translateX(-50%);width:58px;height:80px;border-radius:6px;background:linear-gradient(180deg,#1a0000,#0a0000);border:1px solid #FF335533;"></div>
+        <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:70px;height:24px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,100,0,0.5),transparent);animation:flameFlicker 0.6s ease-in-out infinite alternate;"></div>
+      </div>`,
+    'The Sharp': `
+      <div style="position:relative;width:120px;height:160px;margin:0 auto;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:linear-gradient(180deg,#0a1a12,#051008);box-shadow:0 0 16px #00E5A066;"></div>
+        <div style="position:absolute;top:14px;left:50%;transform:translateX(-50%);width:52px;height:14px;border:1px solid #00E5A0;border-radius:4px;background:rgba(0,229,160,0.1);box-shadow:0 0 8px #00E5A044;"></div>
+        <div style="position:absolute;top:8px;right:2px;font-size:6px;color:#00E5A0;font-family:monospace;opacity:0.7;line-height:1.4;">1.82<br>+CLV<br>94%</div>
+        <div style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:56px;height:90px;border-radius:6px 6px 4px 4px;background:linear-gradient(180deg,#0a120a,#050c05);border:1px solid #00E5A022;"></div>
+        <div style="position:absolute;top:48px;left:50%;transform:translateX(-50%);width:8px;height:40px;border-radius:2px;background:linear-gradient(180deg,#00E5A0,#00E5A033);"></div>
+      </div>`,
+  };
+  if (chars[name]) return chars[name];
+  const emojiMatch = ARCHETYPES_DATA.find(a => a.name === name);
+  const emoji = emojiMatch ? emojiMatch.icon : '⚡';
+  return `<div style="font-size:80px;text-align:center;filter:drop-shadow(0 0 24px ${color});animation:iconFloat 4s ease-in-out infinite;">${emoji}</div>`;
+}
+
 function showDNAIntro(archName, archColor) {
   if (sessionStorage.getItem('dna_intro_shown')) return;
   sessionStorage.setItem('dna_intro_shown', '1');
@@ -552,22 +627,6 @@ window.onload = () => {
   if (!user?.username) { document.getElementById('notLogged').style.display='flex'; return; }
 
   document.getElementById('app').style.display = 'block';
-
-  const _scanSteps = [
-    {icon:'📡', title:'DATA COLLECTION',   desc:'Every pick you post is analysed — odds, result, timing, market, and volume all feed into the detection engine.'},
-    {icon:'⚙️', title:'ARCHETYPE SCORING', desc:'Each of the 15 archetypes is scored 0–100 based on how closely your data matches its trigger conditions.'},
-    {icon:'🔍', title:'PRIMARY DETECTION',  desc:'Your highest-scoring archetype becomes your primary identity. A score above 40 is required for detection.'},
-    {icon:'📈', title:'EVOLUTION TRACKING', desc:'As your style evolves, your archetype updates automatically. The Hybrid emerges when three archetypes converge.'},
-  ];
-  const _spEl = document.getElementById('spSteps');
-  if (_spEl) {
-    _scanSteps.forEach((step, i) => {
-      const div = document.createElement('div');
-      div.style.cssText = `display:flex;align-items:flex-start;gap:16px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.04);animation:stepReveal 0.5s ease forwards;animation-delay:${i*0.15}s;opacity:0`;
-      div.innerHTML = `<div style="font-size:26px;flex-shrink:0;width:36px;text-align:center">${step.icon}</div><div style="flex:1"><div style="font-family:'Bebas Neue';font-size:18px;letter-spacing:0.1em;color:var(--tx);margin-bottom:4px">${step.title}</div><div style="font-size:12px;color:var(--mu);font-family:'Syne';line-height:1.6">${step.desc}</div></div><div style="font-family:'Bebas Neue';font-size:40px;color:rgba(184,159,255,0.07);letter-spacing:2px;flex-shrink:0">0${i+1}</div>`;
-      _spEl.appendChild(div);
-    });
-  }
 
   loadData();
 };
@@ -614,6 +673,7 @@ async function loadData() {
   renderGrid(sorted);
   renderEvolution(sorted);
   renderSecretSlots();
+  renderTerminal(primaryArchetype ? primaryArchetype.name : 'UNKNOWN');
   if (primaryArchetype) showDNAIntro(primaryArchetype.name, primaryArchetype.color);
 }
 
@@ -671,15 +731,11 @@ function renderCurrentCard(sorted) {
   ).join('');
 
   el.innerHTML = `<div class="arch-hero-card" style="--arch-c:${heroConfig.color}">
-    <div class="arch-portrait-area">
-      <div class="arch-portrait">
-        <div class="portrait-glow"></div>
-        <div class="p-ring p-ring-1"></div>
-        <div class="p-ring p-ring-2"></div>
-        <div class="p-ring p-ring-3"></div>
-        <div class="portrait-icon">${heroConfig.icon}</div>
-        <div class="portrait-particles">${particles}</div>
+    <div class="arch-portrait-area" style="background:radial-gradient(ellipse at center 80%,${heroConfig.color}18 0%,transparent 65%),linear-gradient(160deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%)">
+      <div style="position:relative;z-index:1">
+        ${buildCharacterPortrait(p.name, heroConfig.color)}
       </div>
+      <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:${heroConfig.color};font-family:'DM Mono',monospace;opacity:0.5;white-space:nowrap">${heroConfig.label}</div>
     </div>
     <div class="arch-identity-area">
       <div class="arch-rarity-pill" style="color:${_rar.color};border:1px solid ${_rar.color}44;background:${_rar.color}11">${_rar.tier.toUpperCase()} · ${onlyPct}% OF BETTORS</div>
@@ -735,7 +791,7 @@ function renderGrid(sorted) {
 
     if (grey) {
       const unlockHint = unlockConditions[a.id] || 'Keep posting picks to unlock';
-      return `<div class="arch-card locked-card arch-vault-card ${rarCls}">
+      return `<div class="arch-card locked-card arch-vault-card ${rarCls}" data-arch="${a.name}">
         ${rarPill}
         <div class="locked-icon">🔒</div>
         <div class="locked-name">?????</div>
@@ -743,7 +799,7 @@ function renderGrid(sorted) {
       </div>`;
     }
 
-    return `<div class="arch-card arch-vault-card ${rarCls} ${isP?'is-primary matched':(matched?'matched unlocked':'unlocked')}" style="${isP?`background:${a.color}10;border-color:${a.color}44`:matched?`border-color:${a.color}33`:''}">
+    return `<div class="arch-card arch-vault-card ${rarCls} ${isP?'is-primary matched':(matched?'matched unlocked':'unlocked')}" data-arch="${a.name}" style="${isP?`background:${a.color}10;border-color:${a.color}44`:matched?`border-color:${a.color}33`:''}">
       ${isP ? `<div class="arch-primary-badge" style="background:${a.color}">YOUR DNA</div>` : sc>0?`<div class="arch-match-badge">${sc}%</div>`:''}
       ${rarPill}
       <div class="arch-icon">${a.icon}</div>
@@ -775,13 +831,15 @@ function renderEvolution(sorted) {
     <div class="evo-branch">
       <div class="evo-branch-pct">${e.pct}%</div>
       <div>
-        <div class="evo-branch-name">${e.name.toUpperCase()}</div>
+        <div class="evo-branch-name">→ ${e.name.toUpperCase()}</div>
         <div class="evo-branch-trigger">${e.condition}</div>
       </div>
     </div>`).join('');
   el.innerHTML = `<div class="pf-eyebrow">EVOLUTION PATH</div>
-    <div class="pf-title">POSSIBLE FUTURES</div>
-    <div class="pf-subtitle">Your trajectory based on behavioral patterns</div>
+    <div class="pf-hero-header">
+      <div class="pf-scanning-text">YOUR MIND IS <span>SHIFTING</span></div>
+      <div class="pf-current-state">Current: <span id="pfCurrentArch">${p.name}</span></div>
+    </div>
     <div class="evo-tree">
       <div class="evo-current-node">
         <div style="font-size:28px;margin-bottom:6px">${p.icon}</div>
@@ -790,6 +848,45 @@ function renderEvolution(sorted) {
       </div>
       <div class="evo-branches">${branchesHtml}</div>
     </div>`;
+}
+
+function renderTerminal(archName) {
+  const container = document.getElementById('spSteps');
+  if (!container) return;
+  container.innerHTML = `<div class="terminal-scan">
+    <div class="ts-header">
+      <span class="ts-prompt">ledgr@dna:~$</span>
+      <span class="ts-cmd"> analyze --picks --deep</span>
+      <span class="ts-cursor">█</span>
+    </div>
+    <div class="ts-output" id="tsOutput"></div>
+  </div>`;
+  const termLines = [
+    {text:'> Scanning pick history...', type:'', delay:300},
+    {text:`  ✓ ${userStats.picks} picks loaded`, type:'success', delay:600},
+    {text:'> Reading odds behavior...', type:'', delay:1000},
+    {text:`  ✓ Avg odds: ${(userStats.avgOdds||2.0).toFixed(2)} (low-medium range)`, type:'success', delay:1300},
+    {text:'> Analyzing risk profile...', type:'', delay:1700},
+    {text:'  ✓ Variance: controlled', type:'success', delay:2000},
+    {text:'> Checking CLV signature...', type:'', delay:2400},
+    {text:'  ✓ Positive CLV detected', type:'success', delay:2700},
+    {text:'> Matching behavioral DNA...', type:'', delay:3100},
+    {text:'  ████████████ 100%', type:'highlight', delay:3400},
+    {text:'', type:'', delay:3600},
+    {text:`> IDENTITY: ${archName.toUpperCase()}`, type:'highlight', delay:3800},
+    {text:'> Confidence: HIGH', type:'success', delay:4100},
+  ];
+  const output = document.getElementById('tsOutput');
+  if (output) {
+    termLines.forEach(line => {
+      setTimeout(() => {
+        const div = document.createElement('div');
+        div.className = 'ts-line' + (line.type ? ' ' + line.type : '');
+        div.textContent = line.text;
+        output.appendChild(div);
+      }, line.delay);
+    });
+  }
 }
 
 function renderSecretSlots() {
