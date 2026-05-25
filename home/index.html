@@ -1381,7 +1381,8 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
       const avDiv=rm2&&rm2.division&&D[rm2.division]?D[rm2.division]:getDivision(myPicks);
       window.Divisions.applyGlow(av,avDiv);
     }
-    var savedBorder=localStorage.getItem('ledgr_avatar_border')||'none';
+    var _homeCust={};try{_homeCust=JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');}catch(e){}
+    var savedBorder=_homeCust.borderId||localStorage.getItem('ledgr_avatar_border')||'none';
     if(av&&savedBorder!=='none'){
       av.className.split(' ').filter(Boolean).forEach(function(c){if(c.startsWith('ab-'))av.classList.remove(c);});
       av.classList.add('ab-'+savedBorder);

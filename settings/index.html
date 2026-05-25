@@ -1189,7 +1189,16 @@ function renderBanners(){
   });
 }
 
+function _writeCustomization(field, value) {
+  var cust = {};
+  try { cust = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) {}
+  cust[field] = value;
+  localStorage.setItem('ledgr_profile_customization', JSON.stringify(cust));
+}
+
 function selectBannerPack(id) {
+  config.bannerPack = id;
+  _writeCustomization('bannerId', id);
   localStorage.setItem('ledgr_banner_pack', id);
   document.querySelectorAll('[data-pack]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-pack') === id);
@@ -1204,7 +1213,7 @@ function selectBannerPack(id) {
   fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-    body: JSON.stringify({ bannerPack: id })
+    body: JSON.stringify({ bannerPack: id, banner: id })
   }).then(function(r) {
     if(r.ok) showToast('✓ Banner saved');
     else showToast('✓ Saved locally');
@@ -1239,6 +1248,8 @@ function renderBorders(){
 }
 
 function selectBorder(id) {
+  config.border = id;
+  _writeCustomization('borderId', id);
   localStorage.setItem('ledgr_avatar_border', id);
   document.querySelectorAll('[data-border]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-border') === id);
@@ -1255,7 +1266,7 @@ function selectBorder(id) {
   fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-    body: JSON.stringify({ avatarBorder: id })
+    body: JSON.stringify({ avatarBorder: id, border: id })
   }).then(function(r) {
     if(r.ok) showToast('✓ Border saved');
     else showToast('✓ Saved locally');
@@ -1288,6 +1299,10 @@ function renderThemes(){
 }
 
 function selectTheme(color) {
+  config.profileTheme = color;
+  var _t = THEMES.find(function(th) { return th.color === color; });
+  if(_t) config.theme = _t.id;
+  _writeCustomization('themeId', color);
   localStorage.setItem('ledgr_profile_theme', color);
   document.documentElement.style.setProperty('--ac', color);
   document.querySelectorAll('.theme-swatch').forEach(function(s) {
@@ -1491,12 +1506,20 @@ async function fetchOwnProfile(){
     const r=await fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+token}});
     if(!r.ok)return;
     const data=await r.json();
-    if(data.banner)config.bannerPack=data.banner;
-    if(data.border)config.border=data.border;
+    if(data.banner||data.bannerPack){config.bannerPack=data.bannerPack||data.banner;}
+    if(data.border||data.avatarBorder){config.border=data.avatarBorder||data.border;}
     if(data.theme){
       const t=THEMES.find(x=>x.id===data.theme);
       if(t){config.theme=data.theme;config.profileTheme=t.color;document.documentElement.style.setProperty('--ac',t.color);}
     }
+    if(data.profileTheme){config.profileTheme=data.profileTheme;document.documentElement.style.setProperty('--ac',data.profileTheme);}
+    // Write unified customization object — single source of truth
+    const _cust={};
+    try{Object.assign(_cust,JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}'));}catch(e){}
+    if(config.bannerPack){_cust.bannerId=config.bannerPack;localStorage.setItem('ledgr_banner_pack',config.bannerPack);}
+    if(config.border){_cust.borderId=config.border;localStorage.setItem('ledgr_avatar_border',config.border);}
+    if(config.profileTheme){_cust.themeId=config.profileTheme;localStorage.setItem('ledgr_profile_theme',config.profileTheme);}
+    localStorage.setItem('ledgr_profile_customization',JSON.stringify(_cust));
     if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
     if(data.bio!=null)config.bio=data.bio;
     if(data.social_twitter!=null||data.social_instagram!=null)
@@ -1777,13 +1800,20 @@ async function saveProfile(){
     twitter:document.getElementById('twitterInput').value.trim().replace(/^@/,''),
     instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
   };
+  // Ensure unified customization is up-to-date before save
+  const _preSaveCust={};
+  try{Object.assign(_preSaveCust,JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}'));}catch(e){}
+  if(config.bannerPack){_preSaveCust.bannerId=config.bannerPack;localStorage.setItem('ledgr_banner_pack',config.bannerPack);}
+  if(config.border){_preSaveCust.borderId=config.border;localStorage.setItem('ledgr_avatar_border',config.border);}
+  if(config.profileTheme){_preSaveCust.themeId=config.profileTheme;localStorage.setItem('ledgr_profile_theme',config.profileTheme);}
+  localStorage.setItem('ledgr_profile_customization',JSON.stringify(_preSaveCust));
   localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
   const btn=document.querySelector('.save-btn');
   btn.textContent='SAVING…';btn.disabled=true;
   const ok=await postProfile();
   btn.disabled=false;
   showSaveSuccess(btn);
-  showToast(ok?'PROFILE SYNCED ✓':'SAVED LOCALLY — backend offline');
+  showToast(ok?'✓ Profile updated':'SAVED LOCALLY — backend offline');
 }
 
 /* ── ARCHETYPE PICKER ── */
@@ -1914,8 +1944,16 @@ window.onload=()=>{
   document.getElementById('acctUsername').textContent='@'+user.username;
   if(user.email)document.getElementById('acctEmail').innerHTML=user.email+'<span class="acct-verified"> ✓ Verified</span>';
 
+  // Load profile from cache
   const saved=localStorage.getItem('ledgr_profile_'+user.username);
   if(saved){try{const p=JSON.parse(saved);Object.assign(config,p);}catch(e){}}
+  // Override with unified customization object — the single source of truth
+  try{
+    const _uc=JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');
+    if(_uc.bannerId){config.bannerPack=_uc.bannerId;localStorage.setItem('ledgr_banner_pack',_uc.bannerId);}
+    if(_uc.borderId){config.border=_uc.borderId;localStorage.setItem('ledgr_avatar_border',_uc.borderId);}
+    if(_uc.themeId){config.profileTheme=_uc.themeId;localStorage.setItem('ledgr_profile_theme',_uc.themeId);}
+  }catch(e){}
 
   // Apply saved theme immediately
   const _savedTheme=config.profileTheme||localStorage.getItem('ledgr_profile_theme')||'#7B2CFF';
@@ -1940,16 +1978,16 @@ window.onload=()=>{
   initLivePreview();
   renderArchetypePicker();
 
-  // Restore saved selections
-  var savedBanner = localStorage.getItem('ledgr_banner_pack') || 'midnight';
+  // Restore saved selections — read from unified customization (source of truth)
+  var savedBanner = config.bannerPack || localStorage.getItem('ledgr_banner_pack') || 'midnight';
   document.querySelectorAll('[data-pack]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-pack') === savedBanner);
   });
-  var savedBorder = localStorage.getItem('ledgr_avatar_border') || 'none';
+  var savedBorder = config.border || localStorage.getItem('ledgr_avatar_border') || 'none';
   document.querySelectorAll('[data-border]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-border') === savedBorder);
   });
-  var savedThemeRestore = localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
+  var savedThemeRestore = config.profileTheme || localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
   document.documentElement.style.setProperty('--ac', savedThemeRestore);
   document.querySelectorAll('.theme-swatch').forEach(function(s) {
     s.classList.toggle('selected', s.getAttribute('data-color') === savedThemeRestore);

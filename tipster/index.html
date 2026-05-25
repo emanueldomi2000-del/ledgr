@@ -1512,9 +1512,11 @@ async function loadProfile(){
 
       // Apply saved cosmetics (banner pack, avatar border, theme)
       (function applyUserCosmetics() {
-        var border = (profileCfg && profileCfg.border) || localStorage.getItem('ledgr_avatar_border') || 'none';
-        var theme = localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
-        var banner = (profileCfg && profileCfg.banner) || localStorage.getItem('ledgr_banner_pack') || 'midnight';
+        var _cust = {};
+        try { _cust = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) {}
+        var border = _cust.borderId || (profileCfg && profileCfg.border) || localStorage.getItem('ledgr_avatar_border') || 'none';
+        var theme  = _cust.themeId  || localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
+        var banner = _cust.bannerId || (profileCfg && profileCfg.banner) || localStorage.getItem('ledgr_banner_pack') || 'midnight';
 
         console.log('Border:', border);
         console.log('Banner:', banner);
