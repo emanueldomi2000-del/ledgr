@@ -235,19 +235,58 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ab-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.09)}
 .ab-card.ab-locked{cursor:not-allowed;opacity:.45}
 .ab-lock-badge{position:absolute;top:5px;right:6px;font-size:10px;opacity:.7}
-.ab-preview{width:64px;height:64px;border-radius:50%;background:#111120;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:var(--tx);flex-shrink:0;transition:border .2s,box-shadow .2s;overflow:visible}
-.ab-name{font-size:9px;font-family:var(--font-mono);color:var(--mu);text-align:center;letter-spacing:.08em}
-/* border keyframes */
-@keyframes crystalPulse{0%,100%{border-color:rgba(79,195,247,0.35);box-shadow:0 0 4px rgba(79,195,247,0.15)}50%{border-color:rgba(79,195,247,1);box-shadow:0 0 14px rgba(79,195,247,0.55)}}
-@keyframes frostShimmer{0%,100%{border-color:rgba(192,192,192,0.35);box-shadow:0 0 4px rgba(147,210,255,0.1)}50%{border-color:rgba(220,240,255,0.9);box-shadow:0 0 12px rgba(147,210,255,0.45)}}
-@keyframes electricRing{0%,100%{border-color:rgba(253,224,71,0.45);box-shadow:0 0 4px rgba(253,224,71,0.1)}50%{border-color:#fff;box-shadow:0 0 12px rgba(253,224,71,0.65),0 0 24px rgba(123,44,255,0.3)}}
-@keyframes infernoRing{0%,100%{border-color:#FF6B35;box-shadow:0 0 6px rgba(255,107,53,0.3)}50%{border-color:#FFD700;box-shadow:0 0 14px rgba(255,107,53,0.7),0 0 24px rgba(255,51,0,0.3)}}
-@keyframes cosmicBorderSpin{0%{border-color:rgba(123,44,255,0.7)}50%{border-color:rgba(0,229,160,0.9);box-shadow:0 0 10px rgba(0,229,160,0.4)}100%{border-color:rgba(123,44,255,0.7)}}
-@keyframes dragonBorderAnim{0%,100%{border-color:#FF3355;box-shadow:0 0 8px rgba(255,51,85,0.4)}50%{border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,0.5)}}
-@keyframes crownHaloSpin{from{filter:hue-rotate(0deg) brightness(1)}40%{filter:hue-rotate(25deg) brightness(1.3)}to{filter:hue-rotate(0deg) brightness(1)}}
-@keyframes celestialGlow{0%,100%{box-shadow:0 0 6px rgba(139,92,246,0.3)}50%{box-shadow:0 0 18px rgba(139,92,246,0.6),0 0 32px rgba(79,195,247,0.2)}}
-@keyframes eliteRotate{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
-@keyframes singularitySpin{from{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(180deg) brightness(1.25)}to{filter:hue-rotate(360deg) brightness(1)}}
+.ab-preview{width:64px;height:64px;border-radius:50%;background:#111120;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:var(--tx);flex-shrink:0;overflow:visible;position:relative}
+.ab-name{font-size:9px;font-family:var(--font-mono);color:var(--mu);text-align:center;letter-spacing:.08em;margin-top:2px}
+/* COMMON */
+.ab-clean{border:2px solid rgba(184,159,255,0.22)}
+.ab-bronze-frame{border:2px solid #cd7f32;box-shadow:0 0 8px rgba(205,127,50,0.3)}
+/* ═══ RARE ═══ */
+.ab-crystal-orbit{border:2px solid rgba(79,195,247,0.4)}
+.ab-crystal-orbit::before{content:'◆ ◇ ◆ ◇ ◆ ◇';position:absolute;inset:-14px;border-radius:50%;font-size:6px;color:rgba(79,195,247,0.7);display:flex;align-items:center;justify-content:center;letter-spacing:4px;animation:crystalSpin 4s linear infinite;white-space:nowrap;overflow:hidden}
+@keyframes crystalSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.ab-pulse-ring{border:2px solid rgba(150,100,255,0.6);animation:heartbeat 1.4s ease-in-out infinite}
+@keyframes heartbeat{0%{box-shadow:0 0 0 0 rgba(150,100,255,0.4)}40%{box-shadow:0 0 0 6px rgba(150,100,255,0)}50%{box-shadow:0 0 0 0 rgba(150,100,255,0)}60%{box-shadow:0 0 0 4px rgba(150,100,255,0.2)}100%{box-shadow:0 0 0 0 rgba(150,100,255,0)}}
+.ab-frost-edge{border:2px solid rgba(147,210,255,0.8);box-shadow:0 0 12px rgba(147,210,255,0.3),inset 0 0 8px rgba(147,210,255,0.1);animation:frostBreath 3s ease-in-out infinite}
+@keyframes frostBreath{0%,100%{border-color:rgba(147,210,255,0.4);box-shadow:0 0 8px rgba(147,210,255,0.2)}50%{border-color:rgba(220,245,255,1);box-shadow:0 0 20px rgba(147,210,255,0.6),inset 0 0 16px rgba(147,210,255,0.2)}}
+/* ═══ EPIC ═══ */
+.ab-electric-surge{border:2px solid transparent;background:linear-gradient(#1a1a2a,#1a1a2a) padding-box,conic-gradient(#7B2CFF 0deg,#fff 45deg,#7B2CFF 90deg,#4FC3F7 135deg,#fff 180deg,#7B2CFF 225deg,#fff 270deg,#4FC3F7 315deg,#7B2CFF 360deg) border-box;animation:electricRun .5s linear infinite;box-shadow:0 0 10px rgba(123,44,255,0.5),0 0 20px rgba(123,44,255,0.2)}
+@keyframes electricRun{from{background:linear-gradient(#1a1a2a,#1a1a2a) padding-box,conic-gradient(from 0deg,#7B2CFF,#fff 45deg,#7B2CFF 90deg,#4FC3F7 180deg,#fff 225deg,#7B2CFF) border-box}to{background:linear-gradient(#1a1a2a,#1a1a2a) padding-box,conic-gradient(from 360deg,#7B2CFF,#fff 45deg,#7B2CFF 90deg,#4FC3F7 180deg,#fff 225deg,#7B2CFF) border-box}}
+.ab-inferno-core{border:2px solid #FF6B35;box-shadow:0 0 8px rgba(255,107,53,0.5),0 0 16px rgba(255,60,0,0.3),inset 0 0 16px rgba(255,60,0,0.2);animation:infernoCore 1.5s ease-in-out infinite}
+@keyframes infernoCore{0%,100%{box-shadow:0 0 8px rgba(255,107,53,0.5),inset 0 0 12px rgba(255,60,0,0.15);border-color:#FF6B35}50%{box-shadow:0 0 20px rgba(255,107,53,0.8),0 0 36px rgba(255,60,0,0.4),inset 0 0 24px rgba(255,60,0,0.35);border-color:#FFD700}}
+.ab-cosmic-rift{border:3px solid transparent;background:linear-gradient(#0a0a1a,#0a0a1a) padding-box,conic-gradient(#7B2CFF,#4FC3F7,#00E5A0,#FFD700,#FF6BFF,#7B2CFF) border-box;animation:cosmicRiftSpin 3s linear infinite;box-shadow:0 0 12px rgba(123,44,255,0.4)}
+@keyframes cosmicRiftSpin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+/* ═══ LEGENDARY ═══ */
+.ab-dragon-soul{border:3px solid #FF3355;animation:dragonFire 2s ease-in-out infinite}
+.ab-dragon-soul::before{content:'🔥';position:absolute;font-size:10px;animation:dragonOrbit 3s linear infinite;top:-8px;left:50%;transform-origin:-32px 0}
+@keyframes dragonFire{0%,100%{border-color:#FF3355;box-shadow:0 0 12px rgba(255,51,85,0.5),0 0 24px rgba(255,51,85,0.2)}50%{border-color:#FFD700;box-shadow:0 0 20px rgba(255,215,0,0.6),0 0 36px rgba(255,150,0,0.3)}}
+@keyframes dragonOrbit{from{transform:rotate(0deg) translateX(32px) rotate(0deg)}to{transform:rotate(360deg) translateX(32px) rotate(-360deg)}}
+.ab-crown-halo{border:3px solid transparent;background:linear-gradient(#1a1400,#1a1400) padding-box,conic-gradient(#FFD700 0deg,#FFA500 60deg,#FFD700 120deg,rgba(255,255,255,0.5) 180deg,#FFD700 240deg,#FFA500 300deg,#FFD700 360deg) border-box;box-shadow:0 0 16px rgba(255,215,0,0.4),inset 0 0 8px rgba(255,200,0,0.1);animation:crownHaloGlow 2s ease-in-out infinite,crownHaloSpin 4s linear infinite}
+@keyframes crownHaloSpin{from{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(20deg) brightness(1.3)}to{filter:hue-rotate(0deg) brightness(1)}}
+@keyframes crownHaloGlow{0%,100%{box-shadow:0 0 12px rgba(255,215,0,0.3)}50%{box-shadow:0 0 24px rgba(255,215,0,0.6),0 0 40px rgba(255,215,0,0.2)}}
+.ab-void-king{border:3px solid rgba(80,0,160,0.9);background:radial-gradient(circle,#050010,#0a0020)!important;box-shadow:0 0 20px rgba(80,0,160,0.5),inset 0 0 20px rgba(0,0,0,0.9);animation:voidAbsorb 3s ease-in-out infinite;color:rgba(255,255,255,0.3)!important}
+@keyframes voidAbsorb{0%,100%{box-shadow:0 0 20px rgba(80,0,160,0.5),inset 0 0 20px rgba(0,0,0,0.9);border-color:rgba(80,0,160,0.9)}50%{box-shadow:0 0 36px rgba(120,0,220,0.8),inset 0 0 32px rgba(0,0,20,1);border-color:rgba(150,0,255,1)}}
+.ab-celestial-orbit{border:2px solid rgba(170,120,255,0.5);box-shadow:0 0 12px rgba(170,120,255,0.3);animation:celestialPulse 4s ease-in-out infinite}
+.ab-celestial-orbit::before{content:'●';font-size:6px;position:absolute;color:rgba(79,195,247,0.8);animation:planet1Orbit 3s linear infinite;top:50%;left:50%}
+.ab-celestial-orbit::after{content:'●';font-size:4px;position:absolute;color:rgba(255,215,0,0.7);animation:planet2Orbit 5s linear infinite reverse;top:50%;left:50%}
+@keyframes planet1Orbit{from{transform:rotate(0deg) translateX(38px)}to{transform:rotate(360deg) translateX(38px)}}
+@keyframes planet2Orbit{from{transform:rotate(0deg) translateX(44px)}to{transform:rotate(360deg) translateX(44px)}}
+@keyframes celestialPulse{0%,100%{box-shadow:0 0 8px rgba(170,120,255,0.2)}50%{box-shadow:0 0 20px rgba(170,120,255,0.5)}}
+/* ═══ MYTHIC ═══ */
+.ab-time-collapse{border:2px solid rgba(255,107,255,0.7);animation:timeGlitch 1.5s steps(4) infinite}
+@keyframes timeGlitch{0%{border-color:rgba(255,107,255,0.7);transform:translate(0);box-shadow:0 0 10px rgba(255,107,255,0.4)}25%{border-color:rgba(79,195,247,0.9);transform:translate(-2px,1px) skewX(-2deg);box-shadow:2px 0 10px rgba(79,195,247,0.5),-2px 0 10px rgba(255,51,85,0.5)}50%{border-color:rgba(255,51,85,0.8);transform:translate(2px,-1px) skewX(2deg);box-shadow:-2px 0 10px rgba(255,107,255,0.5)}75%{border-color:rgba(255,215,0,0.7);transform:translate(-1px,2px);box-shadow:0 2px 10px rgba(255,215,0,0.4)}100%{border-color:rgba(255,107,255,0.7);transform:translate(0)}}
+.ab-singularity{border:3px solid transparent;background:radial-gradient(circle,#000,#050010) padding-box,conic-gradient(#FF6BFF,#000,#7B2CFF,#000,#4FC3F7,#000,#FF6BFF) border-box;animation:singularitySpin 1.5s linear infinite;box-shadow:0 0 24px rgba(255,107,255,0.4),inset 0 0 24px rgba(0,0,0,0.9);color:rgba(255,255,255,0.2)!important}
+@keyframes singularitySpin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+.ab-unknown-signal{border:2px solid rgba(0,255,80,0.4);animation:signalNoise .8s steps(3) infinite;box-shadow:0 0 10px rgba(0,255,80,0.2)}
+@keyframes signalNoise{0%{border-color:rgba(0,255,80,0.4);box-shadow:0 0 10px rgba(0,255,80,0.2);transform:translate(0)}33%{border-color:rgba(0,200,255,0.6);box-shadow:2px 0 10px rgba(0,200,255,0.3),-2px 0 6px rgba(255,0,100,0.2);transform:translate(-1px,0)}66%{border-color:rgba(255,0,100,0.5);box-shadow:-2px 0 10px rgba(255,0,100,0.3);transform:translate(1px,0)}}
+.ab-redacted{animation:redactedIdentity 4s linear infinite}
+@keyframes redactedIdentity{0%{border:3px solid #FF6BFF;box-shadow:0 0 14px rgba(255,107,255,0.5)}20%{border:3px solid #7B2CFF;box-shadow:0 0 14px rgba(123,44,255,0.5)}40%{border:3px solid #FF3355;box-shadow:0 0 14px rgba(255,51,85,0.5);transform:skewX(-1deg)}60%{border:3px solid #00E5A0;box-shadow:0 0 14px rgba(0,229,160,0.5)}80%{border:3px solid #FFD700;box-shadow:0 0 14px rgba(255,215,0,0.5);transform:skewX(1deg)}100%{border:3px solid #FF6BFF;box-shadow:0 0 14px rgba(255,107,255,0.5)}}
+/* ═══ SEASONAL ═══ */
+.ab-winter-elite{border:2px solid rgba(147,210,255,0.7);box-shadow:0 0 12px rgba(147,210,255,0.3);animation:winterIce 4s ease-in-out infinite}
+@keyframes winterIce{0%,100%{border-color:rgba(147,210,255,0.4);box-shadow:0 0 8px rgba(147,210,255,0.2)}50%{border-color:rgba(220,245,255,0.9);box-shadow:0 0 20px rgba(147,210,255,0.6)}}
+.ab-halloween{border:2px solid rgba(255,120,0,0.7);animation:halloweenFlicker .4s steps(2) infinite}
+@keyframes halloweenFlicker{0%{box-shadow:0 0 8px rgba(255,120,0,0.5)}50%{box-shadow:0 0 14px rgba(255,120,0,0.8),inset 0 0 8px rgba(255,60,0,0.2)}}
+.ab-summer-champion{border:3px solid transparent;background:linear-gradient(#1a1200,#1a1200) padding-box,conic-gradient(#FFD700,#FF6B35,#FFD700,#FFA500,#FFD700) border-box;animation:summerGlow 2s ease-in-out infinite;box-shadow:0 0 12px rgba(255,215,0,0.3)}
+@keyframes summerGlow{0%,100%{box-shadow:0 0 10px rgba(255,215,0,0.3)}50%{box-shadow:0 0 24px rgba(255,215,0,0.6)}}
 /* keep old ring classes for preview-ring on the live card */
 .ring-clean{border:2px solid rgba(184,159,255,0.25)}
 .ring-blue{border:2px solid rgba(79,195,247,0.6);box-shadow:0 0 8px rgba(79,195,247,0.15)}
@@ -972,27 +1011,32 @@ const POWER_ITEMS = [
 const DIV_ORDER = ['Bronze','Silver','Gold','Platinum','Diamond','Elite','Legend'];
 
 const BORDERS = [
-  // COMMON — free
-  {id:'none',           name:'NONE',     tier:'COMMON',   divReq:null},
-  {id:'clean',          name:'OUTLINE',  tier:'COMMON',   divReq:null},
-  {id:'blue-ring',      name:'PULSE',    tier:'COMMON',   divReq:null},
-  {id:'bronze-frame',   name:'BRONZE',   tier:'COMMON',   divReq:'Bronze'},
-  // RARE — Silver+
-  {id:'silver-frame',   name:'SILVER',   tier:'RARE',     divReq:'Silver'},
-  {id:'gold-frame',     name:'GOLD',     tier:'RARE',     divReq:'Gold'},
-  {id:'electric',       name:'ELECTRIC', tier:'RARE',     divReq:'Gold'},
-  {id:'inferno',        name:'INFERNO',  tier:'RARE',     divReq:'Gold'},
-  // EPIC — Platinum+
-  {id:'cosmic',         name:'COSMIC',   tier:'EPIC',     divReq:'Platinum'},
-  {id:'diamond-ring',   name:'CRYSTAL',  tier:'EPIC',     divReq:'Diamond'},
-  {id:'diamond-frame',  name:'DIAMOND',  tier:'EPIC',     divReq:'Diamond'},
-  // LEGENDARY — Diamond+
-  {id:'royal',          name:'CROWN',    tier:'LEGENDARY',divReq:'Diamond'},
-  {id:'dragon',         name:'DRAGON',   tier:'LEGENDARY',divReq:'Diamond'},
-  {id:'celestial',      name:'CELESTIAL',tier:'LEGENDARY',divReq:'Diamond'},
-  {id:'elite-frame',    name:'ELITE',    tier:'LEGENDARY',divReq:'Elite'},
-  // MYTHIC — Legend only
-  {id:'legendary-frame',name:'LEGEND',  tier:'MYTHIC',   divReq:'Legend'},
+  // COMMON
+  {id:'none',            name:'NONE',          tier:'COMMON',   divReq:null},
+  {id:'clean',           name:'OUTLINE',        tier:'COMMON',   divReq:null},
+  {id:'bronze-frame',    name:'BRONZE',         tier:'COMMON',   divReq:'Bronze'},
+  // RARE
+  {id:'crystal-orbit',   name:'CRYSTAL ORBIT',  tier:'RARE',     divReq:null},
+  {id:'pulse-ring',      name:'PULSE RING',      tier:'RARE',     divReq:'Silver'},
+  {id:'frost-edge',      name:'FROST EDGE',      tier:'RARE',     divReq:'Silver'},
+  // EPIC
+  {id:'electric-surge',  name:'ELECTRIC SURGE',  tier:'EPIC',     divReq:'Gold'},
+  {id:'inferno-core',    name:'INFERNO CORE',    tier:'EPIC',     divReq:'Gold'},
+  {id:'cosmic-rift',     name:'COSMIC RIFT',     tier:'EPIC',     divReq:'Platinum'},
+  // LEGENDARY
+  {id:'dragon-soul',     name:'DRAGON SOUL',     tier:'LEGENDARY',divReq:'Diamond'},
+  {id:'crown-halo',      name:'CROWN HALO',      tier:'LEGENDARY',divReq:'Diamond'},
+  {id:'void-king',       name:'VOID KING',       tier:'LEGENDARY',divReq:'Diamond'},
+  {id:'celestial-orbit', name:'CELESTIAL',       tier:'LEGENDARY',divReq:'Elite'},
+  // MYTHIC
+  {id:'time-collapse',   name:'TIME COLLAPSE',   tier:'MYTHIC',   divReq:'Legend'},
+  {id:'singularity',     name:'SINGULARITY',     tier:'MYTHIC',   divReq:'Legend'},
+  {id:'unknown-signal',  name:'UNKNOWN SIGNAL',  tier:'MYTHIC',   divReq:'Legend'},
+  {id:'redacted',        name:'REDACTED',        tier:'MYTHIC',   divReq:'Legend'},
+  // SEASONAL
+  {id:'halloween',       name:'HALLOWEEN',       tier:'SEASONAL', divReq:null,    seasonal:true},
+  {id:'winter-elite',    name:'WINTER ELITE',    tier:'SEASONAL', divReq:null,    seasonal:true},
+  {id:'summer-champion', name:'SUMMER CHAMP',    tier:'SEASONAL', divReq:null,    seasonal:true},
 ];
 
 const SPORTS = ['Soccer','Basketball','Tennis','Football','Baseball','MMA/Boxing'];
@@ -1150,40 +1194,21 @@ function selectBannerPack(id){
 }
 
 /* ── RENDER BORDERS ── */
-const BORDER_STYLES={
-  'none':'',
-  'clean':'border:2px solid rgba(184,159,255,0.22)',
-  'blue-ring':'border:2px solid rgba(79,195,247,0.7);animation:crystalPulse 2s ease-in-out infinite',
-  'bronze-frame':'border:2px solid #cd7f32;box-shadow:0 0 8px rgba(205,127,50,0.3)',
-  'silver-frame':'border:2px solid #c0c0c0;animation:frostShimmer 3s ease-in-out infinite',
-  'gold-frame':'border:2px solid #fbbf24;box-shadow:0 0 10px rgba(251,191,36,0.3)',
-  'electric':'border:2px solid rgba(253,224,71,0.8);animation:electricRing 2s ease-in-out infinite',
-  'inferno':'border:2px solid #FF6B35;animation:infernoRing 2s ease-in-out infinite',
-  'cosmic':'border:2px dashed rgba(123,44,255,0.7);animation:cosmicBorderSpin 4s linear infinite',
-  'diamond-ring':'border:2px solid rgba(79,195,247,0.85);animation:crystalPulse 1.8s ease-in-out infinite',
-  'diamond-frame':'border:2px solid rgba(56,189,248,0.8);animation:crystalPulse 2.5s ease-in-out infinite',
-  'royal':'border:3px solid #FFD700;animation:crownHaloSpin 3s ease-in-out infinite',
-  'dragon':'border:2px solid #FF3355;animation:dragonBorderAnim 2s ease-in-out infinite',
-  'celestial':'border:2px solid rgba(139,92,246,0.7);animation:celestialGlow 3s ease-in-out infinite',
-  'elite-frame':'border:2px solid rgba(123,44,255,0.85);animation:eliteRotate 4s linear infinite',
-  'legendary-frame':'border:2px solid transparent;box-shadow:0 0 0 2px rgba(255,215,0,0.65),0 0 0 4px rgba(123,44,255,0.4);animation:singularitySpin 3s linear infinite',
-};
-const TIER_COLORS_BORDER={COMMON:'#6B6B6B',RARE:'#4FC3F7',EPIC:'#7B2CFF',LEGENDARY:'#FFD700',MYTHIC:'#FF6BFF'};
+const TIER_COLORS_BORDER={COMMON:'#6B6B6B',RARE:'#4FC3F7',EPIC:'#7B2CFF',LEGENDARY:'#FFD700',MYTHIC:'#FF6BFF',SEASONAL:'#f59e0b'};
 
 function renderBorderCard(b){
   const locked=!divUnlocked(b.divReq);
   const sel=config.border===b.id;
-  const bStyle=BORDER_STYLES[b.id]||'';
   return`<div class="ab-card${sel?' selected':''}${locked?' ab-locked':''}" ${locked?'':'onclick="selectBorder(\''+b.id+'\')"'} id="brd_${b.id}" data-border="${b.id}">
     ${locked?`<div class="ab-lock-badge">🔒</div>`:''}
-    <div class="ab-preview" style="${bStyle}">ME</div>
+    <div class="ab-preview ab-${b.id}">ME</div>
     <div class="ab-name">${b.name}</div>
   </div>`;
 }
 function renderBorders(){
   const grid=document.getElementById('borderGrid');
   if(!grid)return;
-  const tiers=['COMMON','RARE','EPIC','LEGENDARY','MYTHIC'];
+  const tiers=['COMMON','RARE','EPIC','LEGENDARY','MYTHIC','SEASONAL'];
   grid.innerHTML=tiers.map(tier=>{
     const borders=BORDERS.filter(b=>b.tier===tier);
     if(!borders.length)return'';
@@ -1286,30 +1311,31 @@ function updatePreviewBanner(packId){
 function updatePreviewBorder(borderId){
   const lpAv=document.getElementById('lpAvatar');
   if(!lpAv)return;
-  const borderStyles={
-    'none':'none',
-    'clean':'2px solid rgba(184,159,255,0.25)',
-    'blue-ring':'2px solid #4FC3F7',
-    'bronze-frame':'2px solid #cd7f32',
-    'silver-frame':'2px solid #c0c0c0',
-    'gold-frame':'2px solid #fbbf24',
-    'electric':'2px solid rgba(253,224,71,0.9)',
-    'inferno':'2px solid #FF6B35',
-    'cosmic':'2px dashed rgba(123,44,255,0.7)',
-    'diamond-ring':'2px solid rgba(79,195,247,0.9)',
-    'diamond-frame':'2px solid rgba(56,189,248,0.85)',
-    'royal':'3px solid #FFD700',
-    'dragon':'2px solid #FF3355',
-    'celestial':'2px solid rgba(139,92,246,0.75)',
-    'elite-frame':'2px solid rgba(123,44,255,0.9)',
-    'legendary-frame':'2px solid transparent',
+  const bMap={
+    'none':['none',''],
+    'clean':['2px solid rgba(184,159,255,0.22)',''],
+    'bronze-frame':['2px solid #cd7f32','0 0 8px rgba(205,127,50,0.3)'],
+    'crystal-orbit':['2px solid rgba(79,195,247,0.6)','0 0 10px rgba(79,195,247,0.3)'],
+    'pulse-ring':['2px solid rgba(150,100,255,0.6)','0 0 8px rgba(150,100,255,0.3)'],
+    'frost-edge':['2px solid rgba(147,210,255,0.8)','0 0 12px rgba(147,210,255,0.4)'],
+    'electric-surge':['2px solid rgba(253,224,71,0.85)','0 0 10px rgba(123,44,255,0.4)'],
+    'inferno-core':['2px solid #FF6B35','0 0 12px rgba(255,107,53,0.5)'],
+    'cosmic-rift':['3px solid rgba(123,44,255,0.8)','0 0 12px rgba(123,44,255,0.4)'],
+    'dragon-soul':['3px solid #FF3355','0 0 12px rgba(255,51,85,0.5)'],
+    'crown-halo':['3px solid #FFD700','0 0 14px rgba(255,215,0,0.5)'],
+    'void-king':['3px solid rgba(80,0,160,0.9)','0 0 16px rgba(80,0,160,0.5)'],
+    'celestial-orbit':['2px solid rgba(170,120,255,0.5)','0 0 12px rgba(170,120,255,0.3)'],
+    'time-collapse':['2px solid rgba(255,107,255,0.7)','0 0 10px rgba(255,107,255,0.3)'],
+    'singularity':['3px solid rgba(255,107,255,0.8)','0 0 20px rgba(255,107,255,0.4)'],
+    'unknown-signal':['2px solid rgba(0,255,80,0.5)','0 0 10px rgba(0,255,80,0.2)'],
+    'redacted':['3px solid #FF6BFF','0 0 14px rgba(255,107,255,0.4)'],
+    'halloween':['2px solid rgba(255,120,0,0.7)','0 0 10px rgba(255,120,0,0.3)'],
+    'winter-elite':['2px solid rgba(147,210,255,0.7)','0 0 12px rgba(147,210,255,0.3)'],
+    'summer-champion':['3px solid #FFD700','0 0 12px rgba(255,215,0,0.3)'],
   };
-  lpAv.style.border=borderStyles[borderId]||'none';
-  lpAv.style.boxShadow=borderId==='legendary-frame'?'0 0 0 2px rgba(255,215,0,0.65),0 0 0 4px rgba(123,44,255,0.4)':
-    borderId==='royal'?'0 0 10px rgba(255,215,0,0.4)':
-    borderId==='dragon'?'0 0 8px rgba(255,51,85,0.4)':
-    borderId==='elite-frame'?'0 0 10px rgba(123,44,255,0.4)':
-    borderId==='celestial'?'0 0 10px rgba(139,92,246,0.35)':'';
+  const [brd,shd]=bMap[borderId]||['none',''];
+  lpAv.style.border=brd;
+  lpAv.style.boxShadow=shd;
 }
 
 /* ── PREVIEW ── */
