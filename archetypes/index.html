@@ -274,8 +274,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* ── CHARACTER PORTRAIT KEYFRAMES ── */
 @keyframes visorPulse{0%,100%{opacity:0.9}50%{opacity:0.5}}
-@keyframes ghostGlitch{0%,100%{transform:translate(0)}25%{transform:translate(-2px,1px)}75%{transform:translate(2px,-1px)}}
+@keyframes ghostGlitch{0%,100%{transform:translate(0);opacity:1}25%{transform:translate(-3px,1px);opacity:0.8}75%{transform:translate(3px,-1px);opacity:0.9}}
 @keyframes glitchLine{0%{top:30%;opacity:0.4}33%{top:50%}66%{top:70%}100%{top:85%;opacity:0}}
+@keyframes particleDrift{0%,100%{transform:translate(0,0);opacity:0.3}50%{transform:translate(4px,-12px);opacity:0.6}}
+@keyframes ghostFloat{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@keyframes eyeBlink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
+@keyframes glitchStrip{0%,100%{opacity:0}50%{opacity:1}}
+@keyframes glitchStrip2{0%,100%{opacity:0}33%{opacity:1}}
+@keyframes flameHalo{from{transform:translateX(-50%) scaleX(1)}to{transform:translateX(-50%) scaleX(1.15)}}
+@keyframes flameBase{from{transform:translateX(-50%) scaleY(1)}to{transform:translateX(-50%) scaleY(1.3)}}
+@keyframes demonEye{0%,100%{opacity:1}50%{opacity:0.4}}
+@keyframes runePulse{0%,100%{opacity:0.4}50%{opacity:1}}
+@keyframes ember{0%{transform:translate(0,0);opacity:0.6}50%{opacity:0.4}100%{transform:translate(0,-30px);opacity:0}}
+@keyframes dataAura{0%,100%{opacity:0.3}50%{opacity:0.7}}
+@keyframes dataScroll{from{transform:translateY(0)}to{transform:translateY(-20px)}}
 
 /* ── VAULT GHOST MYTHIC SCANLINES ── */
 .arch-vault-card[data-arch="The Ghost"]{border-color:rgba(255,107,255,0.3)!important;background:rgba(255,107,255,0.03)!important}
@@ -542,48 +554,89 @@ function getArchStats(name) {
   return stats[name] || [{label:'Detecting',val:'...'}];
 }
 
-function buildCharacterPortrait(name, color) {
-  const chars = {
+function buildCharacter(name, color) {
+  const s = (css) => `style="${css}"`;
+  const glow = (c, sz=12) => `box-shadow:0 0 ${sz}px ${c},0 0 ${sz*2}px ${c}55`;
+
+  const characters = {
     'The Sniper': `
-      <div style="position:relative;width:120px;height:160px;margin:0 auto;">
-        <div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:56px;height:30px;border-radius:50% 50% 0 0;background:#0d0d1a;"></div>
-        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:50px;height:50px;border-radius:50% 50% 40% 40%;background:linear-gradient(180deg,#1a1a2e,#0d0d1a);box-shadow:0 0 20px ${color}66;"></div>
-        <div style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:36px;height:8px;border-radius:4px;background:${color};opacity:0.9;box-shadow:0 0 12px ${color},0 0 24px ${color}88;animation:visorPulse 2s ease-in-out infinite;"></div>
-        <div style="position:absolute;top:44px;left:50%;transform:translateX(-50%);width:40px;height:12px;border-radius:4px;background:#111122;border-top:2px solid ${color}44;"></div>
-        <div style="position:absolute;top:48px;left:50%;transform:translateX(-50%);width:60px;height:80px;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,#1a1a2e,#0d0d18);border:1px solid ${color}33;"></div>
-        <div style="position:absolute;top:70px;right:4px;width:28px;height:4px;border-radius:2px;background:${color};opacity:0.7;box-shadow:0 0 8px ${color};"></div>
-        <div style="position:absolute;top:68px;right:2px;width:6px;height:8px;border-radius:1px;background:${color};box-shadow:0 0 6px ${color};"></div>
+      <div ${s(`position:relative;width:140px;height:180px;margin:0 auto;`)}>
+        <div ${s(`position:absolute;inset:-20px;border-radius:50%;border:1px solid ${color}22;animation:ringPulse 3s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;inset:-36px;border-radius:50%;border:1px solid ${color}11;animation:ringPulse 3s ease-in-out 1s infinite;`)}></div>
+        <div ${s(`position:absolute;top:0;left:50%;transform:translateX(-50%);width:64px;height:36px;border-radius:50% 50% 0 0;background:#060614;border:1px solid ${color}33;`)}></div>
+        <div ${s(`position:absolute;top:10px;left:50%;transform:translateX(-50%);width:52px;height:54px;border-radius:50% 50% 42% 42%;background:linear-gradient(160deg,#12122a,#06060f);border:1px solid ${color}44;${glow(color,8)};`)}></div>
+        <div ${s(`position:absolute;top:26px;left:50%;transform:translateX(-50%);width:40px;height:7px;border-radius:4px;background:${color};${glow(color,14)};animation:visorPulse 2.5s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;top:35px;left:50%;transform:translateX(-50%);width:2px;height:10px;border-radius:1px;background:${color}44;`)}></div>
+        <div ${s(`position:absolute;top:62px;left:50%;transform:translateX(-50%);width:70px;height:90px;border-radius:8px 8px 4px 4px;background:linear-gradient(170deg,#0e0e22,#060610);border:1px solid ${color}22;`)}></div>
+        <div ${s(`position:absolute;top:68px;left:50%;transform:translateX(-50%);width:46px;height:40px;border-radius:6px;background:linear-gradient(170deg,#14142e,#0a0a1a);border:1px solid ${color}33;`)}></div>
+        <div ${s(`position:absolute;top:78px;left:50%;transform:translateX(-50%);width:2px;height:28px;background:${color}66;`)}></div>
+        <div ${s(`position:absolute;top:58px;left:50%;transform:translateX(-50%);width:32px;height:10px;border-radius:4px;background:#0a0a1a;border-top:1px solid ${color}33;`)}></div>
+        <div ${s(`position:absolute;top:85px;right:8px;width:36px;height:5px;border-radius:3px;background:linear-gradient(90deg,${color},${color}44);${glow(color,6)};`)}></div>
+        <div ${s(`position:absolute;top:83px;right:6px;width:8px;height:9px;border-radius:2px;background:${color};${glow(color,4)};`)}></div>
+        <div ${s(`position:absolute;top:64px;left:12px;width:18px;height:28px;border-radius:6px 6px 3px 3px;background:#0e0e22;border:1px solid ${color}22;`)}></div>
+        <div ${s(`position:absolute;top:64px;right:12px;width:18px;height:28px;border-radius:6px 6px 3px 3px;background:#0e0e22;border:1px solid ${color}22;`)}></div>
+        <div ${s(`position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:80px;height:10px;border-radius:50%;background:${color}22;filter:blur(6px);`)}></div>
+        ${[...Array(6)].map((_,i)=>`<div ${s(`position:absolute;width:${(1+Math.random()*2).toFixed(1)}px;height:${(1+Math.random()*2).toFixed(1)}px;border-radius:50%;background:${color};left:${10+i*20}%;top:${20+i*10}%;opacity:0.4;animation:particleDrift ${3+i}s ease-in-out ${i*0.5}s infinite;`)}></div>`).join('')}
       </div>`,
+
     'The Ghost': `
-      <div style="position:relative;width:120px;height:160px;margin:0 auto;animation:ghostGlitch 4s steps(2) infinite;">
-        <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:70px;height:100px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,rgba(255,107,255,0.15),transparent);border:1px solid rgba(255,107,255,0.3);box-shadow:0 0 30px rgba(255,107,255,0.2);"></div>
-        <div style="position:absolute;top:35px;left:30px;width:12px;height:16px;border-radius:50%;background:#FF6BFF;box-shadow:0 0 10px #FF6BFF;"></div>
-        <div style="position:absolute;top:35px;right:30px;width:12px;height:16px;border-radius:50%;background:#FF6BFF;box-shadow:0 0 10px #FF6BFF;"></div>
-        <div style="position:absolute;top:50px;left:0;right:0;height:2px;background:rgba(255,107,255,0.4);animation:glitchLine 3s steps(1) infinite;"></div>
+      <div ${s(`position:relative;width:140px;height:180px;margin:0 auto;`)}>
+        <div ${s(`position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,107,255,0.05),transparent);animation:ghostGlitch 3s steps(2) infinite;border-radius:50% 50% 0 0;`)}></div>
+        <div ${s(`position:absolute;top:8px;left:50%;transform:translateX(-50%);width:80px;height:110px;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;background:linear-gradient(180deg,rgba(255,107,255,0.12),rgba(255,107,255,0.03));border:1px solid rgba(255,107,255,0.35);${glow('#FF6BFF',16)};animation:ghostFloat 4s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;top:38px;left:32px;width:14px;height:18px;border-radius:50%;background:#FF6BFF;${glow('#FF6BFF',10)};animation:eyeBlink 4s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;top:38px;right:32px;width:14px;height:18px;border-radius:50%;background:#FF6BFF;${glow('#FF6BFF',10)};animation:eyeBlink 4s ease-in-out 0.3s infinite;`)}></div>
+        <div ${s(`position:absolute;top:64px;left:50%;transform:translateX(-50%);width:24px;height:8px;border-radius:0 0 12px 12px;background:#FF6BFF44;border:1px solid #FF6BFF66;`)}></div>
+        <div ${s(`position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,107,255,0.03) 3px,rgba(255,107,255,0.03) 4px);`)}></div>
+        <div ${s(`position:absolute;top:45px;left:-5px;right:-5px;height:2px;background:rgba(255,107,255,0.5);animation:glitchStrip 2s steps(1) infinite;opacity:0;`)}></div>
+        <div ${s(`position:absolute;top:72px;left:-5px;right:-5px;height:1px;background:rgba(100,200,255,0.4);animation:glitchStrip2 3s steps(1) infinite;opacity:0;`)}></div>
+        <div ${s(`position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:8px;border-radius:50%;background:rgba(255,107,255,0.15);filter:blur(4px);`)}></div>
       </div>`,
+
     'The Demon': `
-      <div style="position:relative;width:120px;height:160px;margin:0 auto;">
-        <div style="position:absolute;top:-5px;left:24px;width:10px;height:22px;border-radius:50% 50% 0 0;background:#FF3355;transform:rotate(-10deg);box-shadow:0 0 8px #FF3355;"></div>
-        <div style="position:absolute;top:-5px;right:24px;width:10px;height:22px;border-radius:50% 50% 0 0;background:#FF3355;transform:rotate(10deg);box-shadow:0 0 8px #FF3355;"></div>
-        <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:48px;height:48px;border-radius:40%;background:linear-gradient(180deg,#2a0505,#1a0000);box-shadow:0 0 20px #FF335566;"></div>
-        <div style="position:absolute;top:24px;left:30px;width:10px;height:6px;border-radius:50%;background:#FF3355;box-shadow:0 0 8px #FF3355;"></div>
-        <div style="position:absolute;top:24px;right:30px;width:10px;height:6px;border-radius:50%;background:#FF3355;box-shadow:0 0 8px #FF3355;"></div>
-        <div style="position:absolute;top:56px;left:50%;transform:translateX(-50%);width:58px;height:80px;border-radius:6px;background:linear-gradient(180deg,#1a0000,#0a0000);border:1px solid #FF335533;"></div>
-        <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:70px;height:24px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,100,0,0.5),transparent);animation:flameFlicker 0.6s ease-in-out infinite alternate;"></div>
+      <div ${s(`position:relative;width:140px;height:180px;margin:0 auto;`)}>
+        <div ${s(`position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:70px;height:30px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,51,85,0.4),transparent);filter:blur(4px);animation:flameHalo 0.8s ease-in-out infinite alternate;`)}></div>
+        <div ${s(`position:absolute;top:2px;left:28px;width:12px;height:28px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,#FF3355,#aa0022);transform:rotate(-8deg);${glow('#FF3355',8)};`)}></div>
+        <div ${s(`position:absolute;top:2px;right:28px;width:12px;height:28px;border-radius:50% 50% 0 0;background:linear-gradient(180deg,#FF3355,#aa0022);transform:rotate(8deg);${glow('#FF3355',8)};`)}></div>
+        <div ${s(`position:absolute;top:14px;left:50%;transform:translateX(-50%);width:54px;height:56px;border-radius:40%;background:linear-gradient(160deg,#2a0808,#0f0000);border:1px solid #FF335544;${glow('#FF3355',10)};`)}></div>
+        <div ${s(`position:absolute;top:30px;left:32px;width:12px;height:8px;border-radius:50%;background:#FF3355;${glow('#FF3355',10)};animation:demonEye 2s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;top:30px;right:32px;width:12px;height:8px;border-radius:50%;background:#FF3355;${glow('#FF3355',10)};animation:demonEye 2s ease-in-out 0.2s infinite;`)}></div>
+        <div ${s(`position:absolute;top:68px;left:50%;transform:translateX(-50%);width:66px;height:85px;border-radius:6px;background:linear-gradient(170deg,#1a0000,#050000);border:1px solid #FF335522;`)}></div>
+        <div ${s(`position:absolute;top:82px;left:50%;width:20px;height:20px;border-radius:3px;background:rgba(255,51,85,0.2);border:1px solid #FF335566;transform:translateX(-50%) rotate(45deg);${glow('#FF3355',6)};animation:runePulse 2s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:90px;height:30px;border-radius:50%;background:radial-gradient(ellipse,rgba(255,80,0,0.5),rgba(255,51,85,0.2),transparent);filter:blur(5px);animation:flameBase 0.7s ease-in-out infinite alternate;`)}></div>
+        ${[...Array(5)].map((_,i)=>`<div ${s(`position:absolute;width:3px;height:3px;border-radius:50%;background:${i%2===0?'#FF3355':'#FF6B35'};left:${20+i*18}%;bottom:${10+i*8}%;${glow('#FF3355',4)};animation:ember ${1.5+i*0.4}s ease-in-out ${i*0.3}s infinite;`)}></div>`).join('')}
       </div>`,
+
     'The Sharp': `
-      <div style="position:relative;width:120px;height:160px;margin:0 auto;">
-        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:44px;height:44px;border-radius:50%;background:linear-gradient(180deg,#0a1a12,#051008);box-shadow:0 0 16px #00E5A066;"></div>
-        <div style="position:absolute;top:14px;left:50%;transform:translateX(-50%);width:52px;height:14px;border:1px solid #00E5A0;border-radius:4px;background:rgba(0,229,160,0.1);box-shadow:0 0 8px #00E5A044;"></div>
-        <div style="position:absolute;top:8px;right:2px;font-size:6px;color:#00E5A0;font-family:monospace;opacity:0.7;line-height:1.4;">1.82<br>+CLV<br>94%</div>
-        <div style="position:absolute;top:42px;left:50%;transform:translateX(-50%);width:56px;height:90px;border-radius:6px 6px 4px 4px;background:linear-gradient(180deg,#0a120a,#050c05);border:1px solid #00E5A022;"></div>
-        <div style="position:absolute;top:48px;left:50%;transform:translateX(-50%);width:8px;height:40px;border-radius:2px;background:linear-gradient(180deg,#00E5A0,#00E5A033);"></div>
-      </div>`,
+      <div ${s(`position:relative;width:140px;height:180px;margin:0 auto;`)}>
+        <div ${s(`position:absolute;inset:-10px;border-radius:8px;border:1px solid rgba(0,229,160,0.1);animation:dataAura 4s ease-in-out infinite;`)}></div>
+        <div ${s(`position:absolute;top:4px;left:50%;transform:translateX(-50%);width:48px;height:50px;border-radius:50%;background:linear-gradient(160deg,#0a1a10,#030a06);border:1px solid rgba(0,229,160,0.3);${glow('#00E5A0',8)};`)}></div>
+        <div ${s(`position:absolute;top:16px;left:50%;transform:translateX(-50%);width:58px;height:16px;border:1px solid #00E5A0;border-radius:4px;background:rgba(0,229,160,0.08);${glow('#00E5A0',8)};`)}></div>
+        <div ${s(`position:absolute;top:18px;left:26px;width:20px;height:12px;border-radius:3px;background:rgba(0,229,160,0.15);border:1px solid #00E5A066;`)}></div>
+        <div ${s(`position:absolute;top:18px;right:26px;width:20px;height:12px;border-radius:3px;background:rgba(0,229,160,0.15);border:1px solid #00E5A066;`)}></div>
+        <div ${s(`position:absolute;top:6px;right:2px;font-family:'DM Mono',monospace;font-size:7px;color:#00E5A0;line-height:1.6;opacity:0.8;animation:dataScroll 3s linear infinite;overflow:hidden;height:40px;`)}>+CLV<br>1.82<br>94%<br>EDGE</div>
+        <div ${s(`position:absolute;top:52px;left:50%;transform:translateX(-50%);width:64px;height:100px;border-radius:6px 6px 4px 4px;background:linear-gradient(170deg,#080f08,#020602);border:1px solid rgba(0,229,160,0.15);`)}></div>
+        <div ${s(`position:absolute;top:54px;left:38px;width:14px;height:36px;border-right:2px solid rgba(0,229,160,0.4);transform:rotate(8deg);`)}></div>
+        <div ${s(`position:absolute;top:54px;right:38px;width:14px;height:36px;border-left:2px solid rgba(0,229,160,0.4);transform:rotate(-8deg);`)}></div>
+        <div ${s(`position:absolute;top:58px;left:50%;transform:translateX(-50%);width:8px;height:44px;border-radius:0 0 4px 4px;background:linear-gradient(180deg,#00E5A0,rgba(0,229,160,0.1));`)}></div>
+        <div ${s(`position:absolute;top:62px;left:30px;width:8px;height:6px;border-radius:1px;background:#00E5A033;border-top:1px solid #00E5A0;`)}></div>
+        <div ${s(`position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:60px;height:8px;border-radius:50%;background:rgba(0,229,160,0.2);filter:blur(5px);`)}></div>
+      </div>`
   };
-  if (chars[name]) return chars[name];
-  const emojiMatch = ARCHETYPES_DATA.find(a => a.name === name);
-  const emoji = emojiMatch ? emojiMatch.icon : '⚡';
-  return `<div style="font-size:80px;text-align:center;filter:drop-shadow(0 0 24px ${color});animation:iconFloat 4s ease-in-out infinite;">${emoji}</div>`;
+
+  if (characters[name]) return characters[name];
+
+  const fallbackIcons = {
+    'The Grinder':'⚙️','The Hunter':'🐺','The Kingmaker':'👑','The Reaper':'💀',
+    'Iceblood':'❄️','Diamond Mind':'💎','Night Owl':'🌙','The Hybrid':'🧬',
+    'The Storm':'⚡','The Shark':'🦈','The Gambler':'🎲'
+  };
+  const emoji = fallbackIcons[name] || (ARCHETYPES_DATA.find(a=>a.name===name)?.icon||'⚡');
+  return `
+    <div style="position:relative;width:140px;height:180px;margin:0 auto;display:flex;align-items:center;justify-content:center;">
+      <div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,${color}22,transparent);animation:glowPulse 3s ease-in-out infinite;"></div>
+      <div style="font-size:80px;filter:drop-shadow(0 0 24px ${color});animation:iconFloat 4s ease-in-out infinite;position:relative;z-index:2;">${emoji}</div>
+      ${[...Array(6)].map((_,i)=>`<div style="position:absolute;width:${1+i%3}px;height:${1+i%3}px;border-radius:50%;background:${color};left:${10+i*16}%;top:${20+i*12}%;opacity:0.3;animation:particleDrift ${3+i}s ease-in-out ${i*0.4}s infinite;"></div>`).join('')}
+    </div>`;
 }
 
 function showDNAIntro(archName, archColor) {
@@ -733,7 +786,7 @@ function renderCurrentCard(sorted) {
   el.innerHTML = `<div class="arch-hero-card" style="--arch-c:${heroConfig.color}">
     <div class="arch-portrait-area" style="background:radial-gradient(ellipse at center 80%,${heroConfig.color}18 0%,transparent 65%),linear-gradient(160deg,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 100%)">
       <div style="position:relative;z-index:1">
-        ${buildCharacterPortrait(p.name, heroConfig.color)}
+        ${buildCharacter(p.name, heroConfig.color)}
       </div>
       <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:${heroConfig.color};font-family:'DM Mono',monospace;opacity:0.5;white-space:nowrap">${heroConfig.label}</div>
     </div>
