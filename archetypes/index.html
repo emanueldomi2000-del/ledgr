@@ -191,7 +191,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .arch-class-label{font-size:9px;letter-spacing:0.25em;font-family:'DM Mono',monospace;margin-top:4px;margin-bottom:12px;padding:3px 10px;border-radius:20px;display:inline-block}
 
 /* ── RARITY VISUAL WEIGHT ── */
-.arch-vault-card.common{opacity:0.7;border-color:rgba(255,255,255,0.06)!important}
+.arch-vault-card.common{opacity:0.5;filter:grayscale(0.5);border-color:rgba(255,255,255,0.04)!important}
 .arch-vault-card.rare{border-color:rgba(79,195,247,0.2)!important}
 .arch-vault-card.epic{border-color:rgba(123,44,255,0.25)!important}
 .arch-vault-card.epic::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#7B2CFF,transparent);pointer-events:none}
@@ -244,10 +244,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .passive-row{font-size:11px;font-family:'Syne',sans-serif;display:flex;align-items:center;gap:6px}
 .passive-plus{color:#00E5A0}
 .passive-minus{color:#FF3355}
-.arch-stats-row{display:flex;gap:20px;margin-bottom:4px}
-.as-item{text-align:center}
-.as-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--tx)}
-.as-lbl{font-size:8px;letter-spacing:0.15em;color:var(--mu);font-family:'DM Mono',monospace}
+.arch-stats-row{display:flex;align-items:center;gap:0;margin:14px 0;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;overflow:hidden}
+.as-item{flex:1;text-align:center;padding:10px 8px;border-right:1px solid rgba(255,255,255,0.05)}
+.as-item:last-child{border-right:none}
+.as-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--tx);line-height:1}
+.as-lbl{font-size:8px;letter-spacing:0.12em;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px}
 @media(max-width:768px){.arch-hero-card{flex-direction:column}.arch-portrait-area{flex:none;width:100%;min-height:220px;border-right:none;border-bottom:1px solid rgba(255,255,255,0.04)}.arch-identity-area{padding:24px 20px}}
 
 /* ── VAULT RARITY SIZES ── */
@@ -266,6 +267,23 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .evo-branch-pct{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--ac);min-width:60px;line-height:1}
 .evo-branch-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--tx)}
 .evo-branch-trigger{font-size:10px;color:var(--ac);font-family:'Syne',sans-serif}
+
+/* ── RARITY KEYFRAMES ── */
+@keyframes legendShimmer{from{left:-100%}to{left:200%}}
+@keyframes mythicPulse{0%,100%{box-shadow:0 0 12px rgba(255,107,255,0.2)}50%{box-shadow:0 0 24px rgba(255,107,255,0.4),0 0 48px rgba(255,107,255,0.1)}}
+
+/* ── VERTICAL EVOLUTION TREE ── */
+.evo-vertical-tree{display:flex;flex-direction:column;align-items:center;gap:0;max-width:420px;margin:0 auto}
+.evo-vt-current{background:rgba(123,44,255,0.1);border:1px solid var(--ac);border-radius:12px;padding:14px 24px;text-align:center;position:relative;min-width:200px}
+.evo-vt-current::after{content:'';position:absolute;bottom:-20px;left:50%;width:2px;height:20px;background:linear-gradient(180deg,var(--ac),transparent);transform:translateX(-50%)}
+.evo-connector-line{width:2px;height:24px;background:rgba(123,44,255,0.3);position:relative;overflow:hidden;margin:0 auto}
+.evo-connector-line::after{content:'';position:absolute;top:-100%;left:0;right:0;height:100%;background:var(--ac);animation:energyFlow 1.5s linear infinite}
+@keyframes energyFlow{from{top:-100%}to{top:100%}}
+.evo-vt-branch{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 20px;display:flex;align-items:center;gap:16px;min-width:280px;transition:all 0.2s ease;cursor:default}
+.evo-vt-branch:hover{border-color:var(--ac);transform:scale(1.02)}
+.evo-vt-pct{font-family:'Bebas Neue',sans-serif;font-size:32px;min-width:56px;text-align:center}
+.evo-vt-name{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--tx)}
+.evo-vt-trigger{font-size:10px;color:var(--ac);font-family:'Syne',sans-serif;margin-top:2px}
 
 /* ── SCAN PROCESS ── */
 .scan-process{max-width:600px}
@@ -795,13 +813,13 @@ function renderCurrentCard(sorted) {
       <div class="arch-name">${p.name.toUpperCase()}</div>
       <div class="arch-class">${heroConfig.label}</div>
       <div class="arch-desc">${p.desc}</div>
-      <div class="arch-passives">${passivesHtml}</div>
       <div class="arch-stats-row">
         <div class="as-item"><div class="as-val">${userStats.winRate}%</div><div class="as-lbl">WIN RATE</div></div>
         <div class="as-item"><div class="as-val" style="color:${userStats.roi>=0?'#00E5A0':'#FF3355'}">${userStats.roi>=0?'+':''}${userStats.roi.toFixed(1)}%</div><div class="as-lbl">ROI</div></div>
         <div class="as-item"><div class="as-val">${userStats.picks}</div><div class="as-lbl">PICKS</div></div>
         <div class="as-item"><div class="as-val" style="color:${heroConfig.color}">${confidence}%</div><div class="as-lbl">MATCH</div></div>
       </div>
+      <div class="arch-passives">${passivesHtml}</div>
       <div class="arch-match-bars" id="archMatchBars">
         <div style="font-size:9px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin:16px 0 10px">CHARACTER TRAITS</div>
       </div>
@@ -864,6 +882,27 @@ function renderGrid(sorted) {
       <div class="arch-hover-reveal"><div style="font-size:9px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin-bottom:8px">POPULATION</div><div style="font-family:'Bebas Neue';font-size:28px;color:var(--ac)">${a.rarity}%</div><div style="margin-top:10px;width:100%">${getArchStats(a.name).map(s=>`<div style="display:flex;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04)"><span style="color:var(--mu);font-family:'Syne'">${s.label}</span><span style="color:var(--tx);font-family:'DM Mono'">${s.val}</span></div>`).join('')}</div></div>
     </div>`;
   }).join('');
+  applyRarityTreatments(grid);
+}
+
+function applyRarityTreatments(grid) {
+  grid.querySelectorAll('.arch-vault-card').forEach(card => {
+    if (card.classList.contains('legendary')) {
+      const shimmer = document.createElement('div');
+      shimmer.style.cssText = `position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.06),transparent);animation:legendShimmer ${(4+Math.random()*2).toFixed(1)}s linear infinite;pointer-events:none;z-index:0;`;
+      card.appendChild(shimmer);
+    } else if (card.classList.contains('mythic')) {
+      card.style.animation = 'mythicPulse 3s ease-in-out infinite';
+      card.addEventListener('mouseenter', () => {
+        card.style.animation = 'mythicGlitch 0.4s steps(3) infinite';
+        card.style.filter = 'hue-rotate(15deg)';
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.animation = 'mythicPulse 3s ease-in-out infinite';
+        card.style.filter = '';
+      });
+    }
+  });
 }
 
 function renderEvolution(sorted) {
@@ -880,27 +919,36 @@ function renderEvolution(sorted) {
     const fallback = sorted.find(x => x.id !== p.id && !used.has(x.id));
     if (fallback) evoData.push({name:fallback.name, pct:Math.max(10,Math.round(fallback.sc)), condition:fallback.conditions[0]||'+ adapt'});
   }
-  const branchesHtml = evoData.map(e => `
-    <div class="evo-branch">
-      <div class="evo-branch-pct">${e.pct}%</div>
-      <div>
-        <div class="evo-branch-name">→ ${e.name.toUpperCase()}</div>
-        <div class="evo-branch-trigger">${e.condition}</div>
-      </div>
-    </div>`).join('');
   el.innerHTML = `<div class="pf-eyebrow">EVOLUTION PATH</div>
     <div class="pf-hero-header">
       <div class="pf-scanning-text">YOUR MIND IS <span>SHIFTING</span></div>
-      <div class="pf-current-state">Current: <span id="pfCurrentArch">${p.name}</span></div>
+      <div class="pf-current-state">Current: <span>${p.name}</span></div>
     </div>
-    <div class="evo-tree">
-      <div class="evo-current-node">
-        <div style="font-size:28px;margin-bottom:6px">${p.icon}</div>
-        <div style="font-family:'Bebas Neue';font-size:14px;color:var(--ac);letter-spacing:0.05em">${p.name.toUpperCase()}</div>
-        <div style="font-size:9px;color:var(--mu);font-family:'DM Mono';margin-top:2px">CURRENT</div>
-      </div>
-      <div class="evo-branches">${branchesHtml}</div>
+    <div class="evo-vertical-tree">
+      <div class="evo-vt-current" id="evtCurrent"></div>
+      <div id="evtBranches"></div>
     </div>`;
+  document.getElementById('evtCurrent').innerHTML = `
+    <div style="font-size:10px;letter-spacing:0.2em;color:var(--mu);font-family:'DM Mono';margin-bottom:6px">CURRENT IDENTITY</div>
+    <div style="font-family:'Bebas Neue';font-size:20px;color:var(--ac);letter-spacing:0.05em">${p.name.toUpperCase()}</div>
+    <div style="font-size:10px;color:var(--mu);font-family:'DM Mono';margin-top:4px">100% MATCH</div>
+  `;
+  const evoColors = ['#7B2CFF','#00E5A0','#4FC3F7'];
+  const branchContainer = document.getElementById('evtBranches');
+  evoData.forEach((e, i) => {
+    const connector = document.createElement('div');
+    connector.className = 'evo-connector-line';
+    branchContainer.appendChild(connector);
+    const branch = document.createElement('div');
+    branch.className = 'evo-vt-branch';
+    branch.innerHTML = `
+      <div class="evo-vt-pct" style="color:${evoColors[i%3]}">${e.pct}%</div>
+      <div>
+        <div class="evo-vt-name">${e.name.toUpperCase()}</div>
+        <div class="evo-vt-trigger">${e.condition}</div>
+      </div>`;
+    branchContainer.appendChild(branch);
+  });
 }
 
 function renderTerminal(archName) {
