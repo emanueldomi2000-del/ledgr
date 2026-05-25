@@ -598,6 +598,72 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 #seasonInfoCard{margin-top:0!important}
 @media(max-width:960px){.id-card-main{grid-template-columns:1fr}.id-left{border-right:none;padding-right:0;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.05)}.hero-cards-row{grid-template-columns:1fr}}
 @media(max-width:700px){.id-stats{grid-template-columns:repeat(2,1fr)!important}.id-stat:nth-child(2){border-left:1px solid rgba(255,255,255,.04)!important}.id-stat:nth-child(3){border-left:none!important}}
+
+/* ── AVATAR BORDER COSMETICS (ab-*) ── */
+.ab-clean{border:2px solid rgba(255,255,255,0.08)!important}
+.ab-blue{border:2px solid #4FC3F7!important}
+.ab-bronze-frame{border:2px solid #CD7F32!important;box-shadow:0 0 8px rgba(205,127,50,0.4)}
+.ab-crystal-orbit{border:2px solid rgba(79,195,247,0.6)!important;animation:abCrystalPulse 2s ease-in-out infinite}
+@keyframes abCrystalPulse{0%,100%{border-color:rgba(79,195,247,0.4)}50%{border-color:rgba(79,195,247,0.9);box-shadow:0 0 16px rgba(79,195,247,0.4)}}
+.ab-pulse-ring{border:2px solid rgba(150,100,255,0.6)!important;animation:abPulseRing 1.5s ease-in-out infinite}
+@keyframes abPulseRing{0%,100%{box-shadow:0 0 6px rgba(150,100,255,0.3)}50%{box-shadow:0 0 18px rgba(150,100,255,0.7)}}
+.ab-frost-edge{border:2px solid rgba(147,210,255,0.8)!important;animation:abFrost 3s ease-in-out infinite}
+@keyframes abFrost{0%,100%{border-color:rgba(147,210,255,0.6)}50%{border-color:rgba(220,245,255,1);box-shadow:0 0 12px rgba(147,210,255,0.5)}}
+.ab-electric-surge{border:2px solid #7B2CFF!important;animation:abElecSurge 1s ease-in-out infinite}
+@keyframes abElecSurge{0%,100%{box-shadow:0 0 6px rgba(123,44,255,0.4)}50%{box-shadow:0 0 20px rgba(123,44,255,0.9)}}
+.ab-inferno-core{border:2px solid #FF6B35!important;box-shadow:0 0 12px rgba(255,107,53,0.5);animation:abInferno 1.5s ease-in-out infinite}
+@keyframes abInferno{0%,100%{border-color:#FF6B35}50%{border-color:#FFD700;box-shadow:0 0 24px rgba(255,107,53,0.8)}}
+.ab-cosmic-rift{border:3px solid transparent!important;background:linear-gradient(#0a0a1a,#0a0a1a) padding-box,conic-gradient(#7B2CFF,#4FC3F7,#00E5A0,#FFD700,#FF6BFF,#7B2CFF) border-box;animation:abCosmicHue 3s linear infinite;box-shadow:0 0 12px rgba(123,44,255,0.4)}
+@keyframes abCosmicHue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+.ab-dragon-soul{border:3px solid #FF3355!important;animation:abDragonFire 2s ease-in-out infinite;box-shadow:0 0 16px rgba(255,51,85,0.5)}
+@keyframes abDragonFire{0%,100%{border-color:#FF3355}50%{border-color:#FFD700;box-shadow:0 0 28px rgba(255,215,0,0.6)}}
+.ab-crown-halo{border:3px solid transparent!important;background:linear-gradient(#1a1400,#1a1400) padding-box,conic-gradient(#FFD700,#FFA500,rgba(255,255,255,0.5),#FFD700,#FFA500,rgba(255,255,255,0.5),#FFD700) border-box;box-shadow:0 0 20px rgba(255,215,0,0.4);animation:abCrownPulse 2s ease-in-out infinite}
+@keyframes abCrownPulse{0%,100%{box-shadow:0 0 16px rgba(255,215,0,0.3)}50%{box-shadow:0 0 32px rgba(255,215,0,0.7)}}
+.ab-void-king{border:3px solid rgba(80,0,160,0.9)!important;box-shadow:0 0 20px rgba(80,0,160,0.5);animation:abVoid 3s ease-in-out infinite}
+@keyframes abVoid{0%,100%{border-color:rgba(80,0,160,0.9)}50%{border-color:rgba(150,0,255,1);box-shadow:0 0 36px rgba(120,0,220,0.8)}}
+.ab-celestial-orbit{border:2px solid rgba(170,120,255,0.4)!important;animation:abCelestial 4s ease-in-out infinite}
+@keyframes abCelestial{0%,100%{border-color:rgba(170,120,255,0.3)}50%{border-color:rgba(170,120,255,0.8);box-shadow:0 0 24px rgba(170,120,255,0.4)}}
+.ab-time-collapse{border:2px solid rgba(255,107,255,0.7)!important;animation:abTimeGlitch 1.5s steps(4) infinite}
+@keyframes abTimeGlitch{0%{border-color:rgba(255,107,255,0.7);transform:translate(0)}25%{border-color:rgba(79,195,247,0.9);transform:translate(-2px,1px) skewX(-2deg)}50%{border-color:rgba(255,51,85,0.8);transform:translate(2px,-1px) skewX(2deg)}75%{border-color:rgba(255,215,0,0.7);transform:translate(-1px,2px)}100%{border-color:rgba(255,107,255,0.7);transform:translate(0)}}
+.ab-singularity{border:3px solid transparent!important;background:radial-gradient(circle at 50%,#000005,#050010) padding-box,conic-gradient(#FF6BFF 0deg,#000 60deg,#7B2CFF 120deg,#000 180deg,#4FC3F7 240deg,#000 300deg,#FF6BFF 360deg) border-box;box-shadow:0 0 28px rgba(255,107,255,0.4);animation:abSingSpin 1.2s linear infinite}
+@keyframes abSingSpin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+.ab-unknown-signal{border:2px solid rgba(0,255,80,0.4)!important;animation:abSignal .8s steps(3) infinite}
+@keyframes abSignal{0%{border-color:rgba(0,255,80,0.4);transform:translate(0)}33%{border-color:rgba(0,200,255,0.6);transform:translate(-1px,0)}66%{border-color:rgba(255,0,100,0.5);transform:translate(1px,0)}}
+.ab-redacted{animation:abRedacted 4s linear infinite}
+@keyframes abRedacted{0%{border:3px solid #FF6BFF!important}20%{border:3px solid #7B2CFF!important}40%{border:3px solid #FF3355!important;transform:skewX(-1deg)}60%{border:3px solid #00E5A0!important}80%{border:3px solid #FFD700!important;transform:skewX(1deg)}100%{border:3px solid #FF6BFF!important}}
+.ab-halloween{border:2px solid rgba(255,120,0,0.7)!important;animation:abHalloween .4s steps(2) infinite}
+@keyframes abHalloween{0%{box-shadow:0 0 8px rgba(255,120,0,0.5)}50%{box-shadow:0 0 14px rgba(255,120,0,0.8)}}
+.ab-winter-elite{border:2px solid rgba(147,210,255,0.7)!important;animation:abWinter 4s ease-in-out infinite}
+@keyframes abWinter{0%,100%{border-color:rgba(147,210,255,0.4)}50%{border-color:rgba(220,245,255,0.9);box-shadow:0 0 20px rgba(147,210,255,0.5)}}
+.ab-summer-champion{border:3px solid transparent!important;background:linear-gradient(#1a1200,#1a1200) padding-box,conic-gradient(#FFD700,#FF6B35,#FFD700,#FFA500,#FFD700) border-box;animation:abSummerGlow 2s ease-in-out infinite;box-shadow:0 0 12px rgba(255,215,0,0.3)}
+@keyframes abSummerGlow{0%,100%{box-shadow:0 0 10px rgba(255,215,0,0.3)}50%{box-shadow:0 0 24px rgba(255,215,0,0.6)}}
+
+/* ── BANNER PACK COSMETICS (bp-*) ── */
+.bp-midnight{background:linear-gradient(135deg,#0d0d2b 0%,#1a1040 50%,#0d0d2b 100%)!important}
+.bp-carbon{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#1a1a1a 100%)!important}
+.bp-frost{background:linear-gradient(135deg,#0a2030 0%,#1a4060 40%,#4FC3F7 100%)!important}
+.bp-purple-fade{background:linear-gradient(135deg,#1a0a2e 0%,#3d1a6e 50%,#7B2CFF 100%)!important}
+.bp-electric-storm{background:linear-gradient(135deg,#0a0a1a 0%,#1a0a4a 40%,#4FC3F7 70%,#7B2CFF 100%)!important;animation:bpElecStorm 3s ease-in-out infinite}
+@keyframes bpElecStorm{0%,100%{filter:brightness(1)}50%{filter:brightness(1.15)}}
+.bp-cosmic-rift{background:linear-gradient(135deg,#050010 0%,#1a0030 30%,#3d00a0 60%,#7B2CFF 100%)!important;animation:bpCosmicRift 4s linear infinite}
+@keyframes bpCosmicRift{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(20deg)}}
+.bp-frost-core{background:linear-gradient(135deg,#001020 0%,#003060 40%,#4FC3F7 80%,#fff 100%)!important}
+.bp-neon-pulse{background:linear-gradient(135deg,#0a0020 0%,#2a0060 40%,#7B2CFF 70%,#B14CFF 100%)!important;animation:bpNeonPulse 2s ease-in-out infinite}
+@keyframes bpNeonPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2) saturate(1.3)}}
+.bp-dragon-soul{background:linear-gradient(135deg,#1a0000 0%,#3d0010 40%,#8B0000 70%,#FF3355 100%)!important;animation:bpDragon 2.5s ease-in-out infinite}
+@keyframes bpDragon{0%,100%{filter:brightness(1)}50%{filter:brightness(1.1) saturate(1.2)}}
+.bp-crown-energy{background:linear-gradient(135deg,#1a1000 0%,#3d2a00 40%,#8B6914 70%,#FFD700 100%)!important}
+.bp-eternal-flame{background:linear-gradient(135deg,#1a0500 0%,#4a1000 40%,#FF6B35 80%,#FFD700 100%)!important;animation:bpFlame 1.5s ease-in-out infinite}
+@keyframes bpFlame{0%,100%{filter:brightness(1)}50%{filter:brightness(1.15) saturate(1.2)}}
+.bp-void-emperor{background:linear-gradient(135deg,#000005 0%,#050010 40%,#0a0020 70%,#1a0040 100%)!important}
+.bp-singularity{background:radial-gradient(ellipse at center,#FF6BFF 0%,#7B2CFF 30%,#000010 70%,#000 100%)!important;animation:bpSing 3s linear infinite}
+@keyframes bpSing{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+.bp-time-collapse{background:linear-gradient(135deg,#0a0020 0%,#4FC3F7 25%,#FF6BFF 50%,#4FC3F7 75%,#0a0020 100%)!important;animation:bpTimeCol 2s steps(4) infinite}
+@keyframes bpTimeCol{0%,100%{filter:brightness(1)}50%{filter:brightness(1.2) hue-rotate(10deg)}}
+.bp-unknown-signal{background:linear-gradient(135deg,#001a00 0%,#003300 40%,#00E5A0 80%,#4FC3F7 100%)!important;animation:bpSignal .6s steps(2) infinite}
+@keyframes bpSignal{0%{filter:brightness(1)}50%{filter:brightness(1.1) saturate(1.2)}}
+.bp-galaxy-motion{background:linear-gradient(135deg,#000010 0%,#0a0030 25%,#1a0060 50%,#7B2CFF 75%,#B14CFF 100%)!important;animation:bpGalaxy 6s linear infinite}
+@keyframes bpGalaxy{from{background-position:0% 50%}to{background-position:100% 50%}}
 </style>
 </head>
 <body>
@@ -1314,6 +1380,12 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
       const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};
       const avDiv=rm2&&rm2.division&&D[rm2.division]?D[rm2.division]:getDivision(myPicks);
       window.Divisions.applyGlow(av,avDiv);
+    }
+    var savedBorder=localStorage.getItem('ledgr_avatar_border')||'none';
+    if(av&&savedBorder!=='none'){
+      av.className.split(' ').filter(Boolean).forEach(function(c){if(c.startsWith('ab-'))av.classList.remove(c);});
+      av.classList.add('ab-'+savedBorder);
+      av.style.overflow='visible';
     }
   }
   const nameEl=document.getElementById('idName');if(nameEl)nameEl.textContent='@'+user.username;

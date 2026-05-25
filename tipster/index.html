@@ -1511,30 +1511,37 @@ async function loadProfile(){
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
 
       // Apply saved cosmetics (banner pack, avatar border, theme)
-      (function() {
-        var savedBanner = (profileCfg && profileCfg.banner) || localStorage.getItem('ledgr_banner_pack') || 'midnight';
-        localStorage.setItem('ledgr_banner_pack', savedBanner);
-        var bannerEl = document.querySelector('.profile-banner');
-        if(bannerEl) {
-          bannerEl.className.split(' ').filter(Boolean).forEach(function(c) {
-            if(c.startsWith('bp-')) bannerEl.classList.remove(c);
-          });
-          bannerEl.classList.add('bp-' + savedBanner);
+      (function applyUserCosmetics() {
+        var border = (profileCfg && profileCfg.border) || localStorage.getItem('ledgr_avatar_border') || 'none';
+        var theme = localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
+        var banner = (profileCfg && profileCfg.banner) || localStorage.getItem('ledgr_banner_pack') || 'midnight';
+
+        console.log('Border:', border);
+        console.log('Banner:', banner);
+        console.log('Theme:', theme);
+
+        // Apply theme
+        document.documentElement.style.setProperty('--ac', theme);
+
+        // Apply border to avatar (.avatar-big is the tipster avatar element)
+        var av = document.querySelector('.avatar-big, .tipster-avatar, .av-circle, .profile-av, [class*="avatar-img"]');
+        if(av && border !== 'none') {
+          var classes = av.className.split(' ');
+          av.className = classes.filter(function(c){ return !c.startsWith('ab-'); }).join(' ');
+          av.classList.add('ab-' + border);
+          av.style.overflow = 'visible';
         }
 
-        var savedBorder = (profileCfg && profileCfg.border) || localStorage.getItem('ledgr_avatar_border') || 'none';
-        localStorage.setItem('ledgr_avatar_border', savedBorder);
-        var avatarEl = document.querySelector('.avatar-big');
-        if(avatarEl && savedBorder !== 'none') {
-          avatarEl.style.overflow = 'visible';
-          avatarEl.className.split(' ').filter(Boolean).forEach(function(c) {
-            if(c.startsWith('ab-')) avatarEl.classList.remove(c);
-          });
-          avatarEl.classList.add('ab-' + savedBorder);
+        // Apply banner to hero section — MUST clear inline style so CSS class takes effect
+        var hero = document.querySelector('.profile-banner, .tipster-banner, .hero-banner, [class*="banner-bg"]');
+        if(hero) {
+          var hClasses = hero.className.split(' ');
+          hero.className = hClasses.filter(function(c){ return !c.startsWith('bp-'); }).join(' ');
+          hero.classList.add('bp-' + banner);
+          // Clear inline background so CSS class wins
+          hero.style.background = '';
+          hero.style.backgroundImage = '';
         }
-
-        var savedTheme = localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
-        document.documentElement.style.setProperty('--ac', savedTheme);
       })();
 
       // FIX 2 — Archetype-themed hero background particles
