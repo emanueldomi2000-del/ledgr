@@ -162,8 +162,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .border-card:hover:not(.b-locked){border-color:var(--bd2);transform:translateY(-2px)}
 .border-card.selected{border-color:var(--ac);background:var(--acg)}
 .border-card.b-locked{cursor:not-allowed;opacity:.55}
-.border-av-wrap{position:relative;width:44px;height:44px;margin:0 auto 12px}
-.border-av{width:44px;height:44px;border-radius:var(--r-lg,14px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:13px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
+.border-av-wrap{position:relative;width:56px;height:56px;margin:0 auto 12px}
+.border-av{width:56px;height:56px;border-radius:var(--r-lg,14px);background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:var(--font-display);font-size:16px;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg);position:relative;z-index:1}
 .border-ring{position:absolute;inset:-4px;border-radius:50%}
 .border-name{font-family:var(--font-mono);font-size:8px;font-weight:700;color:var(--tx);letter-spacing:1.5px;margin-bottom:3px}
 .border-tier{font-family:var(--font-mono);font-size:7px;color:var(--mu);letter-spacing:.5px}
@@ -312,9 +312,48 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .arch-clear-btn{background:transparent;border:1px solid var(--bd);color:var(--mu2);border-radius:6px;padding:4px 12px;font-family:var(--font-mono);font-size:9px;cursor:pointer;transition:all .2s;margin-left:auto;flex-shrink:0}
 .arch-clear-btn:hover{border-color:var(--bd2);color:var(--tx)}
 
+/* ── IDENTITY LAB HERO ── */
+.ilab-hero{margin-bottom:48px;position:relative}
+.ilab-eyebrow{font-family:var(--font-mono);font-size:10px;color:var(--ac);letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.ilab-eyebrow::before{content:'';width:24px;height:1px;background:var(--ac);opacity:.5}
+.ilab-title{font-family:var(--font-display);font-size:clamp(52px,6vw,80px);letter-spacing:-1px;line-height:.82;color:var(--tx);margin-bottom:18px}
+.ilab-title span{-webkit-text-stroke:1px var(--ac);color:transparent}
+.ilab-sub{font-size:14px;color:var(--mu2);line-height:1.7;max-width:480px}
+
+/* ── ILAB SECTION HEADER ── */
+.ilab-section-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:14px;border-bottom:1px solid rgba(123,44,255,0.12)}
+.ilab-section-num{font-family:var(--font-display);font-size:10px;letter-spacing:2px;color:var(--ac);background:rgba(123,44,255,0.1);border:1px solid rgba(123,44,255,0.2);border-radius:6px;padding:3px 9px;flex-shrink:0}
+.ilab-section-name{font-family:var(--font-display);font-size:24px;letter-spacing:4px;color:var(--tx);line-height:1}
+.ilab-section-desc{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:.5px;margin-top:3px}
+
+/* ── ALERT SYSTEM ── */
+.alert-master-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0 18px;border-bottom:1px solid var(--bd);margin-bottom:12px}
+.alert-system{display:flex;flex-direction:column;gap:6px}
+.alert-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:10px;transition:all .2s}
+.alert-item:hover{background:rgba(123,44,255,0.03);border-color:rgba(123,44,255,0.1)}
+.alert-icon-wrap{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.alert-text{flex:1}
+.alert-name{font-size:13px;font-weight:600;color:var(--tx)}
+.alert-desc{font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:2px}
+
+/* ── CHARACTER FX ── */
+.char-fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-top:4px}
+.cfx-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:20px 14px 16px;text-align:center;position:relative;transition:all .2s;cursor:pointer;overflow:hidden}
+.cfx-card:hover:not(.cfx-locked){border-color:rgba(123,44,255,0.3);background:rgba(123,44,255,0.04);transform:translateY(-2px)}
+.cfx-card.cfx-locked{opacity:.5;cursor:not-allowed}
+.cfx-card.cfx-active{border-color:var(--ac);background:rgba(123,44,255,0.06);box-shadow:0 0 24px rgba(123,44,255,0.12)}
+.cfx-card.cfx-active::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,44,255,0.08),transparent 60%);pointer-events:none}
+.cfx-icon{font-size:30px;margin-bottom:10px;display:block}
+.cfx-name{font-family:var(--font-display);font-size:13px;letter-spacing:1px;color:var(--tx);margin-bottom:4px}
+.cfx-tier{font-family:var(--font-mono);font-size:8px;letter-spacing:.5px}
+.cfx-tier.locked{color:var(--mu)}
+.cfx-tier.unlocked{color:var(--gr)}
+.cfx-tier.premium{color:var(--ac)}
+.cfx-lock-icon{position:absolute;top:8px;right:8px;font-size:12px;opacity:.5}
+
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{grid-template-columns:1fr}.preview-panel{position:relative;top:0}}
-@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.border-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.char-fx-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 
 </head>
@@ -336,10 +375,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 
   <div id="app" style="display:none">
-    <div class="page-header">
-      <div class="page-eyebrow">Profile Customization</div>
-      <h1 class="page-title">SHAPE YOUR<br><span>IDENTITY</span></h1>
-      <p class="page-sub">Make your profile unforgettable. Build an image that commands respect on the leaderboard.</p>
+    <div class="ilab-hero">
+      <div class="ilab-eyebrow">Profile Customization</div>
+      <h1 class="ilab-title">IDENTITY<br><span>LAB</span></h1>
+      <p class="ilab-sub">Build a profile that commands respect on the leaderboard.</p>
     </div>
 
     <div class="settings-layout">
@@ -364,13 +403,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <!-- SETTINGS SECTIONS -->
       <div class="settings-sections">
 
-        <!-- 01 IDENTITY -->
+        <!-- 01 BUILD -->
         <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">01</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">01</div>
             <div>
-              <div class="section-title">IDENTITY</div>
-              <div class="section-sub">Avatar, banner, bio and social links.</div>
+              <div class="ilab-section-name">BUILD</div>
+              <div class="ilab-section-desc">Avatar, banner, bio and social links.</div>
             </div>
           </div>
 
@@ -431,13 +470,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </section>
 
-        <!-- 02 COSMETICS -->
+        <!-- 02 STYLE -->
         <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">02</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">02</div>
             <div>
-              <div class="section-title">COSMETICS</div>
-              <div class="section-sub">Theme color, avatar border, and badge showcase.</div>
+              <div class="ilab-section-name">STYLE</div>
+              <div class="ilab-section-desc">Theme color, avatar border, and badge showcase.</div>
             </div>
           </div>
 
@@ -469,26 +508,88 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </section>
 
-        <!-- 03 PREFERENCES -->
+        <!-- 03 SYSTEM -->
         <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">03</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">03</div>
             <div>
-              <div class="section-title">PREFERENCES</div>
-              <div class="section-sub">Notifications, privacy, odds format, and timezone.</div>
+              <div class="ilab-section-name">SYSTEM</div>
+              <div class="ilab-section-desc">Alerts, privacy, odds format, and timezone.</div>
             </div>
           </div>
 
-          <div class="pref-row">
+          <div class="alert-master-row">
             <div>
               <div class="pref-label">Push Notifications</div>
-              <div class="pref-sub">Get alerts for wins, streaks, and followed tipsters</div>
+              <div class="pref-sub">Enable alerts · manage types below</div>
             </div>
             <label class="toggle-wrap">
               <input type="checkbox" id="prefNotifications" onchange="handlePushToggle(this)">
               <div class="toggle-track"></div>
               <div class="toggle-thumb"></div>
             </label>
+          </div>
+          <div class="alert-system">
+            <div class="alert-item">
+              <div class="alert-icon-wrap" style="background:rgba(251,146,60,0.1)">🔥</div>
+              <div class="alert-text">
+                <div class="alert-name">Win Streaks</div>
+                <div class="alert-desc">Followed tipsters hit a win streak</div>
+              </div>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="alertWinStreak" onchange="savePref('alertWinStreak',this.checked)" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon-wrap" style="background:rgba(251,191,36,0.1)">👑</div>
+              <div class="alert-text">
+                <div class="alert-name">Rank Changes</div>
+                <div class="alert-desc">Followed tipsters move up the leaderboard</div>
+              </div>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="alertRankChanges" onchange="savePref('alertRankChanges',this.checked)" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon-wrap" style="background:rgba(248,113,113,0.1)">⚔️</div>
+              <div class="alert-text">
+                <div class="alert-name">Rival Activity</div>
+                <div class="alert-desc">Tipsters near your rank are on a run</div>
+              </div>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="alertRivalActivity" onchange="savePref('alertRivalActivity',this.checked)">
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon-wrap" style="background:rgba(52,211,153,0.1)">📈</div>
+              <div class="alert-text">
+                <div class="alert-name">Leaderboard Movement</div>
+                <div class="alert-desc">Your position changes on the main leaderboard</div>
+              </div>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="alertLeaderboard" onchange="savePref('alertLeaderboard',this.checked)" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon-wrap" style="background:rgba(79,195,247,0.1)">💎</div>
+              <div class="alert-text">
+                <div class="alert-name">Division Changes</div>
+                <div class="alert-desc">Promotions, demotions, and rank milestones</div>
+              </div>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="alertDivision" onchange="savePref('alertDivision',this.checked)" checked>
+                <div class="toggle-track"></div>
+                <div class="toggle-thumb"></div>
+              </label>
+            </div>
           </div>
 
           <div class="pref-row">
@@ -536,13 +637,61 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </section>
 
-        <!-- 04 BETTING DNA -->
+        <!-- 04 POWER -->
         <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">04</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">04</div>
             <div>
-              <div class="section-title">BETTING DNA</div>
-              <div class="section-sub">Detected from your pick history · override below to pin your identity.</div>
+              <div class="ilab-section-name">POWER</div>
+              <div class="ilab-section-desc">Character FX — visual effects unlocked by division rank.</div>
+            </div>
+          </div>
+          <div class="char-fx-grid">
+            <div class="cfx-card cfx-active" onclick="toggleFX('eye-glow',this)">
+              <span class="cfx-icon">👁️</span>
+              <div class="cfx-name">EYE GLOW</div>
+              <div class="cfx-tier unlocked">UNLOCKED</div>
+            </div>
+            <div class="cfx-card" onclick="toggleFX('profile-aura',this)">
+              <span class="cfx-icon">🌀</span>
+              <div class="cfx-name">PROFILE AURA</div>
+              <div class="cfx-tier premium">SILVER+</div>
+            </div>
+            <div class="cfx-card cfx-locked">
+              <div class="cfx-lock-icon">🔒</div>
+              <span class="cfx-icon">✨</span>
+              <div class="cfx-name">PARTICLE TRAIL</div>
+              <div class="cfx-tier locked">GOLD+</div>
+            </div>
+            <div class="cfx-card cfx-locked">
+              <div class="cfx-lock-icon">🔒</div>
+              <span class="cfx-icon">⚡</span>
+              <div class="cfx-name">PROFILE ENTRANCE</div>
+              <div class="cfx-tier locked">PLATINUM+</div>
+            </div>
+            <div class="cfx-card cfx-locked">
+              <div class="cfx-lock-icon">🔒</div>
+              <span class="cfx-icon">🎭</span>
+              <div class="cfx-name">IDLE ANIMATION</div>
+              <div class="cfx-tier locked">DIAMOND+</div>
+            </div>
+            <div class="cfx-card cfx-locked">
+              <div class="cfx-lock-icon">🔒</div>
+              <span class="cfx-icon">🏆</span>
+              <div class="cfx-name">NAMEPLATE FX</div>
+              <div class="cfx-tier locked">ELITE+</div>
+            </div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:14px">Character FX unlock as you climb divisions · visible on your public profile · save to apply</div>
+        </section>
+
+        <!-- 05 BETTING DNA -->
+        <section class="settings-section">
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">05</div>
+            <div>
+              <div class="ilab-section-name">BETTING DNA</div>
+              <div class="ilab-section-desc">Detected from your pick history · override below to pin your identity.</div>
             </div>
           </div>
           <div id="dnaContent"><div style="padding:24px;display:flex;flex-direction:column;gap:12px"><div class="skel" style="height:80px;border-radius:12px"></div><div style="display:flex;gap:8px"><div class="skel" style="flex:1;height:48px;border-radius:8px"></div><div class="skel" style="flex:1;height:48px;border-radius:8px"></div><div class="skel" style="flex:1;height:48px;border-radius:8px"></div></div></div></div>
@@ -558,13 +707,13 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           </div>
         </section>
 
-        <!-- 05 ACCOUNT -->
+        <!-- 06 ACCOUNT -->
         <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">05</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">06</div>
             <div>
-              <div class="section-title">ACCOUNT</div>
-              <div class="section-sub">Email, username and security settings.</div>
+              <div class="ilab-section-name">ACCOUNT</div>
+              <div class="ilab-section-desc">Email, username and security settings.</div>
             </div>
           </div>
 
@@ -602,25 +751,25 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div class="save-hint">Synced to backend · Visible across all your devices</div>
         </div>
 
-        <!-- MY SUBSCRIPTIONS -->
+        <!-- 07 MY SUBSCRIPTIONS -->
         <section class="settings-section" style="margin-top:8px">
-          <div class="section-header">
-            <div class="section-num">06</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">07</div>
             <div>
-              <div class="section-title">MY SUBSCRIPTIONS</div>
-              <div class="section-sub">Tipsters you are currently subscribed to</div>
+              <div class="ilab-section-name">MY SUBSCRIPTIONS</div>
+              <div class="ilab-section-desc">Tipsters you are currently subscribed to.</div>
             </div>
           </div>
           <div id="mySubscriptions"><div style="display:flex;flex-direction:column;gap:10px;padding:4px 0"><div style="display:flex;align-items:center;gap:12px"><div class="skel skel-avatar" style="width:36px;height:36px;flex-shrink:0"></div><div style="flex:1"><div class="skel skel-text" style="width:120px;height:12px;margin-bottom:6px"></div><div class="skel skel-text" style="width:80px;height:10px"></div></div></div><div style="display:flex;align-items:center;gap:12px"><div class="skel skel-avatar" style="width:36px;height:36px;flex-shrink:0"></div><div style="flex:1"><div class="skel skel-text" style="width:140px;height:12px;margin-bottom:6px"></div><div class="skel skel-text" style="width:90px;height:10px"></div></div></div></div></div>
         </section>
 
-        <!-- MY SUBSCRIBERS -->
+        <!-- 08 MY SUBSCRIBERS -->
         <section class="settings-section">
-          <div class="section-header">
-            <div class="section-num">07</div>
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">08</div>
             <div>
-              <div class="section-title">MY SUBSCRIBERS</div>
-              <div class="section-sub">Users subscribed to your premium picks</div>
+              <div class="ilab-section-name">MY SUBSCRIBERS</div>
+              <div class="ilab-section-desc">Users subscribed to your premium picks.</div>
             </div>
           </div>
           <div id="earningsCard" style="display:none" class="earnings-card">
@@ -1324,6 +1473,14 @@ function _updateArchBanner(){
   }else{
     banner.style.display='none';
   }
+}
+
+/* ── CHARACTER FX ── */
+function toggleFX(id,card){
+  if(!card||card.classList.contains('cfx-locked'))return;
+  card.classList.toggle('cfx-active');
+  savePref('cfx_'+id,card.classList.contains('cfx-active'));
+  showToast(card.classList.contains('cfx-active')?'FX ENABLED — save to apply':'FX DISABLED');
 }
 
 /* ── INIT ── */
