@@ -508,10 +508,13 @@
   function _init(opts) {
     if (document.getElementById('appNav')) return;
 
-    // Apply saved profile theme across all pages
-    var savedTheme = localStorage.getItem('ledgr_profile_theme');
-    if (savedTheme) {
-      document.documentElement.style.setProperty('--ac', savedTheme);
+    // Apply saved identity on every nav init
+    if (typeof LedgrIdentity !== 'undefined') {
+      LedgrIdentity.applyAll();
+    } else {
+      // Fallback: apply theme directly if identity.js not loaded yet
+      var savedTheme = localStorage.getItem('ledgr_profile_theme');
+      if (savedTheme) document.documentElement.style.setProperty('--ac', savedTheme);
     }
 
     opts = opts || {};

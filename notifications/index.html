@@ -329,5 +329,6 @@ function handleClick(type,ref){
 function isToday(d){const t=new Date();return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear();}
 function isYesterday(d){const y=new Date(Date.now()-86400000);return d.getDate()===y.getDate()&&d.getMonth()===y.getMonth()&&d.getFullYear()===y.getFullYear();}
 </script>
+<script src="/shared/identity.js"></script>
 </body>
 </html>
