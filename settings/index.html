@@ -1189,16 +1189,27 @@ function renderBanners(){
   });
 }
 
-function _writeCustomization(field, value) {
-  var cust = {};
-  try { cust = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) {}
-  cust[field] = value;
-  localStorage.setItem('ledgr_profile_customization', JSON.stringify(cust));
+var _userModifiedCust = false; // tracks whether user has made explicit selections since page load
+
+function _getCust() {
+  try { return JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) { return {}; }
 }
 
+function _setCust(partial) {
+  var cust = _getCust();
+  Object.keys(partial).forEach(function(k) { if(partial[k] != null) cust[k] = partial[k]; });
+  localStorage.setItem('ledgr_profile_customization', JSON.stringify(cust));
+  if(cust.bannerId) { localStorage.setItem('ledgr_banner_pack', cust.bannerId); config.bannerPack = cust.bannerId; }
+  if(cust.borderId) { localStorage.setItem('ledgr_avatar_border', cust.borderId); config.border = cust.borderId; }
+  if(cust.themeId)  { localStorage.setItem('ledgr_profile_theme', cust.themeId);  config.profileTheme = cust.themeId; }
+  return cust;
+}
+
+function _writeCustomization(field, value) { _setCust({}); } // legacy shim — unused, kept for safety
+
 function selectBannerPack(id) {
-  config.bannerPack = id;
-  _writeCustomization('bannerId', id);
+  _userModifiedCust = true;
+  _setCust({bannerId: id});
   localStorage.setItem('ledgr_banner_pack', id);
   document.querySelectorAll('[data-pack]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-pack') === id);
@@ -1248,8 +1259,8 @@ function renderBorders(){
 }
 
 function selectBorder(id) {
-  config.border = id;
-  _writeCustomization('borderId', id);
+  _userModifiedCust = true;
+  _setCust({borderId: id});
   localStorage.setItem('ledgr_avatar_border', id);
   document.querySelectorAll('[data-border]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-border') === id);
@@ -1299,10 +1310,10 @@ function renderThemes(){
 }
 
 function selectTheme(color) {
-  config.profileTheme = color;
+  _userModifiedCust = true;
+  _setCust({themeId: color});
   var _t = THEMES.find(function(th) { return th.color === color; });
   if(_t) config.theme = _t.id;
-  _writeCustomization('themeId', color);
   localStorage.setItem('ledgr_profile_theme', color);
   document.documentElement.style.setProperty('--ac', color);
   document.querySelectorAll('.theme-swatch').forEach(function(s) {
@@ -1506,20 +1517,33 @@ async function fetchOwnProfile(){
     const r=await fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+token}});
     if(!r.ok)return;
     const data=await r.json();
-    if(data.banner||data.bannerPack){config.bannerPack=data.bannerPack||data.banner;}
-    if(data.border||data.avatarBorder){config.border=data.avatarBorder||data.border;}
-    if(data.theme){
-      const t=THEMES.find(x=>x.id===data.theme);
-      if(t){config.theme=data.theme;config.profileTheme=t.color;document.documentElement.style.setProperty('--ac',t.color);}
+    // Hydrate customization from backend — only populate fields user hasn't explicitly set
+    {
+      const _ec=_getCust();
+      const backendBanner=data.bannerPack||data.banner;
+      const backendBorder=data.avatarBorder||data.border;
+      let backendTheme=data.profileTheme;
+      if(!backendTheme&&data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)backendTheme=t.color;}
+      const _partial={};
+      // If user has NOT made explicit selections this session, let backend win per-field
+      if(!_userModifiedCust){
+        if(backendBanner)_partial.bannerId=backendBanner;
+        if(backendBorder)_partial.borderId=backendBorder;
+        if(backendTheme)_partial.themeId=backendTheme;
+      }else{
+        // User has modified — backend only fills in missing fields
+        if(backendBanner&&!_ec.bannerId)_partial.bannerId=backendBanner;
+        if(backendBorder&&!_ec.borderId)_partial.borderId=backendBorder;
+        if(backendTheme&&!_ec.themeId)_partial.themeId=backendTheme;
+      }
+      if(Object.keys(_partial).length)_setCust(_partial);
+      // Ensure config reflects the final customization state
+      const _fc=_getCust();
+      if(_fc.bannerId)config.bannerPack=_fc.bannerId;
+      if(_fc.borderId)config.border=_fc.borderId;
+      if(_fc.themeId){config.profileTheme=_fc.themeId;document.documentElement.style.setProperty('--ac',_fc.themeId);}
+      if(data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)config.theme=t.id;}
     }
-    if(data.profileTheme){config.profileTheme=data.profileTheme;document.documentElement.style.setProperty('--ac',data.profileTheme);}
-    // Write unified customization object — single source of truth
-    const _cust={};
-    try{Object.assign(_cust,JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}'));}catch(e){}
-    if(config.bannerPack){_cust.bannerId=config.bannerPack;localStorage.setItem('ledgr_banner_pack',config.bannerPack);}
-    if(config.border){_cust.borderId=config.border;localStorage.setItem('ledgr_avatar_border',config.border);}
-    if(config.profileTheme){_cust.themeId=config.profileTheme;localStorage.setItem('ledgr_profile_theme',config.profileTheme);}
-    localStorage.setItem('ledgr_profile_customization',JSON.stringify(_cust));
     if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
     if(data.bio!=null)config.bio=data.bio;
     if(data.social_twitter!=null||data.social_instagram!=null)
@@ -1800,19 +1824,18 @@ async function saveProfile(){
     twitter:document.getElementById('twitterInput').value.trim().replace(/^@/,''),
     instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
   };
-  // Ensure unified customization is up-to-date before save
-  const _preSaveCust={};
-  try{Object.assign(_preSaveCust,JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}'));}catch(e){}
-  if(config.bannerPack){_preSaveCust.bannerId=config.bannerPack;localStorage.setItem('ledgr_banner_pack',config.bannerPack);}
-  if(config.border){_preSaveCust.borderId=config.border;localStorage.setItem('ledgr_avatar_border',config.border);}
-  if(config.profileTheme){_preSaveCust.themeId=config.profileTheme;localStorage.setItem('ledgr_profile_theme',config.profileTheme);}
-  localStorage.setItem('ledgr_profile_customization',JSON.stringify(_preSaveCust));
+  // Read canonical customization and flush to config/localStorage
+  const _saveCust=_setCust({});
+  if(_saveCust.bannerId)config.bannerPack=_saveCust.bannerId;
+  if(_saveCust.borderId)config.border=_saveCust.borderId;
+  if(_saveCust.themeId)config.profileTheme=_saveCust.themeId;
   localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
   const btn=document.querySelector('.save-btn');
   btn.textContent='SAVING…';btn.disabled=true;
   const ok=await postProfile();
   btn.disabled=false;
   showSaveSuccess(btn);
+  if(ok){ _userModifiedCust=false; fetchOwnProfile(); }
   showToast(ok?'✓ Profile updated':'SAVED LOCALLY — backend offline');
 }
 
