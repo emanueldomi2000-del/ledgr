@@ -1193,12 +1193,15 @@ function renderBanners(){
 // profileCustomization is the ONE object all cosmetic reads go through.
 // settings reads/writes it; tipster/home read it from localStorage on load.
 // No config.border, no config.bannerPack, no config.profileTheme — use this only.
-window.profileCustomization = (function(){
-  try { return JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) { return {}; }
+window.profileCustomization = {avatarId:null,bannerId:null,borderId:null,themeId:null,effects:[],badges:[]};
+(function(){
+  try {
+    var stored=JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');
+    Object.assign(window.profileCustomization, stored);
+  } catch(e){}
 })();
 
 function _setCust(partial) {
-  console.log('SET CUST:', JSON.stringify(partial));
   Object.keys(partial).forEach(function(k) { if(partial[k] != null) window.profileCustomization[k] = partial[k]; });
   localStorage.setItem('ledgr_profile_customization', JSON.stringify(window.profileCustomization));
   return window.profileCustomization;
@@ -1207,7 +1210,6 @@ function _setCust(partial) {
 function _writeCustomization(field, value) { _setCust({}); } // legacy shim
 
 function selectBannerPack(id) {
-  console.log('SELECT BANNER:', id);
   _setCust({bannerId: id});
   document.querySelectorAll('[data-pack]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-pack') === id);
@@ -1257,7 +1259,6 @@ function renderBorders(){
 }
 
 function selectBorder(id) {
-  console.log('SELECT BORDER:', id);
   _setCust({borderId: id});
   document.querySelectorAll('[data-border]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-border') === id);
@@ -1307,7 +1308,6 @@ function renderThemes(){
 }
 
 function selectTheme(color) {
-  console.log('SELECT THEME:', color);
   _setCust({themeId: color});
   var _t = THEMES.find(function(th) { return th.color === color; });
   if(_t) config.theme = _t.id;
@@ -1523,10 +1523,7 @@ async function fetchOwnProfile(){
     if(backendBanner&&!window.profileCustomization.bannerId)_partial.bannerId=backendBanner;
     if(backendBorder&&!window.profileCustomization.borderId)_partial.borderId=backendBorder;
     if(backendTheme&&!window.profileCustomization.themeId)_partial.themeId=backendTheme;
-    if(Object.keys(_partial).length){
-      console.log('FETCH: backend filling missing fields', JSON.stringify(_partial));
-      _setCust(_partial);
-    }
+    if(Object.keys(_partial).length)_setCust(_partial);
     if(window.profileCustomization.themeId)document.documentElement.style.setProperty('--ac',window.profileCustomization.themeId);
     if(data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)config.theme=t.id;}
     if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
@@ -1538,7 +1535,7 @@ async function fetchOwnProfile(){
     if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
     if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
     renderThemes();renderBanners();renderBorders();renderSports();loadIdentitySettings();applyPreview();renderArchetypePicker();
-  }catch(e){console.error('fetchOwnProfile error',e);}
+  }catch(e){}
 }
 
 async function postProfile(){
@@ -1559,17 +1556,15 @@ async function postProfile(){
   };
   if(pendingAvatar!==undefined)payload.avatarB64=pendingAvatar;
   if(pendingBanner!==undefined)payload.bannerB64=pendingBanner;
-  console.log('POSTING PROFILE PAYLOAD:', JSON.stringify(payload));
   try{
     const r=await fetch(API+'/profile',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
       body:JSON.stringify(payload)
     });
-    console.log('BACKEND RESPONSE:', r.status, r.ok);
     if(r.ok){pendingAvatar=undefined;pendingBanner=undefined;}
     return r.ok;
-  }catch(e){console.error('POST /profile failed:', e);return false;}
+  }catch(e){return false;}
 }
 
 /* ── IDENTITY LOAD ── */
@@ -1814,13 +1809,14 @@ async function saveProfile(){
     twitter:document.getElementById('twitterInput').value.trim().replace(/^@/,''),
     instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
   };
-  console.log('SAVING PROFILE:', JSON.stringify(window.profileCustomization));
+  // Persist immediately — localStorage wins over in-flight backend response
+  localStorage.setItem('ledgr_profile_customization', JSON.stringify(window.profileCustomization));
   const btn=document.querySelector('.save-btn');
   btn.textContent='SAVING…';btn.disabled=true;
   const ok=await postProfile();
   btn.disabled=false;
   showSaveSuccess(btn);
-  if(ok)fetchOwnProfile();
+  window.dispatchEvent(new CustomEvent('profileCustomizationUpdated',{detail:Object.assign({},window.profileCustomization)}));
   showToast(ok?'✓ Profile updated':'SAVED LOCALLY — backend offline');
 }
 

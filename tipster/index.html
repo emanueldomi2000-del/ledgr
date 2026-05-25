@@ -573,9 +573,49 @@ const confLabels={low:'🔴 Low',medium:'🟡 Medium',high:'🟢 High',max:'⚡ 
 let allPicks=[];
 let currentFilter='all';
 
-// Single source of truth for cosmetics — initialized from localStorage, updated by settings page
-window.profileCustomization=(function(){try{return JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');}catch(e){return{};}})();
-console.log('PROFILE USING:', JSON.stringify(window.profileCustomization));
+// ── COSMETICS ─────────────────────────────────────────────────────────────────
+window.profileCustomization={avatarId:null,bannerId:null,borderId:null,themeId:null,effects:[],badges:[]};
+(function(){
+  try{var s=JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');Object.assign(window.profileCustomization,s);}catch(e){}
+})();
+
+window.applyUserCosmetics=function(){
+  var pc=window.profileCustomization;
+  var bannerId=pc.bannerId||'midnight';
+  var borderId=pc.borderId||'none';
+  var themeId=pc.themeId||'#7B2CFF';
+
+  document.documentElement.style.setProperty('--ac',themeId);
+  document.documentElement.style.setProperty('--profile-accent',themeId);
+
+  var hero=document.querySelector('.profile-banner');
+  if(hero){
+    hero.style.background='';
+    hero.style.backgroundImage='';
+    hero.className=hero.className.replace(/bp-\S+/g,'').trim();
+    hero.classList.add('bp-'+bannerId);
+  }
+
+  var av=document.querySelector('.div-av-wrap')||document.querySelector('.avatar-big')||document.querySelector('.div-av-inner');
+  if(av&&borderId!=='none'){
+    av.className=av.className.replace(/ab-\S+/g,'').trim();
+    av.classList.add('ab-'+borderId);
+    av.style.overflow='visible';
+  }
+};
+
+window.renderProfileHero=function(){
+  var hero=document.querySelector('.profile-banner');
+  if(!hero)return;
+  hero.classList.remove('profile-mounted');
+  requestAnimationFrame(function(){hero.classList.add('profile-mounted');});
+};
+
+window.addEventListener('profileCustomizationUpdated',function(e){
+  if(e.detail)Object.assign(window.profileCustomization,e.detail);
+  window.applyUserCosmetics();
+  window.renderProfileHero();
+});
 
 // Result state → display mapping. Add new states here when backend adds them.
 const RESULT_UI={
@@ -1484,6 +1524,9 @@ async function loadProfile(){
       </div>
       ${buildPersonalTimeline(allPicks)}`;
 
+    // Apply cosmetics immediately after DOM is written
+    window.applyUserCosmetics();
+
     setTimeout(()=>{
       drawPnLChart(allPicks,'pnlChart');
       initDNABars();
@@ -1514,35 +1557,8 @@ async function loadProfile(){
       initTipTriggers();
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
 
-      // Apply saved cosmetics (banner pack, avatar border, theme)
-      window.applyUserCosmetics = function() {
-        var pc = window.profileCustomization;
-        var borderId = pc.borderId || 'none';
-        var themeId  = pc.themeId  || '#7B2CFF';
-        var bannerId = pc.bannerId || 'midnight';
-        console.log('APPLY COSMETICS:', {borderId: borderId, bannerId: bannerId, themeId: themeId});
-
-        document.documentElement.style.setProperty('--ac', themeId);
-
-        var av = document.querySelector('.div-av-wrap') || document.querySelector('.avatar-big') || document.querySelector('.div-av-inner');
-        if(av && borderId !== 'none') {
-          av.className.split(' ').filter(Boolean).forEach(function(c){ if(c.startsWith('ab-')) av.classList.remove(c); });
-          av.classList.add('ab-' + borderId);
-          av.style.overflow = 'visible';
-        }
-
-        var hero = document.querySelector('.profile-banner, .tipster-banner, .hero-banner, [class*="banner-bg"]');
-        if(hero) {
-          hero.className = hero.className.split(' ').filter(function(c){ return !c.startsWith('bp-'); }).join(' ');
-          hero.classList.add('bp-' + bannerId);
-          hero.style.background = '';
-          hero.style.backgroundImage = '';
-        }
-      };
+      // Re-apply cosmetics after full DOM is ready (catches avatar from Divisions)
       window.applyUserCosmetics();
-
-      // Emergency hard test — paste in console to force-apply cosmetics:
-      // window.profileCustomization = Object.assign({}, window.profileCustomization, {borderId:'dragon_soul', bannerId:'cosmic_rift'}); window.applyUserCosmetics();
 
       // FIX 2 — Archetype-themed hero background particles
       const _banner=document.querySelector('.profile-banner');
