@@ -398,7 +398,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .forge-glow{position:absolute;top:-100px;left:-100px;width:500px;height:500px;background:radial-gradient(circle,rgba(123,44,255,0.12) 0%,transparent 65%);pointer-events:none;animation:forgeGlow 8s ease-in-out infinite}
 @keyframes forgeGlow{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.15);opacity:1}}
 .forge-eyebrow{font-size:10px;letter-spacing:.3em;color:var(--ac);font-family:var(--font-mono);margin-bottom:16px;display:block;position:relative;z-index:1}
-.forge-title{display:flex;flex-direction:column;font-family:var(--font-display);line-height:.85;margin-bottom:20px;position:relative;z-index:1}
+.forge-title{display:flex;flex-direction:column;font-family:'Bebas Neue',sans-serif;line-height:.88;margin-bottom:24px;position:relative;z-index:1}
+.ft-line1{font-size:clamp(32px,5vw,64px);color:rgba(255,255,255,0.35);letter-spacing:.08em}
+.ft-line2{font-size:clamp(64px,10vw,128px);color:var(--ac);letter-spacing:.02em;text-shadow:0 0 60px rgba(123,44,255,0.4);animation:legendGlitch 8s ease-in-out infinite}
+@keyframes legendGlitch{
+  0%,95%,100%{text-shadow:0 0 60px rgba(123,44,255,0.4);transform:translate(0)}
+  96%{transform:translate(-2px,1px);text-shadow:2px 0 #FF3355,-2px 0 #4FC3F7,0 0 60px rgba(123,44,255,0.4)}
+  97%{transform:translate(2px,-1px);text-shadow:-2px 0 #FF3355,2px 0 #4FC3F7,0 0 60px rgba(123,44,255,0.4)}
+  98%{transform:translate(0);text-shadow:0 0 60px rgba(123,44,255,0.6)}
+}
+/* legacy forge spans kept for compat */
 .forge-t1{font-size:clamp(64px,10vw,120px);color:var(--tx);letter-spacing:.02em}
 .forge-t2{font-size:clamp(64px,10vw,120px);color:var(--ac);letter-spacing:.02em;text-shadow:0 0 40px rgba(123,44,255,0.4)}
 .forge-tagline{display:flex;gap:20px;flex-wrap:wrap;position:relative;z-index:1}
@@ -479,9 +488,33 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .pw-desc{font-size:10px;color:var(--mu);font-family:var(--font-body);line-height:1.4}
 .pw-lock{font-size:9px;color:var(--mu);font-family:var(--font-mono);letter-spacing:.05em;margin-top:3px}
 
+/* ── POWER LOADOUT ── */
+.pl-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.pl-title{font-family:var(--font-display);font-size:20px;color:var(--tx);letter-spacing:.1em}
+.pl-slots{font-size:10px;color:var(--ac);font-family:var(--font-mono)}
+.pl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pl-ability{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;transition:all .2s ease;position:relative;overflow:hidden}
+.pl-ability::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ab-color,var(--ac)),transparent);opacity:.5}
+.pl-ability:not(.pl-locked):hover{border-color:var(--ab-color,var(--ac));box-shadow:0 0 16px color-mix(in srgb,var(--ab-color,var(--ac)) 20%,transparent);transform:translateY(-1px)}
+.pl-ability.pl-locked{opacity:.45}
+.pl-ab-top{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.pl-ab-icon{font-size:22px;flex-shrink:0}
+.pl-ab-info{flex:1}
+.pl-ab-name{font-family:var(--font-display);font-size:16px;color:var(--tx);letter-spacing:.05em}
+.pl-ab-tier{font-size:8px;letter-spacing:.15em;font-family:var(--font-mono)}
+.pl-ab-lock{font-size:16px;flex-shrink:0;opacity:.6}
+.pl-ab-desc{font-size:11px;color:var(--mu);font-family:var(--font-body);line-height:1.4;margin-bottom:6px}
+.pl-ab-req{font-size:9px;color:var(--mu);font-family:var(--font-mono);letter-spacing:.05em}
+.pl-ab-toggle{position:relative;width:40px;height:22px;cursor:pointer;flex-shrink:0;display:inline-block}
+.pl-ab-toggle input{opacity:0;width:0;height:0;position:absolute}
+.pl-ab-slider{position:absolute;inset:0;background:#1E1E1E;border-radius:11px;border:1px solid #2A2A2A;transition:all .2s}
+.pl-ab-slider::before{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#6B6B6B;top:2px;left:2px;transition:all .2s}
+.pl-ab-toggle input:checked+.pl-ab-slider{background:rgba(123,44,255,0.2);border-color:var(--ab-color,var(--ac))}
+.pl-ab-toggle input:checked+.pl-ab-slider::before{background:var(--ab-color,var(--ac));transform:translateX(18px);box-shadow:0 0 8px var(--ab-color,var(--ac))}
+
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{flex-direction:column}.live-preview-panel{display:none}}
-@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.ab-cards-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.pw-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.ab-cards-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.pw-grid{grid-template-columns:1fr}.pl-grid{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -508,9 +541,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="forge-scan-line"></div>
       <div class="forge-eyebrow">⬡ LEDGR IDENTITY SYSTEM</div>
       <h1 class="forge-title">
-        <span style="color:var(--tx);">FORGE</span><br>
-        <span style="color:rgba(255,255,255,0.2);">YOUR</span><br>
-        <span style="color:var(--ac);">LEGEND</span>
+        <span class="ft-line1">FORGE YOUR</span>
+        <span class="ft-line2">LEGEND</span>
       </h1>
       <div class="forge-tagline">
         <span>◉ Build your presence</span>
@@ -642,8 +674,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
               <div class="ilab-section-desc">FX · Aura · Animations</div>
             </div>
           </div>
-          <div class="pw-grid" id="powerGrid"></div>
-          <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:12px">FX unlock as you climb divisions · visible on your public profile · save to apply</div>
+          <div class="power-loadout">
+            <div class="pl-header">
+              <span class="pl-title">POWER LOADOUT</span>
+              <span class="pl-slots" id="plSlots">0 / 8 slots active</span>
+            </div>
+            <div class="pl-grid" id="powerLoadoutGrid"></div>
+          </div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:12px">Abilities unlock as you climb · visible on your public profile · save to apply</div>
         </section>
 
         <!-- 04 SYSTEM -->
@@ -1109,6 +1147,7 @@ function selectBannerPack(id){
   document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.dataset.pack===id));
   applyPreview();
   updateLivePreview('banner',id);
+  updatePreviewBanner(id);
 }
 
 /* ── RENDER BORDERS ── */
@@ -1164,6 +1203,7 @@ function selectBorder(id,locked){
   localStorage.setItem('ledgr_avatar_border',id);
   document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===id));
   applyPreview();
+  updatePreviewBorder(id);
   showToast('Border applied ✓');
 }
 
@@ -1212,6 +1252,46 @@ function selectTheme(color){
   const u=JSON.parse(localStorage.getItem('ledgr_user')||'null');
   const tk=localStorage.getItem('ledgr_token');
   if(u&&tk)fetch(API+'/profile',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},body:JSON.stringify({profileTheme:color})}).catch(()=>{});
+}
+
+/* ── LIVE PREVIEW ── */
+function initLivePreview(){
+  const u=JSON.parse(localStorage.getItem('ledgr_user')||'null');
+  if(!u)return;
+  const lpU=document.getElementById('lpUsername');
+  if(lpU)lpU.textContent='@'+u.username;
+  const lpAv=document.getElementById('lpAvatar');
+  if(lpAv){
+    const photo=localStorage.getItem('ledgr_avatar_'+(u.id||u.username))||localStorage.getItem('ledgr_avatar');
+    if(photo){lpAv.style.backgroundImage='url('+photo+')';lpAv.style.backgroundSize='cover';lpAv.style.backgroundPosition='center';lpAv.textContent='';}
+    else{lpAv.textContent=u.username.slice(0,2).toUpperCase();}
+  }
+  const savedBanner=localStorage.getItem('ledgr_banner_pack')||'midnight';
+  updatePreviewBanner(savedBanner);
+  const savedBorder=localStorage.getItem('ledgr_avatar_border')||'none';
+  updatePreviewBorder(savedBorder);
+}
+
+function updatePreviewBanner(packId){
+  const lpBanner=document.getElementById('lpBanner');
+  if(!lpBanner)return;
+  lpBanner.className='lp-banner bp-'+packId;
+  lpBanner.style.transition='opacity .15s';
+  lpBanner.style.opacity='0.5';
+  setTimeout(()=>{lpBanner.style.opacity='1';},150);
+}
+
+function updatePreviewBorder(borderId){
+  const lpAv=document.getElementById('lpAvatar');
+  if(!lpAv)return;
+  const borderStyles={
+    none:'none',clean:'2px solid #3a3a3a','blue-ring':'2px solid #4FC3F7',
+    electric:'2px solid #fff',royal:'3px solid #FFD700',
+    inferno:'2px solid #FF6B35',dragon:'2px solid #FF3355',
+    'diamond-ring':'2px solid rgba(79,195,247,0.8)',
+    cosmic:'2px dashed rgba(123,44,255,0.7)',
+  };
+  lpAv.style.border=borderStyles[borderId]||'none';
 }
 
 /* ── PREVIEW ── */
@@ -1704,6 +1784,43 @@ function renderPowerGrid(){
   }).join('');
 }
 
+/* ── POWER LOADOUT ── */
+const powerAbilities=[
+  {id:'glow-eyes',        name:'Glow Eyes',        tier:'EPIC',      icon:'👁️', color:'#7B2CFF', desc:'Eyes glow in your profile color on avatar',            unlock:'Diamond division',   locked:true},
+  {id:'aura-pulse',       name:'Aura Pulse',        tier:'LEGENDARY', icon:'✨',  color:'#FFD700', desc:'Energy aura radiates from your profile card',           unlock:'Elite division',     locked:true},
+  {id:'card-entrance',    name:'Card Entrance',     tier:'EPIC',      icon:'⚡',  color:'#00E5A0', desc:'Profile card slides in with animation',                 unlock:'Gold division',      locked:false},
+  {id:'victory-effect',   name:'Victory Effect',    tier:'MYTHIC',    icon:'💥',  color:'#FF6BFF', desc:'Screen flash when a verified win is posted',            unlock:'Win 100 picks',      locked:true},
+  {id:'leaderboard-aura', name:'Leaderboard Aura',  tier:'LEGENDARY', icon:'👑',  color:'#FFD700', desc:'Visible glow on your row in the Kingdom',              unlock:'Top 10 ranking',     locked:true},
+  {id:'streak-flames',    name:'Streak Flames',     tier:'EPIC',      icon:'🔥',  color:'#FF6B35', desc:'Fire effect activates during win streaks',              unlock:'5W streak achieved', locked:false},
+  {id:'meteor-entrance',  name:'Meteor Entrance',   tier:'MYTHIC',    icon:'☄️',  color:'#FF6BFF', desc:'Explosive entrance animation on profile open',          unlock:'????',               locked:true},
+  {id:'crown-aura',       name:'Crown Aura',        tier:'LEGENDARY', icon:'💫',  color:'#FFD700', desc:'Rotating crown particles when ranked #1',               unlock:'Hold Rank #1',       locked:true},
+];
+const _plTierColors={EPIC:'#7B2CFF',LEGENDARY:'#FFD700',MYTHIC:'#FF6BFF'};
+
+function renderPowerLoadout(){
+  const grid=document.getElementById('powerLoadoutGrid');
+  if(!grid)return;
+  grid.innerHTML=powerAbilities.map(a=>`
+    <div class="pl-ability${a.locked?' pl-locked':''}" style="--ab-color:${a.color}">
+      <div class="pl-ab-top">
+        <div class="pl-ab-icon">${a.icon}</div>
+        <div class="pl-ab-info">
+          <div class="pl-ab-name">${a.name}</div>
+          <div class="pl-ab-tier" style="color:${_plTierColors[a.tier]||a.color}">${a.tier}</div>
+        </div>
+        ${a.locked
+          ?`<div class="pl-ab-lock">🔒</div>`
+          :`<label class="pl-ab-toggle"><input type="checkbox" id="ab-${a.id}" onchange="savePref('ab_${a.id}',this.checked)"><span class="pl-ab-slider"></span></label>`}
+      </div>
+      <div class="pl-ab-desc">${a.desc}</div>
+      ${a.locked?`<div class="pl-ab-req">${a.unlock==='????'?'<span style="letter-spacing:.2em;color:#FF6BFF">? ? ? ?</span>':'🔒 '+a.unlock}</div>`:''}
+    </div>
+  `).join('');
+  const active=powerAbilities.filter(a=>!a.locked).length;
+  const slotEl=document.getElementById('plSlots');
+  if(slotEl)slotEl.textContent=active+' / '+powerAbilities.length+' slots active';
+}
+
 function toggleFX(id,card){
   if(!card||card.classList.contains('pw-locked'))return;
   card.classList.toggle('pw-active');
@@ -1747,9 +1864,11 @@ window.onload=()=>{
   renderBorders();
   renderSports();
   renderPowerGrid();
+  renderPowerLoadout();
   loadIdentitySettings();
   applyPreview();
   updateLivePreview('banner',config.bannerPack||'midnight');
+  initLivePreview();
   renderArchetypePicker();
   loadMySubscriptions();
   loadMySubscribers();
