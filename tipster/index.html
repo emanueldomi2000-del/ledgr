@@ -573,6 +573,10 @@ const confLabels={low:'🔴 Low',medium:'🟡 Medium',high:'🟢 High',max:'⚡ 
 let allPicks=[];
 let currentFilter='all';
 
+// Single source of truth for cosmetics — initialized from localStorage, updated by settings page
+window.profileCustomization=(function(){try{return JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');}catch(e){return{};}})();
+console.log('PROFILE USING:', JSON.stringify(window.profileCustomization));
+
 // Result state → display mapping. Add new states here when backend adds them.
 const RESULT_UI={
   win:    {badge:'WIN',    badgeCls:'badge-win',    cardCls:'win-border',    tabCls:'win',     tabLabel:'✅ Won'},
@@ -1511,39 +1515,34 @@ async function loadProfile(){
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
 
       // Apply saved cosmetics (banner pack, avatar border, theme)
-      (function applyUserCosmetics() {
-        var _cust = {};
-        try { _cust = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) {}
-        var border = _cust.borderId || (profileCfg && profileCfg.border) || localStorage.getItem('ledgr_avatar_border') || 'none';
-        var theme  = _cust.themeId  || localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
-        var banner = _cust.bannerId || (profileCfg && profileCfg.banner) || localStorage.getItem('ledgr_banner_pack') || 'midnight';
+      window.applyUserCosmetics = function() {
+        var pc = window.profileCustomization;
+        var borderId = pc.borderId || 'none';
+        var themeId  = pc.themeId  || '#7B2CFF';
+        var bannerId = pc.bannerId || 'midnight';
+        console.log('APPLY COSMETICS:', {borderId: borderId, bannerId: bannerId, themeId: themeId});
 
-        console.log('Border:', border);
-        console.log('Banner:', banner);
-        console.log('Theme:', theme);
+        document.documentElement.style.setProperty('--ac', themeId);
 
-        // Apply theme
-        document.documentElement.style.setProperty('--ac', theme);
-
-        // Apply border — when Divisions is active the avatar is .div-av-wrap, fallback to .avatar-big
         var av = document.querySelector('.div-av-wrap') || document.querySelector('.avatar-big') || document.querySelector('.div-av-inner');
-        if(av && border !== 'none') {
+        if(av && borderId !== 'none') {
           av.className.split(' ').filter(Boolean).forEach(function(c){ if(c.startsWith('ab-')) av.classList.remove(c); });
-          av.classList.add('ab-' + border);
+          av.classList.add('ab-' + borderId);
           av.style.overflow = 'visible';
         }
 
-        // Apply banner to hero section — MUST clear inline style so CSS class takes effect
         var hero = document.querySelector('.profile-banner, .tipster-banner, .hero-banner, [class*="banner-bg"]');
         if(hero) {
-          var hClasses = hero.className.split(' ');
-          hero.className = hClasses.filter(function(c){ return !c.startsWith('bp-'); }).join(' ');
-          hero.classList.add('bp-' + banner);
-          // Clear inline background so CSS class wins
+          hero.className = hero.className.split(' ').filter(function(c){ return !c.startsWith('bp-'); }).join(' ');
+          hero.classList.add('bp-' + bannerId);
           hero.style.background = '';
           hero.style.backgroundImage = '';
         }
-      })();
+      };
+      window.applyUserCosmetics();
+
+      // Emergency hard test — paste in console to force-apply cosmetics:
+      // window.profileCustomization = Object.assign({}, window.profileCustomization, {borderId:'dragon_soul', bannerId:'cosmic_rift'}); window.applyUserCosmetics();
 
       // FIX 2 — Archetype-themed hero background particles
       const _banner=document.querySelector('.profile-banner');

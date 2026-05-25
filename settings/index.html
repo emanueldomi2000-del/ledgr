@@ -1159,7 +1159,7 @@ const TIER_COLORS={BASIC:'#6B6B6B',EPIC:'#7B2CFF',LEGENDARY:'#FFD700',MYTHIC:'#F
 
 function renderBannerCard(b,isUnlocked){
   const color=TIER_COLORS[b.tier]||'#6B6B6B';
-  const sel=config.bannerPack===b.id;
+  const sel=window.profileCustomization.bannerId===b.id;
   return`<div class="bp-card bp-${b.id}${sel?' selected':''}${isUnlocked?'':' bp-locked'}"
     data-pack="${b.id}"
     onclick="${isUnlocked?`selectBannerPack('${b.id}')`:''}" >
@@ -1189,28 +1189,26 @@ function renderBanners(){
   });
 }
 
-var _userModifiedCust = false; // tracks whether user has made explicit selections since page load
-
-function _getCust() {
+// ── SINGLE SOURCE OF TRUTH ──────────────────────────────────────────────────
+// profileCustomization is the ONE object all cosmetic reads go through.
+// settings reads/writes it; tipster/home read it from localStorage on load.
+// No config.border, no config.bannerPack, no config.profileTheme — use this only.
+window.profileCustomization = (function(){
   try { return JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch(e) { return {}; }
-}
+})();
 
 function _setCust(partial) {
-  var cust = _getCust();
-  Object.keys(partial).forEach(function(k) { if(partial[k] != null) cust[k] = partial[k]; });
-  localStorage.setItem('ledgr_profile_customization', JSON.stringify(cust));
-  if(cust.bannerId) { localStorage.setItem('ledgr_banner_pack', cust.bannerId); config.bannerPack = cust.bannerId; }
-  if(cust.borderId) { localStorage.setItem('ledgr_avatar_border', cust.borderId); config.border = cust.borderId; }
-  if(cust.themeId)  { localStorage.setItem('ledgr_profile_theme', cust.themeId);  config.profileTheme = cust.themeId; }
-  return cust;
+  console.log('SET CUST:', JSON.stringify(partial));
+  Object.keys(partial).forEach(function(k) { if(partial[k] != null) window.profileCustomization[k] = partial[k]; });
+  localStorage.setItem('ledgr_profile_customization', JSON.stringify(window.profileCustomization));
+  return window.profileCustomization;
 }
 
-function _writeCustomization(field, value) { _setCust({}); } // legacy shim — unused, kept for safety
+function _writeCustomization(field, value) { _setCust({}); } // legacy shim
 
 function selectBannerPack(id) {
-  _userModifiedCust = true;
+  console.log('SELECT BANNER:', id);
   _setCust({bannerId: id});
-  localStorage.setItem('ledgr_banner_pack', id);
   document.querySelectorAll('[data-pack]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-pack') === id);
   });
@@ -1236,7 +1234,7 @@ const TIER_COLORS_BORDER={COMMON:'#6B6B6B',RARE:'#4FC3F7',EPIC:'#7B2CFF',LEGENDA
 
 function renderBorderCard(b){
   const locked=!divUnlocked(b.divReq);
-  const sel=config.border===b.id;
+  const sel=window.profileCustomization.borderId===b.id;
   return`<div class="ab-card${sel?' selected':''}${locked?' ab-locked':''}" ${locked?'':'onclick="selectBorder(\''+b.id+'\')"'} id="brd_${b.id}" data-border="${b.id}">
     ${locked?`<div class="ab-lock-badge">🔒</div>`:''}
     <div class="ab-preview ab-${b.id}">ME</div>
@@ -1259,9 +1257,8 @@ function renderBorders(){
 }
 
 function selectBorder(id) {
-  _userModifiedCust = true;
+  console.log('SELECT BORDER:', id);
   _setCust({borderId: id});
-  localStorage.setItem('ledgr_avatar_border', id);
   document.querySelectorAll('[data-border]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-border') === id);
   });
@@ -1304,13 +1301,13 @@ function toggleSport(s){
 function renderThemes(){
   const grid=document.getElementById('themeGrid');
   if(!grid)return;
-  const cur=config.profileTheme||'#7B2CFF';
+  const cur=window.profileCustomization.themeId||'#7B2CFF';
   const swatches=THEMES.map(t=>`<div class="theme-swatch${cur===t.color?' selected':''}" id="theme_${t.id}" data-color="${t.color}" style="background:${t.color};--swatch-color:${t.color}" onclick="selectTheme('${t.color}')" title="${t.name}"></div>`).join('');
   grid.innerHTML=`<div class="theme-swatches-row">${swatches}</div><div class="theme-preview-bar"><div class="tpb-inner" id="themePreviewBar" style="background:${cur}"></div></div>`;
 }
 
 function selectTheme(color) {
-  _userModifiedCust = true;
+  console.log('SELECT THEME:', color);
   _setCust({themeId: color});
   var _t = THEMES.find(function(th) { return th.color === color; });
   if(_t) config.theme = _t.id;
@@ -1391,7 +1388,7 @@ function updatePreviewBorder(borderId){
 
 /* ── PREVIEW ── */
 function applyPreview(){
-  const banner=BANNERS.find(b=>b.id===config.bannerPack)||BANNERS[0];
+  const banner=BANNERS.find(b=>b.id===window.profileCustomization.bannerId)||BANNERS[0];
   const lpB=document.getElementById('lpBanner');
   if(lpB&&!currentBannerB64){
     lpB.className='lp-banner bp-'+banner.id;
@@ -1517,33 +1514,21 @@ async function fetchOwnProfile(){
     const r=await fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+token}});
     if(!r.ok)return;
     const data=await r.json();
-    // Hydrate customization from backend — only populate fields user hasn't explicitly set
-    {
-      const _ec=_getCust();
-      const backendBanner=data.bannerPack||data.banner;
-      const backendBorder=data.avatarBorder||data.border;
-      let backendTheme=data.profileTheme;
-      if(!backendTheme&&data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)backendTheme=t.color;}
-      const _partial={};
-      // If user has NOT made explicit selections this session, let backend win per-field
-      if(!_userModifiedCust){
-        if(backendBanner)_partial.bannerId=backendBanner;
-        if(backendBorder)_partial.borderId=backendBorder;
-        if(backendTheme)_partial.themeId=backendTheme;
-      }else{
-        // User has modified — backend only fills in missing fields
-        if(backendBanner&&!_ec.bannerId)_partial.bannerId=backendBanner;
-        if(backendBorder&&!_ec.borderId)_partial.borderId=backendBorder;
-        if(backendTheme&&!_ec.themeId)_partial.themeId=backendTheme;
-      }
-      if(Object.keys(_partial).length)_setCust(_partial);
-      // Ensure config reflects the final customization state
-      const _fc=_getCust();
-      if(_fc.bannerId)config.bannerPack=_fc.bannerId;
-      if(_fc.borderId)config.border=_fc.borderId;
-      if(_fc.themeId){config.profileTheme=_fc.themeId;document.documentElement.style.setProperty('--ac',_fc.themeId);}
-      if(data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)config.theme=t.id;}
+    // Backend only fills in fields missing from window.profileCustomization (user selections win)
+    const backendBanner=data.bannerPack||data.banner;
+    const backendBorder=data.avatarBorder||data.border;
+    let backendTheme=data.profileTheme;
+    if(!backendTheme&&data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)backendTheme=t.color;}
+    const _partial={};
+    if(backendBanner&&!window.profileCustomization.bannerId)_partial.bannerId=backendBanner;
+    if(backendBorder&&!window.profileCustomization.borderId)_partial.borderId=backendBorder;
+    if(backendTheme&&!window.profileCustomization.themeId)_partial.themeId=backendTheme;
+    if(Object.keys(_partial).length){
+      console.log('FETCH: backend filling missing fields', JSON.stringify(_partial));
+      _setCust(_partial);
     }
+    if(window.profileCustomization.themeId)document.documentElement.style.setProperty('--ac',window.profileCustomization.themeId);
+    if(data.theme){const t=THEMES.find(x=>x.id===data.theme);if(t)config.theme=t.id;}
     if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
     if(data.bio!=null)config.bio=data.bio;
     if(data.social_twitter!=null||data.social_instagram!=null)
@@ -1552,17 +1537,20 @@ async function fetchOwnProfile(){
     const key=user.id||user.username;
     if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
     if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
-    localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
     renderThemes();renderBanners();renderBorders();renderSports();loadIdentitySettings();applyPreview();renderArchetypePicker();
-  }catch(e){}
+  }catch(e){console.error('fetchOwnProfile error',e);}
 }
 
 async function postProfile(){
   const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
   if(!token||!user||!user.id)return false;
+  const pc=window.profileCustomization;
   const payload={
-    banner:config.bannerPack||'midnight',
-    border:config.border||'clean',
+    banner:pc.bannerId||'midnight',
+    border:pc.borderId||'none',
+    bannerPack:pc.bannerId||'midnight',
+    avatarBorder:pc.borderId||'none',
+    profileTheme:pc.themeId||'#7B2CFF',
     theme:config.theme||'purple',
     favSports:config.favSports||[],
     bio:config.bio||'',
@@ -1571,15 +1559,17 @@ async function postProfile(){
   };
   if(pendingAvatar!==undefined)payload.avatarB64=pendingAvatar;
   if(pendingBanner!==undefined)payload.bannerB64=pendingBanner;
+  console.log('POSTING PROFILE PAYLOAD:', JSON.stringify(payload));
   try{
     const r=await fetch(API+'/profile',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
       body:JSON.stringify(payload)
     });
+    console.log('BACKEND RESPONSE:', r.status, r.ok);
     if(r.ok){pendingAvatar=undefined;pendingBanner=undefined;}
     return r.ok;
-  }catch(e){return false;}
+  }catch(e){console.error('POST /profile failed:', e);return false;}
 }
 
 /* ── IDENTITY LOAD ── */
@@ -1644,7 +1634,7 @@ async function fetchAndComputeDNA(){
     const _lpROI=document.getElementById('lpROI');if(_lpROI)_lpROI.textContent=(stats.roi>=0?'+':'')+stats.roi.toFixed(1)+'%';
     const _lpRk=document.getElementById('lpRank');if(_lpRk)_lpRk.textContent=data.rank?'#'+data.rank:'—';
     const _lpArch=document.getElementById('lpArchetype');if(_lpArch)_lpArch.textContent=userDiv||'Bronze';
-    updateLivePreview('banner',config.bannerPack||'midnight');
+    updateLivePreview('banner',window.profileCustomization.bannerId||'midnight');
 
     const scores=ARCHETYPES_DATA.map(a=>({id:a.id,s:a.id==='hybrid'?0:a.score(stats)}));
     const hybridA=ARCHETYPES_DATA.find(a=>a.id==='hybrid');
@@ -1824,18 +1814,13 @@ async function saveProfile(){
     twitter:document.getElementById('twitterInput').value.trim().replace(/^@/,''),
     instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
   };
-  // Read canonical customization and flush to config/localStorage
-  const _saveCust=_setCust({});
-  if(_saveCust.bannerId)config.bannerPack=_saveCust.bannerId;
-  if(_saveCust.borderId)config.border=_saveCust.borderId;
-  if(_saveCust.themeId)config.profileTheme=_saveCust.themeId;
-  localStorage.setItem('ledgr_profile_'+user.username,JSON.stringify({...config,savedAt:Date.now()}));
+  console.log('SAVING PROFILE:', JSON.stringify(window.profileCustomization));
   const btn=document.querySelector('.save-btn');
   btn.textContent='SAVING…';btn.disabled=true;
   const ok=await postProfile();
   btn.disabled=false;
   showSaveSuccess(btn);
-  if(ok){ _userModifiedCust=false; fetchOwnProfile(); }
+  if(ok)fetchOwnProfile();
   showToast(ok?'✓ Profile updated':'SAVED LOCALLY — backend offline');
 }
 
@@ -1967,19 +1952,13 @@ window.onload=()=>{
   document.getElementById('acctUsername').textContent='@'+user.username;
   if(user.email)document.getElementById('acctEmail').innerHTML=user.email+'<span class="acct-verified"> ✓ Verified</span>';
 
-  // Load profile from cache
+  // Load non-cosmetic profile config from cache (bio, social, prefs)
   const saved=localStorage.getItem('ledgr_profile_'+user.username);
   if(saved){try{const p=JSON.parse(saved);Object.assign(config,p);}catch(e){}}
-  // Override with unified customization object — the single source of truth
-  try{
-    const _uc=JSON.parse(localStorage.getItem('ledgr_profile_customization')||'{}');
-    if(_uc.bannerId){config.bannerPack=_uc.bannerId;localStorage.setItem('ledgr_banner_pack',_uc.bannerId);}
-    if(_uc.borderId){config.border=_uc.borderId;localStorage.setItem('ledgr_avatar_border',_uc.borderId);}
-    if(_uc.themeId){config.profileTheme=_uc.themeId;localStorage.setItem('ledgr_profile_theme',_uc.themeId);}
-  }catch(e){}
+  // window.profileCustomization already initialized from ledgr_profile_customization at script top — it is the single source of truth for cosmetics
 
   // Apply saved theme immediately
-  const _savedTheme=config.profileTheme||localStorage.getItem('ledgr_profile_theme')||'#7B2CFF';
+  const _savedTheme=window.profileCustomization.themeId||'#7B2CFF';
   document.documentElement.style.setProperty('--ac',_savedTheme);
   document.documentElement.style.setProperty('--profile-accent',_savedTheme);
   document.documentElement.style.setProperty('--profile-glow',_savedTheme+'59');
@@ -1997,20 +1976,20 @@ window.onload=()=>{
   renderPowerLoadout();
   loadIdentitySettings();
   applyPreview();
-  updateLivePreview('banner',config.bannerPack||'midnight');
+  updateLivePreview('banner',window.profileCustomization.bannerId||'midnight');
   initLivePreview();
   renderArchetypePicker();
 
-  // Restore saved selections — read from unified customization (source of truth)
-  var savedBanner = config.bannerPack || localStorage.getItem('ledgr_banner_pack') || 'midnight';
+  // Restore saved selections from window.profileCustomization (single source of truth)
+  var savedBanner = window.profileCustomization.bannerId || 'midnight';
   document.querySelectorAll('[data-pack]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-pack') === savedBanner);
   });
-  var savedBorder = config.border || localStorage.getItem('ledgr_avatar_border') || 'none';
+  var savedBorder = window.profileCustomization.borderId || 'none';
   document.querySelectorAll('[data-border]').forEach(function(c) {
     c.classList.toggle('selected', c.getAttribute('data-border') === savedBorder);
   });
-  var savedThemeRestore = config.profileTheme || localStorage.getItem('ledgr_profile_theme') || '#7B2CFF';
+  var savedThemeRestore = window.profileCustomization.themeId || '#7B2CFF';
   document.documentElement.style.setProperty('--ac', savedThemeRestore);
   document.querySelectorAll('.theme-swatch').forEach(function(s) {
     s.classList.toggle('selected', s.getAttribute('data-color') === savedThemeRestore);
