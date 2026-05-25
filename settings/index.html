@@ -970,6 +970,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </div><!-- /main -->
 
 <script>
+window.onerror = function(msg, src, line) {
+  console.error('Settings error:', msg, 'line:', line);
+  var app = document.getElementById('app');
+  if (app) app.style.display = 'block';
+};
+
 const API = 'https://ledgr-backend-production-c132.up.railway.app';
 
 /* ── DATA ── */
@@ -1184,12 +1190,14 @@ function renderBanners(){
 }
 
 function selectBannerPack(packId){
-  config.bannerPack=packId;
-  LedgrIdentity.save('banner_pack',packId);
-  LedgrIdentity.applyBanner();
-  document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.dataset.pack===packId));
-  updatePreviewBanner(packId);
-  showToast('✓ Banner saved everywhere');
+  try{
+    config.bannerPack=packId;
+    localStorage.setItem('ledgr_banner_pack',packId);
+    if(typeof LedgrIdentity!=='undefined'){LedgrIdentity.save('banner_pack',packId);LedgrIdentity.applyBanner();}
+    document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.dataset.pack===packId));
+    updatePreviewBanner(packId);
+    if(typeof showToast==='function')showToast('✓ Banner saved everywhere');
+  }catch(e){console.error('selectBannerPack error:',e);}
 }
 
 /* ── RENDER BORDERS ── */
@@ -1220,11 +1228,14 @@ function renderBorders(){
 }
 
 function selectBorder(borderId){
-  config.border=borderId;
-  LedgrIdentity.save('avatar_border',borderId);
-  document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===borderId));
-  updatePreviewBorder(borderId);
-  showToast('✓ Border saved everywhere');
+  try{
+    config.border=borderId;
+    localStorage.setItem('ledgr_avatar_border',borderId);
+    if(typeof LedgrIdentity!=='undefined'){LedgrIdentity.save('avatar_border',borderId);}
+    document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===borderId));
+    updatePreviewBorder(borderId);
+    if(typeof showToast==='function')showToast('✓ Border saved everywhere');
+  }catch(e){console.error('selectBorder error:',e);}
 }
 
 /* ── RENDER SPORTS ── */
@@ -1909,7 +1920,6 @@ window.onload=()=>{
   document.querySelectorAll('.bp-card').forEach(c=>c.classList.toggle('selected',c.dataset.pack===_savedBanner));
   const _savedBorder=localStorage.getItem('ledgr_avatar_border')||'none';
   document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===_savedBorder));
-  const _savedTheme=localStorage.getItem('ledgr_profile_theme')||'#7B2CFF';
   document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected',s.dataset.color===_savedTheme));
 
   loadMySubscriptions();
@@ -2011,6 +2021,17 @@ function showToast(msg,isErr){
 
 </script>
 <script src="/shared/identity.js"></script>
+
+<script>
+setTimeout(function() {
+  var app = document.getElementById('app');
+  if (app && app.style.display === 'none') {
+    app.style.display = 'block';
+  }
+  var body = document.querySelector('main,.settings-main,.settings-wrap');
+  if (body) body.style.display = '';
+}, 2000);
+</script>
 
 </body>
 </html>
