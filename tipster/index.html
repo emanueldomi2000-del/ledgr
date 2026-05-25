@@ -1294,10 +1294,15 @@ async function loadProfile(){
       :`background:${bannerGradient}`;
 
     const autoRingCls=borderRingCls||divisionRingCls(divObj.name);
+    const bannerPackGrads={'midnight':'linear-gradient(135deg,#050510,#0a0a1f,#030310)','carbon':'linear-gradient(135deg,#0a0a0a,#141414,#1a1a1a)','frost':'linear-gradient(135deg,#030d1a,#051929,#081e35)','electric-storm':'linear-gradient(135deg,#050515,#0c0a28,#150c35)','cosmic-rift':'linear-gradient(135deg,#0a0520,#140a35,#0d0728)','frost-core':'linear-gradient(135deg,#030e1e,#061a30,#0a2040)','neon-pulse':'linear-gradient(135deg,#0a0520,#0d0838,#14063d)','dragon-soul':'linear-gradient(135deg,#1a0505,#2d0a0a,#150303)','crown-energy':'linear-gradient(135deg,#1a1200,#2d1f00,#0d0900)','eternal-flame':'linear-gradient(135deg,#1a0800,#2d1000,#0d0400)','void-emperor':'linear-gradient(135deg,#050508,#090914,#02020a)','singularity':'linear-gradient(135deg,#080012,#0f0024,#040008)','time-collapse':'linear-gradient(135deg,#0a1020,#141a2e,#040818)','unknown-signal':'linear-gradient(135deg,#050f05,#091509,#020702)'};
+    const packId=profileCfg.banner||null;
+    const packGrad=packId&&bannerPackGrads[packId]?bannerPackGrads[packId]:null;
     const bannerCls=customBannerImg?'':divisionBannerCls(divObj.name);
     const bannerStyleAttr=customBannerImg
       ?`style="background-image:url(${customBannerImg});background-size:cover;background-position:center"`
-      :`class="profile-banner ${bannerCls} anim-banner"`;
+      :packGrad
+        ?`style="background:${packGrad}" class="profile-banner anim-banner"`
+        :`class="profile-banner ${bannerCls} anim-banner"`;
 
     document.getElementById('mainContent').innerHTML=`
       <div ${bannerStyleAttr}${customBannerImg?' class="profile-banner anim-banner"':''}>

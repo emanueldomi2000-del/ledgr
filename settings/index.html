@@ -226,34 +226,28 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .lp-hint{font-size:9px;color:var(--mu);font-family:var(--font-body);text-align:center;margin-top:8px}
 @media(max-width:900px){.live-preview-panel{display:none}}
 
-/* ── AVATAR BORDERS ── */
-.ab-cards-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}
-.ab-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;transition:all .15s}
-.ab-card:hover{background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.12)}
-.ab-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.08)}
-.ab-card.b-locked{cursor:not-allowed;opacity:.5}
-.ab-preview{width:52px;height:52px;border-radius:50%;background:#1a1a2a;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:16px;color:var(--tx);flex-shrink:0;transition:all .2s}
-.ab-name{font-size:9px;font-family:var(--font-body);color:var(--mu);text-align:center}
-.ab-tier{font-size:8px;font-family:var(--font-mono);letter-spacing:.1em}
-.ab-tier.common{color:var(--mu)}
-.ab-tier.rare{color:var(--cyan)}
-.ab-tier.epic{color:var(--orange)}
-.ab-tier.legendary{color:var(--gold)}
-.ab-tier.rank{color:var(--ac)}
+/* ── AVATAR BORDERS — GAMING TIER SYSTEM ── */
+.ab-tier-section{margin-bottom:18px}
+.ab-tier-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.ab-cards-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.ab-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 10px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:12px;cursor:pointer;transition:all .15s}
+.ab-card:hover:not(.ab-locked){background:rgba(255,255,255,0.04);border-color:rgba(255,255,255,0.14)}
+.ab-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.09)}
+.ab-card.ab-locked{cursor:not-allowed;opacity:.45}
+.ab-lock-badge{position:absolute;top:5px;right:6px;font-size:10px;opacity:.7}
+.ab-preview{width:64px;height:64px;border-radius:50%;background:#111120;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;color:var(--tx);flex-shrink:0;transition:border .2s,box-shadow .2s;overflow:visible}
+.ab-name{font-size:9px;font-family:var(--font-mono);color:var(--mu);text-align:center;letter-spacing:.08em}
 /* border keyframes */
-@keyframes diamondShim{0%,100%{border-color:rgba(79,195,247,0.3)}50%{border-color:#4FC3F7;box-shadow:0 0 12px #4FC3F744}}
-@keyframes cosmicBorderSpin{0%{border-color:rgba(123,44,255,0.7)}50%{border-color:rgba(0,229,160,0.9);box-shadow:0 0 8px rgba(0,229,160,0.4)}100%{border-color:rgba(123,44,255,0.7)}}
-@keyframes elecPulse{0%,100%{box-shadow:0 0 4px #fff,0 0 8px #7B2CFF}50%{box-shadow:0 0 10px #fff,0 0 20px #7B2CFF,0 0 30px #7B2CFF55}}
-@keyframes infPulse{0%,100%{box-shadow:0 0 6px #FF6B35}50%{box-shadow:0 0 14px #FF6B35,0 0 24px #FF330055}}
-@keyframes winterShimmer{0%,100%{box-shadow:0 0 8px rgba(147,210,255,0.3)}50%{box-shadow:0 0 16px rgba(147,210,255,0.6),0 0 32px rgba(147,210,255,0.2)}}
-@keyframes summerGlow{0%,100%{box-shadow:0 0 8px rgba(255,200,50,0.4)}50%{box-shadow:0 0 20px rgba(255,200,50,0.7)}}
-@keyframes halloweenFlicker{0%{box-shadow:0 0 6px rgba(255,120,0,0.6)}50%{box-shadow:0 0 12px rgba(255,120,0,0.9)}}
+@keyframes crystalPulse{0%,100%{border-color:rgba(79,195,247,0.35);box-shadow:0 0 4px rgba(79,195,247,0.15)}50%{border-color:rgba(79,195,247,1);box-shadow:0 0 14px rgba(79,195,247,0.55)}}
+@keyframes frostShimmer{0%,100%{border-color:rgba(192,192,192,0.35);box-shadow:0 0 4px rgba(147,210,255,0.1)}50%{border-color:rgba(220,240,255,0.9);box-shadow:0 0 12px rgba(147,210,255,0.45)}}
+@keyframes electricRing{0%,100%{border-color:rgba(253,224,71,0.45);box-shadow:0 0 4px rgba(253,224,71,0.1)}50%{border-color:#fff;box-shadow:0 0 12px rgba(253,224,71,0.65),0 0 24px rgba(123,44,255,0.3)}}
+@keyframes infernoRing{0%,100%{border-color:#FF6B35;box-shadow:0 0 6px rgba(255,107,53,0.3)}50%{border-color:#FFD700;box-shadow:0 0 14px rgba(255,107,53,0.7),0 0 24px rgba(255,51,0,0.3)}}
+@keyframes cosmicBorderSpin{0%{border-color:rgba(123,44,255,0.7)}50%{border-color:rgba(0,229,160,0.9);box-shadow:0 0 10px rgba(0,229,160,0.4)}100%{border-color:rgba(123,44,255,0.7)}}
+@keyframes dragonBorderAnim{0%,100%{border-color:#FF3355;box-shadow:0 0 8px rgba(255,51,85,0.4)}50%{border-color:#FFD700;box-shadow:0 0 16px rgba(255,215,0,0.5)}}
+@keyframes crownHaloSpin{from{filter:hue-rotate(0deg) brightness(1)}40%{filter:hue-rotate(25deg) brightness(1.3)}to{filter:hue-rotate(0deg) brightness(1)}}
+@keyframes celestialGlow{0%,100%{box-shadow:0 0 6px rgba(139,92,246,0.3)}50%{box-shadow:0 0 18px rgba(139,92,246,0.6),0 0 32px rgba(79,195,247,0.2)}}
 @keyframes eliteRotate{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
-@keyframes legendaryRotate{from{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(180deg) brightness(1.2)}to{filter:hue-rotate(360deg) brightness(1)}}
-.ab-tier.seasonal{color:#f59e0b}
-@keyframes royalSpin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
-@keyframes dragonBdr{0%,100%{border-color:#FF3355;box-shadow:0 0 8px #FF335555}50%{border-color:#FFD700;box-shadow:0 0 12px #FFD70055}}
-@keyframes celestialAnim{from{box-shadow:0 0 8px rgba(170,120,255,0.4),4px 0 8px rgba(123,44,255,0.3)}to{box-shadow:0 0 8px rgba(170,120,255,0.4),-4px 0 8px rgba(79,195,247,0.3)}}
+@keyframes singularitySpin{from{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(180deg) brightness(1.25)}to{filter:hue-rotate(360deg) brightness(1)}}
 /* keep old ring classes for preview-ring on the live card */
 .ring-clean{border:2px solid rgba(184,159,255,0.25)}
 .ring-blue{border:2px solid rgba(79,195,247,0.6);box-shadow:0 0 8px rgba(79,195,247,0.15)}
@@ -472,10 +466,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .banner-anim-crimson{position:relative;overflow:hidden}
 .banner-anim-crimson::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,rgba(255,51,85,0.2),transparent 60%);animation:bpCrimson 6s ease-in-out infinite alternate}
 
-/* ── BORDER ANIMATIONS ── */
-@keyframes diamondShimmer{0%,100%{border-color:rgba(79,195,247,0.4)}50%{border-color:rgba(79,195,247,1)}}
-@keyframes infernoRing{0%,100%{box-shadow:0 0 6px #FF6B35,0 0 12px #FF3300}50%{box-shadow:0 0 12px #FF6B35,0 0 24px #FF3300}}
-@keyframes dragonBorder{0%,100%{border-color:#FF3355;box-shadow:0 0 8px #FF3355}50%{border-color:#FFD700;box-shadow:0 0 16px #FFD700}}
+/* ── BORDER ANIMATIONS (legacy — kept for ring-* classes) ── */
 
 /* ── POWER GRID ── */
 .pw-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
@@ -514,7 +505,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 /* ── RESPONSIVE ── */
 @media(max-width:960px){.settings-layout{flex-direction:column}.live-preview-panel{display:none}}
-@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.ab-cards-grid{grid-template-columns:repeat(3,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.pw-grid{grid-template-columns:1fr}.pl-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.bp-grid{grid-template-columns:repeat(2,1fr)}.ab-cards-row{grid-template-columns:repeat(2,1fr)}.upload-row{grid-template-columns:1fr}.badge-showcase{grid-template-columns:repeat(2,1fr)}.arch-grid{grid-template-columns:repeat(2,1fr)}.pw-grid{grid-template-columns:1fr}.pl-grid{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -644,7 +635,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
           <div style="margin-bottom:32px">
             <span class="id-section-lbl">Avatar Border</span>
-            <div class="ab-cards-grid" id="borderGrid"></div>
+            <div id="borderGrid"></div>
           </div>
 
           <div>
@@ -981,25 +972,27 @@ const POWER_ITEMS = [
 const DIV_ORDER = ['Bronze','Silver','Gold','Platinum','Diamond','Elite','Legend'];
 
 const BORDERS = [
-  {id:'none',          name:'NONE',      tier:'common',   divReq:null,      ring:''},
-  {id:'clean',         name:'CLEAN',     tier:'common',   divReq:null,      ring:'ring-clean'},
-  {id:'blue-ring',     name:'BLUE',      tier:'common',   divReq:null,      ring:'ring-blue'},
-  {id:'diamond-ring',  name:'DIAMOND',   tier:'rare',     divReq:'Silver',  ring:'ring-diamond-ring'},
-  {id:'cosmic',        name:'COSMIC',    tier:'rare',     divReq:'Silver',  ring:'ring-cosmic'},
-  {id:'electric',      name:'ELECTRIC',  tier:'epic',     divReq:'Gold',    ring:'ring-electric'},
-  {id:'inferno',       name:'INFERNO',   tier:'epic',     divReq:'Gold',    ring:'ring-inferno'},
-  {id:'royal',         name:'ROYAL',     tier:'legendary',divReq:'Diamond', ring:'ring-royal'},
-  {id:'dragon',        name:'DRAGON',    tier:'legendary',divReq:'Diamond', ring:'ring-dragon'},
-  {id:'celestial',     name:'CELESTIAL', tier:'legendary',divReq:'Diamond', ring:'ring-celestial'},
-  {id:'bronze-frame',  name:'BRONZE',    tier:'rank',     divReq:'Bronze',  ring:'ring-bronze'},
-  {id:'silver-frame',  name:'SILVER',    tier:'rank',     divReq:'Silver',  ring:'ring-silver'},
-  {id:'gold-frame',    name:'GOLD',      tier:'rank',     divReq:'Gold',    ring:'ring-gold'},
-  {id:'diamond-frame', name:'DIAMOND+',  tier:'rank',     divReq:'Diamond', ring:'ring-diamond-frame'},
-  {id:'elite-frame',   name:'ELITE',     tier:'rank',     divReq:'Elite',   ring:'ring-elite'},
-  {id:'legendary-frame',name:'LEGEND',  tier:'rank',     divReq:'Legend',  ring:'ring-legendary'},
-  {id:'halloween',     name:'HALLOWEEN', tier:'common',   divReq:null,      ring:'', seasonal:true},
-  {id:'winter-elite',  name:'WINTER',    tier:'common',   divReq:null,      ring:'', seasonal:true},
-  {id:'summer-champ',  name:'SUMMER',    tier:'common',   divReq:null,      ring:'', seasonal:true},
+  // COMMON — free
+  {id:'none',           name:'NONE',     tier:'COMMON',   divReq:null},
+  {id:'clean',          name:'OUTLINE',  tier:'COMMON',   divReq:null},
+  {id:'blue-ring',      name:'PULSE',    tier:'COMMON',   divReq:null},
+  {id:'bronze-frame',   name:'BRONZE',   tier:'COMMON',   divReq:'Bronze'},
+  // RARE — Silver+
+  {id:'silver-frame',   name:'SILVER',   tier:'RARE',     divReq:'Silver'},
+  {id:'gold-frame',     name:'GOLD',     tier:'RARE',     divReq:'Gold'},
+  {id:'electric',       name:'ELECTRIC', tier:'RARE',     divReq:'Gold'},
+  {id:'inferno',        name:'INFERNO',  tier:'RARE',     divReq:'Gold'},
+  // EPIC — Platinum+
+  {id:'cosmic',         name:'COSMIC',   tier:'EPIC',     divReq:'Platinum'},
+  {id:'diamond-ring',   name:'CRYSTAL',  tier:'EPIC',     divReq:'Diamond'},
+  {id:'diamond-frame',  name:'DIAMOND',  tier:'EPIC',     divReq:'Diamond'},
+  // LEGENDARY — Diamond+
+  {id:'royal',          name:'CROWN',    tier:'LEGENDARY',divReq:'Diamond'},
+  {id:'dragon',         name:'DRAGON',   tier:'LEGENDARY',divReq:'Diamond'},
+  {id:'celestial',      name:'CELESTIAL',tier:'LEGENDARY',divReq:'Diamond'},
+  {id:'elite-frame',    name:'ELITE',    tier:'LEGENDARY',divReq:'Elite'},
+  // MYTHIC — Legend only
+  {id:'legendary-frame',name:'LEGEND',  tier:'MYTHIC',   divReq:'Legend'},
 ];
 
 const SPORTS = ['Soccer','Basketball','Tennis','Football','Baseball','MMA/Boxing'];
@@ -1148,63 +1141,72 @@ function selectBannerPack(id){
   applyPreview();
   updateLivePreview('banner',id);
   updatePreviewBanner(id);
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(user&&tk){
+    fetch(API+'/profile',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},body:JSON.stringify({banner:id})})
+      .then(r=>r.ok?showToast('Banner saved ✓'):showToast('Saved locally'))
+      .catch(()=>showToast('Saved locally'));
+  }
 }
 
 /* ── RENDER BORDERS ── */
 const BORDER_STYLES={
   'none':'',
-  'clean':'border:2px solid rgba(184,159,255,0.25)',
-  'blue-ring':'border:2px solid rgba(79,195,247,0.7);box-shadow:0 0 8px rgba(79,195,247,0.2)',
-  'diamond-ring':'border:2px solid rgba(79,195,247,0.8);animation:diamondShim 2s ease-in-out infinite',
-  'cosmic':'border:2px dashed rgba(123,44,255,0.7);animation:cosmicBorderSpin 4s linear infinite',
-  'electric':'border:2px solid rgba(253,224,71,0.85);animation:elecPulse 2s ease-in-out infinite',
-  'inferno':'border:2px solid #FF6B35;animation:infPulse 2s ease-in-out infinite',
-  'royal':'border:2px solid #f59e0b;box-shadow:0 0 8px rgba(245,158,11,0.4)',
-  'dragon':'border:2px solid #FF3355;animation:dragonBdr 2s ease-in-out infinite',
-  'celestial':'border:2px solid rgba(139,92,246,0.7);animation:celestialAnim 3s ease-in-out infinite alternate',
+  'clean':'border:2px solid rgba(184,159,255,0.22)',
+  'blue-ring':'border:2px solid rgba(79,195,247,0.7);animation:crystalPulse 2s ease-in-out infinite',
   'bronze-frame':'border:2px solid #cd7f32;box-shadow:0 0 8px rgba(205,127,50,0.3)',
-  'silver-frame':'border:2px solid #c0c0c0;box-shadow:0 0 6px rgba(192,192,192,0.25)',
+  'silver-frame':'border:2px solid #c0c0c0;animation:frostShimmer 3s ease-in-out infinite',
   'gold-frame':'border:2px solid #fbbf24;box-shadow:0 0 10px rgba(251,191,36,0.3)',
-  'diamond-frame':'border:2px solid rgba(56,189,248,0.8);animation:diamondShim 2.5s ease-in-out infinite',
-  'elite-frame':'border:2px solid rgba(123,44,255,0.8);animation:eliteRotate 4s linear infinite',
-  'legendary-frame':'border:2px solid transparent;box-shadow:0 0 0 2px rgba(255,215,0,0.6),0 0 0 4px rgba(123,44,255,0.4);animation:legendaryRotate 3s linear infinite',
-  'halloween':'border:2px solid rgba(255,120,0,0.8);animation:halloweenFlicker 0.5s steps(1) infinite',
-  'winter-elite':'border:2px solid rgba(147,210,255,0.8);animation:winterShimmer 3s ease-in-out infinite',
-  'summer-champ':'border:2px solid rgba(255,200,50,0.9);animation:summerGlow 2s ease-in-out infinite',
+  'electric':'border:2px solid rgba(253,224,71,0.8);animation:electricRing 2s ease-in-out infinite',
+  'inferno':'border:2px solid #FF6B35;animation:infernoRing 2s ease-in-out infinite',
+  'cosmic':'border:2px dashed rgba(123,44,255,0.7);animation:cosmicBorderSpin 4s linear infinite',
+  'diamond-ring':'border:2px solid rgba(79,195,247,0.85);animation:crystalPulse 1.8s ease-in-out infinite',
+  'diamond-frame':'border:2px solid rgba(56,189,248,0.8);animation:crystalPulse 2.5s ease-in-out infinite',
+  'royal':'border:3px solid #FFD700;animation:crownHaloSpin 3s ease-in-out infinite',
+  'dragon':'border:2px solid #FF3355;animation:dragonBorderAnim 2s ease-in-out infinite',
+  'celestial':'border:2px solid rgba(139,92,246,0.7);animation:celestialGlow 3s ease-in-out infinite',
+  'elite-frame':'border:2px solid rgba(123,44,255,0.85);animation:eliteRotate 4s linear infinite',
+  'legendary-frame':'border:2px solid transparent;box-shadow:0 0 0 2px rgba(255,215,0,0.65),0 0 0 4px rgba(123,44,255,0.4);animation:singularitySpin 3s linear infinite',
 };
+const TIER_COLORS_BORDER={COMMON:'#6B6B6B',RARE:'#4FC3F7',EPIC:'#7B2CFF',LEGENDARY:'#FFD700',MYTHIC:'#FF6BFF'};
+
 function renderBorderCard(b){
-  const locked=b.seasonal?true:!divUnlocked(b.divReq);
+  const locked=!divUnlocked(b.divReq);
   const sel=config.border===b.id;
   const bStyle=BORDER_STYLES[b.id]||'';
-  const tierLabel=b.seasonal?'SEASON':locked?(b.divReq+'+'):(b.tier.toUpperCase());
-  return`<div class="ab-card${sel?' selected':''}${locked?' b-locked':''}" onclick="selectBorder('${b.id}',${locked})" id="brd_${b.id}" data-border="${b.id}">
-    ${locked?`<div style="position:absolute;top:4px;right:5px;font-size:10px;opacity:.7">${b.seasonal?'🗓️':'🔒'}</div>`:''}
+  return`<div class="ab-card${sel?' selected':''}${locked?' ab-locked':''}" ${locked?'':'onclick="selectBorder(\''+b.id+'\')"'} id="brd_${b.id}" data-border="${b.id}">
+    ${locked?`<div class="ab-lock-badge">🔒</div>`:''}
     <div class="ab-preview" style="${bStyle}">ME</div>
     <div class="ab-name">${b.name}</div>
-    <div class="ab-tier ${b.seasonal?'seasonal':b.tier}">${tierLabel}</div>
   </div>`;
 }
 function renderBorders(){
   const grid=document.getElementById('borderGrid');
   if(!grid)return;
-  const regular=BORDERS.filter(b=>!b.seasonal);
-  const seasonal=BORDERS.filter(b=>b.seasonal);
-  let html=regular.map(b=>renderBorderCard(b)).join('');
-  if(seasonal.length){
-    html+=`<div style="grid-column:1/-1;font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;padding:12px 0 4px;border-top:1px solid var(--bd);margin-top:4px">Seasonal — Limited Time</div>`;
-    html+=seasonal.map(b=>renderBorderCard(b)).join('');
-  }
-  grid.innerHTML=html;
+  const tiers=['COMMON','RARE','EPIC','LEGENDARY','MYTHIC'];
+  grid.innerHTML=tiers.map(tier=>{
+    const borders=BORDERS.filter(b=>b.tier===tier);
+    if(!borders.length)return'';
+    const col=TIER_COLORS_BORDER[tier]||'#6B6B6B';
+    return`<div class="ab-tier-section">
+      <div class="ab-tier-label" style="color:${col}">${tier}</div>
+      <div class="ab-cards-row">${borders.map(b=>renderBorderCard(b)).join('')}</div>
+    </div>`;
+  }).join('');
 }
 
-function selectBorder(id,locked){
-  if(locked){showToast('DIVISION LOCKED',true);return;}
+function selectBorder(id){
   config.border=id;
   localStorage.setItem('ledgr_avatar_border',id);
   document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===id));
   applyPreview();
   updatePreviewBorder(id);
-  showToast('Border applied ✓');
+  const tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(user&&tk){
+    fetch(API+'/profile',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},body:JSON.stringify({border:id})})
+      .then(r=>r.ok?showToast('Border saved ✓'):showToast('Saved locally'))
+      .catch(()=>showToast('Saved locally'));
+  }
 }
 
 /* ── RENDER SPORTS ── */
@@ -1285,13 +1287,29 @@ function updatePreviewBorder(borderId){
   const lpAv=document.getElementById('lpAvatar');
   if(!lpAv)return;
   const borderStyles={
-    none:'none',clean:'2px solid #3a3a3a','blue-ring':'2px solid #4FC3F7',
-    electric:'2px solid #fff',royal:'3px solid #FFD700',
-    inferno:'2px solid #FF6B35',dragon:'2px solid #FF3355',
-    'diamond-ring':'2px solid rgba(79,195,247,0.8)',
-    cosmic:'2px dashed rgba(123,44,255,0.7)',
+    'none':'none',
+    'clean':'2px solid rgba(184,159,255,0.25)',
+    'blue-ring':'2px solid #4FC3F7',
+    'bronze-frame':'2px solid #cd7f32',
+    'silver-frame':'2px solid #c0c0c0',
+    'gold-frame':'2px solid #fbbf24',
+    'electric':'2px solid rgba(253,224,71,0.9)',
+    'inferno':'2px solid #FF6B35',
+    'cosmic':'2px dashed rgba(123,44,255,0.7)',
+    'diamond-ring':'2px solid rgba(79,195,247,0.9)',
+    'diamond-frame':'2px solid rgba(56,189,248,0.85)',
+    'royal':'3px solid #FFD700',
+    'dragon':'2px solid #FF3355',
+    'celestial':'2px solid rgba(139,92,246,0.75)',
+    'elite-frame':'2px solid rgba(123,44,255,0.9)',
+    'legendary-frame':'2px solid transparent',
   };
   lpAv.style.border=borderStyles[borderId]||'none';
+  lpAv.style.boxShadow=borderId==='legendary-frame'?'0 0 0 2px rgba(255,215,0,0.65),0 0 0 4px rgba(123,44,255,0.4)':
+    borderId==='royal'?'0 0 10px rgba(255,215,0,0.4)':
+    borderId==='dragon'?'0 0 8px rgba(255,51,85,0.4)':
+    borderId==='elite-frame'?'0 0 10px rgba(123,44,255,0.4)':
+    borderId==='celestial'?'0 0 10px rgba(139,92,246,0.35)':'';
 }
 
 /* ── PREVIEW ── */

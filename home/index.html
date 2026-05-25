@@ -1338,7 +1338,13 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const sharp=rm&&rm.sharpScore!=null?Math.round(rm.sharpScore):0;
   const idSS=document.getElementById('idSharpScore');if(idSS){idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');_animStatVal(idSS,sharp+'/100',true);}
   const idBanner=document.getElementById('idDivBanner');
-  if(idBanner){const bc={LEGENDARY:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(184,159,255,.6),rgba(251,191,36,.7))',ELITE:'linear-gradient(90deg,rgba(248,113,113,.8),rgba(251,146,60,.5))',DIAMOND:'linear-gradient(90deg,rgba(184,159,255,.9),rgba(123,44,255,.6))',PLATINUM:'linear-gradient(90deg,rgba(56,189,248,.8),rgba(52,211,153,.5))',GOLD:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(251,146,60,.5))',SILVER:'linear-gradient(90deg,rgba(148,163,184,.7),rgba(100,116,139,.4))',BRONZE:'linear-gradient(90deg,rgba(180,120,80,.8),rgba(180,120,80,.4))'};idBanner.style.background=bc[div.name]||bc.BRONZE;}
+  if(idBanner){
+    const _savedBannerPack=localStorage.getItem('ledgr_banner_pack')||((profileCfg&&profileCfg.banner)?profileCfg.banner:null);
+    const _bannerPackAccents={'midnight':'rgba(30,30,80,.9),rgba(10,10,40,.7)','carbon':'rgba(40,40,40,.9),rgba(20,20,20,.7)','frost':'rgba(56,189,248,.7),rgba(30,100,160,.5)','electric-storm':'rgba(123,44,255,.9),rgba(30,10,80,.7)','cosmic-rift':'rgba(88,28,220,.8),rgba(50,10,150,.6)','frost-core':'rgba(56,189,248,.8),rgba(10,60,120,.5)','neon-pulse':'rgba(123,44,255,.9),rgba(180,76,255,.5)','dragon-soul':'rgba(220,40,40,.8),rgba(120,10,10,.6)','crown-energy':'rgba(251,191,36,.9),rgba(160,110,0,.7)','eternal-flame':'rgba(255,107,53,.8),rgba(180,40,0,.6)','void-emperor':'rgba(15,15,30,.9),rgba(5,5,15,.8)','singularity':'rgba(255,107,255,.8),rgba(100,0,150,.6)','time-collapse':'rgba(56,189,248,.7),rgba(100,50,200,.5)','unknown-signal':'rgba(52,211,153,.7),rgba(10,80,40,.5)'};
+    const _packColors=_savedBannerPack&&_bannerPackAccents[_savedBannerPack]?_bannerPackAccents[_savedBannerPack]:null;
+    if(_packColors){idBanner.style.background='linear-gradient(90deg,'+_packColors+')';}
+    else{const bc={LEGENDARY:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(184,159,255,.6),rgba(251,191,36,.7))',ELITE:'linear-gradient(90deg,rgba(248,113,113,.8),rgba(251,146,60,.5))',DIAMOND:'linear-gradient(90deg,rgba(184,159,255,.9),rgba(123,44,255,.6))',PLATINUM:'linear-gradient(90deg,rgba(56,189,248,.8),rgba(52,211,153,.5))',GOLD:'linear-gradient(90deg,rgba(251,191,36,.9),rgba(251,146,60,.5))',SILVER:'linear-gradient(90deg,rgba(148,163,184,.7),rgba(100,116,139,.4))',BRONZE:'linear-gradient(90deg,rgba(180,120,80,.8),rgba(180,120,80,.4))'};idBanner.style.background=bc[div.name]||bc.BRONZE;}
+  }
   const sorted=[...myPicks].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt));
   let cum=0,cumStake=0;
   const pts=[0,...sorted.map(p=>{cum+=p.pnl;cumStake+=p.stake;return cumStake>0?(cum/cumStake)*100:0;})];
