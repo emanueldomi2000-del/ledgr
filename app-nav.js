@@ -508,6 +508,12 @@
   function _init(opts) {
     if (document.getElementById('appNav')) return;
 
+    // Apply saved profile theme across all pages
+    var savedTheme = localStorage.getItem('ledgr_profile_theme');
+    if (savedTheme) {
+      document.documentElement.style.setProperty('--ac', savedTheme);
+    }
+
     opts = opts || {};
     var active = opts.active || '';
 

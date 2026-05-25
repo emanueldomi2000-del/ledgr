@@ -84,6 +84,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .theme-swatch{width:36px;height:36px;border-radius:50%;cursor:pointer;position:relative;transition:transform .15s,box-shadow .15s;border:2px solid transparent;flex-shrink:0}
 .theme-swatch:hover{transform:scale(1.15)}
 .theme-swatch.selected{border-color:#fff;box-shadow:0 0 0 2px var(--swatch-color),0 0 12px var(--swatch-color)}
+.theme-preview-bar{height:2px;border-radius:1px;background:#1a1a1a;margin-top:8px;overflow:hidden}
+.tpb-inner{height:100%;border-radius:1px;width:100%;transition:background 0.3s ease}
 
 /* ── BIO ── */
 .bio-wrap{position:relative;margin-bottom:18px}
@@ -108,6 +110,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .bp-lock{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .bp-lock-icon{font-size:18px}
 .bp-lock-req{font-family:var(--font-mono);font-size:8px;color:rgba(255,255,255,.65);letter-spacing:1px}
+.bp-locked-veil{position:absolute;inset:0;background:rgba(5,5,5,0.65);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border-radius:inherit;backdrop-filter:blur(1px);z-index:5}
 .bp-info{position:absolute;bottom:8px;left:10px;right:10px;z-index:3}
 .bp-name{font-family:var(--font-display);font-size:14px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,0.8);margin-bottom:1px}
 .bp-unlock{font-size:9px;color:rgba(255,255,255,0.5);font-family:var(--font-mono)}
@@ -323,6 +326,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .forge-t3{font-size:clamp(64px,10vw,120px);color:var(--ac);letter-spacing:.02em;text-shadow:0 0 40px rgba(123,44,255,0.4)}
 .forge-tagline{display:flex;gap:20px;flex-wrap:wrap;position:relative;z-index:1}
 .forge-tagline span{font-size:11px;color:var(--mu);font-family:var(--font-body)}
+.forge-scan-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--ac),transparent);animation:scanDown 4s ease-in-out infinite;opacity:0.4;pointer-events:none;z-index:2}
+@keyframes scanDown{0%{top:0%;opacity:0}10%{opacity:0.4}90%{opacity:0.4}100%{top:100%;opacity:0}}
 
 /* ── ILAB SECTION HEADER ── */
 .ilab-section-header{display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:14px;border-bottom:1px solid rgba(123,44,255,0.12)}
@@ -423,6 +428,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div id="app" style="display:none">
     <div class="forge-hero">
       <div class="forge-glow"></div>
+      <div class="forge-scan-line"></div>
       <div class="forge-eyebrow">⬡ LEDGR IDENTITY SYSTEM</div>
       <h1 class="forge-title">
         <span class="forge-t1">FORGE</span>
@@ -941,7 +947,8 @@ const ARCHETYPES_DATA = [
 
 /* ── STATE ── */
 let user = null;
-let userDiv = null; // computed division string
+let userDiv = null;
+let bannerUnlocks = null;
 let config = {
   theme:'purple', profileTheme:'#7B2CFF', bannerPack:'midnight',
   border:'clean', favSports:[], bio:'', social:{twitter:'',instagram:''},
@@ -967,6 +974,29 @@ function divUnlocked(divReq){
   return user_idx>=req_idx;
 }
 
+function checkBannerUnlocks(stats,data){
+  const div=userDiv||'Bronze';
+  const wins=stats.wins||0;
+  const reliability=data.reliability||data.reliabilityScore||0;
+  const rank=data.rank||999;
+  const bestStreak=stats.bestStreak||0;
+  const archetype=config.manualArchetype||'';
+  const divIdx=DIV_ORDER.indexOf(div);
+  return{
+    'midnight':true,'purple-fade':true,'frost':true,'carbon':true,'dark-smoke':true,
+    'cosmic-nebula':divIdx>=2,
+    'diamond-storm':divIdx>=3,
+    'crimson-energy':wins>=50,
+    'electric-void':divIdx>=4,
+    'phantom-pulse':reliability>=70,
+    'galaxy-motion':divIdx>=5,
+    'dragon-aura':archetype==='demon'||archetype==='reaper',
+    'eternal-flame':bestStreak>=5,
+    'neon-rift':divIdx>=4,
+    'crown-energy':rank===1,
+  };
+}
+
 /* ── RENDER BANNER PACKS ── */
 function renderBannerPacks(){
   ['basic','premium','legendary'].forEach(tier=>{
@@ -975,19 +1005,20 @@ function renderBannerPacks(){
     if(!grid)return;
     const packs=BANNER_PACKS.filter(b=>b.tier===tier);
     grid.innerHTML=packs.map(b=>{
-      const locked=!divUnlocked(b.divReq);
+      const locked=bannerUnlocks?!bannerUnlocks[b.id]:!divUnlocked(b.divReq);
       const sel=config.bannerPack===b.id;
       const cfg=BANNER_CFG[b.id]||{tier:'Basic',unlock:null,anim:'none'};
       const animCls=cfg.anim!=='none'?` banner-anim-${cfg.anim}`:'';
       const tierKey=cfg.tier.toLowerCase();
       const tierColor=tierKey==='legendary'?'#FFD700':tierKey==='epic'?'#b89fff':'#9b9b9b';
+      const reqText=cfg.unlock||(b.divReq?b.divReq+'+':'Locked');
       return`<div class="bp-card ${b.cssClass}${animCls}${sel?' selected':''}${locked?' locked':''}" onclick="selectBannerPack('${b.id}',${locked})" id="bp_${b.id}">
         <div class="bp-tier-pill" style="color:${tierColor}">${cfg.tier.toUpperCase()}</div>
         <div class="bp-ck">✓</div>
-        ${locked?`<div class="bp-lock"><div class="bp-lock-icon">🔒</div><div class="bp-lock-req">${b.divReq}+</div></div>`:''}
+        ${locked?`<div class="bp-locked-veil"><div class="bp-lock-icon">🔒</div><div class="bp-lock-req">${reqText}</div></div>`:''}
         <div class="bp-info">
           <div class="bp-name">${b.name}</div>
-          <div class="bp-unlock">${locked&&cfg.unlock?'🔒 '+cfg.unlock:'✓ Unlocked'}</div>
+          <div class="bp-unlock">${locked?'🔒 '+reqText:'✓ Unlocked'}</div>
         </div>
       </div>`;
     }).join('');
@@ -1027,7 +1058,7 @@ function renderBorders(){
     const locked=!divUnlocked(b.divReq);
     const sel=config.border===b.id;
     const bStyle=BORDER_STYLES[b.id]||'';
-    return`<div class="ab-card${sel?' selected':''}${locked?' b-locked':''}" onclick="selectBorder('${b.id}',${locked})" id="brd_${b.id}">
+    return`<div class="ab-card${sel?' selected':''}${locked?' b-locked':''}" onclick="selectBorder('${b.id}',${locked})" id="brd_${b.id}" data-border="${b.id}">
       ${locked?'<div style="position:absolute;top:4px;right:5px;font-size:10px;opacity:.7">🔒</div>':''}
       <div class="ab-preview" style="${bStyle}">ME</div>
       <div class="ab-name">${b.name}</div>
@@ -1039,8 +1070,10 @@ function renderBorders(){
 function selectBorder(id,locked){
   if(locked){showToast('DIVISION LOCKED',true);return;}
   config.border=id;
-  document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.id==='brd_'+id));
+  localStorage.setItem('ledgr_avatar_border',id);
+  document.querySelectorAll('.ab-card').forEach(c=>c.classList.toggle('selected',c.dataset.border===id));
   applyPreview();
+  showToast('Border applied ✓');
 }
 
 /* ── RENDER SPORTS ── */
@@ -1063,22 +1096,30 @@ function toggleSport(s){
 function renderThemes(){
   const grid=document.getElementById('themeGrid');
   if(!grid)return;
-  grid.innerHTML='<div class="theme-swatches-row">'+THEMES.map(t=>`<div class="theme-swatch${config.theme===t.id?' selected':''}" id="theme_${t.id}" style="background:${t.color};--swatch-color:${t.color}" onclick="selectTheme('${t.id}')" title="${t.name}"></div>`).join('')+'</div>';
+  const cur=config.profileTheme||'#7B2CFF';
+  const swatches=THEMES.map(t=>`<div class="theme-swatch${cur===t.color?' selected':''}" id="theme_${t.id}" data-color="${t.color}" style="background:${t.color};--swatch-color:${t.color}" onclick="selectTheme('${t.color}')" title="${t.name}"></div>`).join('');
+  grid.innerHTML=`<div class="theme-swatches-row">${swatches}</div><div class="theme-preview-bar"><div class="tpb-inner" id="themePreviewBar" style="background:${cur}"></div></div>`;
 }
 
-function selectTheme(id){
-  const t=THEMES.find(x=>x.id===id);if(!t)return;
-  config.theme=id;
-  config.profileTheme=t.color;
+function selectTheme(color){
+  const t=THEMES.find(x=>x.color===color);
+  if(t)config.theme=t.id;
+  config.profileTheme=color;
   const root=document.documentElement;
-  root.style.setProperty('--ac',t.color);
-  root.style.setProperty('--profile-accent',t.color);
-  root.style.setProperty('--profile-glow',t.color+'59');
-  root.style.setProperty('--profile-highlight',t.color+'cc');
-  root.style.setProperty('--profile-card-border',t.color);
-  localStorage.setItem('ledgr_profile_theme',t.color);
-  document.querySelectorAll('.theme-swatch').forEach(d=>d.classList.toggle('selected',d.id==='theme_'+id));
+  root.style.setProperty('--ac',color);
+  root.style.setProperty('--ac-light',color+'cc');
+  root.style.setProperty('--profile-accent',color);
+  root.style.setProperty('--profile-glow',color+'59');
+  root.style.setProperty('--profile-highlight',color+'cc');
+  root.style.setProperty('--profile-card-border',color);
+  localStorage.setItem('ledgr_profile_theme',color);
+  document.querySelectorAll('.theme-swatch').forEach(s=>s.classList.toggle('selected',s.dataset.color===color));
+  const tpb=document.getElementById('themePreviewBar');
+  if(tpb)tpb.style.background=color;
   applyPreview();
+  const u=JSON.parse(localStorage.getItem('ledgr_user')||'null');
+  const tk=localStorage.getItem('ledgr_token');
+  if(u&&tk)fetch(API+'/profile',{method:'PATCH',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tk},body:JSON.stringify({profileTheme:color})}).catch(()=>{});
 }
 
 /* ── PREVIEW ── */
@@ -1209,7 +1250,7 @@ async function fetchOwnProfile(){
     if(data.border)config.border=data.border;
     if(data.theme){
       const t=THEMES.find(x=>x.id===data.theme);
-      if(t){config.theme=data.theme;config.profileTheme=t.color;}
+      if(t){config.theme=data.theme;config.profileTheme=t.color;document.documentElement.style.setProperty('--ac',t.color);}
     }
     if(Array.isArray(data.fav_sports))config.favSports=data.fav_sports;
     if(data.bio!=null)config.bio=data.bio;
@@ -1307,6 +1348,7 @@ async function fetchAndComputeDNA(){
     // compute division from score
     const s=Math.round((stats.roi/20)*40+(stats.winRate/70)*30+Math.min(stats.picks,100)/100*20+Math.min(10,stats.picks));
     userDiv=scoreToDiv(s);
+    bannerUnlocks=checkBannerUnlocks(stats,data);
     renderBannerPacks();renderBorders();
 
     const scores=ARCHETYPES_DATA.map(a=>({id:a.id,s:a.id==='hybrid'?0:a.score(stats)}));
@@ -1472,6 +1514,14 @@ function confirmDeleteAccount(){
 }
 
 /* ── SAVE ── */
+function showSaveSuccess(btn){
+  btn.textContent='✓ SAVED';
+  btn.style.background='#00E5A0';
+  btn.style.color='#0A0A0A';
+  btn.style.boxShadow='0 0 20px rgba(0,229,160,0.4)';
+  setTimeout(()=>{btn.textContent='SAVE PROFILE';btn.style.background='';btn.style.color='';btn.style.boxShadow='';},1500);
+}
+
 async function saveProfile(){
   if(!user)return;
   config.bio=document.getElementById('bioInput').value.trim();
@@ -1484,9 +1534,7 @@ async function saveProfile(){
   btn.textContent='SAVING…';btn.disabled=true;
   const ok=await postProfile();
   btn.disabled=false;
-  btn.textContent=ok?'✓ SAVED!':'✓ SAVED LOCALLY';
-  btn.style.background=ok?'var(--gr)':'var(--gold)';
-  setTimeout(()=>{btn.textContent='SAVE PROFILE';btn.style.background='';},2200);
+  showSaveSuccess(btn);
   showToast(ok?'PROFILE SYNCED ✓':'SAVED LOCALLY — backend offline');
 }
 
@@ -1586,12 +1634,10 @@ window.onload=()=>{
   if(saved){try{const p=JSON.parse(saved);Object.assign(config,p);}catch(e){}}
 
   // Apply saved theme immediately
-  if(config.profileTheme){
-    const root=document.documentElement;
-    root.style.setProperty('--ac',config.profileTheme);
-    root.style.setProperty('--profile-accent',config.profileTheme);
-    root.style.setProperty('--profile-glow',config.profileTheme+'59');
-  }
+  const _savedTheme=config.profileTheme||localStorage.getItem('ledgr_profile_theme')||'#7B2CFF';
+  document.documentElement.style.setProperty('--ac',_savedTheme);
+  document.documentElement.style.setProperty('--profile-accent',_savedTheme);
+  document.documentElement.style.setProperty('--profile-glow',_savedTheme+'59');
 
   // Load saved sub price
   const savedPrice=localStorage.getItem('ledgr_my_sub_price');
@@ -1611,6 +1657,35 @@ window.onload=()=>{
   fetchOwnProfile();
   fetchAndComputeDNA();
   initPushToggle();
+
+  // ── MICRO-ANIMATIONS ──
+  // Section reveal on scroll
+  const _secObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});
+  },{threshold:0.08});
+  document.querySelectorAll('.settings-section').forEach(s=>{
+    s.style.opacity='0';s.style.transform='translateY(20px)';s.style.transition='opacity 0.5s ease,transform 0.5s ease';
+    _secObs.observe(s);
+  });
+
+  // Banner card stagger reveal
+  const _bpObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.bp-card').forEach((card,i)=>{
+          setTimeout(()=>{card.style.opacity='1';card.style.transform='translateY(0) scale(1)';},i*60);
+        });
+        _bpObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.1});
+  document.querySelectorAll('.bp-grid').forEach(grid=>{
+    grid.querySelectorAll('.bp-card').forEach(card=>{
+      card.style.opacity='0';card.style.transform='translateY(12px) scale(0.97)';
+      card.style.transition='opacity 0.3s ease,transform 0.3s ease';
+    });
+    _bpObs.observe(grid);
+  });
 };
 
 /* ── PUSH NOTIFICATIONS ── */
