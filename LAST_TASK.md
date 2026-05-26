@@ -4,7 +4,36 @@ Date: 2026-05-26
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: avatar creator visual upgrade round 2 ✅ COMPLETE
+Current objective: identity forge — premium skin system ✅ COMPLETE
+
+---
+
+## Last completed: Identity Forge (2026-05-26)
+
+Replaced `avatar-creator/` with new `/identity/` premium skin system. No backend schema changes (uses existing PATCH /profile with `identityConfig` field).
+
+### What was built
+- Two-column layout: sticky identity stage (left 45%) + tabbed skin picker (right 55%)
+- 11 skins: COMMON (Void Runner) → RARE (Sniper, Iron Grinder) → EPIC (Reaper, Demon King) → LEGENDARY (Kingmaker, Iceblood, Dragon Soul) → MYTHIC (Ghost Walker, Void Emperor, Diamond Mind)
+- Each skin: unique emoji character, color scheme, aura, particle system, stage background, description
+- Identity stage: level strip (LVL + XP bar from picks/3), animated char emoji (charFloat 5s), radial aura glow, particle system, nameplate with skin name + rarity
+- Skin selection: flash effect on stage, emoji swap with opacity/scale transition, aura + bg + floor glow update, CSS `--skin-color` var propagation
+- Stage flash on selection (colored overlay, 80ms fade)
+- 3 tabs: SKINS / AURA / EMOTES — each grid-based with tier badges + lock states
+- 7 auras: None / Void / Fire / Ice / Gold / Ghost / Singularity
+- 5 emotes: Money Rain / Crown Flex / Glitch Pulse / Victory Pose / Ghost Fade
+- Particle systems: sparks/skulls/embers/stars/snow/fire/glitch/void/crystals/crosshair
+- Skin card shimmer animation on LEGENDARY + MYTHIC tier cards
+- `color-mix()` CSS for selected card background tint
+- Save: localStorage + PATCH /profile identityConfig; loads from backend on init
+- Locked skins/auras/emotes at 0.4 opacity, cursor:not-allowed
+
+### Modified files
+- `identity/index.html` (new)
+- `avatar-creator/index.html` (deleted)
+- `vercel.json` (replaced /avatar-creator route with /identity)
+- `app-nav.js` (Avatar Creator → Identity Forge, key:identity, href:/identity, icon:✦)
+- `LAST_TASK.md`
 
 ---
 
