@@ -20,6 +20,16 @@ html{scroll-behavior:smooth}
 body{background:#0A0A0A;color:#E6E6E6;font-family:'Syne',sans-serif;margin:0;padding:0;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#7B2CFF04 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
 
+.dev-banner{
+  background:linear-gradient(90deg,#FFD700,#FF8C00,#FFD700);
+  background-size:200% 100%;
+  animation:devBannerShift 3s linear infinite;
+  color:#0A0A0A;text-align:center;padding:8px 16px;
+  font-family:'DM Mono',monospace;font-size:11px;font-weight:700;
+  letter-spacing:0.2em;position:sticky;top:72px;z-index:90;
+}
+@keyframes devBannerShift{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+
 .if-layout{
   display:flex;gap:24px;
   max-width:1200px;margin:0 auto;
@@ -70,7 +80,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 }
 .if-char-display{
   position:relative;z-index:3;
-  font-size:160px;line-height:1;
+  width:200px;height:280px;
+  display:flex;align-items:center;justify-content:center;
   animation:charFloat 5s ease-in-out infinite;
   filter:drop-shadow(0 0 30px var(--skin-color,#7B2CFF));
   cursor:default;
@@ -145,12 +156,12 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 .skin-card{
   background:rgba(255,255,255,0.02);
   border:1px solid rgba(255,255,255,0.06);
-  border-radius:14px;padding:16px 12px;
+  border-radius:14px;padding:12px 10px;
   text-align:center;cursor:pointer;
   transition:all 0.2s ease;
   position:relative;overflow:hidden;
 }
-.skin-card:not(.sk-locked):hover{
+.skin-card:hover{
   transform:translateY(-4px);
   box-shadow:0 12px 32px rgba(0,0,0,0.4),0 0 16px color-mix(in srgb,var(--skin-c,var(--ac)) 20%,transparent);
 }
@@ -159,7 +170,6 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   background:color-mix(in srgb,var(--skin-c,var(--ac)) 8%,transparent);
   box-shadow:0 0 20px color-mix(in srgb,var(--skin-c,var(--ac)) 25%,transparent);
 }
-.skin-card.sk-locked{opacity:0.4;cursor:not-allowed;}
 .skin-card.sk-legendary::after,.skin-card.sk-mythic::after{
   content:'';position:absolute;
   top:0;left:-100%;width:60%;height:100%;
@@ -178,12 +188,15 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   text-align:center;cursor:pointer;
   transition:all 0.2s ease;position:relative;
 }
-.aura-card:not(.sk-locked):hover{transform:translateY(-3px);}
+.aura-card:hover{transform:translateY(-3px);}
 .aura-card.selected{
   border-color:var(--skin-c,var(--ac)) !important;
   background:color-mix(in srgb,var(--skin-c,var(--ac)) 8%,transparent);
 }
-.aura-card.sk-locked{opacity:0.4;cursor:not-allowed;}
+@keyframes auraOrbSpin{
+  from{filter:hue-rotate(0deg);}
+  to{filter:hue-rotate(360deg);}
+}
 
 /* EMOTE GRID */
 .if-emote-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -194,9 +207,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   text-align:center;cursor:pointer;
   transition:all 0.2s ease;position:relative;
 }
-.emote-card:not(.sk-locked):hover{transform:translateY(-3px);}
+.emote-card:hover{transform:translateY(-3px);}
 .emote-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.08);}
-.emote-card.sk-locked{opacity:0.4;cursor:not-allowed;}
 
 /* SAVE BAR */
 .if-save-bar{padding-top:16px;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.06);}
@@ -215,7 +227,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   .if-skin-grid,.if-aura-grid,.if-emote-grid{grid-template-columns:repeat(2,1fr);}
   .if-layout{flex-direction:column;padding:0 16px 60px;}
   .if-stage{width:100%;position:relative;top:auto;height:400px;max-height:400px;}
-  .if-char-display{font-size:110px;}
+  .if-char-display{width:140px;height:196px;}
 }
 @media(max-width:480px){
   .if-skin-grid,.if-aura-grid,.if-emote-grid{grid-template-columns:repeat(2,1fr);}
@@ -229,6 +241,8 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <script src="/app-nav.js"></script>
 <script>AppNav.init({active:'identity'});</script>
 
+<div class="dev-banner">◉ DEV MODE — ALL SKINS UNLOCKED</div>
+
 <div class="if-layout">
 
   <!-- LEFT: IDENTITY STAGE -->
@@ -239,7 +253,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="if-char-area">
       <div class="if-char-bg" id="ifCharBg"></div>
       <div class="if-char-aura" id="ifCharAura"></div>
-      <div class="if-char-display" id="ifCharDisplay">🥷</div>
+      <div class="if-char-display" id="ifCharDisplay"></div>
       <div class="if-char-floor" id="ifCharFloor"></div>
       <div class="if-char-particles" id="ifCharParticles"></div>
     </div>
@@ -293,53 +307,312 @@ var API='https://ledgr-backend-production-c132.up.railway.app';
 var currentSkin=null;
 
 // ══════════════════════════════════════════════════════════════
+// SVG CHARACTERS
+// ══════════════════════════════════════════════════════════════
+
+function getSkinSVG(skinId,size){
+  var w=size==='large'?200:80;
+  var h=size==='large'?280:112;
+
+  var chars={
+    'void-runner':
+      '<defs>'+
+        '<filter id="gvr" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rvr" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#9B5CFF"/><stop offset="100%" stop-color="#3D1080"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="264" rx="40" ry="8" fill="#7B2CFF" opacity="0.25"/>'+
+      '<path d="M86 196 L80 264 L94 264 L100 218 L106 264 L120 264 L114 196Z" fill="#3A1080"/>'+
+      '<path d="M72 108 L78 196 L122 196 L128 108Z" fill="url(#rvr)"/>'+
+      '<path d="M72 118 L50 205 L78 178Z" fill="#2A0860" opacity="0.8"/>'+
+      '<path d="M128 118 L150 205 L122 178Z" fill="#2A0860" opacity="0.8"/>'+
+      '<path d="M72 114 L54 168 L64 172 L78 122Z" fill="#5A20B0"/>'+
+      '<path d="M128 114 L146 168 L136 172 L122 122Z" fill="#5A20B0"/>'+
+      '<rect x="93" y="83" width="14" height="26" rx="5" fill="#5A20B0"/>'+
+      '<ellipse cx="100" cy="65" rx="26" ry="28" fill="url(#rvr)"/>'+
+      '<path d="M74 68 Q100 38 126 68" fill="none" stroke="#2A0860" stroke-width="8" stroke-linecap="round"/>'+
+      '<path d="M78 64 Q100 54 122 64 L120 74 Q100 82 80 74Z" fill="#0D0525"/>'+
+      '<ellipse cx="100" cy="68" rx="16" ry="4.5" fill="#7B2CFF" filter="url(#gvr)" opacity="0.9"/>'+
+      '<ellipse cx="100" cy="68" rx="9" ry="3" fill="#C4AAFF"/>'+
+      '<line x1="100" y1="112" x2="100" y2="192" stroke="#7B2CFF" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" values="0;-10" dur="0.5s" repeatCount="indefinite"/></line>',
+
+    'the-reaper':
+      '<defs>'+
+        '<filter id="grp" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rrp" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#7A1228"/><stop offset="100%" stop-color="#130006"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="264" rx="46" ry="10" fill="#FF3355" opacity="0.2" filter="url(#grp)"/>'+
+      '<path d="M60 108 L46 268 L154 268 L140 108Z" fill="url(#rrp)"/>'+
+      '<path d="M60 108 Q100 88 140 108 Q122 78 100 72 Q78 78 60 108Z" fill="#0D0005"/>'+
+      '<path d="M60 120 L36 192 L55 182 L72 128Z" fill="#1A0008"/>'+
+      '<path d="M140 120 L164 192 L145 182 L128 128Z" fill="#1A0008"/>'+
+      '<ellipse cx="38" cy="195" rx="10" ry="8" fill="#2A0012"/>'+
+      '<ellipse cx="162" cy="195" rx="10" ry="8" fill="#2A0012"/>'+
+      '<ellipse cx="100" cy="65" rx="25" ry="28" fill="#220010"/>'+
+      '<ellipse cx="100" cy="65" rx="23" ry="26" fill="#2A0018"/>'+
+      '<ellipse cx="90" cy="62" rx="9" ry="10" fill="#0D0005"/>'+
+      '<ellipse cx="110" cy="62" rx="9" ry="10" fill="#0D0005"/>'+
+      '<ellipse cx="90" cy="62" rx="5" ry="5.5" fill="#FF3355" filter="url(#grp)" opacity="0.9"/>'+
+      '<ellipse cx="110" cy="62" rx="5" ry="5.5" fill="#FF3355" filter="url(#grp)" opacity="0.9"/>'+
+      '<ellipse cx="90" cy="62" rx="2.5" ry="3" fill="#FF8898"/>'+
+      '<ellipse cx="110" cy="62" rx="2.5" ry="3" fill="#FF8898"/>'+
+      '<path d="M96 74 L100 82 L104 74Z" fill="#0D0005"/>'+
+      '<path d="M82 80 Q100 96 118 80" fill="none" stroke="#3A0020" stroke-width="3"/>'+
+      '<path d="M162 195 Q178 168 165 150 Q158 164 162 178Z" fill="#FF3355" opacity="0.65"/>'+
+      '<path d="M78 245 Q70 258 76 268" fill="none" stroke="#FF3355" stroke-width="2" opacity="0.35"/>'+
+      '<path d="M122 248 Q130 260 124 268" fill="none" stroke="#FF3355" stroke-width="2" opacity="0.35"/>',
+
+    'the-kingmaker':
+      '<defs>'+
+        '<filter id="gkm" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rkm" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#9A6500"/><stop offset="100%" stop-color="#3A2200"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="266" rx="46" ry="9" fill="#FFD700" opacity="0.2" filter="url(#gkm)"/>'+
+      '<path d="M84 200 L80 266 L95 266 L100 220 L105 266 L120 266 L116 200Z" fill="#5A3A00"/>'+
+      '<path d="M65 108 L68 200 L132 200 L135 108Z" fill="url(#rkm)"/>'+
+      '<path d="M65 108 L42 215 L72 188Z" fill="#3A2200" opacity="0.8"/>'+
+      '<path d="M135 108 L158 215 L128 188Z" fill="#3A2200" opacity="0.8"/>'+
+      '<ellipse cx="67" cy="115" rx="15" ry="10" fill="#FFD700" filter="url(#gkm)" opacity="0.8"/>'+
+      '<ellipse cx="133" cy="115" rx="15" ry="10" fill="#FFD700" filter="url(#gkm)" opacity="0.8"/>'+
+      '<path d="M65 120 L50 178 L62 182 L76 128Z" fill="#6A4800"/>'+
+      '<path d="M135 120 L150 178 L138 182 L124 128Z" fill="#6A4800"/>'+
+      '<rect x="148" y="100" width="5" height="92" rx="2" fill="#FFD700"/>'+
+      '<circle cx="150" cy="97" r="10" fill="#FFD700" filter="url(#gkm)"/>'+
+      '<circle cx="150" cy="97" r="6" fill="#FFF8B0"/>'+
+      '<rect x="93" y="82" width="14" height="28" rx="5" fill="#7A5200"/>'+
+      '<ellipse cx="100" cy="67" rx="26" ry="28" fill="url(#rkm)"/>'+
+      '<ellipse cx="100" cy="70" rx="20" ry="22" fill="#8A6200"/>'+
+      '<ellipse cx="91" cy="66" rx="5" ry="6" fill="#1A1000"/>'+
+      '<ellipse cx="109" cy="66" rx="5" ry="6" fill="#1A1000"/>'+
+      '<ellipse cx="91" cy="66" rx="3" ry="3.5" fill="#FFD700" opacity="0.85"/>'+
+      '<ellipse cx="109" cy="66" rx="3" ry="3.5" fill="#FFD700" opacity="0.85"/>'+
+      '<path d="M76 44 L76 30 L88 42 L100 22 L112 42 L124 30 L124 44Z" fill="#FFD700" filter="url(#gkm)"/>'+
+      '<rect x="76" y="42" width="48" height="8" rx="4" fill="#FFD700"/>'+
+      '<circle cx="100" cy="22" r="6" fill="#FF6BFF"/>'+
+      '<circle cx="88" cy="38" r="4" fill="#FF3355"/>'+
+      '<circle cx="112" cy="38" r="4" fill="#00E5FF"/>'+
+      '<path d="M94 134 L100 122 L106 134 L118 134 L108 142 L112 154 L100 146 L88 154 L92 142 L82 134Z" fill="#FFD700" opacity="0.55"/>',
+
+    'iceblood':
+      '<defs>'+
+        '<filter id="gib" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rib" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#9CE8FF"/><stop offset="100%" stop-color="#0E3050"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="265" rx="42" ry="8" fill="#4FC3F7" opacity="0.25" filter="url(#gib)"/>'+
+      '<path d="M88 198 L82 265 L97 265 L100 218 L103 265 L118 265 L112 198Z" fill="#103050"/>'+
+      '<path d="M82 222 L74 210 L86 216Z" fill="#4FC3F7" opacity="0.65"/>'+
+      '<path d="M118 226 L126 213 L114 219Z" fill="#4FC3F7" opacity="0.65"/>'+
+      '<path d="M70 108 L76 198 L124 198 L130 108Z" fill="url(#rib)"/>'+
+      '<path d="M80 120 L100 110 L120 120 L120 165 L100 176 L80 165Z" fill="#A0E8FF" opacity="0.25"/>'+
+      '<path d="M68 112 L52 94 L62 118Z" fill="#C8F0FF"/>'+
+      '<path d="M68 112 L55 104 L65 121Z" fill="#A0E8FF" opacity="0.7"/>'+
+      '<path d="M132 112 L148 94 L138 118Z" fill="#C8F0FF"/>'+
+      '<path d="M132 112 L145 104 L135 121Z" fill="#A0E8FF" opacity="0.7"/>'+
+      '<path d="M70 118 L54 170 L64 174 L78 126Z" fill="#2A6090"/>'+
+      '<path d="M130 118 L146 170 L136 174 L122 126Z" fill="#2A6090"/>'+
+      '<ellipse cx="54" cy="176" rx="10" ry="12" fill="#4FC3F7" opacity="0.6"/>'+
+      '<ellipse cx="146" cy="176" rx="10" ry="12" fill="#4FC3F7" opacity="0.6"/>'+
+      '<rect x="93" y="82" width="14" height="28" rx="5" fill="#2A6090"/>'+
+      '<ellipse cx="100" cy="65" rx="26" ry="28" fill="#1A4062"/>'+
+      '<path d="M78 63 Q100 51 122 63 L120 80 Q100 89 80 80Z" fill="#0A2032"/>'+
+      '<ellipse cx="90" cy="69" rx="7" ry="5" fill="#4FC3F7" filter="url(#gib)"/>'+
+      '<ellipse cx="110" cy="69" rx="7" ry="5" fill="#4FC3F7" filter="url(#gib)"/>'+
+      '<ellipse cx="90" cy="69" rx="4" ry="3" fill="#E8FAFF"/>'+
+      '<ellipse cx="110" cy="69" rx="4" ry="3" fill="#E8FAFF"/>'+
+      '<path d="M83 40 L87 22 L91 40Z" fill="#C8F0FF"/>'+
+      '<path d="M96 38 L100 14 L104 38Z" fill="#E8FFFF"/>'+
+      '<path d="M109 40 L113 22 L117 40Z" fill="#C8F0FF"/>'+
+      '<line x1="100" y1="115" x2="100" y2="192" stroke="#4FC3F7" stroke-width="1" opacity="0.3" stroke-dasharray="4 4"/>'+
+      '<line x1="88" y1="120" x2="88" y2="186" stroke="#4FC3F7" stroke-width="0.8" opacity="0.2" stroke-dasharray="3 6"/>'+
+      '<line x1="112" y1="120" x2="112" y2="186" stroke="#4FC3F7" stroke-width="0.8" opacity="0.2" stroke-dasharray="3 6"/>',
+
+    'demon-king':
+      '<defs>'+
+        '<filter id="gdk" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rdk" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF7844"/><stop offset="100%" stop-color="#380E00"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="265" rx="46" ry="10" fill="#FF6B35" opacity="0.3" filter="url(#gdk)"/>'+
+      '<path d="M72 242 Q64 226 77 216 Q74 231 82 229 Q77 241 72 242Z" fill="#FF6B35" opacity="0.45"/>'+
+      '<path d="M128 242 Q136 226 123 216 Q126 231 118 229 Q123 241 128 242Z" fill="#FF6B35" opacity="0.45"/>'+
+      '<path d="M86 198 L80 265 L96 265 L100 216 L104 265 L120 265 L114 198Z" fill="#3A1800"/>'+
+      '<path d="M68 106 L74 198 L126 198 L132 106Z" fill="url(#rdk)"/>'+
+      '<path d="M80 118 Q100 110 120 118 L120 155 Q100 162 80 155Z" fill="#5A2500" opacity="0.45"/>'+
+      '<path d="M68 112 L48 170 L62 177 L78 122Z" fill="#C04A20"/>'+
+      '<path d="M132 112 L152 170 L138 177 L122 122Z" fill="#C04A20"/>'+
+      '<ellipse cx="48" cy="180" rx="12" ry="10" fill="#3A1000"/>'+
+      '<path d="M42 174 L38 162 M48 172 L46 161 M54 174 L52 162" stroke="#C04A20" stroke-width="2.5" stroke-linecap="round"/>'+
+      '<ellipse cx="152" cy="180" rx="12" ry="10" fill="#3A1000"/>'+
+      '<path d="M146 174 L142 162 M152 172 L150 161 M158 174 L156 162" stroke="#C04A20" stroke-width="2.5" stroke-linecap="round"/>'+
+      '<rect x="92" y="80" width="16" height="28" rx="5" fill="#C04A20"/>'+
+      '<ellipse cx="100" cy="63" rx="28" ry="30" fill="#8A3010"/>'+
+      '<ellipse cx="100" cy="66" rx="22" ry="24" fill="#A84020"/>'+
+      '<path d="M78 56 Q100 48 122 56" fill="none" stroke="#3A1000" stroke-width="5" stroke-linecap="round"/>'+
+      '<ellipse cx="90" cy="63" rx="7" ry="6" fill="#FF6B35" filter="url(#gdk)"/>'+
+      '<ellipse cx="110" cy="63" rx="7" ry="6" fill="#FF6B35" filter="url(#gdk)"/>'+
+      '<ellipse cx="90" cy="63" rx="4" ry="3.5" fill="#FFD700"/>'+
+      '<ellipse cx="110" cy="63" rx="4" ry="3.5" fill="#FFD700"/>'+
+      '<path d="M96 73 L100 83 L104 73Z" fill="#3A1000"/>'+
+      '<path d="M88 80 L93 91 M100 82 L100 93 M112 80 L107 91" stroke="#E8C0A0" stroke-width="3" stroke-linecap="round"/>'+
+      '<path d="M80 43 Q60 15 72 5 Q80 26 86 43Z" fill="#2A0A00"/>'+
+      '<path d="M80 43 Q62 18 74 8 Q82 28 86 43Z" fill="#5A2000"/>'+
+      '<path d="M120 43 Q140 15 128 5 Q120 26 114 43Z" fill="#2A0A00"/>'+
+      '<path d="M120 43 Q138 18 126 8 Q118 28 114 43Z" fill="#5A2000"/>',
+
+    'ghost-walker':
+      '<defs>'+
+        '<filter id="ggw" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rgw" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF6BFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#3A0042" stop-opacity="0.7"/></radialGradient>'+
+        '<linearGradient id="lgw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF6BFF" stop-opacity="0.85"/><stop offset="100%" stop-color="#FF6BFF" stop-opacity="0"/></linearGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="262" rx="52" ry="18" fill="#FF6BFF" opacity="0.15" filter="url(#ggw)"/>'+
+      '<path d="M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z" fill="url(#lgw)" opacity="0.7">'+
+        '<animate attributeName="d" values="M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z;M62 192 Q58 232 70 268 Q84 243 100 268 Q116 243 130 268 Q142 232 138 192Z;M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z" dur="3s" repeatCount="indefinite"/>'+
+      '</path>'+
+      '<ellipse cx="100" cy="148" rx="44" ry="60" fill="#FF6BFF" opacity="0.3" filter="url(#ggw)"/>'+
+      '<ellipse cx="100" cy="145" rx="36" ry="54" fill="url(#rgw)" opacity="0.65"/>'+
+      '<ellipse cx="60" cy="148" rx="18" ry="30" fill="#FF6BFF" opacity="0.2" transform="rotate(-15 60 148)"/>'+
+      '<ellipse cx="140" cy="148" rx="18" ry="30" fill="#FF6BFF" opacity="0.2" transform="rotate(15 140 148)"/>'+
+      '<rect x="93" y="82" width="14" height="26" rx="5" fill="#C040C0" opacity="0.75"/>'+
+      '<ellipse cx="100" cy="65" rx="30" ry="32" fill="#D060D0"/>'+
+      '<ellipse cx="100" cy="65" rx="30" ry="32" fill="#FF6BFF" opacity="0.4" filter="url(#ggw)"/>'+
+      '<ellipse cx="90" cy="62" rx="8" ry="8" fill="#1A0022"/>'+
+      '<ellipse cx="110" cy="62" rx="8" ry="8" fill="#1A0022"/>'+
+      '<ellipse cx="90" cy="62" rx="5" ry="5" fill="#FF6BFF" filter="url(#ggw)"/>'+
+      '<ellipse cx="110" cy="62" rx="5" ry="5" fill="#FF6BFF" filter="url(#ggw)"/>'+
+      '<ellipse cx="90" cy="62" rx="3" ry="3" fill="#FFC8FF"/>'+
+      '<ellipse cx="110" cy="62" rx="3" ry="3" fill="#FFC8FF"/>'+
+      '<text x="100" y="80" text-anchor="middle" fill="#FF6BFF" font-size="10" font-family="monospace" opacity="0.55">???</text>'+
+      '<circle cx="68" cy="112" r="3" fill="#FF6BFF" opacity="0.5"><animate attributeName="cy" values="112;102;112" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="132" cy="120" r="2" fill="#FF6BFF" opacity="0.4"><animate attributeName="cy" values="120;108;120" dur="2.5s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="80" cy="96" r="2" fill="#FFC8FF" opacity="0.5"><animate attributeName="cy" values="96;86;96" dur="1.8s" repeatCount="indefinite"/></circle>',
+
+    'dragon-soul':
+      '<defs>'+
+        '<filter id="gds" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rds" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF5062"/><stop offset="100%" stop-color="#1E0005"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="265" rx="46" ry="9" fill="#FF3355" opacity="0.25" filter="url(#gds)"/>'+
+      '<path d="M75 116 Q30 80 14 132 Q40 116 62 142 Q68 130 75 126Z" fill="#500012"/>'+
+      '<path d="M75 116 Q30 80 14 132 Q40 116 62 142 Q68 130 75 126Z" fill="#FF3355" opacity="0.12"/>'+
+      '<path d="M125 116 Q170 80 186 132 Q160 116 138 142 Q132 130 125 126Z" fill="#500012"/>'+
+      '<path d="M125 116 Q170 80 186 132 Q160 116 138 142 Q132 130 125 126Z" fill="#FF3355" opacity="0.12"/>'+
+      '<path d="M75 116 Q52 96 28 116" fill="none" stroke="#FF3355" stroke-width="1.5" opacity="0.35"/>'+
+      '<path d="M75 120 Q48 104 20 130" fill="none" stroke="#FF3355" stroke-width="1" opacity="0.25"/>'+
+      '<path d="M125 116 Q148 96 172 116" fill="none" stroke="#FF3355" stroke-width="1.5" opacity="0.35"/>'+
+      '<path d="M125 120 Q152 104 180 130" fill="none" stroke="#FF3355" stroke-width="1" opacity="0.25"/>'+
+      '<path d="M86 198 L80 265 L96 265 L100 216 L104 265 L120 265 L114 198Z" fill="#2A0008"/>'+
+      '<circle cx="85" cy="220" r="4" fill="#400012" opacity="0.6"/>'+
+      '<circle cx="85" cy="234" r="4" fill="#400012" opacity="0.6"/>'+
+      '<circle cx="115" cy="224" r="4" fill="#400012" opacity="0.6"/>'+
+      '<path d="M70 108 L76 198 L124 198 L130 108Z" fill="url(#rds)"/>'+
+      '<path d="M80 120 Q100 112 120 120 L118 136 Q100 142 82 136Z" fill="#3A0012" opacity="0.5"/>'+
+      '<path d="M80 140 Q100 132 120 140 L118 156 Q100 162 82 156Z" fill="#3A0012" opacity="0.5"/>'+
+      '<path d="M80 160 Q100 152 120 160 L118 176 Q100 182 82 176Z" fill="#3A0012" opacity="0.5"/>'+
+      '<path d="M70 116 L50 172 L64 179 L78 126Z" fill="#8A2022"/>'+
+      '<path d="M130 116 L150 172 L136 179 L122 126Z" fill="#8A2022"/>'+
+      '<path d="M50 176 L42 166 M50 176 L46 163 M50 176 L54 163" stroke="#FF3355" stroke-width="2.5" stroke-linecap="round"/>'+
+      '<path d="M150 176 L142 163 M150 176 L148 163 M150 176 L158 163" stroke="#FF3355" stroke-width="2.5" stroke-linecap="round"/>'+
+      '<rect x="93" y="80" width="14" height="30" rx="4" fill="#8A2022"/>'+
+      '<path d="M76 69 Q88 42 100 36 Q112 42 124 69 Q118 90 100 96 Q82 90 76 69Z" fill="#6A1820"/>'+
+      '<path d="M86 73 Q100 84 114 73 L118 82 Q100 96 82 82Z" fill="#400012"/>'+
+      '<ellipse cx="88" cy="65" rx="9" ry="7" fill="#0A0002"/>'+
+      '<ellipse cx="88" cy="65" rx="6" ry="5" fill="#FF3355" filter="url(#gds)"/>'+
+      '<ellipse cx="88" cy="65" rx="2" ry="4" fill="#FF8888"/>'+
+      '<ellipse cx="112" cy="65" rx="9" ry="7" fill="#0A0002"/>'+
+      '<ellipse cx="112" cy="65" rx="6" ry="5" fill="#FF3355" filter="url(#gds)"/>'+
+      '<ellipse cx="112" cy="65" rx="2" ry="4" fill="#FF8888"/>'+
+      '<path d="M86 48 Q76 30 80 18 Q88 33 90 48Z" fill="#2A0008"/>'+
+      '<path d="M114 48 Q124 30 120 18 Q112 33 110 48Z" fill="#2A0008"/>'+
+      '<path d="M106 88 Q118 102 128 93 Q120 110 108 99Z" fill="#FF6B35" opacity="0.5" filter="url(#gds)"/>',
+
+    'diamond-mind':
+      '<defs>'+
+        '<filter id="gdm" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rdm" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#A0FFFF"/><stop offset="100%" stop-color="#003040"/></radialGradient>'+
+        '<radialGradient id="rdm2" cx="35%" cy="25%" r="70%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="50%" stop-color="#00E5FF"/><stop offset="100%" stop-color="#004060"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="265" rx="42" ry="8" fill="#00E5FF" opacity="0.25" filter="url(#gdm)"/>'+
+      '<path d="M87 198 L82 265 L96 265 L100 216 L104 265 L118 265 L113 198Z" fill="#103040"/>'+
+      '<path d="M85 222 L90 212 L95 222 L90 230Z" fill="#00E5FF" opacity="0.2"/>'+
+      '<path d="M105 230 L110 220 L115 230 L110 238Z" fill="#00E5FF" opacity="0.2"/>'+
+      '<path d="M70 108 L76 198 L124 198 L130 108Z" fill="url(#rdm)"/>'+
+      '<path d="M100 116 L85 136 M100 116 L115 136 M85 136 L92 156 M115 136 L108 156 M92 156 L100 176 M108 156 L100 176" fill="none" stroke="#00E5FF" stroke-width="1" opacity="0.45"/>'+
+      '<circle cx="85" cy="136" r="3" fill="#00E5FF" opacity="0.7"/>'+
+      '<circle cx="115" cy="136" r="3" fill="#00E5FF" opacity="0.7"/>'+
+      '<circle cx="92" cy="156" r="3" fill="#00E5FF" opacity="0.7"/>'+
+      '<circle cx="108" cy="156" r="3" fill="#00E5FF" opacity="0.7"/>'+
+      '<circle cx="100" cy="176" r="3" fill="#00E5FF" opacity="0.7"/>'+
+      '<path d="M70 116 L52 170 L64 175 L78 126Z" fill="#205068"/>'+
+      '<path d="M130 116 L148 170 L136 175 L122 126Z" fill="#205068"/>'+
+      '<ellipse cx="52" cy="177" rx="11" ry="10" fill="#00E5FF" opacity="0.45"/>'+
+      '<ellipse cx="148" cy="177" rx="11" ry="10" fill="#00E5FF" opacity="0.45"/>'+
+      '<rect x="93" y="82" width="14" height="28" rx="5" fill="#205068"/>'+
+      '<ellipse cx="100" cy="64" rx="26" ry="28" fill="#1A4060"/>'+
+      '<ellipse cx="100" cy="64" rx="26" ry="28" fill="#00E5FF" opacity="0.18" filter="url(#gdm)"/>'+
+      '<path d="M78 62 Q100 51 122 62 L120 79 Q100 87 80 79Z" fill="#061520"/>'+
+      '<line x1="82" y1="68" x2="118" y2="68" stroke="#00E5FF" stroke-width="0.8" opacity="0.4"/>'+
+      '<line x1="85" y1="73" x2="115" y2="73" stroke="#00E5FF" stroke-width="0.8" opacity="0.3"/>'+
+      '<rect x="86" y="62" width="10" height="8" rx="2" fill="#00E5FF" opacity="0.8"/>'+
+      '<rect x="104" y="62" width="10" height="8" rx="2" fill="#00E5FF" opacity="0.8"/>'+
+      '<rect x="88" y="63" width="6" height="6" rx="1" fill="#E8FFFF"/>'+
+      '<rect x="106" y="63" width="6" height="6" rx="1" fill="#E8FFFF"/>'+
+      '<path d="M100 8 L116 28 L100 40 L84 28Z" fill="url(#rdm2)" filter="url(#gdm)"/>'+
+      '<path d="M100 8 L116 28 M100 8 L84 28 M84 28 L100 40 L116 28" fill="none" stroke="#A0F0FF" stroke-width="1" opacity="0.6"/>'+
+      '<circle cx="100" cy="24" r="3" fill="#FFFFFF" opacity="0.85"/>'
+  };
+
+  var key=chars[skinId]?skinId:'void-runner';
+  return '<svg width="'+w+'" height="'+h+'" viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">'+chars[key]+'</svg>';
+}
+
+// ══════════════════════════════════════════════════════════════
 // DATA
 // ══════════════════════════════════════════════════════════════
 
 var SKINS=[
-  {id:'void-runner',    name:'Void Runner',    emoji:'🥷', tier:'COMMON',    color:'#7B2CFF',
+  {id:'void-runner',    name:'Void Runner',    tier:'COMMON',    color:'#7B2CFF',
    bg:'linear-gradient(180deg,#050510,#020208)',       aura:'rgba(123,44,255,0.4)',  particles:'sparks',
    unlock:null,      desc:'Fast. Silent. Untraceable.'},
-  {id:'the-sniper',     name:'The Sniper',      emoji:'🎯', tier:'RARE',      color:'#00E5A0',
+  {id:'the-sniper',     name:'The Sniper',      tier:'RARE',      color:'#00E5A0',
    bg:'linear-gradient(180deg,#030f0a,#010805)',        aura:'rgba(0,229,160,0.35)', particles:'crosshair',
-   unlock:'Gold division',         desc:'One pick. One result. Elite precision.'},
-  {id:'iron-grinder',   name:'Iron Grinder',    emoji:'⚙️', tier:'RARE',      color:'#FFD700',
+   unlock:null,      desc:'One pick. One result. Elite precision.'},
+  {id:'iron-grinder',   name:'Iron Grinder',    tier:'RARE',      color:'#FFD700',
    bg:'linear-gradient(180deg,#0f0d00,#080600)',        aura:'rgba(255,215,0,0.3)',  particles:'sparks',
-   unlock:'Win 25 picks',          desc:'Relentless. High volume. Unstoppable.'},
-  {id:'the-reaper',     name:'The Reaper',      emoji:'💀', tier:'EPIC',      color:'#FF3355',
+   unlock:null,      desc:'Relentless. High volume. Unstoppable.'},
+  {id:'the-reaper',     name:'The Reaper',      tier:'EPIC',      color:'#FF3355',
    bg:'linear-gradient(180deg,#0f0003,#050001)',        aura:'rgba(255,51,85,0.4)',  particles:'skulls',
-   unlock:'Diamond division',      desc:'Hunts massive odds. Deadly when strikes.'},
-  {id:'demon-king',     name:'Demon King',      emoji:'😈', tier:'EPIC',      color:'#FF6B35',
+   unlock:null,      desc:'Hunts massive odds. Deadly when strikes.'},
+  {id:'demon-king',     name:'Demon King',      tier:'EPIC',      color:'#FF6B35',
    bg:'linear-gradient(180deg,#0f0500,#060200)',        aura:'rgba(255,107,53,0.4)', particles:'embers',
-   unlock:'5W streak achieved',    desc:'Streak machine. Feeds on momentum.'},
-  {id:'the-kingmaker',  name:'The Kingmaker',   emoji:'👑', tier:'LEGENDARY', color:'#FFD700',
+   unlock:null,      desc:'Streak machine. Feeds on momentum.'},
+  {id:'the-kingmaker',  name:'The Kingmaker',   tier:'LEGENDARY', color:'#FFD700',
    bg:'radial-gradient(ellipse at 50% 0%,#1a1400,#060500)', aura:'rgba(255,215,0,0.5)', particles:'stars',
-   unlock:'Rank #1 globally',      desc:'Others follow. Others profit.'},
-  {id:'iceblood',       name:'Iceblood',        emoji:'❄️', tier:'LEGENDARY', color:'#4FC3F7',
+   unlock:null,      desc:'Others follow. Others profit.'},
+  {id:'iceblood',       name:'Iceblood',        tier:'LEGENDARY', color:'#4FC3F7',
    bg:'linear-gradient(180deg,#020d14,#010608)',        aura:'rgba(79,195,247,0.4)', particles:'snow',
-   unlock:'Reliability 85+',       desc:'Zero emotion. Pure process. Mechanical.'},
-  {id:'dragon-soul',    name:'Dragon Soul',     emoji:'🐉', tier:'LEGENDARY', color:'#FF3355',
+   unlock:null,      desc:'Zero emotion. Pure process. Mechanical.'},
+  {id:'dragon-soul',    name:'Dragon Soul',     tier:'LEGENDARY', color:'#FF3355',
    bg:'radial-gradient(ellipse at 50% 80%,#200008,#080002)', aura:'rgba(255,51,85,0.5)', particles:'fire',
-   unlock:'The Demon or Reaper archetype', desc:'Ancient power. Unstoppable force.'},
-  {id:'ghost-walker',   name:'Ghost Walker',    emoji:'👻', tier:'MYTHIC',    color:'#FF6BFF',
+   unlock:null,      desc:'Ancient power. Unstoppable force.'},
+  {id:'ghost-walker',   name:'Ghost Walker',    tier:'MYTHIC',    color:'#FF6BFF',
    bg:'linear-gradient(180deg,#050010,#020008)',        aura:'rgba(255,107,255,0.45)', particles:'glitch',
-   unlock:'????',     desc:'??? ??? ???'},
-  {id:'void-emperor',   name:'Void Emperor',    emoji:'🌑', tier:'MYTHIC',    color:'#8B00FF',
+   unlock:null,      desc:'??? ??? ???'},
+  {id:'void-emperor',   name:'Void Emperor',    tier:'MYTHIC',    color:'#8B00FF',
    bg:'radial-gradient(circle at 50%,#040010,#000)',   aura:'rgba(139,0,255,0.5)', particles:'void',
-   unlock:'????',     desc:'Beyond classification. Beyond rank.'},
-  {id:'diamond-mind',   name:'Diamond Mind',    emoji:'💎', tier:'MYTHIC',    color:'#00E5FF',
+   unlock:null,      desc:'Beyond classification. Beyond rank.'},
+  {id:'diamond-mind',   name:'Diamond Mind',    tier:'MYTHIC',    color:'#00E5FF',
    bg:'linear-gradient(180deg,#001a1a,#000a0a)',        aura:'rgba(0,229,255,0.45)', particles:'crystals',
-   unlock:'????',     desc:'Elite in every metric simultaneously.'},
+   unlock:null,      desc:'Elite in every metric simultaneously.'},
 ];
 
 var AURAS=[
-  {id:'none',   name:'None',        color:'#6B6B6B', css:'none',                   unlock:null},
-  {id:'purple', name:'Void Aura',   color:'#7B2CFF', css:'rgba(123,44,255,0.4)',   unlock:null},
-  {id:'fire',   name:'Fire Aura',   color:'#FF6B35', css:'rgba(255,107,53,0.5)',   unlock:'5W streak'},
-  {id:'ice',    name:'Ice Aura',    color:'#4FC3F7', css:'rgba(79,195,247,0.4)',   unlock:'Reliability 75+'},
-  {id:'gold',   name:'Gold Aura',   color:'#FFD700', css:'rgba(255,215,0,0.45)',   unlock:'Elite division'},
-  {id:'ghost',  name:'Ghost Aura',  color:'#FF6BFF', css:'rgba(255,107,255,0.4)',  unlock:'????'},
-  {id:'void',   name:'Singularity', color:'#8B00FF', css:'rgba(139,0,255,0.5)',    unlock:'????'},
+  {id:'none',        name:'None',         color:'#6B6B6B', css:'none',                       unlock:null},
+  {id:'void-energy', name:'Void Energy',  color:'#7B2CFF', css:'rgba(123,44,255,0.45)',      unlock:null},
+  {id:'lightning',   name:'Lightning',    color:'#00E5FF', css:'rgba(0,229,255,0.4)',         unlock:null},
+  {id:'fire-core',   name:'Fire Core',    color:'#FF8C00', css:'rgba(255,140,0,0.45)',        unlock:null},
+  {id:'ice-field',   name:'Ice Field',    color:'#4FC3F7', css:'rgba(79,195,247,0.4)',        unlock:null},
+  {id:'galaxy',      name:'Galaxy',       color:'#FF6BFF', css:'rgba(255,107,255,0.45)',      unlock:null},
+  {id:'money-rain',  name:'Money Rain',   color:'#00E5A0', css:'rgba(0,229,160,0.4)',         unlock:null},
+  {id:'dragon',      name:'Dragon',       color:'#FF3355', css:'rgba(255,51,85,0.45)',        unlock:null},
 ];
 
 var EMOTES=[
@@ -405,16 +678,18 @@ function startParticles(type,color){
   var cfg=configs[type];
   if(!cfg)return;
   for(var i=0;i<cfg.count;i++){
-    var p=document.createElement('div');
-    p.style.cssText=
-      'position:absolute;font-size:'+cfg.size+';'+
-      'left:'+Math.round(8+Math.random()*80)+'%;'+
-      'top:'+Math.round(8+Math.random()*72)+'%;'+
-      'opacity:0;pointer-events:none;'+
-      'animation:particleFloat '+(4+Math.random()*4).toFixed(1)+'s '+
-      'ease-in-out '+(Math.random()*3).toFixed(1)+'s infinite;';
-    p.textContent=cfg.emoji;
-    container.appendChild(p);
+    (function(){
+      var p=document.createElement('div');
+      p.style.cssText=
+        'position:absolute;font-size:'+cfg.size+';'+
+        'left:'+Math.round(8+Math.random()*80)+'%;'+
+        'top:'+Math.round(8+Math.random()*72)+'%;'+
+        'opacity:0;pointer-events:none;'+
+        'animation:particleFloat '+(4+Math.random()*4).toFixed(1)+'s '+
+        'ease-in-out '+(Math.random()*3).toFixed(1)+'s infinite;';
+      p.textContent=cfg.emoji;
+      container.appendChild(p);
+    })();
   }
 }
 
@@ -422,31 +697,28 @@ function startParticles(type,color){
 // SKIN RENDERING
 // ══════════════════════════════════════════════════════════════
 
-function renderSkinCard(skin,isUnlocked,isSelected){
+function renderSkinCard(skin,isSelected){
   var tc=getTierColor(skin.tier);
   return '<div class="skin-card sk-'+skin.tier.toLowerCase()+
-    (isSelected?' selected':'')+
-    (isUnlocked?'':' sk-locked')+'" '+
+    (isSelected?' selected':'')+'" '+
     'data-skin="'+skin.id+'" '+
     'style="--skin-c:'+skin.color+';" '+
-    'onclick="'+(isUnlocked?'selectSkin(\''+skin.id+'\')':'')+'">' +
+    'onclick="selectSkin(\''+skin.id+'\')">' +
 
     '<div style="position:absolute;top:8px;left:8px;font-size:7px;letter-spacing:0.15em;'+
     'font-family:\'DM Mono\',monospace;color:'+tc+';border:1px solid '+tc+'44;'+
     'background:'+tc+'11;border-radius:20px;padding:2px 6px;">'+skin.tier+'</div>'+
 
-    '<div style="font-size:52px;margin:14px 0 8px;'+
-    'filter:drop-shadow(0 0 12px '+skin.color+');'+
-    'animation:skinIdle 4s ease-in-out '+(Math.random()*2).toFixed(1)+'s infinite;">'+
-    skin.emoji+'</div>'+
+    '<div style="display:flex;align-items:center;justify-content:center;margin:14px 0 8px;'+
+    'animation:skinIdle 4s ease-in-out '+(Math.random()*2).toFixed(1)+'s infinite;'+
+    'filter:drop-shadow(0 0 10px '+skin.color+');">'+
+    getSkinSVG(skin.id,'small')+'</div>'+
 
     '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;'+
-    'color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+
-    (isUnlocked?skin.name:'???')+'</div>'+
+    'color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+skin.name+'</div>'+
 
-    '<div style="font-size:9px;font-family:\'Syne\',sans-serif;line-height:1.3;min-height:14px;'+
-    'color:'+(isUnlocked?'rgba(255,255,255,0.18)':tc)+';word-break:break-word;">'+
-    (isUnlocked?'':'🔒 '+skin.unlock)+'</div>'+
+    '<div style="font-size:9px;font-family:\'Syne\',sans-serif;line-height:1.3;'+
+    'color:rgba(255,255,255,0.18);">'+skin.desc+'</div>'+
 
     (isSelected?'<div style="position:absolute;top:8px;right:8px;font-size:12px;color:'+skin.color+';">✓</div>':'')+
 
@@ -458,7 +730,7 @@ function renderSkins(){
   if(!g)return;
   var saved=localStorage.getItem('ledgr_identity_skin')||'void-runner';
   g.innerHTML=SKINS.map(function(skin){
-    return renderSkinCard(skin,skin.unlock===null,saved===skin.id);
+    return renderSkinCard(skin,saved===skin.id);
   }).join('');
 }
 
@@ -469,23 +741,21 @@ function renderSkins(){
 function renderAuras(){
   var g=document.getElementById('auraGrid');
   if(!g)return;
-  var saved=localStorage.getItem('ledgr_identity_aura')||'purple';
+  var saved=localStorage.getItem('ledgr_identity_aura')||'void-energy';
   g.innerHTML=AURAS.map(function(a){
-    var isLocked=a.unlock!==null;
     var isSelected=saved===a.id;
-    return '<div class="aura-card'+(isSelected?' selected':'')+(isLocked?' sk-locked':'')+'" '+
+    var orbStyle=a.css==='none'
+      ? 'border:1px dashed rgba(255,255,255,0.12);background:transparent;'
+      : 'background:radial-gradient(circle at 35% 35%,#ffffff44,'+a.color+','+a.color+'55);'+
+        'animation:auraOrbSpin 4s linear infinite;'+
+        'box-shadow:0 0 20px '+a.css+',inset 0 0 12px rgba(255,255,255,0.1);';
+    return '<div class="aura-card'+(isSelected?' selected':'')+'" '+
       'data-aura="'+a.id+'" '+
       'style="--skin-c:'+a.color+';" '+
-      'onclick="'+(isLocked?'':'selectAura(\''+a.id+'\')')+'">' +
-      '<div style="width:56px;height:56px;border-radius:50%;margin:0 auto 10px;'+
-      (a.css==='none'
-        ? 'border:1px dashed rgba(255,255,255,0.12);background:transparent;'
-        : 'background:radial-gradient(circle,'+a.css+',transparent 70%);animation:auraPulse 3s ease-in-out infinite;')+
-      '"></div>'+
+      'onclick="selectAura(\''+a.id+'\')">' +
+      '<div style="width:60px;height:60px;border-radius:50%;margin:0 auto 10px;'+orbStyle+'"></div>'+
       '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+a.name+'</div>'+
-      (isLocked
-        ? '<div style="font-size:9px;color:'+a.color+';font-family:\'DM Mono\',monospace;">🔒 '+a.unlock+'</div>'
-        : '<div style="font-size:9px;color:'+(isSelected?a.color:'rgba(255,255,255,0.15)')+';font-family:\'DM Mono\',monospace;">'+(isSelected?'ACTIVE':'UNLOCKED')+'</div>')+
+      '<div style="font-size:9px;color:'+(isSelected?a.color:'rgba(255,255,255,0.15)')+';font-family:\'DM Mono\',monospace;">'+(isSelected?'ACTIVE':'UNLOCKED')+'</div>'+
     '</div>';
   }).join('');
 }
@@ -538,7 +808,6 @@ function selectSkin(skinId){
     }
   });
 
-  // Stage flash
   var stage=document.getElementById('ifStage');
   if(stage){
     var flash=document.createElement('div');
@@ -550,53 +819,43 @@ function selectSkin(skinId){
     });
   }
 
-  // Char swap
   var charEl=document.getElementById('ifCharDisplay');
   if(charEl){
     charEl.style.opacity='0';
     charEl.style.transform='translateY(10px) scale(0.85)';
     setTimeout(function(){
-      charEl.textContent=skin.emoji;
-      charEl.style.filter='drop-shadow(0 0 30px '+skin.color+')';
+      charEl.innerHTML=getSkinSVG(skin.id,'large');
       charEl.style.opacity='1';
       charEl.style.transform='';
     },200);
   }
 
-  // Aura
   var auraEl=document.getElementById('ifCharAura');
   if(auraEl)auraEl.style.background='radial-gradient(circle,'+skin.aura+',transparent 70%)';
 
-  // Background
   var bgEl=document.getElementById('ifCharBg');
   if(bgEl)bgEl.style.background=skin.bg;
 
-  // Floor
   var floor=document.getElementById('ifCharFloor');
   if(floor)floor.style.background=skin.color;
 
-  // CSS var
   document.documentElement.style.setProperty('--skin-color',skin.color);
 
-  // Nameplate
   var npSkin=document.getElementById('ifNpSkin');
   var npRarity=document.getElementById('ifNpRarity');
   if(npSkin){npSkin.textContent=skin.name.toUpperCase();npSkin.style.color=skin.color;}
   if(npRarity)npRarity.textContent=skin.tier+' · '+skin.desc;
 
-  // Particles
   startParticles(skin.particles,skin.color);
-
-  // Persist
   localStorage.setItem('ledgr_identity_skin',skinId);
 }
 
 function selectAura(auraId){
   var aura=AURAS.find(function(a){return a.id===auraId;});
-  if(!aura)return;
+  if(!aura)aura=AURAS.find(function(a){return a.id==='void-energy';})||AURAS[1];
 
   document.querySelectorAll('.aura-card').forEach(function(c){
-    c.classList.toggle('selected',c.getAttribute('data-aura')===auraId);
+    c.classList.toggle('selected',c.getAttribute('data-aura')===aura.id);
   });
 
   var auraEl=document.getElementById('ifCharAura');
@@ -606,7 +865,7 @@ function selectAura(auraId){
       :'radial-gradient(circle,'+aura.css+',transparent 70%)';
   }
 
-  localStorage.setItem('ledgr_identity_aura',auraId);
+  localStorage.setItem('ledgr_identity_aura',aura.id);
 }
 
 function selectEmote(emoteId){
@@ -623,7 +882,7 @@ function selectEmote(emoteId){
 function saveIdentity(){
   var config={
     skin:  localStorage.getItem('ledgr_identity_skin')  ||'void-runner',
-    aura:  localStorage.getItem('ledgr_identity_aura')  ||'purple',
+    aura:  localStorage.getItem('ledgr_identity_aura')  ||'void-energy',
     emote: localStorage.getItem('ledgr_identity_emote') ||'money-rain'
   };
   localStorage.setItem('ledgr_identity',JSON.stringify(config));
@@ -698,12 +957,14 @@ window.onload=function(){
   renderAuras();
   renderEmotes();
 
-  // Apply saved state
-  selectSkin(localStorage.getItem('ledgr_identity_skin')||'void-runner');
-  selectAura(localStorage.getItem('ledgr_identity_aura')||'purple');
-  selectEmote(localStorage.getItem('ledgr_identity_emote')||'money-rain');
+  var savedSkin=localStorage.getItem('ledgr_identity_skin')||'void-runner';
+  var savedAura=localStorage.getItem('ledgr_identity_aura')||'void-energy';
+  var savedEmote=localStorage.getItem('ledgr_identity_emote')||'money-rain';
 
-  // Tab switching
+  selectSkin(savedSkin);
+  selectAura(savedAura);
+  selectEmote(savedEmote);
+
   document.querySelectorAll('.if-tab').forEach(function(tab){
     tab.addEventListener('click',function(){
       var target=this.getAttribute('data-tab');
@@ -712,16 +973,13 @@ window.onload=function(){
     });
   });
 
-  // Sync from backend
   fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+tk}})
     .then(function(r){return r.ok?r.json():null;})
     .then(function(data){
       if(!data)return;
-      // Update picks count for level
       if(data.picks!==undefined){
         try{var u=JSON.parse(localStorage.getItem('ledgr_user')||'{}');u.picks=data.picks;localStorage.setItem('ledgr_user',JSON.stringify(u));renderLevelStrip();}catch(e){}
       }
-      // Apply backend identity config
       if(data.identityConfig){
         var cfg=data.identityConfig;
         if(cfg.skin){localStorage.setItem('ledgr_identity_skin',cfg.skin);selectSkin(cfg.skin);renderSkins();}
