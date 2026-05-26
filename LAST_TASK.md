@@ -1,10 +1,42 @@
 # LAST TASK
 
-Date: 2026-05-24
+Date: 2026-05-25
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: tipster profile final rework ✅ COMPLETE
+Current objective: avatar creator page ✅ COMPLETE
+
+---
+
+## Last completed: avatar creator (2026-05-25)
+
+New page at `/avatar-creator/index.html`. No backend schema changes (uses existing PATCH /profile with avatarConfig field).
+
+### What was built
+- Two-column layout: sticky 480px live preview stage (left 38%) + tabbed customization panel (right)
+- CSS character system: all rendering via inline div styles, no images
+- Body types (athletic/heavy/slim/cyber/shadow) with per-type proportions via BODY_PROPS
+- Outfit system drives character color palette (main/accent/line) for entire body
+- Headwear: hood, cap, mask, cyber visor, crown, demon horns, ghost veil — each rendered as CSS shapes/emoji
+- Eyes: normal + 4 glow variants with box-shadow pulse
+- Weapons: tablet, sniper scope, energy blade (pulse animation), orb (float animation)
+- Aura: radial gradient glow with auraBreath animation
+- Particles: emoji overlays with particleDrift animation
+- Stage backgrounds: dark/neon-grid/space/throne/void — cycle via STAGE button on preview
+- Tier system: COMMON/RARE/EPIC/LEGENDARY/MYTHIC badges, locked options greyed out
+- Save: localStorage + PATCH /profile avatarConfig; loads from backend on init
+- Idle character animation (charIdle), toggle via ANIMATE button
+
+### Modified files
+- `avatar-creator/index.html` (new)
+- `vercel.json` (added /avatar-creator route)
+- `app-nav.js` (added Avatar Creator to hamburger explore section)
+- `LAST_TASK.md`
+
+### Known gaps / next steps
+- Body mini-preview in body tab is simplified; could be improved
+- No backend endpoint to read avatarConfig back (GET /profile/:username may not return avatarConfig yet)
+- Locked state is hardcoded (unlock conditions not checked against real user data)
 
 ---
 
