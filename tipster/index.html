@@ -589,19 +589,28 @@ window.applyUserCosmetics=function(){
   document.documentElement.style.setProperty('--profile-accent',themeId);
 
   var hero=document.querySelector('.profile-banner');
+  var av=document.querySelector('.div-av-wrap')||document.querySelector('.avatar-big')||document.querySelector('.div-av-inner');
+
+  console.log('BANNER TARGET:',hero);
+  console.log('BORDER TARGET:',av);
+  if(hero&&av)console.log('BEFORE:',hero.className,av.className);
+
   if(hero){
     hero.style.background='';
-    hero.style.backgroundImage='';
     hero.className=hero.className.replace(/bp-\S+/g,'').trim();
     hero.classList.add('bp-'+bannerId);
   }
 
-  var av=document.querySelector('.div-av-wrap')||document.querySelector('.avatar-big')||document.querySelector('.div-av-inner');
   if(av&&borderId!=='none'){
     av.className=av.className.replace(/ab-\S+/g,'').trim();
     av.classList.add('ab-'+borderId);
     av.style.overflow='visible';
   }
+
+  void(hero&&hero.offsetWidth);
+  void(av&&av.offsetWidth);
+
+  if(hero&&av)console.log('AFTER:',hero.className,av.className);
   console.log('COSMETICS APPLIED:',window.profileCustomization);
 };
 
