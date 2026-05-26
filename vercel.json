@@ -23,6 +23,7 @@
     { "source": "/subscribe/cancel", "destination": "/subscribe/cancel/index.html" },
     { "source": "/privacy", "destination": "/privacy/index.html" },
     { "source": "/terms", "destination": "/terms/index.html" },
-    { "source": "/archetypes", "destination": "/archetypes/index.html" }
+    { "source": "/archetypes", "destination": "/archetypes/index.html" },
+    { "source": "/avatar-creator", "destination": "/avatar-creator/index.html" }
   ]
 }

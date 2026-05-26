@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
+<title>LEDGR — Avatar Creator</title>
+<meta name="description" content="Build your competitive identity. Your character evolves as you climb.">
+<meta property="og:title" content="LEDGR — Avatar Creator">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
+<meta property="og:url" content="https://getledgr.bet/avatar-creator">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
+
+<style>
+html{scroll-behavior:smooth}
+body{background:#0A0A0A;color:#E6E6E6;font-family:'Syne',sans-serif;margin:0;padding:0;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#7B2CFF06 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0}
+
+/* ── LAYOUT ── */
+.ac-wrap{max-width:1160px;margin:0 auto;padding:28px 20px 100px;position:relative;z-index:1}
+
+/* ── HERO ── */
+.ac-hero{text-align:center;padding:32px 20px 40px;position:relative}
+.ac-eyebrow{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.3em;color:#7B2CFF;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px}
+.ac-eyebrow::before,.ac-eyebrow::after{content:'';flex:0 0 40px;height:1px;background:linear-gradient(90deg,transparent,#7B2CFF55)}
+.ac-eyebrow::after{background:linear-gradient(90deg,#7B2CFF55,transparent)}
+.ac-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,8vw,90px);line-height:.88;letter-spacing:.04em;margin:0 0 16px;color:#E6E6E6}
+.ac-title span{color:#7B2CFF;display:block}
+.ac-sub{font-size:14px;color:#6B6B6B;max-width:400px;margin:0 auto;line-height:1.6}
+
+/* ── TWO-COLUMN ── */
+.ac-body{display:grid;grid-template-columns:38% 1fr;gap:28px;align-items:start}
+@media(max-width:800px){.ac-body{grid-template-columns:1fr}}
+
+/* ── STAGE ── */
+.avatar-stage{position:sticky;top:80px;height:480px;border-radius:20px;border:1px solid rgba(255,255,255,0.06);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.stage-bg{position:absolute;inset:0;transition:background .4s ease}
+.stage-grid-overlay{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(123,44,255,.04) 39px,rgba(123,44,255,.04) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(123,44,255,.04) 39px,rgba(123,44,255,.04) 40px);pointer-events:none;opacity:0;transition:opacity .4s}
+.avatar-stage.stage-neon-grid .stage-grid-overlay{opacity:1}
+.stage-character{position:relative;z-index:2;transition:all .3s ease}
+.stage-effects{position:absolute;inset:0;z-index:1;pointer-events:none}
+.stage-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#E6E6E6;letter-spacing:.05em;position:relative;z-index:2;margin-top:12px}
+.stage-title{font-size:10px;letter-spacing:.2em;color:#7B2CFF;font-family:'DM Mono',monospace;position:relative;z-index:2;margin-top:4px}
+.stage-badges{position:relative;z-index:2;display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.stage-badge{font-size:10px;padding:2px 10px;border-radius:20px;border:1px solid rgba(123,44,255,.3);background:rgba(123,44,255,.08);color:#b89fff;font-family:'DM Mono',monospace;letter-spacing:.1em}
+.stage-actions{position:absolute;bottom:14px;right:14px;z-index:5;display:flex;gap:8px}
+.stage-action-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:#6B6B6B;padding:6px 12px;border-radius:8px;font-family:'DM Mono',monospace;font-size:10px;cursor:pointer;transition:all .15s}
+.stage-action-btn:hover{background:rgba(123,44,255,.15);color:#b89fff;border-color:rgba(123,44,255,.3)}
+
+/* ── RIGHT PANEL ── */
+.ac-panel{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px}
+
+/* ── TABS ── */
+.ac-tabs{display:flex;gap:4px;margin-bottom:20px;background:rgba(255,255,255,.03);border-radius:10px;padding:4px}
+.ac-tab{flex:1;padding:9px 4px;border:none;background:transparent;color:#6B6B6B;font-family:'Syne',sans-serif;font-size:12px;border-radius:7px;cursor:pointer;transition:all .15s;letter-spacing:.02em}
+.ac-tab.active{background:rgba(123,44,255,.18);color:#b89fff;border:1px solid rgba(123,44,255,.3)}
+.ac-tab-pane{display:none}
+.ac-tab-pane.active{display:block}
+
+/* ── SECTION HEADERS ── */
+.ac-section-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.25em;color:#6B6B6B;text-transform:uppercase;margin:18px 0 10px;display:flex;align-items:center;gap:8px}
+.ac-section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.05)}
+
+/* ── OPTION GRID ── */
+.ac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;margin-bottom:4px}
+.ac-option{position:relative;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;cursor:pointer;overflow:hidden;transition:all .15s;text-align:center;padding:10px 6px 8px}
+.ac-option:hover:not(.locked){border-color:rgba(123,44,255,.35);background:rgba(123,44,255,.07)}
+.ac-option.selected{border-color:#7B2CFF;background:rgba(123,44,255,.15);box-shadow:0 0 12px rgba(123,44,255,.25)}
+.ac-option.locked{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
+.ac-option-preview{height:60px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;position:relative}
+.ac-option-label{font-family:'DM Mono',monospace;font-size:9px;color:#6B6B6B;letter-spacing:.05em;line-height:1.3}
+.ac-option.selected .ac-option-label{color:#b89fff}
+.ac-option-lock{position:absolute;top:4px;right:4px;font-size:10px}
+.ac-option-tier{position:absolute;top:4px;left:4px;font-size:7px;font-family:'DM Mono',monospace;padding:1px 5px;border-radius:8px;letter-spacing:.05em}
+.tier-COMMON{background:rgba(107,107,107,.2);color:#6B6B6B;border:1px solid rgba(107,107,107,.2)}
+.tier-RARE{background:rgba(79,195,247,.1);color:#4FC3F7;border:1px solid rgba(79,195,247,.2)}
+.tier-EPIC{background:rgba(123,44,255,.1);color:#b89fff;border:1px solid rgba(123,44,255,.2)}
+.tier-LEGENDARY{background:rgba(255,215,0,.1);color:#FFD700;border:1px solid rgba(255,215,0,.2)}
+.tier-MYTHIC{background:rgba(255,107,255,.1);color:#FF6BFF;border:1px solid rgba(255,107,255,.2)}
+
+/* ── BODY CARDS ── */
+.body-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:600px){.body-grid{grid-template-columns:repeat(3,1fr)}}
+.body-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;cursor:pointer;overflow:hidden;transition:all .15s;text-align:center;padding:12px 6px 10px;position:relative}
+.body-card:hover:not(.locked){border-color:rgba(123,44,255,.35);background:rgba(123,44,255,.07)}
+.body-card.selected{border-color:#7B2CFF;background:rgba(123,44,255,.15);box-shadow:0 0 14px rgba(123,44,255,.3)}
+.body-card.locked{opacity:.4;cursor:not-allowed;filter:grayscale(.7)}
+.body-preview{height:80px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:8px}
+.body-name{font-family:'DM Mono',monospace;font-size:9px;color:#6B6B6B;letter-spacing:.08em;text-transform:uppercase}
+.body-card.selected .body-name{color:#b89fff}
+.body-lock{position:absolute;top:6px;right:6px;font-size:10px;color:#6B6B6B}
+.body-req{font-size:8px;color:#444;font-family:'DM Mono',monospace;margin-top:2px}
+
+/* ── SAVE BAR ── */
+.ac-save-bar{display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06)}
+.ac-save-btn{flex:1;padding:14px;background:var(--ac,#7B2CFF);color:#0A0A0A;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.1em;cursor:pointer;transition:all .2s}
+.ac-save-btn:hover{filter:brightness(1.18);box-shadow:0 0 22px rgba(123,44,255,.45)}
+.ac-reset-btn{padding:14px 20px;background:transparent;color:#6B6B6B;border:1px solid rgba(255,255,255,.08);border-radius:10px;font-family:'Syne',sans-serif;font-size:13px;cursor:pointer;transition:all .15s}
+.ac-reset-btn:hover{border-color:rgba(255,255,255,.15);color:#E6E6E6}
+
+/* ── TOAST ── */
+#acToast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(20px);background:#1E1E1E;border:1px solid rgba(123,44,255,.35);color:#E6E6E6;font-family:'DM Mono',monospace;font-size:12px;padding:10px 20px;border-radius:10px;opacity:0;transition:all .25s;pointer-events:none;z-index:9999;white-space:nowrap}
+#acToast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── KEYFRAMES ── */
+@keyframes auraBreath{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.4;transform:scale(1.08)}}
+@keyframes bladePulse{0%,100%{opacity:.8;box-shadow:0 0 10px var(--ac,#7B2CFF)}50%{opacity:1;box-shadow:0 0 20px var(--ac,#7B2CFF)}}
+@keyframes orbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes visorScan{0%,100%{opacity:.9}50%{opacity:.35}}
+@keyframes particleDrift{0%,100%{transform:translate(0,0);opacity:.5}50%{transform:translate(4px,-14px);opacity:.15}}
+@keyframes charIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes charHover{0%,100%{filter:drop-shadow(0 0 6px rgba(123,44,255,.3))}50%{filter:drop-shadow(0 0 14px rgba(123,44,255,.55))}}
+@keyframes starsFloat{0%{transform:translateY(0)}100%{transform:translateY(-6px)}}
+</style>
+</head>
+<body>
+<div id="app" style="display:none">
+
+<script src="/app-nav.js"></script>
+<script>AppNav.init({ active: 'avatar' });</script>
+
+<div class="ac-wrap">
+
+  <!-- HERO -->
+  <div class="ac-hero">
+    <div class="ac-eyebrow">⬡ LEDGR IDENTITY SYSTEM</div>
+    <h1 class="ac-title">AVATAR<br><span>CREATOR</span></h1>
+    <p class="ac-sub">Build your competitive identity. Your character evolves as you climb.</p>
+  </div>
+
+  <!-- BODY -->
+  <div class="ac-body">
+
+    <!-- LEFT: STAGE -->
+    <div class="avatar-stage" id="avatarStage">
+      <div class="stage-bg" id="stageBg"></div>
+      <div class="stage-grid-overlay"></div>
+      <div class="stage-effects" id="stageFx"></div>
+      <div class="stage-character" id="stageChar" style="animation:charIdle 4s ease-in-out infinite"></div>
+      <div class="stage-name" id="stageName"></div>
+      <div class="stage-title" id="stageTitle">COMPETITIVE IDENTITY</div>
+      <div class="stage-badges" id="stageBadges"></div>
+      <div class="stage-actions">
+        <button class="stage-action-btn" onclick="cycleStage()">STAGE</button>
+        <button class="stage-action-btn" onclick="toggleAnimation()">ANIMATE</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: CUSTOMIZATION -->
+    <div class="ac-panel">
+
+      <div class="ac-tabs">
+        <button class="ac-tab active" data-tab="body" onclick="switchTab('body',this)">⚔️ Body</button>
+        <button class="ac-tab" data-tab="outfit" onclick="switchTab('outfit',this)">👔 Outfit</button>
+        <button class="ac-tab" data-tab="accessories" onclick="switchTab('accessories',this)">✨ Access.</button>
+        <button class="ac-tab" data-tab="effects" onclick="switchTab('effects',this)">💥 Effects</button>
+      </div>
+
+      <!-- TAB: BODY -->
+      <div class="ac-tab-pane active" id="tab-body">
+        <div class="ac-section-label">Body Type</div>
+        <div class="body-grid" id="bodyGrid"></div>
+      </div>
+
+      <!-- TAB: OUTFIT -->
+      <div class="ac-tab-pane" id="tab-outfit">
+        <div class="ac-section-label">Outfit</div>
+        <div class="ac-grid" id="outfitGrid"></div>
+      </div>
+
+      <!-- TAB: ACCESSORIES -->
+      <div class="ac-tab-pane" id="tab-accessories">
+        <div class="ac-section-label">Headwear</div>
+        <div class="ac-grid" id="headwearGrid"></div>
+        <div class="ac-section-label">Eyes</div>
+        <div class="ac-grid" id="eyesGrid"></div>
+        <div class="ac-section-label">Weapon / Item</div>
+        <div class="ac-grid" id="weaponGrid"></div>
+      </div>
+
+      <!-- TAB: EFFECTS -->
+      <div class="ac-tab-pane" id="tab-effects">
+        <div class="ac-section-label">Aura</div>
+        <div class="ac-grid" id="auraGrid"></div>
+        <div class="ac-section-label">Particles</div>
+        <div class="ac-grid" id="particlesGrid"></div>
+        <div class="ac-section-label">Background Stage</div>
+        <div class="ac-grid" id="stageGrid"></div>
+      </div>
+
+      <!-- SAVE -->
+      <div class="ac-save-bar">
+        <button class="ac-save-btn" onclick="saveAvatarConfig()">SAVE AVATAR →</button>
+        <button class="ac-reset-btn" onclick="resetAvatar()">Reset</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="acToast"></div>
+</div>
+
+<script>
+const API='https://ledgr-backend-production-c132.up.railway.app';
+var user=null;
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+var BODIES=[
+  {id:'athletic',name:'Athletic',desc:'Balanced fighter build',unlock:null},
+  {id:'heavy',   name:'Heavy',   desc:'Tank — intimidating',  unlock:'Gold division'},
+  {id:'slim',    name:'Slim',    desc:'Agile and precise',    unlock:'Silver division'},
+  {id:'cyber',   name:'Cyber',   desc:'Tech-enhanced',        unlock:'Diamond division'},
+  {id:'shadow',  name:'Shadow',  desc:'Ghost-like form',      unlock:'Elite division'},
+];
+
+var OUTFITS=[
+  {id:'hoodie',       name:'Street Hoodie',  tier:'COMMON',    unlock:null},
+  {id:'tshirt',       name:'Basic Tee',      tier:'COMMON',    unlock:null},
+  {id:'tracksuit',    name:'Pro Tracksuit',  tier:'RARE',      unlock:'Silver division'},
+  {id:'bomber',       name:'Bomber Jacket',  tier:'RARE',      unlock:'Win 25 picks'},
+  {id:'tactical',     name:'Tactical Vest',  tier:'EPIC',      unlock:'Diamond division'},
+  {id:'cyber-suit',   name:'Cyber Suit',     tier:'EPIC',      unlock:'Platinum division'},
+  {id:'armor',        name:'Champion Armor', tier:'LEGENDARY', unlock:'Elite division'},
+  {id:'shadow-cloak', name:'Shadow Cloak',   tier:'LEGENDARY', unlock:'The Ghost archetype'},
+  {id:'void-armor',   name:'Void Armor',     tier:'MYTHIC',    unlock:'????'},
+  {id:'dragon-set',   name:'Dragon Set',     tier:'MYTHIC',    unlock:'????'},
+];
+
+var HEADWEAR=[
+  {id:'none',       name:'None',       tier:'COMMON',    unlock:null},
+  {id:'hood',       name:'Hood',       tier:'COMMON',    unlock:null},
+  {id:'cap',        name:'Cap',        tier:'COMMON',    unlock:null},
+  {id:'mask',       name:'Half Mask',  tier:'RARE',      unlock:'30 picks'},
+  {id:'visor',      name:'Cyber Visor',tier:'EPIC',      unlock:'Diamond division'},
+  {id:'crown',      name:'Crown',      tier:'LEGENDARY', unlock:'Rank #1'},
+  {id:'demon-horns',name:'Demon Horns',tier:'LEGENDARY', unlock:'The Demon archetype'},
+  {id:'ghost-veil', name:'Ghost Veil', tier:'MYTHIC',    unlock:'????'},
+];
+
+var EYES=[
+  {id:'normal',     name:'Normal',     tier:'COMMON',    unlock:null},
+  {id:'glow-purple',name:'Purple Glow',tier:'RARE',      unlock:'Diamond division'},
+  {id:'glow-red',   name:'Red Glow',   tier:'EPIC',      unlock:'The Demon archetype'},
+  {id:'glow-gold',  name:'Gold Glow',  tier:'LEGENDARY', unlock:'Elite division'},
+  {id:'ghost-eyes', name:'Ghost Eyes', tier:'MYTHIC',    unlock:'????'},
+];
+
+var WEAPONS=[
+  {id:'none',   name:'Empty',       tier:'COMMON', unlock:null},
+  {id:'tablet', name:'Data Tablet', tier:'COMMON', unlock:null},
+  {id:'scope',  name:'Sniper Scope',tier:'RARE',   unlock:'The Sniper archetype'},
+  {id:'blade',  name:'Energy Blade',tier:'EPIC',   unlock:'Diamond division'},
+  {id:'orb',    name:'Power Orb',   tier:'LEGENDARY',unlock:'Elite division'},
+];
+
+var AURAS=[
+  {id:'none',        name:'None',       tier:'COMMON',    unlock:null},
+  {id:'purple-aura', name:'Purple Aura',tier:'RARE',      unlock:'Gold division'},
+  {id:'fire-aura',   name:'Fire Aura',  tier:'EPIC',      unlock:'5W streak'},
+  {id:'ice-aura',    name:'Ice Aura',   tier:'EPIC',      unlock:'Reliability 80+'},
+  {id:'gold-aura',   name:'Gold Aura',  tier:'LEGENDARY', unlock:'Elite division'},
+  {id:'void-aura',   name:'Void Aura',  tier:'MYTHIC',    unlock:'????'},
+];
+
+var PARTICLES=[
+  {id:'none',   name:'None',   tier:'COMMON',    unlock:null},
+  {id:'sparks', name:'Sparks', tier:'RARE',      unlock:'Diamond division'},
+  {id:'embers', name:'Embers', tier:'EPIC',      unlock:'Eternal Flame banner'},
+  {id:'stars',  name:'Stars',  tier:'LEGENDARY', unlock:'Elite division'},
+  {id:'skulls', name:'Skulls', tier:'MYTHIC',    unlock:'????'},
+];
+
+var STAGES=[
+  {id:'dark',     name:'Dark Arena', tier:'COMMON',    unlock:null},
+  {id:'neon-grid',name:'Neon Grid',  tier:'RARE',      unlock:'Silver division'},
+  {id:'space',    name:'Deep Space', tier:'EPIC',      unlock:'Platinum division'},
+  {id:'throne',   name:'Throne Room',tier:'LEGENDARY', unlock:'Elite division'},
+  {id:'void',     name:'The Void',   tier:'MYTHIC',    unlock:'????'},
+];
+
+var OUTFIT_COLORS={
+  'hoodie':      {main:'#1a1a2e',accent:'#2a2a4e',line:'#7B2CFF'},
+  'tshirt':      {main:'#1a1a1a',accent:'#2a2a2a',line:'#6B6B6B'},
+  'tracksuit':   {main:'#0a1a2e',accent:'#1a2a4e',line:'#4FC3F7'},
+  'bomber':      {main:'#1a0a0a',accent:'#2a1a1a',line:'#FF6B35'},
+  'tactical':    {main:'#0a1a0a',accent:'#1a2a1a',line:'#00E5A0'},
+  'cyber-suit':  {main:'#050520',accent:'#0a0a30',line:'#7B2CFF'},
+  'armor':       {main:'#1a1400',accent:'#2a2400',line:'#FFD700'},
+  'shadow-cloak':{main:'#050508',accent:'#0a0a10',line:'#FF6BFF'},
+  'void-armor':  {main:'#000005',accent:'#050010',line:'#FF6BFF'},
+  'dragon-set':  {main:'#1a0505',accent:'#2a0808',line:'#FF3355'},
+};
+
+var EYE_COLORS={
+  'normal':      '#b0b0b0',
+  'glow-purple': '#7B2CFF',
+  'glow-red':    '#FF3355',
+  'glow-gold':   '#FFD700',
+  'ghost-eyes':  '#FF6BFF',
+};
+
+var BODY_PROPS={
+  'athletic':{w:72,h:100,armW:18,armH:80,legW:28,legH:48,rot:5},
+  'heavy':   {w:90,h:108,armW:24,armH:76,legW:34,legH:44,rot:4},
+  'slim':    {w:58,h:96,armW:14,armH:86,legW:22,legH:52,rot:6},
+  'cyber':   {w:72,h:100,armW:18,armH:80,legW:28,legH:48,rot:5},
+  'shadow':  {w:62,h:92,armW:14,armH:80,legW:24,legH:48,rot:5},
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+
+var avatarConfig={
+  body:'athletic',outfit:'hoodie',headwear:'none',
+  eyes:'normal',weapon:'none',aura:'none',
+  particles:'none',stage:'dark'
+};
+var _animating=true;
+
+// ── CHARACTER BUILDER ─────────────────────────────────────────────────────────
+
+function getAuraColor(aura){
+  var m={'purple-aura':'rgba(123,44,255,.6)','fire-aura':'rgba(255,100,0,.6)','ice-aura':'rgba(147,210,255,.6)','gold-aura':'rgba(255,215,0,.6)','void-aura':'rgba(80,0,160,.6)'};
+  return m[aura]||'rgba(123,44,255,.4)';
+}
+
+function buildHeadwear(hw,c,eyeColor){
+  if(hw==='hood') return '<div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:72px;height:38px;border-radius:50% 50% 0 0;background:'+c.main+';border:1px solid '+c.line+'33;z-index:2"></div>';
+  if(hw==='cap')  return '<div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:64px;height:16px;border-radius:8px 8px 0 0;background:'+c.accent+';border:1px solid '+c.line+'44;z-index:2"></div><div style="position:absolute;top:-2px;left:50%;transform:translateX(-60%);width:36px;height:8px;border-radius:0 0 4px 4px;background:'+c.main+';border:1px solid '+c.line+'33;z-index:2"></div>';
+  if(hw==='crown') return '<div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:22px;z-index:3">👑</div>';
+  if(hw==='mask')  return '';
+  if(hw==='demon-horns') return '<div style="position:absolute;top:-18px;left:24px;width:10px;height:24px;border-radius:50% 50% 0 0;background:#FF3355;transform:rotate(-8deg);box-shadow:0 0 8px #FF3355;z-index:3"></div><div style="position:absolute;top:-18px;right:24px;width:10px;height:24px;border-radius:50% 50% 0 0;background:#FF3355;transform:rotate(8deg);box-shadow:0 0 8px #FF3355;z-index:3"></div>';
+  if(hw==='visor') return '<div style="position:absolute;top:22px;left:50%;transform:translateX(-50%);width:54px;height:11px;border-radius:5px;background:'+eyeColor+';opacity:.85;box-shadow:0 0 16px '+eyeColor+';animation:visorScan 2s ease-in-out infinite;z-index:3"></div>';
+  if(hw==='ghost-veil') return '<div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:64px;height:80px;background:radial-gradient(circle,rgba(255,107,255,.08),transparent 70%);border:1px solid rgba(255,107,255,.15);border-radius:50%;z-index:3"></div>';
+  return '';
+}
+
+function buildWeapon(weapon,c){
+  if(weapon==='tablet') return '<div style="position:absolute;bottom:28px;right:-4px;width:22px;height:32px;border-radius:3px;background:'+c.accent+';border:1px solid '+c.line+';box-shadow:0 0 6px '+c.line+'66;z-index:3"></div><div style="position:absolute;bottom:32px;right:-2px;width:18px;height:24px;background:'+c.line+'22;border-radius:2px"></div>';
+  if(weapon==='scope') return '<div style="position:absolute;bottom:44px;right:-12px;width:36px;height:7px;border-radius:3px;background:'+c.line+';box-shadow:0 0 8px '+c.line+';z-index:3"></div><div style="position:absolute;bottom:41px;right:-8px;width:10px;height:13px;border-radius:50%;border:2px solid '+c.line+'88;z-index:3"></div>';
+  if(weapon==='blade') return '<div style="position:absolute;bottom:18px;right:-6px;width:8px;height:56px;border-radius:2px 2px 1px 1px;background:linear-gradient(180deg,rgba(255,255,255,.8),'+c.line+');box-shadow:0 0 12px '+c.line+';animation:bladePulse 2s ease-in-out infinite;z-index:3"></div>';
+  if(weapon==='orb') return '<div style="position:absolute;bottom:28px;right:-14px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle,white,'+c.line+');box-shadow:0 0 16px '+c.line+';animation:orbFloat 2s ease-in-out infinite;z-index:3"></div>';
+  return '';
+}
+
+function buildParticles(type,color){
+  if(type==='none') return '';
+  var emojis={sparks:'⚡',embers:'🔥',stars:'✦',skulls:'💀'};
+  var e=emojis[type]||'✦';
+  return [0,1,2].map(function(i){
+    return '<div style="position:absolute;font-size:9px;opacity:.55;left:'+(8+i*38)+'%;top:'+(18+i*22)+'%;animation:particleDrift '+(3+i)+'s ease-in-out '+(i*.7)+'s infinite;z-index:4">'+e+'</div>';
+  }).join('');
+}
+
+function buildCharacterCSS(cfg){
+  var c=OUTFIT_COLORS[cfg.outfit]||OUTFIT_COLORS['hoodie'];
+  var eyeColor=EYE_COLORS[cfg.eyes]||'#b0b0b0';
+  var eyeGlow=cfg.eyes!=='normal'?'box-shadow:0 0 8px '+eyeColor+',0 0 16px '+eyeColor+';':'';
+  var bp=BODY_PROPS[cfg.body]||BODY_PROPS['athletic'];
+
+  var isCyber=cfg.body==='cyber';
+  var isShadow=cfg.body==='shadow';
+  var shadowFilter=isShadow?'filter:blur(0.5px);opacity:.85;':'';
+
+  var auraHtml=cfg.aura!=='none'?'<div style="position:absolute;inset:-24px;border-radius:50%;opacity:.22;background:radial-gradient(circle,'+getAuraColor(cfg.aura)+',transparent 70%);animation:auraBreath 3s ease-in-out infinite;z-index:0"></div>':'';
+
+  var headHTML=buildHeadwear(cfg.headwear,c,eyeColor);
+
+  var maskHTML=cfg.headwear==='mask'?'<div style="position:absolute;bottom:0;left:10%;right:10%;height:50%;background:'+c.accent+';border-radius:0 0 40% 40%;border:1px solid '+c.line+'66;z-index:2"></div>':'';
+
+  var cyberDetails=isCyber?'<div style="position:absolute;top:8px;left:4px;width:6px;height:6px;border-radius:1px;background:'+c.line+';opacity:.7;box-shadow:0 0 4px '+c.line+'"></div><div style="position:absolute;top:18px;left:4px;width:4px;height:4px;border-radius:50%;background:'+c.line+';opacity:.5"></div>':'';
+
+  var chestDetail='<div style="position:absolute;top:12px;left:50%;transform:translateX(-50%);width:'+(bp.w-36)+'px;height:38px;border-radius:4px;background:'+c.accent+';border:1px solid '+c.line+'44">'+cyberDetails+'</div><div style="position:absolute;top:52%;left:50%;transform:translateX(-50%);width:2px;height:40%;background:'+c.line+'33"></div>';
+
+  return '<div style="position:relative;width:160px;height:230px;margin:0 auto;'+shadowFilter+'">'+
+    auraHtml+
+    headHTML+
+    // Head
+    '<div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);width:56px;height:60px;border-radius:50% 50% 42% 42%;background:linear-gradient(160deg,'+c.main+','+c.accent+');border:1px solid '+c.line+'44;box-shadow:0 0 14px '+c.line+'22;z-index:2">'+
+      '<div style="position:absolute;top:21px;left:10px;width:12px;height:8px;border-radius:50%;background:'+eyeColor+';'+eyeGlow+'z-index:2"></div>'+
+      '<div style="position:absolute;top:21px;right:10px;width:12px;height:8px;border-radius:50%;background:'+eyeColor+';'+eyeGlow+'z-index:2"></div>'+
+      maskHTML+
+    '</div>'+
+    // Neck
+    '<div style="position:absolute;top:68px;left:50%;transform:translateX(-50%);width:22px;height:10px;background:'+c.main+';z-index:1"></div>'+
+    // Torso
+    '<div style="position:absolute;top:76px;left:50%;transform:translateX(-50%);width:'+bp.w+'px;height:'+bp.h+'px;border-radius:8px 8px 4px 4px;background:linear-gradient(170deg,'+c.main+','+c.accent+');border:1px solid '+c.line+'33;z-index:2">'+
+      chestDetail+
+    '</div>'+
+    // Left arm
+    '<div style="position:absolute;top:78px;left:'+(80-bp.w/2-bp.armW-2)+'px;width:'+bp.armW+'px;height:'+bp.armH+'px;border-radius:6px 6px 3px 3px;background:linear-gradient(170deg,'+c.main+','+c.accent+');border:1px solid '+c.line+'22;transform:rotate('+bp.rot+'deg);transform-origin:top center;z-index:1"></div>'+
+    // Right arm + weapon
+    '<div style="position:absolute;top:78px;right:'+(80-bp.w/2-bp.armW-2)+'px;width:'+bp.armW+'px;height:'+bp.armH+'px;border-radius:6px 6px 3px 3px;background:linear-gradient(170deg,'+c.main+','+c.accent+');border:1px solid '+c.line+'22;transform:rotate(-'+bp.rot+'deg);transform-origin:top center;z-index:1">'+
+      buildWeapon(cfg.weapon,c)+
+    '</div>'+
+    // Legs
+    '<div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:2">'+
+      '<div style="width:'+bp.legW+'px;height:'+bp.legH+'px;border-radius:4px 4px 2px 2px;background:'+c.accent+';border:1px solid '+c.line+'22"></div>'+
+      '<div style="width:'+bp.legW+'px;height:'+bp.legH+'px;border-radius:4px 4px 2px 2px;background:'+c.accent+';border:1px solid '+c.line+'22"></div>'+
+    '</div>'+
+    // Ground shadow
+    '<div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:'+Math.round(bp.w*.85)+'px;height:8px;border-radius:50%;background:'+c.line+'1a;filter:blur(4px)"></div>'+
+    // Particles
+    buildParticles(cfg.particles,c.line)+
+  '</div>';
+}
+
+// ── STAGE ─────────────────────────────────────────────────────────────────────
+
+var STAGE_BG={
+  'dark':     'linear-gradient(180deg,#0a0a1a 0%,#050508 100%)',
+  'neon-grid':'linear-gradient(180deg,#050510 0%,#020208 100%)',
+  'space':    'radial-gradient(ellipse at 50% 0%,#050520 0%,#000 100%)',
+  'throne':   'linear-gradient(180deg,#100800 0%,#050300 100%)',
+  'void':     'radial-gradient(circle at 50% 40%,#050010 0%,#000 100%)',
+};
+
+function updateStageBackground(){
+  var bg=document.getElementById('stageBg');
+  var stage=document.getElementById('avatarStage');
+  if(!bg||!stage)return;
+  bg.style.background=STAGE_BG[avatarConfig.stage]||STAGE_BG['dark'];
+  stage.className='avatar-stage'+(avatarConfig.stage==='neon-grid'?' stage-neon-grid':'');
+}
+
+function renderCharacter(){
+  var el=document.getElementById('stageChar');
+  if(el)el.innerHTML=buildCharacterCSS(avatarConfig);
+  updateStageBackground();
+  if(_animating&&el)el.style.animation='charIdle 4s ease-in-out infinite';
+}
+
+var _stageIdx=0;
+function cycleStage(){
+  _stageIdx=(_stageIdx+1)%STAGES.length;
+  avatarConfig.stage=STAGES[_stageIdx].id;
+  updateStageBackground();
+  updateSelections('stage',avatarConfig.stage);
+}
+
+function toggleAnimation(){
+  _animating=!_animating;
+  var el=document.getElementById('stageChar');
+  if(el)el.style.animation=_animating?'charIdle 4s ease-in-out infinite':'none';
+}
+
+// ── RENDER GRIDS ─────────────────────────────────────────────────────────────
+
+function renderBodies(){
+  var g=document.getElementById('bodyGrid');
+  if(!g)return;
+  g.innerHTML=BODIES.map(function(b){
+    var locked=b.unlock!==null;
+    var sel=avatarConfig.body===b.id;
+    var mini=buildMiniChar(b.id);
+    return '<div class="body-card'+(sel?' selected':'')+(locked?' locked':'__')+'" onclick="'+(locked?'':'"selectOption(\'body\',\''+b.id+'\')""')+'"  id="bc_'+b.id+'">'+
+      (locked?'<div class="body-lock">🔒</div>':'')+
+      '<div class="body-preview">'+mini+'</div>'+
+      '<div class="body-name">'+b.name+'</div>'+
+      (locked?'<div class="body-req">'+b.unlock+'</div>':'')+
+    '</div>';
+  }).join('');
+  // Fix onclick: re-render properly
+  g.innerHTML=BODIES.map(function(b){
+    var locked=b.unlock!==null;
+    var sel=avatarConfig.body===b.id;
+    var mini=buildMiniChar(b.id);
+    var click=locked?'':'onclick="selectOption(\'body\',\''+b.id+'\')"';
+    return '<div class="body-card'+(sel?' selected':'')+(locked?' locked':'')+'" '+click+' id="bc_'+b.id+'">'+
+      (locked?'<div class="body-lock">🔒</div>':'')+
+      '<div class="body-preview">'+mini+'</div>'+
+      '<div class="body-name">'+b.name+'</div>'+
+      (locked?'<div class="body-req">'+b.unlock+'</div>':'')+
+    '</div>';
+  }).join('');
+}
+
+function buildMiniChar(bodyId){
+  var c=OUTFIT_COLORS[avatarConfig.outfit]||OUTFIT_COLORS['hoodie'];
+  var bp=BODY_PROPS[bodyId]||BODY_PROPS['athletic'];
+  var s=0.45;
+  return '<div style="position:relative;width:'+(bp.w*s+20)+'px;height:'+(bp.w*s+80)+'px;margin:0 auto">'+
+    '<div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:'+(24*s)+'px;height:'+(26*s)+'px;border-radius:50%;background:'+c.main+';border:1px solid '+c.line+'44"></div>'+
+    '<div style="position:absolute;top:'+(24*s)+'px;left:50%;transform:translateX(-50%);width:'+(bp.w*s)+'px;height:'+(bp.h*s)+'px;border-radius:4px;background:'+c.main+';border:1px solid '+c.line+'33"></div>'+
+    '<div style="position:absolute;top:'+(28*s)+'px;left:'+(40*s)+'px;width:'+(bp.legW*s)+'px;height:'+(bp.legH*s)+'px;border-radius:2px;background:'+c.accent+';border:1px solid '+c.line+'22"></div>'+
+    '<div style="position:absolute;top:'+(28*s)+'px;right:'+(40*s)+'px;width:'+(bp.legW*s)+'px;height:'+(bp.legH*s)+'px;border-radius:2px;background:'+c.accent+';border:1px solid '+c.line+'22"></div>'+
+  '</div>';
+}
+
+function renderOptionGrid(gridId,items,category){
+  var g=document.getElementById(gridId);
+  if(!g)return;
+  g.innerHTML=items.map(function(item){
+    var locked=item.unlock&&item.unlock!==null&&item.unlock!=='????';
+    var mythicLocked=item.unlock==='????';
+    var isLocked=locked||mythicLocked;
+    var sel=avatarConfig[category]===item.id;
+    var click=isLocked?'':'onclick="selectOption(\''+category+'\',\''+item.id+'\')"';
+    var preview=buildOptionPreview(category,item);
+    return '<div class="ac-option'+(sel?' selected':'')+(isLocked?' locked':'')+'" '+click+' id="opt_'+category+'_'+item.id+'">'+
+      (item.tier&&item.tier!=='COMMON'?'<div class="ac-option-tier tier-'+item.tier+'">'+item.tier+'</div>':'')+
+      (isLocked?'<div class="ac-option-lock">🔒</div>':'')+
+      '<div class="ac-option-preview">'+preview+'</div>'+
+      '<div class="ac-option-label">'+item.name+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+function buildOptionPreview(category,item){
+  var c=OUTFIT_COLORS[avatarConfig.outfit]||OUTFIT_COLORS['hoodie'];
+  if(category==='outfit'){
+    var oc=OUTFIT_COLORS[item.id]||OUTFIT_COLORS['hoodie'];
+    return '<div style="width:36px;height:46px;border-radius:4px 4px 2px 2px;background:linear-gradient(170deg,'+oc.main+','+oc.accent+');border:1px solid '+oc.line+'44;display:flex;align-items:center;justify-content:center"><div style="width:14px;height:14px;border-radius:2px;background:'+oc.accent+';border:1px solid '+oc.line+'44"></div></div>';
+  }
+  if(category==='headwear'){
+    var emojis={none:'—',hood:'🪖',cap:'🧢',mask:'😷',visor:'🥽',crown:'👑','demon-horns':'😈','ghost-veil':'👻'};
+    return '<div style="font-size:24px;line-height:1">'+(emojis[item.id]||'—')+'</div>';
+  }
+  if(category==='eyes'){
+    var ec=EYE_COLORS[item.id]||'#b0b0b0';
+    return '<div style="width:32px;height:18px;border-radius:50%;background:'+ec+';box-shadow:0 0 8px '+ec+';opacity:0.9"></div>';
+  }
+  if(category==='weapon'){
+    var emojisW={none:'✋',tablet:'📱',scope:'🔭',blade:'⚡',orb:'🔮'};
+    return '<div style="font-size:22px">'+(emojisW[item.id]||'—')+'</div>';
+  }
+  if(category==='aura'){
+    if(item.id==='none')return '<div style="width:36px;height:36px;border-radius:50%;border:1px dashed rgba(255,255,255,.1)"></div>';
+    var ac=getAuraColor(item.id);
+    return '<div style="width:36px;height:36px;border-radius:50%;background:radial-gradient(circle,'+ac+',transparent 70%);animation:auraBreath 3s ease-in-out infinite"></div>';
+  }
+  if(category==='particles'){
+    var ep={none:'—',sparks:'⚡⚡',embers:'🔥🔥',stars:'✦✦✦',skulls:'💀💀'};
+    return '<div style="font-size:14px;letter-spacing:.1em">'+(ep[item.id]||'—')+'</div>';
+  }
+  if(category==='stage'){
+    var sb=STAGE_BG[item.id]||STAGE_BG['dark'];
+    return '<div style="width:44px;height:28px;border-radius:4px;background:'+sb+';border:1px solid rgba(255,255,255,.08)"></div>';
+  }
+  return '<div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05)"></div>';
+}
+
+// ── SELECTION ─────────────────────────────────────────────────────────────────
+
+function selectOption(category,value){
+  avatarConfig[category]=value;
+  renderCharacter();
+  updateSelections(category,value);
+  if(category==='body')renderBodies();
+}
+
+function updateSelections(category,value){
+  // Update .selected class on option cells
+  var prefix='opt_'+category+'_';
+  document.querySelectorAll('[id^="'+prefix+'"]').forEach(function(el){
+    el.classList.toggle('selected',el.id===prefix+value);
+  });
+  // Body cards
+  if(category==='body'){
+    document.querySelectorAll('[id^="bc_"]').forEach(function(el){
+      el.classList.toggle('selected',el.id==='bc_'+value);
+    });
+  }
+}
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.ac-tab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.ac-tab-pane').forEach(function(p){p.classList.remove('active');});
+  if(btn)btn.classList.add('active');
+  var pane=document.getElementById('tab-'+tab);
+  if(pane)pane.classList.add('active');
+}
+
+// ── SAVE / LOAD ───────────────────────────────────────────────────────────────
+
+function saveAvatarConfig(){
+  localStorage.setItem('ledgr_avatar_config',JSON.stringify(avatarConfig));
+  var token=localStorage.getItem('ledgr_token');
+  if(token){
+    fetch(API+'/profile',{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({avatarConfig:avatarConfig})
+    }).catch(function(){});
+  }
+  showToast('✓ Avatar saved');
+}
+
+function loadSavedAvatar(){
+  var saved=localStorage.getItem('ledgr_avatar_config');
+  if(saved){try{Object.assign(avatarConfig,JSON.parse(saved));}catch(e){}}
+}
+
+function resetAvatar(){
+  avatarConfig={body:'athletic',outfit:'hoodie',headwear:'none',eyes:'normal',weapon:'none',aura:'none',particles:'none',stage:'dark'};
+  renderAll();
+  showToast('Reset to default');
+}
+
+function renderAll(){
+  renderBodies();
+  renderOptionGrid('outfitGrid',OUTFITS,'outfit');
+  renderOptionGrid('headwearGrid',HEADWEAR,'headwear');
+  renderOptionGrid('eyesGrid',EYES,'eyes');
+  renderOptionGrid('weaponGrid',WEAPONS,'weapon');
+  renderOptionGrid('auraGrid',AURAS,'aura');
+  renderOptionGrid('particlesGrid',PARTICLES,'particles');
+  renderOptionGrid('stageGrid',STAGES,'stage');
+  renderCharacter();
+  var sn=document.getElementById('stageName');
+  if(sn&&user)sn.textContent=user.username.toUpperCase();
+  var sb=document.getElementById('stageBadges');
+  if(sb)sb.innerHTML='<span class="stage-badge">TIPSTER</span>';
+}
+
+function showToast(msg){
+  var t=document.getElementById('acToast');
+  if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2200);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+window.onload=function(){
+  var ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  var tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!ud||!tk){window.location.href='/login';return;}
+  try{user=JSON.parse(ud);}catch(e){window.location.href='/login';return;}
+  if(!user||!user.username){window.location.href='/login';return;}
+
+  document.getElementById('app').style.display='block';
+
+  loadSavedAvatar();
+  renderAll();
+
+  // Fetch saved config from backend if available
+  fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+tk}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(data){
+      if(!data)return;
+      if(data.avatarConfig){
+        Object.assign(avatarConfig,data.avatarConfig);
+        renderAll();
+      }
+    }).catch(function(){});
+};
+</script>
+
+</body>
+</html>
