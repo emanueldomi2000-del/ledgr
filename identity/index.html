@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
+<title>LEDGR — Identity Forge</title>
+<meta name="description" content="Choose your skin. Define your identity.">
+<meta property="og:title" content="LEDGR — Identity Forge">
+<meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/app-tokens.css">
+<link rel="stylesheet" href="/app-components.css">
+<style>
+:root{--ac:#7B2CFF;--tx:#E6E6E6;--mu:#6B6B6B;--skin-color:#7B2CFF}
+html{scroll-behavior:smooth}
+body{background:#0A0A0A;color:#E6E6E6;font-family:'Syne',sans-serif;margin:0;padding:0;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#7B2CFF04 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
+
+.if-layout{
+  display:flex;gap:24px;
+  max-width:1200px;margin:0 auto;
+  padding:0 24px 60px;
+  min-height:calc(100vh - 120px);
+  position:relative;z-index:1;
+}
+
+/* ══ LEFT STAGE ══ */
+.if-stage{
+  width:45%;flex-shrink:0;
+  position:sticky;top:80px;
+  height:calc(100vh - 100px);max-height:640px;
+  border-radius:20px;
+  background:linear-gradient(180deg,#06060f,#030308);
+  border:1px solid rgba(255,255,255,0.06);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:space-between;
+  padding:16px;overflow:hidden;
+  box-shadow:0 0 60px rgba(0,0,0,0.8);
+}
+
+.if-level-strip{
+  width:100%;display:flex;align-items:center;
+  gap:10px;margin-bottom:8px;flex-shrink:0;
+}
+
+.if-char-area{
+  position:relative;flex:1;width:100%;
+  display:flex;align-items:center;justify-content:center;
+  min-height:0;
+}
+.if-char-bg{
+  position:absolute;inset:0;border-radius:12px;
+  transition:background 0.6s ease;
+}
+.if-char-aura{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:220px;height:220px;border-radius:50%;
+  pointer-events:none;
+  animation:auraPulse 3s ease-in-out infinite;
+  transition:background 0.5s ease;
+}
+@keyframes auraPulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3;}
+  50%{transform:translate(-50%,-50%) scale(1.15);opacity:0.6;}
+}
+.if-char-display{
+  position:relative;z-index:3;
+  font-size:160px;line-height:1;
+  animation:charFloat 5s ease-in-out infinite;
+  filter:drop-shadow(0 0 30px var(--skin-color,#7B2CFF));
+  cursor:default;
+  transition:filter 0.4s,opacity 0.2s ease,transform 0.2s ease;
+  user-select:none;
+}
+@keyframes charFloat{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-12px) scale(1.02);}
+}
+.if-char-floor{
+  position:absolute;bottom:20px;left:50%;
+  transform:translateX(-50%);
+  width:100px;height:12px;border-radius:50%;
+  background:var(--skin-color,rgba(123,44,255,0.3));
+  filter:blur(8px);opacity:0.4;
+  animation:floorPulse 5s ease-in-out infinite;
+  pointer-events:none;z-index:2;
+  transition:background 0.5s ease;
+}
+@keyframes floorPulse{
+  0%,100%{width:100px;opacity:0.3;}
+  50%{width:70px;opacity:0.15;}
+}
+.if-char-particles{
+  position:absolute;inset:0;pointer-events:none;z-index:4;
+}
+@keyframes particleFloat{
+  0%{opacity:0;transform:translateY(0) scale(0.5);}
+  20%{opacity:0.7;}
+  70%{opacity:0.3;}
+  100%{opacity:0;transform:translateY(-50px) scale(0.2);}
+}
+
+.if-nameplate{
+  width:100%;text-align:center;
+  padding:12px;flex-shrink:0;
+  background:rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.05);
+  border-radius:10px;margin-top:8px;
+}
+.if-np-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--tx);letter-spacing:0.08em;}
+.if-np-skin{font-family:'DM Mono',monospace;font-size:10px;color:var(--skin-color,var(--ac));letter-spacing:0.15em;margin-top:2px;transition:color 0.4s;}
+.if-np-rarity{font-size:9px;letter-spacing:0.12em;color:var(--mu);font-family:'DM Mono',monospace;margin-top:3px;}
+
+/* ══ RIGHT OPTIONS ══ */
+.if-options{flex:1;display:flex;flex-direction:column;gap:16px;min-width:0;}
+.if-header{padding-top:4px;}
+.if-header-eyebrow{font-size:9px;letter-spacing:0.25em;color:var(--ac);font-family:'DM Mono',monospace;margin-bottom:4px;}
+.if-header-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--tx);letter-spacing:0.03em;line-height:1;}
+
+.if-tabs{display:flex;gap:4px;background:rgba(255,255,255,0.03);border-radius:10px;padding:4px;flex-shrink:0;}
+.if-tab{
+  flex:1;padding:10px;border:none;
+  background:transparent;color:var(--mu);
+  font-family:'Bebas Neue',sans-serif;font-size:14px;
+  letter-spacing:0.1em;border-radius:8px;
+  cursor:pointer;transition:all 0.15s;
+}
+.if-tab.active{background:rgba(123,44,255,0.2);color:var(--ac);border:1px solid rgba(123,44,255,0.3);}
+.if-tab-content{
+  flex:1;min-height:0;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:rgba(184,159,255,0.15) transparent;
+}
+.if-tab-content::-webkit-scrollbar{width:3px}
+.if-tab-content::-webkit-scrollbar-thumb{background:rgba(184,159,255,0.15);border-radius:2px}
+.if-tab-content.hidden{display:none}
+
+/* SKIN GRID */
+.if-skin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+
+.skin-card{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:14px;padding:16px 12px;
+  text-align:center;cursor:pointer;
+  transition:all 0.2s ease;
+  position:relative;overflow:hidden;
+}
+.skin-card:not(.sk-locked):hover{
+  transform:translateY(-4px);
+  box-shadow:0 12px 32px rgba(0,0,0,0.4),0 0 16px color-mix(in srgb,var(--skin-c,var(--ac)) 20%,transparent);
+}
+.skin-card.selected{
+  border-color:var(--skin-c,var(--ac)) !important;
+  background:color-mix(in srgb,var(--skin-c,var(--ac)) 8%,transparent);
+  box-shadow:0 0 20px color-mix(in srgb,var(--skin-c,var(--ac)) 25%,transparent);
+}
+.skin-card.sk-locked{opacity:0.4;cursor:not-allowed;}
+.skin-card.sk-legendary::after,.skin-card.sk-mythic::after{
+  content:'';position:absolute;
+  top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
+  animation:skinShimmer 4s linear infinite;pointer-events:none;
+}
+@keyframes skinShimmer{from{left:-100%;}to{left:200%;}}
+@keyframes skinIdle{0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-4px) scale(1.05);}}
+
+/* AURA GRID */
+.if-aura-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.aura-card{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:14px;padding:16px 12px;
+  text-align:center;cursor:pointer;
+  transition:all 0.2s ease;position:relative;
+}
+.aura-card:not(.sk-locked):hover{transform:translateY(-3px);}
+.aura-card.selected{
+  border-color:var(--skin-c,var(--ac)) !important;
+  background:color-mix(in srgb,var(--skin-c,var(--ac)) 8%,transparent);
+}
+.aura-card.sk-locked{opacity:0.4;cursor:not-allowed;}
+
+/* EMOTE GRID */
+.if-emote-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.emote-card{
+  background:rgba(255,255,255,0.02);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:14px;padding:16px 12px;
+  text-align:center;cursor:pointer;
+  transition:all 0.2s ease;position:relative;
+}
+.emote-card:not(.sk-locked):hover{transform:translateY(-3px);}
+.emote-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.08);}
+.emote-card.sk-locked{opacity:0.4;cursor:not-allowed;}
+
+/* SAVE BAR */
+.if-save-bar{padding-top:16px;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.06);}
+.if-save-btn{
+  width:100%;padding:16px;
+  background:var(--ac);color:#0A0A0A;
+  border:none;border-radius:12px;
+  font-family:'Bebas Neue',sans-serif;font-size:20px;
+  letter-spacing:0.1em;cursor:pointer;
+  transition:all 0.2s;
+}
+.if-save-btn:hover{filter:brightness(1.15);box-shadow:0 0 24px rgba(123,44,255,0.4);transform:translateY(-1px);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .if-skin-grid,.if-aura-grid,.if-emote-grid{grid-template-columns:repeat(2,1fr);}
+  .if-layout{flex-direction:column;padding:0 16px 60px;}
+  .if-stage{width:100%;position:relative;top:auto;height:400px;max-height:400px;}
+  .if-char-display{font-size:110px;}
+}
+@media(max-width:480px){
+  .if-skin-grid,.if-aura-grid,.if-emote-grid{grid-template-columns:repeat(2,1fr);}
+  .if-header-title{font-size:28px;}
+}
+</style>
+</head>
+<body>
+<div id="app" style="display:none">
+
+<script src="/app-nav.js"></script>
+<script>AppNav.init({active:'identity'});</script>
+
+<div class="if-layout">
+
+  <!-- LEFT: IDENTITY STAGE -->
+  <div class="if-stage" id="ifStage">
+
+    <div class="if-level-strip" id="ifLevelStrip"></div>
+
+    <div class="if-char-area">
+      <div class="if-char-bg" id="ifCharBg"></div>
+      <div class="if-char-aura" id="ifCharAura"></div>
+      <div class="if-char-display" id="ifCharDisplay">🥷</div>
+      <div class="if-char-floor" id="ifCharFloor"></div>
+      <div class="if-char-particles" id="ifCharParticles"></div>
+    </div>
+
+    <div class="if-nameplate">
+      <div class="if-np-name" id="ifNpName"></div>
+      <div class="if-np-skin" id="ifNpSkin">VOID RUNNER</div>
+      <div class="if-np-rarity" id="ifNpRarity">COMMON · Fast. Silent. Untraceable.</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: OPTIONS PANEL -->
+  <div class="if-options">
+
+    <div class="if-header">
+      <div class="if-header-eyebrow">⬡ LEDGR IDENTITY SYSTEM</div>
+      <div class="if-header-title">IDENTITY FORGE</div>
+    </div>
+
+    <div class="if-tabs">
+      <button class="if-tab active" data-tab="skins">✦ SKINS</button>
+      <button class="if-tab" data-tab="aura">◎ AURA</button>
+      <button class="if-tab" data-tab="emotes">⚡ EMOTES</button>
+    </div>
+
+    <div class="if-tab-content" id="tab-skins">
+      <div class="if-skin-grid" id="skinGrid"></div>
+    </div>
+
+    <div class="if-tab-content hidden" id="tab-aura">
+      <div class="if-aura-grid" id="auraGrid"></div>
+    </div>
+
+    <div class="if-tab-content hidden" id="tab-emotes">
+      <div class="if-emote-grid" id="emoteGrid"></div>
+    </div>
+
+    <div class="if-save-bar">
+      <button class="if-save-btn" id="ifSaveBtn" onclick="saveIdentity()">SAVE IDENTITY →</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="identityToast"></div>
+</div>
+
+<script>
+var API='https://ledgr-backend-production-c132.up.railway.app';
+var currentSkin=null;
+
+// ══════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════
+
+var SKINS=[
+  {id:'void-runner',    name:'Void Runner',    emoji:'🥷', tier:'COMMON',    color:'#7B2CFF',
+   bg:'linear-gradient(180deg,#050510,#020208)',       aura:'rgba(123,44,255,0.4)',  particles:'sparks',
+   unlock:null,      desc:'Fast. Silent. Untraceable.'},
+  {id:'the-sniper',     name:'The Sniper',      emoji:'🎯', tier:'RARE',      color:'#00E5A0',
+   bg:'linear-gradient(180deg,#030f0a,#010805)',        aura:'rgba(0,229,160,0.35)', particles:'crosshair',
+   unlock:'Gold division',         desc:'One pick. One result. Elite precision.'},
+  {id:'iron-grinder',   name:'Iron Grinder',    emoji:'⚙️', tier:'RARE',      color:'#FFD700',
+   bg:'linear-gradient(180deg,#0f0d00,#080600)',        aura:'rgba(255,215,0,0.3)',  particles:'sparks',
+   unlock:'Win 25 picks',          desc:'Relentless. High volume. Unstoppable.'},
+  {id:'the-reaper',     name:'The Reaper',      emoji:'💀', tier:'EPIC',      color:'#FF3355',
+   bg:'linear-gradient(180deg,#0f0003,#050001)',        aura:'rgba(255,51,85,0.4)',  particles:'skulls',
+   unlock:'Diamond division',      desc:'Hunts massive odds. Deadly when strikes.'},
+  {id:'demon-king',     name:'Demon King',      emoji:'😈', tier:'EPIC',      color:'#FF6B35',
+   bg:'linear-gradient(180deg,#0f0500,#060200)',        aura:'rgba(255,107,53,0.4)', particles:'embers',
+   unlock:'5W streak achieved',    desc:'Streak machine. Feeds on momentum.'},
+  {id:'the-kingmaker',  name:'The Kingmaker',   emoji:'👑', tier:'LEGENDARY', color:'#FFD700',
+   bg:'radial-gradient(ellipse at 50% 0%,#1a1400,#060500)', aura:'rgba(255,215,0,0.5)', particles:'stars',
+   unlock:'Rank #1 globally',      desc:'Others follow. Others profit.'},
+  {id:'iceblood',       name:'Iceblood',        emoji:'❄️', tier:'LEGENDARY', color:'#4FC3F7',
+   bg:'linear-gradient(180deg,#020d14,#010608)',        aura:'rgba(79,195,247,0.4)', particles:'snow',
+   unlock:'Reliability 85+',       desc:'Zero emotion. Pure process. Mechanical.'},
+  {id:'dragon-soul',    name:'Dragon Soul',     emoji:'🐉', tier:'LEGENDARY', color:'#FF3355',
+   bg:'radial-gradient(ellipse at 50% 80%,#200008,#080002)', aura:'rgba(255,51,85,0.5)', particles:'fire',
+   unlock:'The Demon or Reaper archetype', desc:'Ancient power. Unstoppable force.'},
+  {id:'ghost-walker',   name:'Ghost Walker',    emoji:'👻', tier:'MYTHIC',    color:'#FF6BFF',
+   bg:'linear-gradient(180deg,#050010,#020008)',        aura:'rgba(255,107,255,0.45)', particles:'glitch',
+   unlock:'????',     desc:'??? ??? ???'},
+  {id:'void-emperor',   name:'Void Emperor',    emoji:'🌑', tier:'MYTHIC',    color:'#8B00FF',
+   bg:'radial-gradient(circle at 50%,#040010,#000)',   aura:'rgba(139,0,255,0.5)', particles:'void',
+   unlock:'????',     desc:'Beyond classification. Beyond rank.'},
+  {id:'diamond-mind',   name:'Diamond Mind',    emoji:'💎', tier:'MYTHIC',    color:'#00E5FF',
+   bg:'linear-gradient(180deg,#001a1a,#000a0a)',        aura:'rgba(0,229,255,0.45)', particles:'crystals',
+   unlock:'????',     desc:'Elite in every metric simultaneously.'},
+];
+
+var AURAS=[
+  {id:'none',   name:'None',        color:'#6B6B6B', css:'none',                   unlock:null},
+  {id:'purple', name:'Void Aura',   color:'#7B2CFF', css:'rgba(123,44,255,0.4)',   unlock:null},
+  {id:'fire',   name:'Fire Aura',   color:'#FF6B35', css:'rgba(255,107,53,0.5)',   unlock:'5W streak'},
+  {id:'ice',    name:'Ice Aura',    color:'#4FC3F7', css:'rgba(79,195,247,0.4)',   unlock:'Reliability 75+'},
+  {id:'gold',   name:'Gold Aura',   color:'#FFD700', css:'rgba(255,215,0,0.45)',   unlock:'Elite division'},
+  {id:'ghost',  name:'Ghost Aura',  color:'#FF6BFF', css:'rgba(255,107,255,0.4)',  unlock:'????'},
+  {id:'void',   name:'Singularity', color:'#8B00FF', css:'rgba(139,0,255,0.5)',    unlock:'????'},
+];
+
+var EMOTES=[
+  {id:'money-rain',   name:'Money Rain',   emoji:'💰', unlock:null,       tier:'COMMON'},
+  {id:'crown-flex',   name:'Crown Flex',   emoji:'👑', unlock:'Rank #1',  tier:'LEGENDARY'},
+  {id:'glitch-pulse', name:'Glitch Pulse', emoji:'⚡', unlock:'Diamond',  tier:'EPIC'},
+  {id:'victory',      name:'Victory Pose', emoji:'🏆', unlock:'10 wins',  tier:'RARE'},
+  {id:'ghost-fade',   name:'Ghost Fade',   emoji:'👻', unlock:'????',     tier:'MYTHIC'},
+];
+
+// ══════════════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════════════
+
+function getTierColor(tier){
+  return {COMMON:'#6B6B6B',RARE:'#4FC3F7',EPIC:'#7B2CFF',LEGENDARY:'#FFD700',MYTHIC:'#FF6BFF'}[tier]||'#6B6B6B';
+}
+
+// ══════════════════════════════════════════════════════════════
+// LEVEL STRIP
+// ══════════════════════════════════════════════════════════════
+
+function renderLevelStrip(){
+  var ud={};try{ud=JSON.parse(localStorage.getItem('ledgr_user')||'{}');}catch(e){}
+  var picks=parseInt(ud.picks||0);
+  var level=Math.max(1,Math.floor(picks/3)+1);
+  var xp=Math.round(((picks%3)/3)*100);
+  var el=document.getElementById('ifLevelStrip');
+  if(!el)return;
+  el.innerHTML=
+    '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:22px;color:var(--ac);min-width:44px;line-height:1.1;text-align:center;">LVL<br>'+level+'</div>'+
+    '<div style="flex:1;">'+
+      '<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);font-family:\'DM Mono\',monospace;margin-bottom:4px;">'+
+        '<span>IDENTITY XP</span><span>'+xp+'%</span>'+
+      '</div>'+
+      '<div style="height:3px;background:#111;border-radius:2px;overflow:hidden;">'+
+        '<div id="ifXpFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--ac),#00E5A0);border-radius:2px;transition:width 1s ease;"></div>'+
+      '</div>'+
+    '</div>';
+  setTimeout(function(){var f=document.getElementById('ifXpFill');if(f)f.style.width=xp+'%';},150);
+}
+
+// ══════════════════════════════════════════════════════════════
+// PARTICLES
+// ══════════════════════════════════════════════════════════════
+
+function startParticles(type,color){
+  var container=document.getElementById('ifCharParticles');
+  if(!container)return;
+  container.innerHTML='';
+  var configs={
+    sparks:   {emoji:'⚡',count:6, size:'10px'},
+    skulls:   {emoji:'💀',count:4, size:'12px'},
+    embers:   {emoji:'🔥',count:5, size:'10px'},
+    stars:    {emoji:'⭐',count:8, size:'10px'},
+    snow:     {emoji:'❄', count:8, size:'10px'},
+    fire:     {emoji:'🔥',count:6, size:'12px'},
+    glitch:   {emoji:'◈', count:6, size:'10px'},
+    void:     {emoji:'◉', count:5, size:'10px'},
+    crystals: {emoji:'💠',count:5, size:'10px'},
+    crosshair:{emoji:'🎯',count:4, size:'10px'},
+  };
+  var cfg=configs[type];
+  if(!cfg)return;
+  for(var i=0;i<cfg.count;i++){
+    var p=document.createElement('div');
+    p.style.cssText=
+      'position:absolute;font-size:'+cfg.size+';'+
+      'left:'+Math.round(8+Math.random()*80)+'%;'+
+      'top:'+Math.round(8+Math.random()*72)+'%;'+
+      'opacity:0;pointer-events:none;'+
+      'animation:particleFloat '+(4+Math.random()*4).toFixed(1)+'s '+
+      'ease-in-out '+(Math.random()*3).toFixed(1)+'s infinite;';
+    p.textContent=cfg.emoji;
+    container.appendChild(p);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SKIN RENDERING
+// ══════════════════════════════════════════════════════════════
+
+function renderSkinCard(skin,isUnlocked,isSelected){
+  var tc=getTierColor(skin.tier);
+  return '<div class="skin-card sk-'+skin.tier.toLowerCase()+
+    (isSelected?' selected':'')+
+    (isUnlocked?'':' sk-locked')+'" '+
+    'data-skin="'+skin.id+'" '+
+    'style="--skin-c:'+skin.color+';" '+
+    'onclick="'+(isUnlocked?'selectSkin(\''+skin.id+'\')':'')+'">' +
+
+    '<div style="position:absolute;top:8px;left:8px;font-size:7px;letter-spacing:0.15em;'+
+    'font-family:\'DM Mono\',monospace;color:'+tc+';border:1px solid '+tc+'44;'+
+    'background:'+tc+'11;border-radius:20px;padding:2px 6px;">'+skin.tier+'</div>'+
+
+    '<div style="font-size:52px;margin:14px 0 8px;'+
+    'filter:drop-shadow(0 0 12px '+skin.color+');'+
+    'animation:skinIdle 4s ease-in-out '+(Math.random()*2).toFixed(1)+'s infinite;">'+
+    skin.emoji+'</div>'+
+
+    '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:14px;'+
+    'color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+
+    (isUnlocked?skin.name:'???')+'</div>'+
+
+    '<div style="font-size:9px;font-family:\'Syne\',sans-serif;line-height:1.3;min-height:14px;'+
+    'color:'+(isUnlocked?'rgba(255,255,255,0.18)':tc)+';word-break:break-word;">'+
+    (isUnlocked?'':'🔒 '+skin.unlock)+'</div>'+
+
+    (isSelected?'<div style="position:absolute;top:8px;right:8px;font-size:12px;color:'+skin.color+';">✓</div>':'')+
+
+  '</div>';
+}
+
+function renderSkins(){
+  var g=document.getElementById('skinGrid');
+  if(!g)return;
+  var saved=localStorage.getItem('ledgr_identity_skin')||'void-runner';
+  g.innerHTML=SKINS.map(function(skin){
+    return renderSkinCard(skin,skin.unlock===null,saved===skin.id);
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// AURA RENDERING
+// ══════════════════════════════════════════════════════════════
+
+function renderAuras(){
+  var g=document.getElementById('auraGrid');
+  if(!g)return;
+  var saved=localStorage.getItem('ledgr_identity_aura')||'purple';
+  g.innerHTML=AURAS.map(function(a){
+    var isLocked=a.unlock!==null;
+    var isSelected=saved===a.id;
+    return '<div class="aura-card'+(isSelected?' selected':'')+(isLocked?' sk-locked':'')+'" '+
+      'data-aura="'+a.id+'" '+
+      'style="--skin-c:'+a.color+';" '+
+      'onclick="'+(isLocked?'':'selectAura(\''+a.id+'\')')+'">' +
+      '<div style="width:56px;height:56px;border-radius:50%;margin:0 auto 10px;'+
+      (a.css==='none'
+        ? 'border:1px dashed rgba(255,255,255,0.12);background:transparent;'
+        : 'background:radial-gradient(circle,'+a.css+',transparent 70%);animation:auraPulse 3s ease-in-out infinite;')+
+      '"></div>'+
+      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+a.name+'</div>'+
+      (isLocked
+        ? '<div style="font-size:9px;color:'+a.color+';font-family:\'DM Mono\',monospace;">🔒 '+a.unlock+'</div>'
+        : '<div style="font-size:9px;color:'+(isSelected?a.color:'rgba(255,255,255,0.15)')+';font-family:\'DM Mono\',monospace;">'+(isSelected?'ACTIVE':'UNLOCKED')+'</div>')+
+    '</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// EMOTE RENDERING
+// ══════════════════════════════════════════════════════════════
+
+function renderEmotes(){
+  var g=document.getElementById('emoteGrid');
+  if(!g)return;
+  var saved=localStorage.getItem('ledgr_identity_emote')||'money-rain';
+  g.innerHTML=EMOTES.map(function(em){
+    var isLocked=em.unlock!==null;
+    var isSelected=saved===em.id;
+    var tc=getTierColor(em.tier);
+    return '<div class="emote-card'+(isSelected?' selected':'')+(isLocked?' sk-locked':'')+'" '+
+      'data-emote="'+em.id+'" '+
+      'onclick="'+(isLocked?'':'selectEmote(\''+em.id+'\')')+'">' +
+      '<div style="position:absolute;top:8px;left:8px;font-size:7px;letter-spacing:0.15em;'+
+      'font-family:\'DM Mono\',monospace;color:'+tc+';border:1px solid '+tc+'44;'+
+      'background:'+tc+'11;border-radius:20px;padding:2px 6px;">'+em.tier+'</div>'+
+      '<div style="font-size:44px;margin:14px 0 8px;">'+em.emoji+'</div>'+
+      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+em.name+'</div>'+
+      (isLocked?'<div style="font-size:9px;color:'+tc+';font-family:\'DM Mono\',monospace;">🔒 '+em.unlock+'</div>':
+        '<div style="font-size:9px;color:'+(isSelected?'var(--ac)':'rgba(255,255,255,0.15)')+';font-family:\'DM Mono\',monospace;">'+(isSelected?'EQUIPPED':'UNLOCKED')+'</div>')+
+    '</div>';
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+// SELECTION LOGIC
+// ══════════════════════════════════════════════════════════════
+
+function selectSkin(skinId){
+  var skin=SKINS.find(function(s){return s.id===skinId;});
+  if(!skin)return;
+  currentSkin=skin;
+
+  document.querySelectorAll('.skin-card').forEach(function(c){
+    c.classList.toggle('selected',c.getAttribute('data-skin')===skinId);
+    var check=c.querySelector('[data-chk]');
+    if(check)check.remove();
+    if(c.getAttribute('data-skin')===skinId){
+      var chk=document.createElement('div');
+      chk.setAttribute('data-chk','1');
+      chk.style.cssText='position:absolute;top:8px;right:8px;font-size:12px;color:'+skin.color+';';
+      chk.textContent='✓';
+      c.appendChild(chk);
+    }
+  });
+
+  // Stage flash
+  var stage=document.getElementById('ifStage');
+  if(stage){
+    var flash=document.createElement('div');
+    flash.style.cssText='position:absolute;inset:0;z-index:20;background:'+skin.color+';opacity:0;border-radius:inherit;pointer-events:none;transition:opacity 0.1s;';
+    stage.appendChild(flash);
+    requestAnimationFrame(function(){
+      flash.style.opacity='0.18';
+      setTimeout(function(){flash.style.opacity='0';setTimeout(function(){flash.remove();},200);},80);
+    });
+  }
+
+  // Char swap
+  var charEl=document.getElementById('ifCharDisplay');
+  if(charEl){
+    charEl.style.opacity='0';
+    charEl.style.transform='translateY(10px) scale(0.85)';
+    setTimeout(function(){
+      charEl.textContent=skin.emoji;
+      charEl.style.filter='drop-shadow(0 0 30px '+skin.color+')';
+      charEl.style.opacity='1';
+      charEl.style.transform='';
+    },200);
+  }
+
+  // Aura
+  var auraEl=document.getElementById('ifCharAura');
+  if(auraEl)auraEl.style.background='radial-gradient(circle,'+skin.aura+',transparent 70%)';
+
+  // Background
+  var bgEl=document.getElementById('ifCharBg');
+  if(bgEl)bgEl.style.background=skin.bg;
+
+  // Floor
+  var floor=document.getElementById('ifCharFloor');
+  if(floor)floor.style.background=skin.color;
+
+  // CSS var
+  document.documentElement.style.setProperty('--skin-color',skin.color);
+
+  // Nameplate
+  var npSkin=document.getElementById('ifNpSkin');
+  var npRarity=document.getElementById('ifNpRarity');
+  if(npSkin){npSkin.textContent=skin.name.toUpperCase();npSkin.style.color=skin.color;}
+  if(npRarity)npRarity.textContent=skin.tier+' · '+skin.desc;
+
+  // Particles
+  startParticles(skin.particles,skin.color);
+
+  // Persist
+  localStorage.setItem('ledgr_identity_skin',skinId);
+}
+
+function selectAura(auraId){
+  var aura=AURAS.find(function(a){return a.id===auraId;});
+  if(!aura)return;
+
+  document.querySelectorAll('.aura-card').forEach(function(c){
+    c.classList.toggle('selected',c.getAttribute('data-aura')===auraId);
+  });
+
+  var auraEl=document.getElementById('ifCharAura');
+  if(auraEl){
+    auraEl.style.background=aura.css==='none'
+      ?'transparent'
+      :'radial-gradient(circle,'+aura.css+',transparent 70%)';
+  }
+
+  localStorage.setItem('ledgr_identity_aura',auraId);
+}
+
+function selectEmote(emoteId){
+  document.querySelectorAll('.emote-card').forEach(function(c){
+    c.classList.toggle('selected',c.getAttribute('data-emote')===emoteId);
+  });
+  localStorage.setItem('ledgr_identity_emote',emoteId);
+}
+
+// ══════════════════════════════════════════════════════════════
+// SAVE
+// ══════════════════════════════════════════════════════════════
+
+function saveIdentity(){
+  var config={
+    skin:  localStorage.getItem('ledgr_identity_skin')  ||'void-runner',
+    aura:  localStorage.getItem('ledgr_identity_aura')  ||'purple',
+    emote: localStorage.getItem('ledgr_identity_emote') ||'money-rain'
+  };
+  localStorage.setItem('ledgr_identity',JSON.stringify(config));
+
+  var token=localStorage.getItem('ledgr_token');
+  if(token){
+    fetch(API+'/profile',{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({identityConfig:config})
+    }).then(function(r){showToast(r.ok?'✓ Identity saved':'✓ Saved locally');})
+      .catch(function(){showToast('✓ Saved locally');});
+  } else {
+    showToast('✓ Saved locally');
+  }
+
+  var btn=document.getElementById('ifSaveBtn');
+  if(btn){
+    btn.textContent='✓ IDENTITY SAVED';
+    btn.style.background='#00E5A0';
+    btn.style.color='#0A0A0A';
+    setTimeout(function(){
+      btn.textContent='SAVE IDENTITY →';
+      btn.style.background='';
+      btn.style.color='';
+    },2000);
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════════
+
+function showToast(msg){
+  var t=document.getElementById('identityToast');
+  if(!t)return;
+  t.textContent=msg;
+  t.style.cssText=
+    'position:fixed;bottom:24px;left:50%;'+
+    'transform:translateX(-50%) translateY(0);'+
+    'background:#1E1E1E;border:1px solid var(--ac);'+
+    'border-radius:8px;padding:10px 20px;'+
+    'font-family:\'Syne\',sans-serif;font-size:13px;'+
+    'color:var(--ac);z-index:9999;'+
+    'transition:opacity 0.3s ease,transform 0.3s ease;pointer-events:none;opacity:1;';
+  clearTimeout(t._t);
+  t._t=setTimeout(function(){
+    t.style.opacity='0';
+    t.style.transform='translateX(-50%) translateY(20px)';
+  },2200);
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+
+window.onload=function(){
+  var ud=localStorage.getItem('ledgr_user')||localStorage.getItem('user');
+  var tk=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!ud||!tk){window.location.replace('/login');return;}
+  var user;
+  try{user=JSON.parse(ud);}catch(e){window.location.replace('/login');return;}
+  if(!user||!user.username){window.location.replace('/login');return;}
+
+  document.getElementById('app').style.display='block';
+
+  var npName=document.getElementById('ifNpName');
+  if(npName)npName.textContent='@'+user.username;
+
+  renderLevelStrip();
+  renderSkins();
+  renderAuras();
+  renderEmotes();
+
+  // Apply saved state
+  selectSkin(localStorage.getItem('ledgr_identity_skin')||'void-runner');
+  selectAura(localStorage.getItem('ledgr_identity_aura')||'purple');
+  selectEmote(localStorage.getItem('ledgr_identity_emote')||'money-rain');
+
+  // Tab switching
+  document.querySelectorAll('.if-tab').forEach(function(tab){
+    tab.addEventListener('click',function(){
+      var target=this.getAttribute('data-tab');
+      document.querySelectorAll('.if-tab').forEach(function(t){t.classList.toggle('active',t===tab);});
+      document.querySelectorAll('.if-tab-content').forEach(function(c){c.classList.toggle('hidden',c.id!=='tab-'+target);});
+    });
+  });
+
+  // Sync from backend
+  fetch(API+'/profile/'+user.username,{headers:{Authorization:'Bearer '+tk}})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(data){
+      if(!data)return;
+      // Update picks count for level
+      if(data.picks!==undefined){
+        try{var u=JSON.parse(localStorage.getItem('ledgr_user')||'{}');u.picks=data.picks;localStorage.setItem('ledgr_user',JSON.stringify(u));renderLevelStrip();}catch(e){}
+      }
+      // Apply backend identity config
+      if(data.identityConfig){
+        var cfg=data.identityConfig;
+        if(cfg.skin){localStorage.setItem('ledgr_identity_skin',cfg.skin);selectSkin(cfg.skin);renderSkins();}
+        if(cfg.aura){localStorage.setItem('ledgr_identity_aura',cfg.aura);selectAura(cfg.aura);renderAuras();}
+        if(cfg.emote){localStorage.setItem('ledgr_identity_emote',cfg.emote);selectEmote(cfg.emote);renderEmotes();}
+      }
+    }).catch(function(){});
+};
+</script>
+</body>
+</html>

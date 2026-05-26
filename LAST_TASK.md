@@ -1,10 +1,49 @@
 # LAST TASK
 
-Date: 2026-05-25
+Date: 2026-05-26
 
 Current phase: PHASE 3 — Prestige + Monetization Foundation
 
-Current objective: avatar creator page ✅ COMPLETE
+Current objective: avatar creator visual upgrade round 2 ✅ COMPLETE
+
+---
+
+## Last completed: avatar creator full rework (2026-05-25)
+
+`avatar-creator/index.html` only. No backend changes.
+
+### FIX 1 — Compact header
+- Replaced large `.ac-hero` block (eyebrow + 88px title + subtitle) with compact `.ac-topstrip` flex strip
+- Strip: eyebrow `⬡ LEDGR IDENTITY SYSTEM` · title `AVATAR FORGE` · sub `Build your competitive identity`
+
+### FIX 2 — Forge stage
+- Replaced `.avatar-stage` with `.forge-stage`: dark gradient bg, purple grid overlay, `fs-glow` breathing orb
+- Identity plate at bottom: `fsPlateName` / `fsPlateClass` / `fsPlateRank`
+- Rarity badge top-left, STAGE + PAUSE controls top-right
+- `fs-floor-shadow` with `shadowBreath` keyframe
+
+### FIX 3 — Improved CSS character
+- Replaced `buildCharacter()` with `buildCharacterCSS(cfg)`: 180×260px container
+- Larger head (68×72px), proper shoulders bar (100px wide), armor-plated torso with chest plate + center line
+- Arms with hand rounds, legs with feet extensions — Roblox proportions
+- Weapon positions updated: scope lower-right, blade tall, orb float, tablet block
+
+### FIX 4 — Class cards with mini character previews
+- `IDENTITY_CLASSES` replaced with new `CLASSES` array (8 entries) with `colors: {main, accent, line}`
+- New IDs: void-runner, iron-grinder, shadow-sniper, cyber-sharp, demon-king, crown-bearer, ghost-walker, void-emperor
+- `buildMiniCharacter(cls)` renders 48×72px character per class with correct colors
+- `renderClassCard()` builds card with tier color, mini preview, name/desc, lock state
+- CSS changed from `.class-card`/`.class-grid` to `.ac-class-card`/`.ac-class-grid`
+
+### FIX 5 — DNA scan full-screen overlay
+- Replaced in-stage overlay with full-page `position:fixed` black overlay appended to body
+- 3-step sequence: scan bar → IDENTITY DETECTED → result name (64px Bebas) + tap to continue
+- On click-to-close: applies detected class via `applyDnaClass()` + removes overlay
+- Reads `ledgr_archetype` from localStorage, falls back to 'The Sniper'
+
+### Modified files
+- `avatar-creator/index.html`
+- `LAST_TASK.md`
 
 ---
 

@@ -20,7 +20,12 @@
       "Bash(Get-Content \"C:\\\\Users\\\\emanu\\\\.claude\\\\projects\\\\C--Users-emanu-ledgr\\\\9ebcc8c0-4148-4e78-b073-c7c43105c7ce.jsonl\")",
       "Bash(Select-Object -Last 100)",
       "Bash(Out-String)",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "Bash(git -C \"C:/Users/emanu/ledgr\" add settings/index.html)",
+      "Bash(git *)",
+      "Bash(Select-Object Name)",
+      "Bash(awk -F: '$2 > 1600 && $2 < 1620')",
+      "Bash(Remove-Item *)"
     ]
   }
 }
