@@ -68,16 +68,45 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 }
 .if-char-aura{
   position:absolute;top:50%;left:50%;
+  width:280px;height:280px;border-radius:50%;
   transform:translate(-50%,-50%);
-  width:220px;height:220px;border-radius:50%;
-  pointer-events:none;
-  animation:auraPulse 3s ease-in-out infinite;
-  transition:background 0.5s ease;
+  pointer-events:none;z-index:1;
+  transition:all 0.4s ease;
+  opacity:0;
 }
 @keyframes auraPulse{
-  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3;}
-  50%{transform:translate(-50%,-50%) scale(1.15);opacity:0.6;}
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}
+  50%{transform:translate(-50%,-50%) scale(1.15);opacity:1;}
 }
+@keyframes auraVoid{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.7;}
+  50%{transform:translate(-50%,-50%) scale(1.15);opacity:1;}
+}
+@keyframes auraLightning{
+  0%{opacity:0.5;filter:hue-rotate(0deg);}
+  50%{opacity:1;filter:hue-rotate(30deg);}
+}
+@keyframes auraFire{
+  0%,100%{transform:translate(-50%,-50%) scale(1) scaleX(0.9);opacity:0.8;}
+  50%{transform:translate(-50%,-50%) scale(1.1) scaleX(1.1);opacity:1;}
+}
+@keyframes auraIce{
+  0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1);}
+  50%{opacity:0.9;transform:translate(-50%,-50%) scale(1.08);}
+}
+@keyframes auraGalaxy{
+  from{transform:translate(-50%,-50%) rotate(0deg);}
+  to{transform:translate(-50%,-50%) rotate(360deg);}
+}
+@keyframes auraMoney{
+  0%,100%{opacity:0.7;}
+  50%{opacity:1;}
+}
+@keyframes auraDragon{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.8;}
+  50%{transform:translate(-50%,-50%) scale(1.2);opacity:1;}
+}
+
 .if-char-display{
   position:relative;z-index:3;
   width:200px;height:280px;
@@ -198,17 +227,33 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
   to{filter:hue-rotate(360deg);}
 }
 
-/* EMOTE GRID */
-.if-emote-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.emote-card{
+/* ACCESSORIES */
+.acc-section{margin-bottom:16px;}
+.acc-section-title{
+  font-size:9px;letter-spacing:0.2em;
+  color:var(--mu);font-family:'DM Mono',monospace;
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.acc-section-title::after{
+  content:'';flex:1;height:1px;
+  background:rgba(255,255,255,0.06);
+}
+.acc-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.acc-card{
+  display:flex;flex-direction:column;
+  align-items:center;gap:4px;
+  padding:10px 8px;
   background:rgba(255,255,255,0.02);
   border:1px solid rgba(255,255,255,0.06);
-  border-radius:14px;padding:16px 12px;
-  text-align:center;cursor:pointer;
-  transition:all 0.2s ease;position:relative;
+  border-radius:10px;cursor:pointer;
+  min-width:72px;transition:all 0.15s;
 }
-.emote-card:hover{transform:translateY(-3px);}
-.emote-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.08);}
+.acc-card:hover{border-color:var(--ac);transform:translateY(-2px);}
+.acc-card.selected{border-color:var(--ac);background:rgba(123,44,255,0.1);}
+.acc-icon{font-size:24px;}
+.acc-name{font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;text-align:center;}
+.acc-tier{font-size:7px;letter-spacing:0.1em;font-family:'DM Mono',monospace;}
 
 /* SAVE BAR */
 .if-save-bar{padding-top:16px;flex-shrink:0;border-top:1px solid rgba(255,255,255,0.06);}
@@ -224,13 +269,13 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 
 /* RESPONSIVE */
 @media(max-width:900px){
-  .if-skin-grid,.if-aura-grid,.if-emote-grid{grid-template-columns:repeat(2,1fr);}
+  .if-skin-grid,.if-aura-grid{grid-template-columns:repeat(2,1fr);}
   .if-layout{flex-direction:column;padding:0 16px 60px;}
   .if-stage{width:100%;position:relative;top:auto;height:400px;max-height:400px;}
   .if-char-display{width:140px;height:196px;}
 }
 @media(max-width:480px){
-  .if-skin-grid,.if-aura-grid,.if-emote-grid{grid-template-columns:repeat(2,1fr);}
+  .if-skin-grid,.if-aura-grid{grid-template-columns:repeat(2,1fr);}
   .if-header-title{font-size:28px;}
 }
 </style>
@@ -277,7 +322,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
     <div class="if-tabs">
       <button class="if-tab active" data-tab="skins">✦ SKINS</button>
       <button class="if-tab" data-tab="aura">◎ AURA</button>
-      <button class="if-tab" data-tab="emotes">⚡ EMOTES</button>
+      <button class="if-tab" data-tab="accessories">💎 ACCESSORIES</button>
     </div>
 
     <div class="if-tab-content" id="tab-skins">
@@ -288,8 +333,19 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       <div class="if-aura-grid" id="auraGrid"></div>
     </div>
 
-    <div class="if-tab-content hidden" id="tab-emotes">
-      <div class="if-emote-grid" id="emoteGrid"></div>
+    <div class="if-tab-content hidden" id="tab-accessories">
+      <div class="acc-section">
+        <div class="acc-section-title">HEADWEAR</div>
+        <div class="acc-grid" id="accHeadGrid"></div>
+      </div>
+      <div class="acc-section">
+        <div class="acc-section-title">JEWELRY</div>
+        <div class="acc-grid" id="accJewelGrid"></div>
+      </div>
+      <div class="acc-section">
+        <div class="acc-section-title">BACK / WINGS</div>
+        <div class="acc-grid" id="accBackGrid"></div>
+      </div>
     </div>
 
     <div class="if-save-bar">
@@ -335,6 +391,80 @@ function getSkinSVG(skinId,size){
       '<ellipse cx="100" cy="68" rx="9" ry="3" fill="#C4AAFF"/>'+
       '<line x1="100" y1="112" x2="100" y2="192" stroke="#7B2CFF" stroke-width="1.5" stroke-dasharray="6 4" opacity="0.4"><animate attributeName="stroke-dashoffset" values="0;-10" dur="0.5s" repeatCount="indefinite"/></line>',
 
+    'the-sniper':
+      '<defs>'+
+        '<radialGradient id="sn-aura" cx="50%" cy="50%"><stop offset="0%" stop-color="#00E5A0" stop-opacity="0.3"/><stop offset="100%" stop-color="#00E5A0" stop-opacity="0"/></radialGradient>'+
+        '<filter id="sn-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="140" rx="70" ry="90" fill="url(#sn-aura)"/>'+
+      '<rect x="72" y="118" width="56" height="92" rx="6" fill="#0a1a12"/>'+
+      '<rect x="72" y="118" width="56" height="92" rx="6" fill="none" stroke="#00E5A0" stroke-width="0.8" opacity="0.5"/>'+
+      '<rect x="80" y="126" width="40" height="50" rx="4" fill="#0d2018" stroke="#00E5A0" stroke-width="0.5"/>'+
+      '<circle cx="100" cy="151" r="10" fill="none" stroke="#00E5A0" stroke-width="1.5" filter="url(#sn-glow)"/>'+
+      '<line x1="100" y1="140" x2="100" y2="162" stroke="#00E5A0" stroke-width="1" filter="url(#sn-glow)"/>'+
+      '<line x1="89" y1="151" x2="111" y2="151" stroke="#00E5A0" stroke-width="1" filter="url(#sn-glow)"/>'+
+      '<rect x="72" y="198" width="16" height="12" rx="3" fill="#0d2018" stroke="#00E5A0" stroke-width="0.5"/>'+
+      '<rect x="112" y="198" width="16" height="12" rx="3" fill="#0d2018" stroke="#00E5A0" stroke-width="0.5"/>'+
+      '<rect x="50" y="114" width="24" height="16" rx="8" fill="#0a1a12" stroke="#00E5A0" stroke-width="0.6"/>'+
+      '<rect x="126" y="114" width="24" height="16" rx="8" fill="#0a1a12" stroke="#00E5A0" stroke-width="0.6"/>'+
+      '<rect x="50" y="128" width="22" height="68" rx="11" fill="#0a1a12" stroke="#00E5A0" stroke-width="0.4"/>'+
+      '<rect x="128" y="128" width="22" height="68" rx="11" fill="#0a1a12" stroke="#00E5A0" stroke-width="0.4"/>'+
+      '<ellipse cx="61" cy="200" rx="13" ry="10" fill="#051008" stroke="#00E5A0" stroke-width="0.6"/>'+
+      '<ellipse cx="139" cy="200" rx="13" ry="10" fill="#051008" stroke="#00E5A0" stroke-width="0.6"/>'+
+      '<rect x="138" y="120" width="8" height="110" rx="4" fill="#0d2018" stroke="#00E5A0" stroke-width="0.8"/>'+
+      '<rect x="134" y="148" width="16" height="6" rx="3" fill="#0d2018" stroke="#00E5A0" stroke-width="0.5"/>'+
+      '<rect x="140" y="116" width="4" height="16" rx="2" fill="#00E5A0" opacity="0.7" filter="url(#sn-glow)"/>'+
+      '<rect x="74" y="208" width="22" height="52" rx="8" fill="#081410"/>'+
+      '<rect x="104" y="208" width="22" height="52" rx="8" fill="#081410"/>'+
+      '<rect x="68" y="252" width="30" height="16" rx="6" fill="#0a1a12" stroke="#00E5A0" stroke-width="0.6"/>'+
+      '<rect x="102" y="252" width="30" height="16" rx="6" fill="#0a1a12" stroke="#00E5A0" stroke-width="0.6"/>'+
+      '<rect x="86" y="106" width="28" height="14" rx="6" fill="#0a1a12"/>'+
+      '<ellipse cx="100" cy="76" rx="33" ry="35" fill="#0a1a12"/>'+
+      '<ellipse cx="100" cy="76" rx="33" ry="35" fill="none" stroke="#00E5A0" stroke-width="1" opacity="0.6"/>'+
+      '<path d="M70 68 Q100 58 130 68 L130 86 Q100 96 70 86Z" fill="#051008" stroke="#00E5A0" stroke-width="0.8"/>'+
+      '<ellipse cx="86" cy="76" rx="8" ry="6" fill="#00E5A0" filter="url(#sn-glow)"><animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="114" cy="76" rx="8" ry="6" fill="#00E5A0" filter="url(#sn-glow)"><animate attributeName="opacity" values="1;0.5;1" dur="3s" repeatCount="indefinite"/></ellipse>'+
+      '<rect x="130" y="62" width="24" height="8" rx="4" fill="#0d2018" stroke="#00E5A0" stroke-width="0.8"/>'+
+      '<circle cx="154" cy="66" r="5" fill="none" stroke="#00E5A0" stroke-width="1" filter="url(#sn-glow)"/>',
+
+    'iron-grinder':
+      '<defs>'+
+        '<radialGradient id="ig-aura" cx="50%" cy="50%"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.3"/><stop offset="100%" stop-color="#FFD700" stop-opacity="0"/></radialGradient>'+
+        '<filter id="ig-glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="150" rx="75" ry="95" fill="url(#ig-aura)"/>'+
+      '<rect x="62" y="114" width="76" height="100" rx="8" fill="#1a1200"/>'+
+      '<rect x="62" y="114" width="76" height="100" rx="8" fill="none" stroke="#FFD700" stroke-width="1" opacity="0.5"/>'+
+      '<rect x="70" y="120" width="60" height="60" rx="6" fill="#1f1600" stroke="#FFD700" stroke-width="1"/>'+
+      '<circle cx="76" cy="126" r="3" fill="#FFD700" opacity="0.7"/>'+
+      '<circle cx="124" cy="126" r="3" fill="#FFD700" opacity="0.7"/>'+
+      '<circle cx="76" cy="174" r="3" fill="#FFD700" opacity="0.7"/>'+
+      '<circle cx="124" cy="174" r="3" fill="#FFD700" opacity="0.7"/>'+
+      '<polygon points="100,130 110,148 90,148" fill="#FFD700" filter="url(#ig-glow)"/>'+
+      '<rect x="38" y="108" width="28" height="22" rx="10" fill="#1a1200" stroke="#FFD700" stroke-width="1"/>'+
+      '<rect x="134" y="108" width="28" height="22" rx="10" fill="#1a1200" stroke="#FFD700" stroke-width="1"/>'+
+      '<polygon points="38,108 44,96 50,108" fill="#FFD700" opacity="0.7"/>'+
+      '<polygon points="150,108 156,96 162,108" fill="#FFD700" opacity="0.7"/>'+
+      '<rect x="38" y="128" width="26" height="72" rx="13" fill="#1a1200" stroke="#FFD700" stroke-width="0.6"/>'+
+      '<rect x="136" y="128" width="26" height="72" rx="13" fill="#1a1200" stroke="#FFD700" stroke-width="0.6"/>'+
+      '<rect x="38" y="160" width="26" height="8" rx="4" fill="#FFD700" opacity="0.4"/>'+
+      '<rect x="136" y="160" width="26" height="8" rx="4" fill="#FFD700" opacity="0.4"/>'+
+      '<rect x="36" y="196" width="30" height="20" rx="8" fill="#1a1200" stroke="#FFD700" stroke-width="1"/>'+
+      '<rect x="134" y="196" width="30" height="20" rx="8" fill="#1a1200" stroke="#FFD700" stroke-width="1"/>'+
+      '<rect x="68" y="212" width="26" height="50" rx="8" fill="#140e00"/>'+
+      '<rect x="106" y="212" width="26" height="50" rx="8" fill="#140e00"/>'+
+      '<rect x="60" y="254" width="36" height="18" rx="7" fill="#1a1200" stroke="#FFD700" stroke-width="0.8"/>'+
+      '<rect x="104" y="254" width="36" height="18" rx="7" fill="#1a1200" stroke="#FFD700" stroke-width="0.8"/>'+
+      '<rect x="84" y="102" width="32" height="14" rx="6" fill="#1a1200" stroke="#FFD700" stroke-width="0.5"/>'+
+      '<ellipse cx="100" cy="72" rx="35" ry="36" fill="#1a1200"/>'+
+      '<rect x="88" y="36" width="24" height="8" rx="4" fill="#FFD700" filter="url(#ig-glow)"/>'+
+      '<rect x="82" y="42" width="36" height="12" rx="4" fill="#1f1600" stroke="#FFD700" stroke-width="0.8"/>'+
+      '<path d="M70 66 Q100 58 130 66 L128 84 Q100 92 72 84Z" fill="#0f0a00" stroke="#FFD700" stroke-width="0.8"/>'+
+      '<ellipse cx="86" cy="74" rx="9" ry="7" fill="#FFD700" filter="url(#ig-glow)"><animate attributeName="opacity" values="1;0.6;1" dur="2.5s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="114" cy="74" rx="9" ry="7" fill="#FFD700" filter="url(#ig-glow)"><animate attributeName="opacity" values="1;0.6;1" dur="2.5s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="86" cy="74" rx="4" ry="3" fill="#3a2a00"/>'+
+      '<ellipse cx="114" cy="74" rx="4" ry="3" fill="#3a2a00"/>',
+
     'the-reaper':
       '<defs>'+
         '<filter id="grp" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
@@ -360,6 +490,38 @@ function getSkinSVG(skinId,size){
       '<path d="M162 195 Q178 168 165 150 Q158 164 162 178Z" fill="#FF3355" opacity="0.65"/>'+
       '<path d="M78 245 Q70 258 76 268" fill="none" stroke="#FF3355" stroke-width="2" opacity="0.35"/>'+
       '<path d="M122 248 Q130 260 124 268" fill="none" stroke="#FF3355" stroke-width="2" opacity="0.35"/>',
+
+    'demon-king':
+      '<defs>'+
+        '<filter id="gdk" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rdk" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF7844"/><stop offset="100%" stop-color="#380E00"/></radialGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="265" rx="46" ry="10" fill="#FF6B35" opacity="0.3" filter="url(#gdk)"/>'+
+      '<path d="M72 242 Q64 226 77 216 Q74 231 82 229 Q77 241 72 242Z" fill="#FF6B35" opacity="0.45"/>'+
+      '<path d="M128 242 Q136 226 123 216 Q126 231 118 229 Q123 241 128 242Z" fill="#FF6B35" opacity="0.45"/>'+
+      '<path d="M86 198 L80 265 L96 265 L100 216 L104 265 L120 265 L114 198Z" fill="#3A1800"/>'+
+      '<path d="M68 106 L74 198 L126 198 L132 106Z" fill="url(#rdk)"/>'+
+      '<path d="M80 118 Q100 110 120 118 L120 155 Q100 162 80 155Z" fill="#5A2500" opacity="0.45"/>'+
+      '<path d="M68 112 L48 170 L62 177 L78 122Z" fill="#C04A20"/>'+
+      '<path d="M132 112 L152 170 L138 177 L122 122Z" fill="#C04A20"/>'+
+      '<ellipse cx="48" cy="180" rx="12" ry="10" fill="#3A1000"/>'+
+      '<path d="M42 174 L38 162 M48 172 L46 161 M54 174 L52 162" stroke="#C04A20" stroke-width="2.5" stroke-linecap="round"/>'+
+      '<ellipse cx="152" cy="180" rx="12" ry="10" fill="#3A1000"/>'+
+      '<path d="M146 174 L142 162 M152 172 L150 161 M158 174 L156 162" stroke="#C04A20" stroke-width="2.5" stroke-linecap="round"/>'+
+      '<rect x="92" y="80" width="16" height="28" rx="5" fill="#C04A20"/>'+
+      '<ellipse cx="100" cy="63" rx="28" ry="30" fill="#8A3010"/>'+
+      '<ellipse cx="100" cy="66" rx="22" ry="24" fill="#A84020"/>'+
+      '<path d="M78 56 Q100 48 122 56" fill="none" stroke="#3A1000" stroke-width="5" stroke-linecap="round"/>'+
+      '<ellipse cx="90" cy="63" rx="7" ry="6" fill="#FF6B35" filter="url(#gdk)"/>'+
+      '<ellipse cx="110" cy="63" rx="7" ry="6" fill="#FF6B35" filter="url(#gdk)"/>'+
+      '<ellipse cx="90" cy="63" rx="4" ry="3.5" fill="#FFD700"/>'+
+      '<ellipse cx="110" cy="63" rx="4" ry="3.5" fill="#FFD700"/>'+
+      '<path d="M96 73 L100 83 L104 73Z" fill="#3A1000"/>'+
+      '<path d="M88 80 L93 91 M100 82 L100 93 M112 80 L107 91" stroke="#E8C0A0" stroke-width="3" stroke-linecap="round"/>'+
+      '<path d="M80 43 Q60 15 72 5 Q80 26 86 43Z" fill="#2A0A00"/>'+
+      '<path d="M80 43 Q62 18 74 8 Q82 28 86 43Z" fill="#5A2000"/>'+
+      '<path d="M120 43 Q140 15 128 5 Q120 26 114 43Z" fill="#2A0A00"/>'+
+      '<path d="M120 43 Q138 18 126 8 Q118 28 114 43Z" fill="#5A2000"/>',
 
     'the-kingmaker':
       '<defs>'+
@@ -425,66 +587,6 @@ function getSkinSVG(skinId,size){
       '<line x1="88" y1="120" x2="88" y2="186" stroke="#4FC3F7" stroke-width="0.8" opacity="0.2" stroke-dasharray="3 6"/>'+
       '<line x1="112" y1="120" x2="112" y2="186" stroke="#4FC3F7" stroke-width="0.8" opacity="0.2" stroke-dasharray="3 6"/>',
 
-    'demon-king':
-      '<defs>'+
-        '<filter id="gdk" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-        '<radialGradient id="rdk" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF7844"/><stop offset="100%" stop-color="#380E00"/></radialGradient>'+
-      '</defs>'+
-      '<ellipse cx="100" cy="265" rx="46" ry="10" fill="#FF6B35" opacity="0.3" filter="url(#gdk)"/>'+
-      '<path d="M72 242 Q64 226 77 216 Q74 231 82 229 Q77 241 72 242Z" fill="#FF6B35" opacity="0.45"/>'+
-      '<path d="M128 242 Q136 226 123 216 Q126 231 118 229 Q123 241 128 242Z" fill="#FF6B35" opacity="0.45"/>'+
-      '<path d="M86 198 L80 265 L96 265 L100 216 L104 265 L120 265 L114 198Z" fill="#3A1800"/>'+
-      '<path d="M68 106 L74 198 L126 198 L132 106Z" fill="url(#rdk)"/>'+
-      '<path d="M80 118 Q100 110 120 118 L120 155 Q100 162 80 155Z" fill="#5A2500" opacity="0.45"/>'+
-      '<path d="M68 112 L48 170 L62 177 L78 122Z" fill="#C04A20"/>'+
-      '<path d="M132 112 L152 170 L138 177 L122 122Z" fill="#C04A20"/>'+
-      '<ellipse cx="48" cy="180" rx="12" ry="10" fill="#3A1000"/>'+
-      '<path d="M42 174 L38 162 M48 172 L46 161 M54 174 L52 162" stroke="#C04A20" stroke-width="2.5" stroke-linecap="round"/>'+
-      '<ellipse cx="152" cy="180" rx="12" ry="10" fill="#3A1000"/>'+
-      '<path d="M146 174 L142 162 M152 172 L150 161 M158 174 L156 162" stroke="#C04A20" stroke-width="2.5" stroke-linecap="round"/>'+
-      '<rect x="92" y="80" width="16" height="28" rx="5" fill="#C04A20"/>'+
-      '<ellipse cx="100" cy="63" rx="28" ry="30" fill="#8A3010"/>'+
-      '<ellipse cx="100" cy="66" rx="22" ry="24" fill="#A84020"/>'+
-      '<path d="M78 56 Q100 48 122 56" fill="none" stroke="#3A1000" stroke-width="5" stroke-linecap="round"/>'+
-      '<ellipse cx="90" cy="63" rx="7" ry="6" fill="#FF6B35" filter="url(#gdk)"/>'+
-      '<ellipse cx="110" cy="63" rx="7" ry="6" fill="#FF6B35" filter="url(#gdk)"/>'+
-      '<ellipse cx="90" cy="63" rx="4" ry="3.5" fill="#FFD700"/>'+
-      '<ellipse cx="110" cy="63" rx="4" ry="3.5" fill="#FFD700"/>'+
-      '<path d="M96 73 L100 83 L104 73Z" fill="#3A1000"/>'+
-      '<path d="M88 80 L93 91 M100 82 L100 93 M112 80 L107 91" stroke="#E8C0A0" stroke-width="3" stroke-linecap="round"/>'+
-      '<path d="M80 43 Q60 15 72 5 Q80 26 86 43Z" fill="#2A0A00"/>'+
-      '<path d="M80 43 Q62 18 74 8 Q82 28 86 43Z" fill="#5A2000"/>'+
-      '<path d="M120 43 Q140 15 128 5 Q120 26 114 43Z" fill="#2A0A00"/>'+
-      '<path d="M120 43 Q138 18 126 8 Q118 28 114 43Z" fill="#5A2000"/>',
-
-    'ghost-walker':
-      '<defs>'+
-        '<filter id="ggw" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
-        '<radialGradient id="rgw" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF6BFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#3A0042" stop-opacity="0.7"/></radialGradient>'+
-        '<linearGradient id="lgw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF6BFF" stop-opacity="0.85"/><stop offset="100%" stop-color="#FF6BFF" stop-opacity="0"/></linearGradient>'+
-      '</defs>'+
-      '<ellipse cx="100" cy="262" rx="52" ry="18" fill="#FF6BFF" opacity="0.15" filter="url(#ggw)"/>'+
-      '<path d="M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z" fill="url(#lgw)" opacity="0.7">'+
-        '<animate attributeName="d" values="M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z;M62 192 Q58 232 70 268 Q84 243 100 268 Q116 243 130 268 Q142 232 138 192Z;M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z" dur="3s" repeatCount="indefinite"/>'+
-      '</path>'+
-      '<ellipse cx="100" cy="148" rx="44" ry="60" fill="#FF6BFF" opacity="0.3" filter="url(#ggw)"/>'+
-      '<ellipse cx="100" cy="145" rx="36" ry="54" fill="url(#rgw)" opacity="0.65"/>'+
-      '<ellipse cx="60" cy="148" rx="18" ry="30" fill="#FF6BFF" opacity="0.2" transform="rotate(-15 60 148)"/>'+
-      '<ellipse cx="140" cy="148" rx="18" ry="30" fill="#FF6BFF" opacity="0.2" transform="rotate(15 140 148)"/>'+
-      '<rect x="93" y="82" width="14" height="26" rx="5" fill="#C040C0" opacity="0.75"/>'+
-      '<ellipse cx="100" cy="65" rx="30" ry="32" fill="#D060D0"/>'+
-      '<ellipse cx="100" cy="65" rx="30" ry="32" fill="#FF6BFF" opacity="0.4" filter="url(#ggw)"/>'+
-      '<ellipse cx="90" cy="62" rx="8" ry="8" fill="#1A0022"/>'+
-      '<ellipse cx="110" cy="62" rx="8" ry="8" fill="#1A0022"/>'+
-      '<ellipse cx="90" cy="62" rx="5" ry="5" fill="#FF6BFF" filter="url(#ggw)"/>'+
-      '<ellipse cx="110" cy="62" rx="5" ry="5" fill="#FF6BFF" filter="url(#ggw)"/>'+
-      '<ellipse cx="90" cy="62" rx="3" ry="3" fill="#FFC8FF"/>'+
-      '<ellipse cx="110" cy="62" rx="3" ry="3" fill="#FFC8FF"/>'+
-      '<text x="100" y="80" text-anchor="middle" fill="#FF6BFF" font-size="10" font-family="monospace" opacity="0.55">???</text>'+
-      '<circle cx="68" cy="112" r="3" fill="#FF6BFF" opacity="0.5"><animate attributeName="cy" values="112;102;112" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/></circle>'+
-      '<circle cx="132" cy="120" r="2" fill="#FF6BFF" opacity="0.4"><animate attributeName="cy" values="120;108;120" dur="2.5s" repeatCount="indefinite"/></circle>'+
-      '<circle cx="80" cy="96" r="2" fill="#FFC8FF" opacity="0.5"><animate attributeName="cy" values="96;86;96" dur="1.8s" repeatCount="indefinite"/></circle>',
-
     'dragon-soul':
       '<defs>'+
         '<filter id="gds" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
@@ -523,6 +625,68 @@ function getSkinSVG(skinId,size){
       '<path d="M86 48 Q76 30 80 18 Q88 33 90 48Z" fill="#2A0008"/>'+
       '<path d="M114 48 Q124 30 120 18 Q112 33 110 48Z" fill="#2A0008"/>'+
       '<path d="M106 88 Q118 102 128 93 Q120 110 108 99Z" fill="#FF6B35" opacity="0.5" filter="url(#gds)"/>',
+
+    'ghost-walker':
+      '<defs>'+
+        '<filter id="ggw" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+        '<radialGradient id="rgw" cx="50%" cy="30%" r="70%"><stop offset="0%" stop-color="#FF6BFF" stop-opacity="0.9"/><stop offset="100%" stop-color="#3A0042" stop-opacity="0.7"/></radialGradient>'+
+        '<linearGradient id="lgw" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FF6BFF" stop-opacity="0.85"/><stop offset="100%" stop-color="#FF6BFF" stop-opacity="0"/></linearGradient>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="262" rx="52" ry="18" fill="#FF6BFF" opacity="0.15" filter="url(#ggw)"/>'+
+      '<path d="M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z" fill="url(#lgw)" opacity="0.7">'+
+        '<animate attributeName="d" values="M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z;M62 192 Q58 232 70 268 Q84 243 100 268 Q116 243 130 268 Q142 232 138 192Z;M62 192 Q52 228 66 268 Q82 246 100 268 Q118 246 134 268 Q148 228 138 192Z" dur="3s" repeatCount="indefinite"/>'+
+      '</path>'+
+      '<ellipse cx="100" cy="148" rx="44" ry="60" fill="#FF6BFF" opacity="0.3" filter="url(#ggw)"/>'+
+      '<ellipse cx="100" cy="145" rx="36" ry="54" fill="url(#rgw)" opacity="0.65"/>'+
+      '<ellipse cx="60" cy="148" rx="18" ry="30" fill="#FF6BFF" opacity="0.2" transform="rotate(-15 60 148)"/>'+
+      '<ellipse cx="140" cy="148" rx="18" ry="30" fill="#FF6BFF" opacity="0.2" transform="rotate(15 140 148)"/>'+
+      '<rect x="93" y="82" width="14" height="26" rx="5" fill="#C040C0" opacity="0.75"/>'+
+      '<ellipse cx="100" cy="65" rx="30" ry="32" fill="#D060D0"/>'+
+      '<ellipse cx="100" cy="65" rx="30" ry="32" fill="#FF6BFF" opacity="0.4" filter="url(#ggw)"/>'+
+      '<ellipse cx="90" cy="62" rx="8" ry="8" fill="#1A0022"/>'+
+      '<ellipse cx="110" cy="62" rx="8" ry="8" fill="#1A0022"/>'+
+      '<ellipse cx="90" cy="62" rx="5" ry="5" fill="#FF6BFF" filter="url(#ggw)"/>'+
+      '<ellipse cx="110" cy="62" rx="5" ry="5" fill="#FF6BFF" filter="url(#ggw)"/>'+
+      '<ellipse cx="90" cy="62" rx="3" ry="3" fill="#FFC8FF"/>'+
+      '<ellipse cx="110" cy="62" rx="3" ry="3" fill="#FFC8FF"/>'+
+      '<text x="100" y="80" text-anchor="middle" fill="#FF6BFF" font-size="10" font-family="monospace" opacity="0.55">???</text>'+
+      '<circle cx="68" cy="112" r="3" fill="#FF6BFF" opacity="0.5"><animate attributeName="cy" values="112;102;112" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.5;0.9;0.5" dur="2s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="132" cy="120" r="2" fill="#FF6BFF" opacity="0.4"><animate attributeName="cy" values="120;108;120" dur="2.5s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="80" cy="96" r="2" fill="#FFC8FF" opacity="0.5"><animate attributeName="cy" values="96;86;96" dur="1.8s" repeatCount="indefinite"/></circle>',
+
+    'void-emperor':
+      '<defs>'+
+        '<radialGradient id="ve-aura" cx="50%" cy="50%"><stop offset="0%" stop-color="#8B00FF" stop-opacity="0.6"/><stop offset="60%" stop-color="#4B0082" stop-opacity="0.2"/><stop offset="100%" stop-color="#8B00FF" stop-opacity="0"/></radialGradient>'+
+        '<filter id="ve-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+      '</defs>'+
+      '<ellipse cx="100" cy="140" rx="90" ry="115" fill="url(#ve-aura)"><animate attributeName="rx" values="90;105;90" dur="5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0.7;1;0.7" dur="5s" repeatCount="indefinite"/></ellipse>'+
+      '<circle cx="40" cy="80" r="2" fill="#8B00FF" filter="url(#ve-glow)"><animate attributeName="opacity" values="0;1;0" dur="3s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="165" cy="120" r="2" fill="#8B00FF" filter="url(#ve-glow)"><animate attributeName="opacity" values="0;1;0" dur="4s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="35" cy="200" r="1.5" fill="#FF6BFF" filter="url(#ve-glow)"><animate attributeName="opacity" values="0;1;0" dur="2.5s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="170" cy="180" r="1.5" fill="#8B00FF"><animate attributeName="opacity" values="0;1;0" dur="3.5s" repeatCount="indefinite"/></circle>'+
+      '<path d="M55 110 Q30 200 35 280 Q100 262 165 280 Q170 200 145 110Z" fill="#030010" opacity="0.95"/>'+
+      '<path d="M55 110 Q30 200 35 280" fill="none" stroke="#8B00FF" stroke-width="0.8" opacity="0.4"/>'+
+      '<path d="M145 110 Q170 200 165 280" fill="none" stroke="#8B00FF" stroke-width="0.8" opacity="0.4"/>'+
+      '<rect x="72" y="112" width="56" height="90" rx="8" fill="#050015"/>'+
+      '<ellipse cx="100" cy="155" rx="16" ry="20" fill="none" stroke="#8B00FF" stroke-width="1.5" filter="url(#ve-glow)"><animate attributeName="ry" values="20;24;20" dur="3s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="100" cy="155" rx="8" ry="10" fill="#8B00FF" opacity="0.4" filter="url(#ve-glow)"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="62" cy="112" rx="18" ry="11" fill="#050015" stroke="#8B00FF" stroke-width="0.8"/>'+
+      '<ellipse cx="138" cy="112" rx="18" ry="11" fill="#050015" stroke="#8B00FF" stroke-width="0.8"/>'+
+      '<rect x="44" y="120" width="20" height="75" rx="10" fill="#050015" stroke="#8B00FF" stroke-width="0.4"/>'+
+      '<rect x="136" y="120" width="20" height="75" rx="10" fill="#050015" stroke="#8B00FF" stroke-width="0.4"/>'+
+      '<circle cx="52" cy="200" r="12" fill="#8B00FF" opacity="0.3" filter="url(#ve-glow)"><animate attributeName="r" values="12;15;12" dur="2s" repeatCount="indefinite"/></circle>'+
+      '<circle cx="52" cy="200" r="6" fill="#8B00FF" filter="url(#ve-glow)"/>'+
+      '<rect x="86" y="100" width="28" height="14" rx="6" fill="#050015"/>'+
+      '<ellipse cx="100" cy="70" rx="34" ry="36" fill="#050010"/>'+
+      '<path d="M66 54 Q100 22 134 54 Q136 78 100 90 Q64 78 66 54Z" fill="#020008" opacity="0.98"/>'+
+      '<ellipse cx="87" cy="68" rx="10" ry="10" fill="#8B00FF" filter="url(#ve-glow)"><animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="113" cy="68" rx="10" ry="10" fill="#8B00FF" filter="url(#ve-glow)"><animate attributeName="opacity" values="1;0.3;1" dur="2.5s" repeatCount="indefinite"/></ellipse>'+
+      '<ellipse cx="87" cy="68" rx="4" ry="4" fill="#ffffff" opacity="0.8"/>'+
+      '<ellipse cx="113" cy="68" rx="4" ry="4" fill="#ffffff" opacity="0.8"/>'+
+      '<path d="M74 52 L78 36 L88 50 L100 34 L112 50 L122 36 L126 52Z" fill="#050015" stroke="#8B00FF" stroke-width="1" filter="url(#ve-glow)"/>'+
+      '<circle cx="88" cy="44" r="3" fill="#8B00FF" filter="url(#ve-glow)"/>'+
+      '<circle cx="100" cy="38" r="4" fill="#FF6BFF" filter="url(#ve-glow)"/>'+
+      '<circle cx="112" cy="44" r="3" fill="#8B00FF" filter="url(#ve-glow)"/>',
 
     'diamond-mind':
       '<defs>'+
@@ -605,23 +769,61 @@ var SKINS=[
 ];
 
 var AURAS=[
-  {id:'none',        name:'None',         color:'#6B6B6B', css:'none',                       unlock:null},
-  {id:'void-energy', name:'Void Energy',  color:'#7B2CFF', css:'rgba(123,44,255,0.45)',      unlock:null},
-  {id:'lightning',   name:'Lightning',    color:'#00E5FF', css:'rgba(0,229,255,0.4)',         unlock:null},
-  {id:'fire-core',   name:'Fire Core',    color:'#FF8C00', css:'rgba(255,140,0,0.45)',        unlock:null},
-  {id:'ice-field',   name:'Ice Field',    color:'#4FC3F7', css:'rgba(79,195,247,0.4)',        unlock:null},
-  {id:'galaxy',      name:'Galaxy',       color:'#FF6BFF', css:'rgba(255,107,255,0.45)',      unlock:null},
-  {id:'money-rain',  name:'Money Rain',   color:'#00E5A0', css:'rgba(0,229,160,0.4)',         unlock:null},
-  {id:'dragon',      name:'Dragon',       color:'#FF3355', css:'rgba(255,51,85,0.45)',        unlock:null},
+  {id:'none',        name:'None',         color:'#6B6B6B', css:'none',                  unlock:null},
+  {id:'void-energy', name:'Void Energy',  color:'#7B2CFF', css:'rgba(123,44,255,0.45)', unlock:null,
+   stageBg:'radial-gradient(circle, rgba(123,44,255,0.5) 0%, rgba(123,44,255,0.1) 50%, transparent 70%)',
+   stageAnim:'auraVoid 3s ease-in-out infinite'},
+  {id:'lightning',   name:'Lightning',    color:'#00E5FF', css:'rgba(0,229,255,0.4)',    unlock:null,
+   stageBg:'radial-gradient(circle, rgba(0,229,255,0.5) 0%, rgba(0,229,255,0.1) 50%, transparent 70%)',
+   stageAnim:'auraLightning 0.5s steps(2) infinite'},
+  {id:'fire-core',   name:'Fire Core',    color:'#FF8C00', css:'rgba(255,140,0,0.45)',   unlock:null,
+   stageBg:'radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,107,53,0.3) 40%, rgba(255,51,85,0.1) 70%, transparent 90%)',
+   stageAnim:'auraFire 2s ease-in-out infinite'},
+  {id:'ice-field',   name:'Ice Field',    color:'#4FC3F7', css:'rgba(79,195,247,0.4)',   unlock:null,
+   stageBg:'radial-gradient(circle, rgba(147,210,255,0.5) 0%, rgba(79,195,247,0.2) 50%, transparent 70%)',
+   stageAnim:'auraIce 4s ease-in-out infinite'},
+  {id:'galaxy',      name:'Galaxy',       color:'#FF6BFF', css:'rgba(255,107,255,0.45)', unlock:null,
+   stageBg:'conic-gradient(rgba(255,107,255,0.3), rgba(123,44,255,0.3), rgba(79,195,247,0.3), rgba(255,107,255,0.3))',
+   stageAnim:'auraGalaxy 6s linear infinite'},
+  {id:'money-rain',  name:'Money Rain',   color:'#00E5A0', css:'rgba(0,229,160,0.4)',    unlock:null,
+   stageBg:'radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(0,229,160,0.2) 50%, transparent 70%)',
+   stageAnim:'auraMoney 2s ease-in-out infinite'},
+  {id:'dragon',      name:'Dragon',       color:'#FF3355', css:'rgba(255,51,85,0.45)',   unlock:null,
+   stageBg:'radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,107,53,0.3) 30%, rgba(255,51,85,0.2) 60%, transparent 80%)',
+   stageAnim:'auraDragon 1.5s ease-in-out infinite'},
 ];
 
-var EMOTES=[
-  {id:'money-rain',   name:'Money Rain',   emoji:'💰', unlock:null,       tier:'COMMON'},
-  {id:'crown-flex',   name:'Crown Flex',   emoji:'👑', unlock:'Rank #1',  tier:'LEGENDARY'},
-  {id:'glitch-pulse', name:'Glitch Pulse', emoji:'⚡', unlock:'Diamond',  tier:'EPIC'},
-  {id:'victory',      name:'Victory Pose', emoji:'🏆', unlock:'10 wins',  tier:'RARE'},
-  {id:'ghost-fade',   name:'Ghost Fade',   emoji:'👻', unlock:'????',     tier:'MYTHIC'},
-];
+var ACCESSORIES={
+  head:[
+    {id:'none',      name:'None',        icon:'✕', tier:'COMMON',    color:'#6B6B6B'},
+    {id:'hood',      name:'Hood',        icon:'🪖', tier:'COMMON',   color:'#6B6B6B'},
+    {id:'cap',       name:'Cap',         icon:'🧢', tier:'COMMON',   color:'#6B6B6B'},
+    {id:'mask',      name:'Mask',        icon:'😷', tier:'RARE',     color:'#4FC3F7'},
+    {id:'crown',     name:'Crown',       icon:'👑', tier:'LEGENDARY',color:'#FFD700'},
+    {id:'horns',     name:'Demon Horns', icon:'😈', tier:'EPIC',     color:'#FF3355'},
+    {id:'halo',      name:'Gold Halo',   icon:'😇', tier:'LEGENDARY',color:'#FFD700'},
+    {id:'visor',     name:'Cyber Visor', icon:'🥽', tier:'EPIC',     color:'#7B2CFF'},
+    {id:'headset',   name:'Headset',     icon:'🎧', tier:'RARE',     color:'#4FC3F7'},
+  ],
+  jewelry:[
+    {id:'none',      name:'None',           icon:'✕', tier:'COMMON',color:'#6B6B6B'},
+    {id:'gold-chain',name:'Gold Chain',     icon:'📿', tier:'RARE', color:'#FFD700'},
+    {id:'diamond',   name:'Diamond',        icon:'💎', tier:'EPIC', color:'#4FC3F7'},
+    {id:'cross',     name:'Cross',          icon:'✝', tier:'RARE',  color:'#C0C0C0'},
+    {id:'dog-tags',  name:'Dog Tags',       icon:'🏷', tier:'COMMON',color:'#6B6B6B'},
+    {id:'ice-chain', name:'Ice Chain',      icon:'🧊', tier:'EPIC', color:'#4FC3F7'},
+    {id:'fang',      name:'Fang Necklace',  icon:'🦷', tier:'RARE', color:'#4FC3F7'},
+  ],
+  back:[
+    {id:'none',       name:'None',         icon:'✕', tier:'COMMON',    color:'#6B6B6B'},
+    {id:'wings-dark', name:'Dark Wings',   icon:'🦇', tier:'EPIC',     color:'#7B2CFF'},
+    {id:'wings-gold', name:'Gold Wings',   icon:'🪽', tier:'LEGENDARY',color:'#FFD700'},
+    {id:'sword',      name:'Energy Sword', icon:'⚔️', tier:'EPIC',     color:'#7B2CFF'},
+    {id:'dragon-wing',name:'Dragon Wings', icon:'🐲', tier:'LEGENDARY',color:'#FF3355'},
+    {id:'cape',       name:'Shadow Cape',  icon:'🌑', tier:'RARE',     color:'#4FC3F7'},
+    {id:'jetpack',    name:'Jetpack',      icon:'🚀', tier:'EPIC',     color:'#00E5A0'},
+  ]
+};
 
 // ══════════════════════════════════════════════════════════════
 // HELPERS
@@ -761,29 +963,27 @@ function renderAuras(){
 }
 
 // ══════════════════════════════════════════════════════════════
-// EMOTE RENDERING
+// ACCESSORIES RENDERING
 // ══════════════════════════════════════════════════════════════
 
-function renderEmotes(){
-  var g=document.getElementById('emoteGrid');
-  if(!g)return;
-  var saved=localStorage.getItem('ledgr_identity_emote')||'money-rain';
-  g.innerHTML=EMOTES.map(function(em){
-    var isLocked=em.unlock!==null;
-    var isSelected=saved===em.id;
-    var tc=getTierColor(em.tier);
-    return '<div class="emote-card'+(isSelected?' selected':'')+(isLocked?' sk-locked':'')+'" '+
-      'data-emote="'+em.id+'" '+
-      'onclick="'+(isLocked?'':'selectEmote(\''+em.id+'\')')+'">' +
-      '<div style="position:absolute;top:8px;left:8px;font-size:7px;letter-spacing:0.15em;'+
-      'font-family:\'DM Mono\',monospace;color:'+tc+';border:1px solid '+tc+'44;'+
-      'background:'+tc+'11;border-radius:20px;padding:2px 6px;">'+em.tier+'</div>'+
-      '<div style="font-size:44px;margin:14px 0 8px;">'+em.emoji+'</div>'+
-      '<div style="font-family:\'Bebas Neue\',sans-serif;font-size:13px;color:var(--tx);letter-spacing:0.05em;margin-bottom:3px;">'+em.name+'</div>'+
-      (isLocked?'<div style="font-size:9px;color:'+tc+';font-family:\'DM Mono\',monospace;">🔒 '+em.unlock+'</div>':
-        '<div style="font-size:9px;color:'+(isSelected?'var(--ac)':'rgba(255,255,255,0.15)')+';font-family:\'DM Mono\',monospace;">'+(isSelected?'EQUIPPED':'UNLOCKED')+'</div>')+
-    '</div>';
-  }).join('');
+function renderAccessories(){
+  ['head','jewelry','back'].forEach(function(cat){
+    var gridId='acc'+(cat.charAt(0).toUpperCase()+cat.slice(1))+'Grid';
+    var g=document.getElementById(gridId);
+    if(!g)return;
+    var saved=localStorage.getItem('ledgr_acc_'+cat)||'none';
+    g.innerHTML=ACCESSORIES[cat].map(function(a){
+      var isSelected=saved===a.id;
+      return '<div class="acc-card'+(isSelected?' selected':'')+'" '+
+        'data-acc-cat="'+cat+'" data-acc="'+a.id+'" '+
+        'onclick="selectAccessory(\''+cat+'\',\''+a.id+'\')" '+
+        'title="'+a.name+'">'+
+        '<div class="acc-icon">'+a.icon+'</div>'+
+        '<div class="acc-name">'+a.name+'</div>'+
+        '<div class="acc-tier" style="color:'+getTierColor(a.tier)+'">'+a.tier+'</div>'+
+      '</div>';
+    }).join('');
+  });
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -830,9 +1030,6 @@ function selectSkin(skinId){
     },200);
   }
 
-  var auraEl=document.getElementById('ifCharAura');
-  if(auraEl)auraEl.style.background='radial-gradient(circle,'+skin.aura+',transparent 70%)';
-
   var bgEl=document.getElementById('ifCharBg');
   if(bgEl)bgEl.style.background=skin.bg;
 
@@ -851,28 +1048,40 @@ function selectSkin(skinId){
 }
 
 function selectAura(auraId){
-  var aura=AURAS.find(function(a){return a.id===auraId;});
-  if(!aura)aura=AURAS.find(function(a){return a.id==='void-energy';})||AURAS[1];
+  localStorage.setItem('ledgr_identity_aura',auraId);
 
   document.querySelectorAll('.aura-card').forEach(function(c){
-    c.classList.toggle('selected',c.getAttribute('data-aura')===aura.id);
+    c.classList.toggle('selected',c.getAttribute('data-aura')===auraId);
   });
 
   var auraEl=document.getElementById('ifCharAura');
-  if(auraEl){
-    auraEl.style.background=aura.css==='none'
-      ?'transparent'
-      :'radial-gradient(circle,'+aura.css+',transparent 70%)';
+  if(!auraEl)return;
+
+  if(auraId==='none'){
+    auraEl.style.background='none';
+    auraEl.style.animation='none';
+    auraEl.style.opacity='0';
+    return;
   }
 
-  localStorage.setItem('ledgr_identity_aura',aura.id);
+  var def=AURAS.find(function(a){return a.id===auraId;});
+  if(!def)return;
+
+  auraEl.style.background=def.stageBg;
+  auraEl.style.animation=def.stageAnim;
+  auraEl.style.opacity='1';
+
+  showToast('✓ Aura: '+auraId.replace(/-/g,' ').toUpperCase());
 }
 
-function selectEmote(emoteId){
-  document.querySelectorAll('.emote-card').forEach(function(c){
-    c.classList.toggle('selected',c.getAttribute('data-emote')===emoteId);
+function selectAccessory(cat,id){
+  localStorage.setItem('ledgr_acc_'+cat,id);
+  document.querySelectorAll('[data-acc-cat="'+cat+'"]').forEach(function(c){
+    c.classList.toggle('selected',c.getAttribute('data-acc')===id);
   });
-  localStorage.setItem('ledgr_identity_emote',emoteId);
+  var found=null;
+  ACCESSORIES[cat].forEach(function(a){if(a.id===id)found=a;});
+  if(found&&found.id!=='none')showToast('✓ Equipped: '+found.name);
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -883,7 +1092,11 @@ function saveIdentity(){
   var config={
     skin:  localStorage.getItem('ledgr_identity_skin')  ||'void-runner',
     aura:  localStorage.getItem('ledgr_identity_aura')  ||'void-energy',
-    emote: localStorage.getItem('ledgr_identity_emote') ||'money-rain'
+    accessories:{
+      head:    localStorage.getItem('ledgr_acc_head')   ||'none',
+      jewelry: localStorage.getItem('ledgr_acc_jewelry')||'none',
+      back:    localStorage.getItem('ledgr_acc_back')   ||'none'
+    }
   };
   localStorage.setItem('ledgr_identity',JSON.stringify(config));
 
@@ -955,15 +1168,13 @@ window.onload=function(){
   renderLevelStrip();
   renderSkins();
   renderAuras();
-  renderEmotes();
+  renderAccessories();
 
   var savedSkin=localStorage.getItem('ledgr_identity_skin')||'void-runner';
   var savedAura=localStorage.getItem('ledgr_identity_aura')||'void-energy';
-  var savedEmote=localStorage.getItem('ledgr_identity_emote')||'money-rain';
 
   selectSkin(savedSkin);
   selectAura(savedAura);
-  selectEmote(savedEmote);
 
   document.querySelectorAll('.if-tab').forEach(function(tab){
     tab.addEventListener('click',function(){
@@ -984,7 +1195,14 @@ window.onload=function(){
         var cfg=data.identityConfig;
         if(cfg.skin){localStorage.setItem('ledgr_identity_skin',cfg.skin);selectSkin(cfg.skin);renderSkins();}
         if(cfg.aura){localStorage.setItem('ledgr_identity_aura',cfg.aura);selectAura(cfg.aura);renderAuras();}
-        if(cfg.emote){localStorage.setItem('ledgr_identity_emote',cfg.emote);selectEmote(cfg.emote);renderEmotes();}
+        if(cfg.accessories){
+          ['head','jewelry','back'].forEach(function(cat){
+            if(cfg.accessories[cat]){
+              localStorage.setItem('ledgr_acc_'+cat,cfg.accessories[cat]);
+            }
+          });
+          renderAccessories();
+        }
       }
     }).catch(function(){});
 };
