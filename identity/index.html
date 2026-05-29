@@ -20,15 +20,11 @@ html{scroll-behavior:smooth}
 body{background:#0A0A0A;color:#E6E6E6;font-family:'Syne',sans-serif;margin:0;padding:0;min-height:100vh}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle,#7B2CFF04 1px,transparent 1px);background-size:32px 32px;pointer-events:none;z-index:0}
 
-.dev-banner{
-  background:linear-gradient(90deg,#FFD700,#FF8C00,#FFD700);
-  background-size:200% 100%;
-  animation:devBannerShift 3s linear infinite;
-  color:#0A0A0A;text-align:center;padding:8px 16px;
-  font-family:'DM Mono',monospace;font-size:11px;font-weight:700;
-  letter-spacing:0.2em;position:sticky;top:72px;z-index:90;
+.if-dev-ind{
+  position:fixed;top:68px;right:12px;z-index:99;
+  font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;
+  color:#FFD700;opacity:0.55;pointer-events:none;
 }
-@keyframes devBannerShift{0%{background-position:0% 0%}100%{background-position:200% 0%}}
 
 .if-layout{
   display:flex;gap:24px;
@@ -137,6 +133,9 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 }
 .if-char-particles{
   position:absolute;inset:0;pointer-events:none;z-index:4;
+}
+.if-acc-overlay{
+  position:absolute;inset:0;pointer-events:none;z-index:5;
 }
 @keyframes particleFloat{
   0%{opacity:0;transform:translateY(0) scale(0.5);}
@@ -286,7 +285,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
 <script src="/app-nav.js"></script>
 <script>AppNav.init({active:'identity'});</script>
 
-<div class="dev-banner">◉ DEV MODE — ALL SKINS UNLOCKED</div>
+<div class="if-dev-ind">DEV ◉ ALL UNLOCKED</div>
 
 <div class="if-layout">
 
@@ -301,6 +300,7 @@ body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(
       <div class="if-char-display" id="ifCharDisplay"></div>
       <div class="if-char-floor" id="ifCharFloor"></div>
       <div class="if-char-particles" id="ifCharParticles"></div>
+      <div class="if-acc-overlay" id="ifAccOverlay"></div>
     </div>
 
     <div class="if-nameplate">
@@ -1047,6 +1047,36 @@ function selectSkin(skinId){
   localStorage.setItem('ledgr_identity_skin',skinId);
 }
 
+function renderAccOverlay(){
+  var overlay=document.getElementById('ifAccOverlay');
+  if(!overlay)return;
+  function findAcc(cat,id){
+    var found=null;
+    (ACCESSORIES[cat]||[]).forEach(function(a){if(a.id===id)found=a;});
+    return found;
+  }
+  var headId=localStorage.getItem('ledgr_acc_head')||'none';
+  var jewelId=localStorage.getItem('ledgr_acc_jewelry')||'none';
+  var backId=localStorage.getItem('ledgr_acc_back')||'none';
+  var headAcc=findAcc('head',headId);
+  var jewelAcc=findAcc('jewelry',jewelId);
+  var backAcc=findAcc('back',backId);
+  var html='';
+  if(backAcc&&backAcc.id!=='none'){
+    html+='<span style="position:absolute;top:30%;left:50%;transform:translateX(-50%);font-size:56px;opacity:0.82;'+
+      'filter:drop-shadow(0 0 14px '+backAcc.color+');pointer-events:none;">'+backAcc.icon+'</span>';
+  }
+  if(headAcc&&headAcc.id!=='none'){
+    html+='<span style="position:absolute;top:8%;left:50%;transform:translateX(-50%);font-size:34px;'+
+      'filter:drop-shadow(0 0 10px '+headAcc.color+');pointer-events:none;">'+headAcc.icon+'</span>';
+  }
+  if(jewelAcc&&jewelAcc.id!=='none'){
+    html+='<span style="position:absolute;top:48%;left:50%;transform:translateX(-50%);font-size:26px;'+
+      'filter:drop-shadow(0 0 8px '+jewelAcc.color+');pointer-events:none;">'+jewelAcc.icon+'</span>';
+  }
+  overlay.innerHTML=html;
+}
+
 function selectAura(auraId){
   localStorage.setItem('ledgr_identity_aura',auraId);
 
@@ -1082,6 +1112,7 @@ function selectAccessory(cat,id){
   var found=null;
   ACCESSORIES[cat].forEach(function(a){if(a.id===id)found=a;});
   if(found&&found.id!=='none')showToast('✓ Equipped: '+found.name);
+  renderAccOverlay();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -1175,6 +1206,7 @@ window.onload=function(){
 
   selectSkin(savedSkin);
   selectAura(savedAura);
+  renderAccOverlay();
 
   document.querySelectorAll('.if-tab').forEach(function(tab){
     tab.addEventListener('click',function(){
@@ -1202,6 +1234,7 @@ window.onload=function(){
             }
           });
           renderAccessories();
+          renderAccOverlay();
         }
       }
     }).catch(function(){});
