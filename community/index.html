@@ -401,10 +401,28 @@ function renderMessages(msgs) {
 
 function msgHTML(msg) {
   const uname = msg.user?.username || 'Unknown';
-  const av = uname.slice(0, 2).toUpperCase();
-  const color = avColor(uname);
+  const isOwn = user && user.username === uname;
+  // Use archetype avatar for own messages; colored initials for others
+  let avInner;
+  if (isOwn && window.LedgrArchetypeAvatar) {
+    const archKey = window.LedgrArchetypeAvatar.getCurrentArchetypeKey();
+    const cosmetic = archKey ? window.LedgrArchetypeAvatar.resolve(archKey) : null;
+    if (cosmetic) {
+      avInner = `<div class="msg-av" style="background:${cosmetic.color}14;border:1.5px solid ${cosmetic.color}60;box-shadow:0 0 10px ${cosmetic.color}33;font-size:16px" onclick="window.location.href='/tipster?u=${uname}'" title="${cosmetic.name}">${cosmetic.badge}</div>`;
+    } else {
+      avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
+    }
+  } else {
+    const archKey = msg.user?.archetype || null;
+    const cosmetic = archKey && window.LedgrArchetypeAvatar ? window.LedgrArchetypeAvatar.resolve(archKey) : null;
+    if (cosmetic) {
+      avInner = `<div class="msg-av" style="background:${cosmetic.color}14;border:1.5px solid ${cosmetic.color}60;font-size:16px" onclick="window.location.href='/tipster?u=${uname}'" title="${cosmetic.name}">${cosmetic.badge}</div>`;
+    } else {
+      avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
+    }
+  }
   return `<div class="msg-group" id="msg-${msg.id}">
-    <div class="msg-av" style="background:${color}" onclick="window.location.href='/tipster?u=${uname}'">${av}</div>
+    ${avInner}
     <div class="msg-body">
       <div class="msg-meta">
         <span class="msg-user" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</span>
@@ -488,6 +506,7 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2600);
 }
 </script>
+<script src="/shared/archetype-avatars.js"></script>
 <script src="/shared/identity.js"></script>
 </body>
 </html>

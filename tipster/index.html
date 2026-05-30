@@ -550,6 +550,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-vignette"></div>
 <div class="toast" id="toast"></div>
 <script src="/shared/avatar.js"></script>
+<script src="/shared/archetype-avatars.js"></script>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
 <script>AppNav.init({ active: 'tipster' });</script>
@@ -1387,7 +1388,10 @@ async function loadProfile(){
     const customAv=window.LedgrAvatar ? window.LedgrAvatar.get(avKey) : localStorage.getItem('ledgr_avatar_'+avKey);
     const customBannerImg=localStorage.getItem('ledgr_banner_img_'+avKey);
 
-    // Build avatar HTML — use custom image if available, otherwise initials + division glow
+    // Build avatar HTML — photo > archetype > initials
+    const archCosmetic = window.LedgrArchetypeAvatar
+      ? window.LedgrArchetypeAvatar.resolve(profileCfg.archetype || bp.archetype)
+      : null;
     let profileAvHTML;
     if(customAv){
       const wrapCls=window.Divisions?divObj.wrapCls:'';
@@ -1395,6 +1399,8 @@ async function loadProfile(){
       profileAvHTML=window.Divisions
         ?`<div class="div-av-wrap ${wrapCls}" style="width:96px;height:96px;border-radius:50%;--dv-orbit:-${orbit}px"><div class="div-av-aura" aria-hidden="true"></div><div class="div-av-inner" style="width:96px;height:96px;border-radius:50%;border:4px solid var(--bg);overflow:hidden"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div></div>`
         :`<div class="avatar-big" style="overflow:hidden;padding:0"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div>`;
+    }else if(archCosmetic){
+      profileAvHTML=`<div class="avatar-big" style="background:${archCosmetic.color}18;border:3px solid ${archCosmetic.color}70;box-shadow:0 0 32px ${archCosmetic.color}50,0 0 60px ${archCosmetic.color}20;font-size:44px;color:${archCosmetic.color}" title="${archCosmetic.name}">${archCosmetic.badge}</div>`;
     }else{
       profileAvHTML=window.Divisions
         ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,var(--ac-vivid),var(--ac-light))',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})

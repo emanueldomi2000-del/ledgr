@@ -1373,7 +1373,17 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
     if(customAv){
       av.innerHTML=`<img src="${customAv}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block"><div class="id-verified">✓</div>`;
     }else{
-      av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+      const _archKey=window.LedgrArchetypeAvatar?window.LedgrArchetypeAvatar.getCurrentArchetypeKey():null;
+      const _archC=_archKey?window.LedgrArchetypeAvatar.resolve(_archKey):null;
+      if(_archC){
+        av.style.background=_archC.color+'18';
+        av.style.borderColor=_archC.color+'70';
+        av.style.boxShadow='0 0 24px '+_archC.color+'50';
+        av.style.fontSize=Math.round((av.offsetWidth||80)*0.44)+'px';
+        av.innerHTML=_archC.badge+'<div class="id-verified">✓</div>';
+      }else{
+        av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
+      }
     }
     if(window.Divisions){
       const rm2=window._myRankingMeta;
@@ -2594,6 +2604,7 @@ function _animStatVal(el,finalText,intOnly){
   requestAnimationFrame(step);
 }
 </script>
+<script src="/shared/archetype-avatars.js"></script>
 <script src="/shared/identity.js"></script>
 <img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">
 </body>

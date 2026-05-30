@@ -2,14 +2,14 @@
   'use strict';
 
   var ARCHETYPES = {
-    'sharp':         { icon:'⚡', name:'The Sharp',           color:'#38bdf8', desc:'Consistently finds value the market underprices. Beats the closing line.' },
-    'value-hunter':  { icon:'💎', name:'The Value Hunter',    color:'#fbbf24', desc:'Targets mispriced odds. High-odds picks, positive long-run EV.' },
-    'underdog-king': { icon:'🐉', name:'The Underdog Hunter', color:'#fb923c', desc:'Backs underdogs. Wins where the crowd bets wrong.' },
-    'grinder':       { icon:'⚙️', name:'The Grinder',         color:'#b89fff', desc:'Volume, consistency, steady edge. Wins through repetition.' },
-    'specialist':    { icon:'🎯', name:'The Specialist',      color:'#34d399', desc:'Dominates one sport. Focus is the edge.' },
-    'data-nerd':     { icon:'📊', name:'The Documentarian',   color:'#38bdf8', desc:'Data-first. Confident when the edge is real. Calibrated, not verbose.' },
-    'high-stakes':   { icon:'🃏', name:'The High Stakes',     color:'#fbbf24', desc:'Maximum conviction, maximum stake. Swings big when the edge is real.' },
-    'contender':     { icon:'🥊', name:'The Contender',       color:'#94a3b8', desc:'Identity in formation. The record is being written.' },
+    'sharp':         { icon:'👁',  name:'The Oracle',        color:'#00D4FF', cosmeticKey:'oracle',       desc:'Reads the market before it moves. Beats the closing line.' },
+    'value-hunter':  { icon:'💎', name:'The Diamond Mind',  color:'#80E8FF', cosmeticKey:'diamond-mind', desc:'Elite precision at finding mispriced odds. Always calculated.' },
+    'underdog-king': { icon:'🐉', name:'The Dragon Soul',   color:'#FF3322', cosmeticKey:'dragon-soul',  desc:'Backs underdogs. Ancient power. Forged against the crowd.' },
+    'grinder':       { icon:'🦈', name:'The Shark',         color:'#5878A0', cosmeticKey:'shark',        desc:'Apex predator. Cold, calculated volume. Wins through repetition.' },
+    'specialist':    { icon:'👑', name:'The Kingmaker',     color:'#C8A000', cosmeticKey:'kingmaker',    desc:'Dominates one sport. Others follow. Others profit.' },
+    'data-nerd':     { icon:'⬡',  name:'The Void Emperor',  color:'#8B00FF', cosmeticKey:'void-emperor', desc:'Operates on a different plane. Data beyond classification.' },
+    'high-stakes':   { icon:'💀', name:'The Reaper',        color:'#FF1515', cosmeticKey:'reaper',       desc:'Maximum conviction. Cold. Precise. Untraceable.' },
+    'contender':     { icon:'🥊', name:'The Contender',     color:'#94a3b8', cosmeticKey:null,           desc:'Identity in formation. The record is being written.' },
     // Deprecated — kept for display only
     'sniper':        { icon:'🎯', name:'The Sniper',          color:'#34d399', desc:'' },
     'demon':         { icon:'😈', name:'The Demon',           color:'#f87171', desc:'' },

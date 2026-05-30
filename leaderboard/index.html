@@ -403,6 +403,7 @@ body::before{content:'';position:fixed;inset:0;
 <div class="bg-spot-l"></div>
 <div class="bg-spot-r"></div>
 <script src="/shared/avatar.js"></script>
+<script src="/shared/archetype-avatars.js"></script>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
 <script>AppNav.init({ active: 'leaderboard' });</script>
@@ -1362,11 +1363,14 @@ function renderLeaderboard() {
     const rankCls = globalRank === 1 ? 'rn-1' : globalRank === 2 ? 'rn-2' : globalRank === 3 ? 'rn-3' : globalRank <= 10 ? 'rn-top' : 'rn-rest';
 
     const storedAv = window.LedgrAvatar ? window.LedgrAvatar.get(t.userId) : (t.userId ? localStorage.getItem('ledgr_avatar_' + t.userId) : null);
+    const archCosmetic = window.LedgrArchetypeAvatar ? window.LedgrArchetypeAvatar.resolve(t.archetype) : null;
     const avHTML = storedAv
       ? `<div class="av" style="background:${COLORS[idx%COLORS.length]};overflow:hidden;padding:0">${t.isLive?'<div class="live-dot"></div>':''}<img src="${storedAv}" style="width:100%;height:100%;object-fit:cover" alt="${t.username}"></div>`
-      : (window.Divisions
-          ? `<div style="position:relative">${window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(),COLORS[idx%COLORS.length],div,{width:38,height:38,borderRadius:10,noParticles:true})}${t.isLive?'<div class="live-dot"></div>':''}</div>`
-          : `<div class="av" style="background:${COLORS[idx%COLORS.length]}">${t.isLive?'<div class="live-dot"></div>':''}${t.username.slice(0,2).toUpperCase()}</div>`);
+      : archCosmetic
+        ? `<div class="av" style="background:${archCosmetic.color}14;border:1.5px solid ${archCosmetic.color}55;box-shadow:0 0 10px ${archCosmetic.color}35;font-size:18px;position:relative" title="${archCosmetic.name}">${t.isLive?'<div class="live-dot"></div>':''}${archCosmetic.badge}</div>`
+        : (window.Divisions
+            ? `<div style="position:relative">${window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(),COLORS[idx%COLORS.length],div,{width:38,height:38,borderRadius:10,noParticles:true})}${t.isLive?'<div class="live-dot"></div>':''}</div>`
+            : `<div class="av" style="background:${COLORS[idx%COLORS.length]}">${t.isLive?'<div class="live-dot"></div>':''}${t.username.slice(0,2).toUpperCase()}</div>`);
 
     const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
     const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, true) : '';

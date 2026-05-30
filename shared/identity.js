@@ -56,6 +56,18 @@
     });
   }
 
+  function applyArchetypeAvatar() {
+    if (!window.LedgrArchetypeAvatar) return;
+    var archKey = window.LedgrArchetypeAvatar.getCurrentArchetypeKey();
+    if (!archKey) return;
+    var selectors = ['.id-av', '#idAv', '.pod-av', '#idAvatar'];
+    selectors.forEach(function(sel) {
+      document.querySelectorAll(sel).forEach(function(el) {
+        window.LedgrArchetypeAvatar.applyToElement(el, archKey, true);
+      });
+    });
+  }
+
   function syncFromBackend() {
     var token = localStorage.getItem('ledgr_token');
     if (!token) return;
@@ -78,12 +90,13 @@
   }
 
   window.LedgrIdentity = {
-    load: function() { applyTheme(); applyBanner(); applyBorder(); applyAvatar(); syncFromBackend(); },
-    applyAll: function() { applyTheme(); applyBanner(); applyBorder(); applyAvatar(); },
+    load: function() { applyTheme(); applyBanner(); applyBorder(); applyAvatar(); applyArchetypeAvatar(); syncFromBackend(); },
+    applyAll: function() { applyTheme(); applyBanner(); applyBorder(); applyAvatar(); applyArchetypeAvatar(); },
     applyTheme: applyTheme,
     applyBanner: applyBanner,
     applyBorder: applyBorder,
     applyAvatar: applyAvatar,
+    applyArchetypeAvatar: applyArchetypeAvatar,
     getCustomization: getCustomization,
     save: function(key, value) {
       localStorage.setItem('ledgr_' + key, value);
