@@ -1389,13 +1389,17 @@ async function loadProfile(){
     const customBannerImg=localStorage.getItem('ledgr_banner_img_'+avKey);
 
     // Build avatar HTML — photo > archetype > initials
+    // rankingMeta.archetype is an enriched object {key,...} — extract key string
+    const _rankArchKey = rankingMeta&&rankingMeta.archetype&&typeof rankingMeta.archetype==='object'
+      ? rankingMeta.archetype.key : (rankingMeta&&rankingMeta.archetype||null);
+    const _avatarArchKey = profileCfg.archetype || _rankArchKey;
     const archCosmetic = window.LedgrArchetypeAvatar
-      ? window.LedgrArchetypeAvatar.resolve(profileCfg.archetype)
+      ? window.LedgrArchetypeAvatar.resolve(_avatarArchKey)
       : null;
-    console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE: tipster — profileCfg.archetype');
-    console.log('[LedgrArchetypeAvatar] ARCHETYPE VALUE:', profileCfg.archetype || null);
+    console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE: tipster | profileCfg.archetype:', profileCfg.archetype, '| rankingMeta.archetype.key:', _rankArchKey);
+    console.log('[LedgrArchetypeAvatar] ARCHETYPE VALUE:', _avatarArchKey || null);
     if(archCosmetic) console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: tipster .avatar-big →', archCosmetic.name, '| badge:', archCosmetic.badge);
-    else console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: tipster .avatar-big → fallback (archCosmetic null, profileCfg.archetype:', profileCfg.archetype||'undefined', ')');
+    else console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: tipster .avatar-big → fallback (no archetype resolved)');
     let profileAvHTML;
     if(customAv){
       const wrapCls=window.Divisions?divObj.wrapCls:'';
