@@ -1364,6 +1364,8 @@ function renderLeaderboard() {
 
     const storedAv = window.LedgrAvatar ? window.LedgrAvatar.get(t.userId) : (t.userId ? localStorage.getItem('ledgr_avatar_' + t.userId) : null);
     const archCosmetic = window.LedgrArchetypeAvatar ? window.LedgrArchetypeAvatar.resolve(t.archetype) : null;
+    if(archCosmetic) console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: leaderboard row @'+t.username+' →', archCosmetic.name, '| t.archetype:', t.archetype);
+    else if(idx<3) console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: leaderboard row @'+t.username+' → fallback | t.archetype:', t.archetype||'undefined');
     const avHTML = storedAv
       ? `<div class="av" style="background:${COLORS[idx%COLORS.length]};overflow:hidden;padding:0">${t.isLive?'<div class="live-dot"></div>':''}<img src="${storedAv}" style="width:100%;height:100%;object-fit:cover" alt="${t.username}"></div>`
       : archCosmetic

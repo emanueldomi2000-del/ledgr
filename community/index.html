@@ -409,8 +409,10 @@ function msgHTML(msg) {
     const cosmetic = archKey ? window.LedgrArchetypeAvatar.resolve(archKey) : null;
     if (cosmetic) {
       avInner = `<div class="msg-av" style="background:${cosmetic.color}14;border:1.5px solid ${cosmetic.color}60;box-shadow:0 0 10px ${cosmetic.color}33;font-size:16px" onclick="window.location.href='/tipster?u=${uname}'" title="${cosmetic.name}">${cosmetic.badge}</div>`;
+      if (!window._commAvLogged) { console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: community own msg @'+uname+' →', cosmetic.name, '| badge:', cosmetic.badge); window._commAvLogged=true; }
     } else {
       avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
+      if (!window._commAvLogged) { console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: community own msg @'+uname+' → initials fallback (archKey:', archKey, ')'); window._commAvLogged=true; }
     }
   } else {
     const archKey = msg.user?.archetype || null;

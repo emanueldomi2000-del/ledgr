@@ -59,13 +59,17 @@
   function applyArchetypeAvatar() {
     if (!window.LedgrArchetypeAvatar) return;
     var archKey = window.LedgrArchetypeAvatar.getCurrentArchetypeKey();
-    if (!archKey) return;
+    if (!archKey) { console.log('[LedgrArchetypeAvatar] applyArchetypeAvatar: no key — skipping'); return; }
     var selectors = ['.id-av', '#idAv', '.pod-av', '#idAvatar'];
+    var applied = 0;
     selectors.forEach(function(sel) {
       document.querySelectorAll(sel).forEach(function(el) {
         window.LedgrArchetypeAvatar.applyToElement(el, archKey, true);
+        applied++;
+        console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: identity.js →', sel, '| key:', archKey);
       });
     });
+    if (applied === 0) console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: identity.js → 0 elements matched selectors', selectors.join(', '));
   }
 
   function syncFromBackend() {

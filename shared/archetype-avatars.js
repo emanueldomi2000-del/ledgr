@@ -50,19 +50,68 @@
     return null;
   }
 
-  // Get the current logged-in user's archetype key from localStorage.
+  // Single-source-of-truth archetype lookup.
+  // Checks in priority order and promotes found value to manualArchetype for next call.
+  var _archKeyCache = null; // reset on page load only
   function getCurrentArchetypeKey() {
     var arch = null;
+    var source = 'none';
+
+    // 1. ledgr_profile_customization.manualArchetype (canonical — set by settings page)
     try {
       var cust = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
-      arch = cust.archetype;
-    } catch (e) {}
+      if (cust.manualArchetype) { arch = cust.manualArchetype; source = 'ledgr_profile_customization.manualArchetype'; }
+    } catch(e) {}
+
+    // 2. ledgr_profile_${username}.archetype (set by home page fetch from backend)
     if (!arch) {
       try {
-        var u = JSON.parse(localStorage.getItem('ledgr_user') || 'null');
-        if (u) arch = u.archetype || (u.settings && u.settings.archetype) || null;
-      } catch (e) {}
+        var u = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null');
+        if (u) {
+          var uname = u.username || u.user || u.name;
+          if (uname) {
+            var prof = JSON.parse(localStorage.getItem('ledgr_profile_' + uname) || '{}');
+            if (prof.archetype) { arch = prof.archetype; source = 'ledgr_profile_' + uname + '.archetype'; }
+          }
+        }
+      } catch(e) {}
     }
+
+    // 3. ledgr_profile_customization.archetype (legacy key)
+    if (!arch) {
+      try {
+        var cust3 = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
+        if (cust3.archetype) { arch = cust3.archetype; source = 'ledgr_profile_customization.archetype (legacy)'; }
+      } catch(e) {}
+    }
+
+    // 4. ledgr_user.archetype (final fallback)
+    if (!arch) {
+      try {
+        var u4 = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null');
+        if (u4) {
+          var a4 = u4.archetype || (u4.settings && u4.settings.archetype) || null;
+          if (a4) { arch = a4; source = 'ledgr_user.archetype'; }
+        }
+      } catch(e) {}
+    }
+
+    // Promote to canonical source so future calls hit source 1
+    if (arch && source !== 'ledgr_profile_customization.manualArchetype') {
+      try {
+        var custUp = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
+        custUp.manualArchetype = arch;
+        localStorage.setItem('ledgr_profile_customization', JSON.stringify(custUp));
+      } catch(e) {}
+    }
+
+    // Log once per page load
+    if (_archKeyCache !== arch) {
+      _archKeyCache = arch;
+      console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE:', source);
+      console.log('[LedgrArchetypeAvatar] ARCHETYPE VALUE:', arch || null);
+    }
+
     return arch || null;
   }
 
