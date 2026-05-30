@@ -1390,7 +1390,7 @@ async function loadProfile(){
 
     // Build avatar HTML — photo > archetype > initials
     const archCosmetic = window.LedgrArchetypeAvatar
-      ? window.LedgrArchetypeAvatar.resolve(profileCfg.archetype || bp.archetype)
+      ? window.LedgrArchetypeAvatar.resolve(profileCfg.archetype)
       : null;
     let profileAvHTML;
     if(customAv){
