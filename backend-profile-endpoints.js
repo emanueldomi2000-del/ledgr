@@ -62,11 +62,13 @@ function _sanitizeHandle(handle) {
 }
 
 const VALID_ARCHETYPES  = new Set([
-  // current archetype IDs
-  'sniper','demon','grinder','sharp','hunter','storm','kingmaker','iceblood',
-  'gambler','reaper','night-owl','shark','ghost','diamond-mind','hybrid','contender',
-  // legacy keys kept for backward compat
-  'value-hunter','lock-machine','ice-cold','profit-farmer','underdog-king','data-nerd','momentum-monster',
+  // Current canonical performance keys (archetypes-dict.js)
+  'sharp','value-hunter','underdog-king','grinder','specialist','data-nerd','high-stakes','contender',
+  // Current cosmetic keys (archetype-avatars.js)
+  'oracle','diamond-mind','dragon-soul','shark','kingmaker','void-emperor','reaper',
+  // Legacy / alias keys kept for backward compat
+  'sniper','demon','hunter','storm','iceblood','gambler','reaper','night-owl','ghost','hybrid',
+  'lock-machine','ice-cold','profit-farmer','momentum-monster',
 ]);
 const VALID_BANNERS     = new Set(['midnight','purple-fade','frost','carbon','dark-smoke','cosmic-nebula','diamond-storm','crimson-energy','electric-void','phantom-pulse','galaxy-motion','dragon-aura','eternal-flame','neon-rift','crown-energy','default','purple-haze','cyber-teal','gold-rush','fire-wave','ice-storm','diamond','legend-aura']);
 const VALID_BORDERS     = new Set(['none','clean','blue-ring','diamond-ring','cosmic','electric','inferno','royal','dragon','celestial','bronze-frame','silver-frame','gold-frame','diamond-frame','elite-frame','pulse','gold','fire','legend']);
@@ -189,6 +191,88 @@ router.post('/profile', requireAuth, async (req, res) => {
     res.json({ success: true });
   } catch (e) {
     console.error('POST /profile error:', e);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─── GET /profile — authenticated, returns current user's own profile ─────────
+// Called by shared/identity.js syncFromBackend() and progress page.
+// Returns same shape as GET /profile/:username so field names are consistent.
+router.get('/profile', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM profiles WHERE userId = ? LIMIT 1',
+      [userId]
+    );
+    if (!rows.length) return res.json({});
+    const p = rows[0];
+    return res.json({
+      archetype:             p.archetype || null,
+      banner:                p.banner || 'default',
+      border:                p.border || 'clean',
+      theme:                 p.theme || 'default',
+      fav_sports:            p.fav_sports ? (typeof p.fav_sports === 'string' ? JSON.parse(p.fav_spots) : p.fav_sports) : [],
+      bio:                   p.bio || '',
+      social_twitter:        p.social_twitter || null,
+      social_instagram:      p.social_instagram || null,
+      avatar_b64:            p.avatar_b64 || null,
+      banner_b64:            p.banner_b64 || null,
+      odds_format:           p.odds_format || 'decimal',
+      timezone:              p.timezone || 'UTC',
+      hide_from_leaderboard: !!p.hide_from_leaderboard,
+    });
+  } catch (e) {
+    console.error('GET /profile error:', e);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ─── PATCH /profile — authenticated, partial field update ─────────────────────
+// Called by settings pickers (banner, border, theme) and shared/identity.js save().
+// Only updates fields that are explicitly present in the request body.
+// Field aliases: bannerPack|bannerId → banner, avatarBorder|borderId → border, profileTheme|themeId → theme
+router.patch('/profile', requireAuth, async (req, res) => {
+  const userId = req.user.id;
+  if (!_checkRateLimit(userId)) {
+    return res.status(429).json({ error: 'Too many requests — wait a minute' });
+  }
+  try {
+    const [userRows] = await db.query('SELECT username FROM users WHERE id = ? LIMIT 1', [userId]);
+    if (!userRows.length) return res.status(404).json({ error: 'User not found' });
+    const username = userRows[0].username;
+
+    const body = req.body;
+    const fields = [];
+    const vals   = [];
+
+    // Accept both field name conventions from frontend
+    const banner = body.banner || body.bannerPack || body.bannerId;
+    const border = body.border || body.avatarBorder || body.borderId;
+    const theme  = body.theme  || body.profileTheme || body.themeId;
+
+    if (banner !== undefined && VALID_BANNERS.has(banner))          { fields.push('banner = ?');   vals.push(banner); }
+    if (border !== undefined && VALID_BORDERS.has(border))          { fields.push('border = ?');   vals.push(border); }
+    if (theme  !== undefined && VALID_THEMES.has(theme))            { fields.push('theme = ?');    vals.push(theme); }
+    if (body.archetype !== undefined && VALID_ARCHETYPES.has(body.archetype)) {
+      fields.push('archetype = ?'); vals.push(body.archetype);
+    }
+
+    if (fields.length === 0) return res.json({ success: true, updated: 0 });
+
+    fields.push('updated_at = NOW()');
+
+    // Upsert: insert with userId/username if no row exists, update otherwise
+    await db.query(
+      `INSERT INTO profiles (userId, username, ${fields.map(f=>f.split(' =')[0]).join(', ')}, updated_at)
+       VALUES (?, ?, ${vals.map(()=>'?').join(', ')}, NOW())
+       ON DUPLICATE KEY UPDATE ${fields.join(', ')}`,
+      [userId, username, ...vals, ...vals]
+    );
+
+    res.json({ success: true, updated: fields.length - 1 });
+  } catch (e) {
+    console.error('PATCH /profile error:', e);
     res.status(500).json({ error: 'Server error' });
   }
 });

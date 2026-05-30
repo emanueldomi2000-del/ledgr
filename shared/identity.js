@@ -75,7 +75,12 @@
   function syncFromBackend() {
     var token = localStorage.getItem('ledgr_token');
     if (!token) return;
-    fetch(API + '/profile', { headers: { 'Authorization': 'Bearer ' + token } })
+    // Resolve username for the parameterized endpoint GET /profile/:username
+    var _u = null;
+    try { _u = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null'); } catch(e) {}
+    var _username = _u && (_u.username || _u.user || _u.name);
+    if (!_username) return;
+    fetch(API + '/profile/' + encodeURIComponent(_username), { headers: { 'Authorization': 'Bearer ' + token } })
       .then(function(r) { return r.ok ? r.json() : null; })
       .then(function(pd) {
         if (!pd) return;
@@ -83,13 +88,26 @@
         // Accept both field name formats from backend
         var bannerId = pd.bannerPack || pd.banner;
         var borderId = pd.avatarBorder || pd.border;
-        var themeId  = pd.profileTheme;
-        if (bannerId) { cust.bannerId = bannerId; localStorage.setItem('ledgr_banner_pack', bannerId); }
-        if (borderId) { cust.borderId = borderId; localStorage.setItem('ledgr_avatar_border', borderId); }
+        var themeId  = pd.profileTheme || pd.theme;
+        if (bannerId && bannerId !== 'default') { cust.bannerId = bannerId; localStorage.setItem('ledgr_banner_pack', bannerId); }
+        if (borderId && borderId !== 'clean')   { cust.borderId = borderId; localStorage.setItem('ledgr_avatar_border', borderId); }
         if (themeId)  { cust.themeId  = themeId;  localStorage.setItem('ledgr_profile_theme', themeId); applyTheme(); }
+        // Sync archetype — write to canonical key so getCurrentArchetypeKey() finds it
+        if (pd.archetype) {
+          cust.manualArchetype = pd.archetype;
+          // Also write to per-user cache for cross-tab consistency
+          if (_username) {
+            try {
+              var profCache = JSON.parse(localStorage.getItem('ledgr_profile_' + _username) || '{}');
+              profCache.archetype = pd.archetype;
+              localStorage.setItem('ledgr_profile_' + _username, JSON.stringify(profCache));
+            } catch(e) {}
+          }
+        }
         localStorage.setItem('ledgr_profile_customization', JSON.stringify(cust));
         applyBanner();
         applyBorder();
+        applyArchetypeAvatar();
       }).catch(function() {});
   }
 
