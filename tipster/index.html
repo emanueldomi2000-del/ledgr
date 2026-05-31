@@ -1388,18 +1388,18 @@ async function loadProfile(){
     const customAv=window.LedgrAvatar ? window.LedgrAvatar.get(avKey) : localStorage.getItem('ledgr_avatar_'+avKey);
     const customBannerImg=localStorage.getItem('ledgr_banner_img_'+avKey);
 
-    // Build avatar HTML — photo > archetype > initials
-    // rankingMeta.archetype is an enriched object {key,...} — extract key string
+    // Profile photo = personal identity (always shown if available)
+    // Archetype character = competitive identity (shown separately alongside photo)
     const _rankArchKey = rankingMeta&&rankingMeta.archetype&&typeof rankingMeta.archetype==='object'
       ? rankingMeta.archetype.key : (rankingMeta&&rankingMeta.archetype||null);
     const _avatarArchKey = profileCfg.archetype || _rankArchKey;
     const archCosmetic = window.LedgrArchetypeAvatar
       ? window.LedgrArchetypeAvatar.resolve(_avatarArchKey)
       : null;
-    console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE: tipster | profileCfg.archetype:', profileCfg.archetype, '| rankingMeta.archetype.key:', _rankArchKey);
-    console.log('[LedgrArchetypeAvatar] ARCHETYPE VALUE:', _avatarArchKey || null);
-    if(archCosmetic) console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: tipster .avatar-big →', archCosmetic.name, '| badge:', archCosmetic.badge);
-    else console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: tipster .avatar-big → fallback (no archetype resolved)');
+    console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE: tipster | profileCfg.archetype:', profileCfg.archetype, '| rankings key:', _rankArchKey);
+    if(archCosmetic) console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: tipster arch-identity-wrap →', archCosmetic.name);
+
+    // Build profile photo HTML (personal identity — always uses photo or initials, never archetype)
     let profileAvHTML;
     if(customAv){
       const wrapCls=window.Divisions?divObj.wrapCls:'';
@@ -1407,13 +1407,19 @@ async function loadProfile(){
       profileAvHTML=window.Divisions
         ?`<div class="div-av-wrap ${wrapCls}" style="width:96px;height:96px;border-radius:50%;--dv-orbit:-${orbit}px"><div class="div-av-aura" aria-hidden="true"></div><div class="div-av-inner" style="width:96px;height:96px;border-radius:50%;border:4px solid var(--bg);overflow:hidden"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div></div>`
         :`<div class="avatar-big" style="overflow:hidden;padding:0"><img src="${customAv}" style="width:100%;height:100%;object-fit:cover" alt="${username}"></div>`;
-    }else if(archCosmetic){
-      profileAvHTML=`<div class="avatar-big" style="background:${archCosmetic.color}18;border:3px solid ${archCosmetic.color}70;box-shadow:0 0 32px ${archCosmetic.color}50,0 0 60px ${archCosmetic.color}20;font-size:44px;color:${archCosmetic.color}" title="${archCosmetic.name}">${archCosmetic.badge}</div>`;
     }else{
       profileAvHTML=window.Divisions
         ?window.Divisions.avHTML(username.substring(0,2).toUpperCase(),'linear-gradient(135deg,var(--ac-vivid),var(--ac-light))',divObj,{width:96,height:96,borderRadius:'50%',fontSize:36,style:'border:4px solid var(--bg);'})
         :`<div class="avatar-big">${username.substring(0,2).toUpperCase()}</div>`;
     }
+
+    // Build archetype character HTML (competitive identity — separate from photo)
+    const archIdentityHTML = archCosmetic && window.LedgrArchetypeAvatar
+      ? `<div class="arch-identity-wrap" style="display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+          ${window.LedgrArchetypeAvatar.avatarHTML(_avatarArchKey,72,{shape:'rounded'})}
+          <div style="font-family:var(--font-mono);font-size:7px;letter-spacing:2px;color:${archCosmetic.color};text-align:center;white-space:nowrap;opacity:.9">${archCosmetic.name.toUpperCase()}</div>
+        </div>`
+      : '';
 
     const divBadgeHTML=window.Divisions
       ?window.Divisions.pillHTML(divObj,'md')
@@ -1448,9 +1454,12 @@ async function loadProfile(){
       </div>
       <div class="profile-body">
         <div class="profile-top">
-          <div class="avatar-wrap anim-avatar">
-            <div class="avatar-ring ${autoRingCls}"></div>
-            ${profileAvHTML}
+          <div style="display:flex;align-items:flex-start;gap:14px;flex-shrink:0">
+            <div class="avatar-wrap anim-avatar">
+              <div class="avatar-ring ${autoRingCls}"></div>
+              ${profileAvHTML}
+            </div>
+            ${archIdentityHTML}
           </div>
           <div class="identity-block anim-identity">
             <div class="profile-tags">

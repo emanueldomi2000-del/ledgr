@@ -402,26 +402,25 @@ function renderMessages(msgs) {
 function msgHTML(msg) {
   const uname = msg.user?.username || 'Unknown';
   const isOwn = user && user.username === uname;
-  // Use archetype avatar for own messages; colored initials for others
-  let avInner;
+  // Resolve archetype key: own messages use localStorage, others use msg.user.archetype
+  let archKey = null;
   if (isOwn && window.LedgrArchetypeAvatar) {
-    const archKey = window.LedgrArchetypeAvatar.getCurrentArchetypeKey();
-    const cosmetic = archKey ? window.LedgrArchetypeAvatar.resolve(archKey) : null;
-    if (cosmetic) {
-      avInner = `<div class="msg-av" style="background:${cosmetic.color}14;border:1.5px solid ${cosmetic.color}60;box-shadow:0 0 10px ${cosmetic.color}33;font-size:16px" onclick="window.location.href='/tipster?u=${uname}'" title="${cosmetic.name}">${cosmetic.badge}</div>`;
-      if (!window._commAvLogged) { console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: community own msg @'+uname+' →', cosmetic.name, '| badge:', cosmetic.badge); window._commAvLogged=true; }
-    } else {
-      avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
-      if (!window._commAvLogged) { console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: community own msg @'+uname+' → initials fallback (archKey:', archKey, ')'); window._commAvLogged=true; }
+    archKey = window.LedgrArchetypeAvatar.getCurrentArchetypeKey();
+  } else {
+    archKey = msg.user?.archetype || null;
+  }
+  const cosmetic = archKey && window.LedgrArchetypeAvatar ? window.LedgrArchetypeAvatar.resolve(archKey) : null;
+  let avInner;
+  if (cosmetic && window.LedgrArchetypeAvatar) {
+    // Archetype character avatar (competitive identity)
+    const avHtml = window.LedgrArchetypeAvatar.avatarHTML(archKey, 32, {shape:'square'});
+    avInner = `<div onclick="window.location.href='/tipster?u=${uname}'" style="cursor:pointer">${avHtml}</div>`;
+    if (isOwn && !window._commAvLogged) {
+      console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: community @'+uname+' →', cosmetic.name);
+      window._commAvLogged = true;
     }
   } else {
-    const archKey = msg.user?.archetype || null;
-    const cosmetic = archKey && window.LedgrArchetypeAvatar ? window.LedgrArchetypeAvatar.resolve(archKey) : null;
-    if (cosmetic) {
-      avInner = `<div class="msg-av" style="background:${cosmetic.color}14;border:1.5px solid ${cosmetic.color}60;font-size:16px" onclick="window.location.href='/tipster?u=${uname}'" title="${cosmetic.name}">${cosmetic.badge}</div>`;
-    } else {
-      avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
-    }
+    avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
   }
   return `<div class="msg-group" id="msg-${msg.id}">
     ${avInner}

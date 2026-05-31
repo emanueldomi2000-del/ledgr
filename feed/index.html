@@ -444,7 +444,7 @@ function renderTrendingPicks(all){
     const ranks=['r1','r2','r3','','',''];
     return`<a class="tp-card" href="/tipster?u=${u}#pick-${p.id}">
       <div class="tp-rank ${ranks[i]||''}">${i+1}</div>
-      <div class="tp-av" style="background:${avColor(u)}">${u.slice(0,2).toUpperCase()}</div>
+      ${_archAvHTML(u,24,'square')||`<div class="tp-av" style="background:${avColor(u)}">${u.slice(0,2).toUpperCase()}</div>`}
       <div class="tp-info">
         <div class="tp-user">@${u} · ${roi>0?'+':''}${roi}% ROI</div>
         <div class="tp-event">${esc(p.event||'—')}</div>
@@ -521,7 +521,7 @@ function renderHotTipsters(all){
     const ranks=['r1','r2','r3','',''];
     return`<a class="ht-row" href="/tipster?u=${t.u}">
       <div class="ht-rank ${ranks[i]}">${i+1}</div>
-      <div class="ht-av" style="background:${avColor(t.u)}">${t.u.slice(0,2).toUpperCase()}</div>
+      ${_archAvHTML(t.u,24,'square')||`<div class="ht-av" style="background:${avColor(t.u)}">${t.u.slice(0,2).toUpperCase()}</div>`}
       <div class="ht-info">
         <div class="ht-name">@${t.u}</div>
         <div class="ht-meta"><b>${t.picks}</b> picks · 7d window</div>
@@ -573,7 +573,7 @@ function buildActRow(ev,delay){
   else{action=`posted · ${esc(d.market||'—')} @ ${parseFloat(d.odds||0).toFixed(2)}`;badge=`<span class="act-badge ab-post">LIVE</span>`;}
   const _rowCls=ev.type==='bigwin'?'act-bigwin':ev.type==='win'?'act-win':ev.type==='underdog'?'act-underdog':ev.type==='streak'?'act-streak':'';
   return`<div class="act-row ${_rowCls}" style="${delay?'animation-delay:'+delay+'ms':''}">
-    <div class="act-av" style="background:${avColor(ev.user||'')}">${(ev.user||'??').slice(0,2).toUpperCase()}</div>
+    ${_archAvHTML(ev.user||'',20,'square')||`<div class="act-av" style="background:${avColor(ev.user||'')}">${(ev.user||'??').slice(0,2).toUpperCase()}</div>`}
     <a class="act-user" href="/tipster?u=${ev.user}" onclick="event.stopPropagation()">@${ev.user}</a>
     <span class="act-action">${action}</span>
     ${badge}
@@ -679,6 +679,15 @@ function subscribeWS(){
   });
 }
 
+/* ── ARCHETYPE MAP — keyed by username, populated from /rankings ── */
+var _archetypeMap={};
+function _archAvHTML(username,size,shape){
+  if(!window.LedgrArchetypeAvatar)return null;
+  const key=_archetypeMap[username];
+  if(!key)return null;
+  return window.LedgrArchetypeAvatar.avatarHTML(key,size,{shape:shape||'square'});
+}
+
 /* ── LOAD FEED ── */
 async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
 
@@ -686,11 +695,25 @@ async function loadFeed(){
   await wakeBackend();
   const _ctrl=new AbortController();const _xt=setTimeout(()=>_ctrl.abort(),15000);
   try{
-    const r=await fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal});
+    // Fetch picks + rankings in parallel; rankings gives us archetype per user
+    const [picksRes,rankingsRes]=await Promise.all([
+      fetch(API+'/picks',{cache:'no-store',signal:_ctrl.signal}),
+      fetch(API+'/rankings?limit=100',{cache:'no-store'}).catch(()=>null)
+    ]);
     clearTimeout(_xt);
-    if(!r.ok)throw new Error('api');
-    const all=await r.json();
+    if(!picksRes.ok)throw new Error('api');
+    const all=await picksRes.json();
     if(!Array.isArray(all))throw new Error('data');
+    // Build username → archetype key map from rankings
+    if(rankingsRes&&rankingsRes.ok){
+      try{
+        const rd=await rankingsRes.json();
+        (rd.tipsters||[]).forEach(t=>{
+          const k=t.archetype&&typeof t.archetype==='object'?t.archetype.key:t.archetype;
+          if(k)_archetypeMap[t.username]=k;
+        });
+      }catch(e){}
+    }
     allEvents=computeEvents(all);
     renderHeroStats(all,allEvents);
     renderIntelTicker(all,allEvents);

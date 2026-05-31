@@ -1375,13 +1375,10 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
     }else{
       const _archKey=window.LedgrArchetypeAvatar?window.LedgrArchetypeAvatar.getCurrentArchetypeKey():null;
       const _archC=_archKey?window.LedgrArchetypeAvatar.resolve(_archKey):null;
-      if(_archC){
-        av.style.background=_archC.color+'18';
-        av.style.borderColor=_archC.color+'70';
-        av.style.boxShadow='0 0 24px '+_archC.color+'50';
-        av.style.fontSize=Math.round((av.offsetWidth||80)*0.44)+'px';
-        av.innerHTML=_archC.badge+'<div class="id-verified">✓</div>';
-        console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: home #idAv →', _archC.name, '| badge:', _archC.badge);
+      if(_archC&&window.LedgrArchetypeAvatar){
+        window.LedgrArchetypeAvatar.applyToElement(av,_archKey,false);
+        const verifiedEl=document.createElement('div');verifiedEl.className='id-verified';verifiedEl.textContent='✓';av.appendChild(verifiedEl);
+        console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: home #idAv →', _archC.name);
       }else{
         av.innerHTML=user.username.slice(0,2).toUpperCase()+'<div class="id-verified">✓</div>';
         console.log('[LedgrArchetypeAvatar] AVATAR APPLIED: home #idAv → initials fallback (no archetype resolved)');
