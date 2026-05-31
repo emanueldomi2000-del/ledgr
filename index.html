@@ -368,8 +368,18 @@ async function loadData() {
     const doubled = [...tickItems, ...tickItems].join('');
     document.getElementById('tickerContent').innerHTML = doubled;
 
-    // Top 3 tipster cards
-    const top3 = rankings.slice(0, 3);
+    // Top 3 tipster cards — min 3 verified picks AND ROI >= 0
+    const qualified = rankings.filter(t =>
+      (t.totalPicks || 0) >= 3 &&
+      (typeof t.roi === 'number' ? t.roi : 0) >= 0
+    );
+    const top3 = qualified.slice(0, 3);
+    if (!top3.length) {
+      grid.innerHTML = '<div class="tc-loading" style="line-height:1.8">' +
+        'Verified track records are being established.<br>' +
+        'The first qualified tipsters will appear here soon.' +
+        '</div>';
+    } else {
     grid.innerHTML = top3.map((t, i) => {
       const roi = typeof t.roi === 'number' ? t.roi : 0;
       const wr  = typeof t.winRate === 'number' ? (t.winRate * 100).toFixed(0) : '—';
@@ -395,6 +405,7 @@ async function loadData() {
         '</div>' +
       '</div>';
     }).join('');
+    } // end else (qualified tipsters exist)
   } catch(e) {
     clearTimeout(_xt);
     if (section) section.style.display = 'none';
