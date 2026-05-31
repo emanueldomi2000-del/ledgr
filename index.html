@@ -104,6 +104,18 @@ h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5.5vw,82px);font-weigh
 .tc-stat-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--color-muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
 .tc-loading{text-align:center;padding:40px;color:var(--color-muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;grid-column:1/-1}
 
+/* VERIFIED TRACK RECORDS */
+.vtr-section{padding:56px 24px;max-width:1000px;margin:0 auto;position:relative;z-index:1;border-top:1px solid var(--color-border)}
+.vtr-list{display:flex;flex-direction:column;gap:8px;margin-top:0}
+.vtr-row{background:var(--color-surface);border:1px solid var(--color-border);border-left:3px solid var(--color-purple);border-radius:10px;padding:18px 22px 16px;cursor:pointer;transition:background .2s,border-color .2s;text-decoration:none;display:block}
+.vtr-row:hover{background:var(--color-surface-2);border-color:rgba(123,44,255,0.45)}
+.vtr-row-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.vtr-username{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;color:var(--color-text);letter-spacing:.3px}
+.vtr-since{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--color-muted);letter-spacing:1.5px;text-transform:uppercase}
+.vtr-divider{height:1px;background:var(--color-border);margin-bottom:12px}
+.vtr-stats{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--color-muted);letter-spacing:.3px;line-height:1.5}
+.vtr-empty{text-align:center;padding:40px 24px;color:var(--color-muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;border:1px solid var(--color-border);border-radius:10px}
+
 /* STATS ROW */
 .stats-row{padding:0 24px 56px;max-width:1000px;margin:0 auto;position:relative;z-index:1}
 .stats-inner{display:flex;justify-content:center;gap:56px;flex-wrap:wrap}
@@ -266,6 +278,16 @@ footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;a
   </div>
 </div>
 
+<!-- VERIFIED TRACK RECORDS -->
+<div class="vtr-section">
+  <span class="sec-label">On The Record</span>
+  <h2 class="sec-h" style="margin-bottom:28px">VERIFIED TRACK <em>RECORDS</em></h2>
+  <div id="vtrList"></div>
+  <div style="text-align:center;margin-top:24px">
+    <a href="/leaderboard" class="btn-secondary">View All Verified Records →</a>
+  </div>
+</div>
+
 <!-- STATS -->
 <div class="stats-row" style="border-top:1px solid var(--color-border);padding-top:80px">
   <div class="stats-inner">
@@ -347,7 +369,7 @@ async function loadData() {
   const ctrl = new AbortController();
   const _xt = setTimeout(() => ctrl.abort(), 6000);
   try {
-    const r = await fetch(API + '/rankings?limit=3', {cache:'no-store', signal:ctrl.signal});
+    const r = await fetch(API + '/rankings?limit=20', {cache:'no-store', signal:ctrl.signal});
     clearTimeout(_xt);
     if (!r.ok) throw new Error('rankings unavailable');
     const rd = await r.json();
@@ -418,6 +440,45 @@ async function loadData() {
     const pads = Array(Math.max(0, 3 - top3.length)).fill(placeholderCard).join('');
     grid.innerHTML = realCards + pads;
     } // end else (qualified tipsters exist)
+
+    // Verified Track Records
+    const vtrList = document.getElementById('vtrList');
+    if (vtrList) {
+      const vtrQ = rankings.filter(t =>
+        (t.totalPicks || 0) >= 3 &&
+        (typeof t.roi === 'number' ? t.roi : 0) >= 0
+      ).slice(0, 3);
+      if (!vtrQ.length) {
+        vtrList.innerHTML = '<div class="vtr-empty">The first verified records are being established.</div>';
+      } else {
+        vtrList.innerHTML = '<div class="vtr-list">' + vtrQ.map(t => {
+          const roi = typeof t.roi === 'number' ? t.roi : 0;
+          const wr  = typeof t.winRate === 'number' ? (t.winRate * 100).toFixed(1) : null;
+          const picks = t.totalPicks || 0;
+          const rel = typeof t.reliability === 'number'
+            ? Math.round(t.reliability) + '%'
+            : (t.settledPicks && t.totalPicks ? Math.round(t.settledPicks / t.totalPicks * 100) + '%' : null);
+          const since = t.createdAt
+            ? new Date(t.createdAt).toLocaleDateString('en-US', {month:'short', year:'numeric'})
+            : null;
+          const roiStr = (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%';
+          const roiSpan = '<span style="color:' + (roi >= 0 ? '#34d399' : '#f87171') + '">' + roiStr + '</span>';
+          const dot = ' <span style="color:var(--color-border)">·</span> ';
+          const parts = [picks + ' picks'];
+          if (wr !== null) parts.push(wr + '% win rate');
+          parts.push(roiSpan + ' ROI');
+          if (rel) parts.push(rel + ' reliability');
+          return '<a class="vtr-row" href="/tipster?u=' + t.username + '">' +
+            '<div class="vtr-row-top">' +
+              '<span class="vtr-username">@' + t.username + '</span>' +
+              (since ? '<span class="vtr-since">Member since ' + since + '</span>' : '') +
+            '</div>' +
+            '<div class="vtr-divider"></div>' +
+            '<div class="vtr-stats">' + parts.join(dot) + '</div>' +
+          '</a>';
+        }).join('') + '</div>';
+      }
+    }
   } catch(e) {
     clearTimeout(_xt);
     if (section) section.style.display = 'none';
