@@ -92,10 +92,17 @@
         if (bannerId && bannerId !== 'default') { cust.bannerId = bannerId; localStorage.setItem('ledgr_banner_pack', bannerId); }
         if (borderId && borderId !== 'clean')   { cust.borderId = borderId; localStorage.setItem('ledgr_avatar_border', borderId); }
         if (themeId)  { cust.themeId  = themeId;  localStorage.setItem('ledgr_profile_theme', themeId); applyTheme(); }
-        // Sync archetype — write to canonical key so getCurrentArchetypeKey() finds it
+        // Sync archetype — write to correct key based on source so getCurrentArchetypeKey() finds it
         if (pd.archetype) {
-          cust.manualArchetype = pd.archetype;
-          // Also write to per-user cache for cross-tab consistency
+          var _src = pd.archetypeSource || 'manual';
+          if (_src === 'rankings') {
+            cust.rankingsArchetype = pd.archetype;
+            console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE: rankings fallback |', pd.archetype);
+          } else {
+            cust.manualArchetype = pd.archetype;
+            console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE: manual override |', pd.archetype);
+          }
+          // Per-user cache for pages that read ledgr_profile_${username}.archetype directly
           if (_username) {
             try {
               var profCache = JSON.parse(localStorage.getItem('ledgr_profile_' + _username) || '{}');

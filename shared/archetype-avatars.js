@@ -57,13 +57,21 @@
     var arch = null;
     var source = 'none';
 
-    // 1. ledgr_profile_customization.manualArchetype (canonical — set by settings page)
+    // 1. manual override — explicitly set by user in settings
     try {
       var cust = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
-      if (cust.manualArchetype) { arch = cust.manualArchetype; source = 'ledgr_profile_customization.manualArchetype'; }
+      if (cust.manualArchetype) { arch = cust.manualArchetype; source = 'manual override'; }
     } catch(e) {}
 
-    // 2. ledgr_profile_${username}.archetype (set by home page fetch from backend)
+    // 2. rankings fallback — performance-derived, written by identity.js syncFromBackend()
+    if (!arch) {
+      try {
+        var cust2 = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
+        if (cust2.rankingsArchetype) { arch = cust2.rankingsArchetype; source = 'rankings fallback'; }
+      } catch(e) {}
+    }
+
+    // 3. ledgr_profile_${username}.archetype (per-user cache written by syncFromBackend)
     if (!arch) {
       try {
         var u = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null');
@@ -71,33 +79,34 @@
           var uname = u.username || u.user || u.name;
           if (uname) {
             var prof = JSON.parse(localStorage.getItem('ledgr_profile_' + uname) || '{}');
-            if (prof.archetype) { arch = prof.archetype; source = 'ledgr_profile_' + uname + '.archetype'; }
+            if (prof.archetype) { arch = prof.archetype; source = 'rankings fallback'; }
           }
         }
       } catch(e) {}
     }
 
-    // 3. ledgr_profile_customization.archetype (legacy key)
+    // 4. ledgr_profile_customization.archetype (legacy key)
     if (!arch) {
       try {
-        var cust3 = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
-        if (cust3.archetype) { arch = cust3.archetype; source = 'ledgr_profile_customization.archetype (legacy)'; }
+        var cust4 = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
+        if (cust4.archetype) { arch = cust4.archetype; source = 'manual override'; }
       } catch(e) {}
     }
 
-    // 4. ledgr_user.archetype (final fallback)
+    // 5. ledgr_user.archetype (final legacy fallback)
     if (!arch) {
       try {
-        var u4 = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null');
-        if (u4) {
-          var a4 = u4.archetype || (u4.settings && u4.settings.archetype) || null;
-          if (a4) { arch = a4; source = 'ledgr_user.archetype'; }
+        var u5 = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null');
+        if (u5) {
+          var a5 = u5.archetype || (u5.settings && u5.settings.archetype) || null;
+          if (a5) { arch = a5; source = 'manual override'; }
         }
       } catch(e) {}
     }
 
-    // Promote to canonical source so future calls hit source 1
-    if (arch && source !== 'ledgr_profile_customization.manualArchetype') {
+    // Promote only legacy sources (4, 5) to manualArchetype — never promote rankings to manual
+    if (arch && source === 'manual override' &&
+        !JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}').manualArchetype) {
       try {
         var custUp = JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}');
         custUp.manualArchetype = arch;
@@ -108,7 +117,7 @@
     // Log once per page load
     if (_archKeyCache !== arch) {
       _archKeyCache = arch;
-      console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE:', source);
+      console.log('[LedgrArchetypeAvatar] ARCHETYPE SOURCE:', source || 'none');
       console.log('[LedgrArchetypeAvatar] ARCHETYPE VALUE:', arch || null);
     }
 
