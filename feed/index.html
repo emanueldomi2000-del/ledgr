@@ -548,15 +548,8 @@ const MOCK_INTEL=[
 function renderIntelFeed(){
   const el=document.getElementById('intelFeed');
   if(!el)return;
-  const items=MOCK_INTEL.map(n=>`<div class="intel-item-card">
-    <div class="intel-ic-badge ${n.type}">${n.icon}</div>
-    <div class="intel-ic-body">
-      <div class="intel-ic-tag ${n.type}">${n.tag}</div>
-      <div class="intel-ic-head">${esc(n.headline)}</div>
-      <div class="intel-ic-time">${n.time} ago</div>
-    </div>
-  </div>`).join('');
-  el.innerHTML=items+`<div class="intel-coming">Injury tracker + news API in progress</div>`;
+  // MOCK_INTEL suppressed — real news API pending
+  el.innerHTML=`<div class="intel-coming">Verified market intelligence coming soon.</div>`;
 }
 
 /* ── ACTIVITY PULSE ── */
