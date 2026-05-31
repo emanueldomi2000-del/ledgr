@@ -380,7 +380,16 @@ async function loadData() {
         'The first qualified tipsters will appear here soon.' +
         '</div>';
     } else {
-    grid.innerHTML = top3.map((t, i) => {
+    const placeholderCard =
+      '<div class="tipster-card" style="border-style:dashed;opacity:0.45;pointer-events:none;cursor:default">' +
+        '<div class="tc-rank"><span class="tc-rank-num">—</span> Pending</div>' +
+        '<div class="tc-av" style="background:#1A1A1A"></div>' +
+        '<div class="tc-name" style="color:var(--color-muted)">Next verified tipster</div>' +
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:var(--color-muted);letter-spacing:0.5px;line-height:1.6;margin-top:10px">' +
+          'More verified records are being established.' +
+        '</div>' +
+      '</div>';
+    const realCards = top3.map((t, i) => {
       const roi = typeof t.roi === 'number' ? t.roi : 0;
       const wr  = typeof t.winRate === 'number' ? (t.winRate * 100).toFixed(0) : '—';
       const roiPos = roi >= 0;
@@ -405,6 +414,8 @@ async function loadData() {
         '</div>' +
       '</div>';
     }).join('');
+    const pads = Array(Math.max(0, 3 - top3.length)).fill(placeholderCard).join('');
+    grid.innerHTML = realCards + pads;
     } // end else (qualified tipsters exist)
   } catch(e) {
     clearTimeout(_xt);
