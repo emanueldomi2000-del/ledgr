@@ -680,6 +680,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .lb-hero-list .rank{font-size:22px!important;width:28px!important}
 .lb-hero-list .tip-roi{font-size:24px!important}
 .lb-hero-list .tip-name{font-size:13px!important}
+/* ══ HIDDEN: Daily Missions / XP / Next Milestone / Rival ══ */
+.missions-card{display:none!important}
+.hero-cards-row{grid-template-columns:1fr!important;margin-top:4px!important}
+#brainMs{display:none!important}
+#brainRival{display:none!important}
+#brainRow{grid-template-columns:1fr!important}
 /* ══ COMPACT — sezioni secondarie ridotte ══ */
 .identity-card .id-stat-val{font-size:clamp(12px,1.4vw,18px)!important}
 .identity-card .id-hero-headline{font-size:clamp(20px,2.5vw,34px)!important}
@@ -795,28 +801,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="missions-title">⚡ Daily Missions</div>
       <div id="dailyMissions"><div class="skel skel-text" style="width:60%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:40%;height:9px"></div></div>
     </div>
-    <div id="seasonInfoCard" style="display:none;background:linear-gradient(135deg,rgba(251,191,36,.07),rgba(184,159,255,.04));border:1px solid rgba(251,191,36,.2);border-radius:16px;padding:16px">
-      <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:8px">🏆 Current Season</div>
-      <div style="font-family:var(--font-display);font-size:20px;letter-spacing:3px;color:var(--gold);margin-bottom:4px" id="sidSeasonName">Season 3</div>
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu2)" id="sidSeasonDays">— days left</div>
-        <div style="font-family:var(--font-display);font-size:16px;color:var(--ac)" id="sidSeasonRank">#—</div>
+    <div id="seasonInfoCard" style="display:none">
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:.4px;padding:4px 0 2px;line-height:1.6">
+        <span style="color:var(--mu2)" id="sidSeasonName">—</span><span style="color:var(--bd2)"> · </span><span id="sidSeasonDays">—</span>
       </div>
-      <div style="margin-top:8px;height:3px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden">
-        <div id="sidSeasonBar" style="height:100%;background:linear-gradient(90deg,#fbbf24,#b89fff);border-radius:2px;width:0%;transition:width 1.2s ease"></div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:8px 10px">
-          <div style="font-family:var(--font-mono);font-size:7px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:3px">YOUR POSITION</div>
-          <div style="font-family:var(--font-display);font-size:18px;color:var(--ac)" id="seasonRank">#—</div>
-        </div>
-        <div style="background:rgba(251,191,36,.04);border:1px solid rgba(251,191,36,.12);border-radius:8px;padding:8px 10px">
-          <div style="font-family:var(--font-mono);font-size:7px;letter-spacing:2px;color:rgba(251,191,36,.6);text-transform:uppercase;margin-bottom:3px">SEASON REWARD</div>
-          <div style="font-family:var(--font-display);font-size:11px;color:var(--gold);letter-spacing:1px">Legendary Badge</div>
-        </div>
-      </div>
-      <div id="seasonPercentile" style="margin-top:8px;font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;text-align:center"></div>
-      <a href="/leaderboard" style="display:block;text-align:center;margin-top:10px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:rgba(251,191,36,.5);text-decoration:none">VIEW SEASON LEADERBOARD →</a>
+      <span style="display:none" id="sidSeasonRank"></span>
+      <span style="display:none" id="seasonRank"></span>
+      <div style="display:none"><div id="sidSeasonBar"></div></div>
+      <div style="display:none" id="seasonPercentile"></div>
     </div>
   </div>
 </div>
