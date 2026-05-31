@@ -207,8 +207,7 @@ footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;a
     <a href="/become-a-tipster" class="btn-secondary">Become a Tipster</a>
   </div>
   <div class="hero-stats">
-    <div class="hs"><div class="hs-val" id="heroTipsters">—</div><div class="hs-lbl">Active Tipsters</div></div>
-    <div class="hs"><div class="hs-val" id="heroPicks">—</div><div class="hs-lbl">Picks Tracked</div></div>
+    <div class="hs"><div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--color-muted);letter-spacing:1px;line-height:1.65;max-width:280px">Building the first generation of verified tipsters.</div></div>
     <div class="hs"><div class="hs-val">100%</div><div class="hs-lbl">Verified Records</div></div>
   </div>
 </section>
@@ -356,8 +355,8 @@ async function loadData() {
 
     // Hero + stat counts
     const totalPicks = rankings.reduce((s,t) => s + (t.totalPicks || 0), 0);
-    document.getElementById('heroTipsters').textContent = rankings.length + '+';
-    document.getElementById('heroPicks').textContent = totalPicks > 0 ? totalPicks + '+' : rankings.length * 12 + '+';
+    if(document.getElementById('heroTipsters')) document.getElementById('heroTipsters').textContent = rankings.length + '+';
+    if(document.getElementById('heroPicks')) document.getElementById('heroPicks').textContent = totalPicks > 0 ? totalPicks + '+' : rankings.length * 12 + '+';
     document.getElementById('statTipsters').textContent = rankings.length + '+';
     document.getElementById('statPicks').textContent = totalPicks > 0 ? totalPicks + '+' : '—';
 
