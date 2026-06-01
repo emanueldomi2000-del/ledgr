@@ -44,6 +44,7 @@
 .nf-type-badge.new_pick{background:rgba(184,159,255,0.1);color:var(--ac)}
 .nf-type-badge.streak{background:rgba(251,191,36,0.1);color:var(--gold)}
 .nf-type-badge.division{background:rgba(56,189,248,0.1);color:var(--cyan)}
+.nf-type-badge.pick_result{background:rgba(255,255,255,0.05);color:var(--mu2)}
 .nf-unread-dot{width:7px;height:7px;background:var(--ac);border-radius:50%;flex-shrink:0;margin-top:6px}
 .empty-state{text-align:center;padding:64px 24px}
 .empty-icon{font-size:48px;margin-bottom:16px}
@@ -91,6 +92,7 @@
   <div class="filter-row">
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('new_pick',this)">📌 New Picks</button>
+    <button class="filter-btn" onclick="setFilter('pick_result',this)">📊 My Picks</button>
     <button class="filter-btn" onclick="setFilter('streak',this)">🔥 Streaks</button>
     <button class="filter-btn" onclick="setFilter('division',this)">🏆 Divisions</button>
   </div>
@@ -104,6 +106,7 @@
     <div class="push-desc">Get notified the moment a tipster you follow posts a pick — even when LEDGR isn't open.</div>
     <div class="push-perks">
       <div class="push-perk">Instant alerts when followed tipsters post picks</div>
+      <div class="push-perk">Pick settlement alerts — WIN, LOSS, or PUSH</div>
       <div class="push-perk">Works on mobile and desktop</div>
       <div class="push-perk">Only from tipsters you follow — no spam</div>
     </div>
@@ -147,10 +150,20 @@ function _beNotifToLocal(n){
   if(n.type==='followed_posted'){
     icon='📌';text=`<b>@${username}</b> posted: ${p.event||''} @ ${parseFloat(p.odds||0).toFixed(2)}`;ref=username;type='new_pick';
   }else if(n.type==='pick_result'){
-    if(p.result==='win'){icon='✅';text=`Your pick on <b>${p.event||'a game'}</b> won — +${parseFloat(p.pnl||0).toFixed(2)}u`;}
-    else if(p.result==='loss'){icon='❌';text=`Your pick on <b>${p.event||'a game'}</b> lost`;}
-    else{icon='🔄';text=`Your pick on <b>${p.event||'a game'}</b> was a push`;}
+    const _ev=p.event||p.market||p.match||'your pick';
+    const _pnl=parseFloat(p.pnl||0);
+    if(p.result==='win'){
+      icon='🏆';
+      text=`Pick settled: <b>WIN</b><br><span style="color:var(--mu2);font-size:12px">${_ev}</span><br><span style="color:var(--gr);font-family:var(--font-mono);font-size:11px">+${_pnl.toFixed(1)}u</span>`;
+    }else if(p.result==='loss'){
+      icon='❌';
+      text=`Pick settled: <b>LOSS</b><br><span style="color:var(--mu2);font-size:12px">${_ev}</span><br><span style="color:var(--rd);font-family:var(--font-mono);font-size:11px">${_pnl.toFixed(1)}u</span>`;
+    }else{
+      icon='🤝';
+      text=`Pick settled: <b>PUSH</b><br><span style="color:var(--mu2);font-size:12px">${_ev}</span><br><span style="color:var(--mu);font-family:var(--font-mono);font-size:11px">0.0u</span>`;
+    }
     type='pick_result';
+    ref=p.pickId||p.pick_id||'';
   }else if(n.type==='pick_tailed'){
     icon='✈️';text=`<b>@${username||'Someone'}</b> tailed your pick`;type='pick_tailed';
   }else if(n.type==='streak_milestone'){
@@ -300,7 +313,7 @@ function renderNotifs(){
     const d=new Date(n.ts);const key=isToday(d)?'Today':isYesterday(d)?'Yesterday':d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     if(!groups[key])groups[key]=[];groups[key].push(n);
   });
-  const TYPE_LABELS={new_pick:'NEW PICK',streak:'STREAK',division:'DIVISION'};
+  const TYPE_LABELS={new_pick:'NEW PICK',streak:'STREAK',division:'DIVISION',pick_result:'SETTLED'};
   const SYSTEM_TYPES=new Set(['pick_result','pick_tailed']);
   list.innerHTML=Object.entries(groups).map(([day,items])=>`
     <div class="notif-day-label">${day}</div>
@@ -322,6 +335,7 @@ function renderNotifs(){
 }
 
 function handleClick(type,ref){
+  if(type==='pick_result'){window.location.href='/home';return;}
   if((type==='new_pick'||type==='streak')&&ref)window.location.href='/tipster?u='+ref;
   else if(type==='division')window.location.href='/leaderboard';
 }

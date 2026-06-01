@@ -273,6 +273,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .tip-right{text-align:right;flex-shrink:0}
 .tip-roi{font-family:var(--font-display);font-size:20px;line-height:1;color:var(--gr)}
 .tip-roi.neg{color:var(--rd)}
+.roi-building{font-size:10px;color:var(--mu);font-family:var(--font-mono);letter-spacing:.3px;line-height:1.4}
+.roi-badge{display:inline-block;font-size:8px;font-family:var(--font-mono);padding:1px 5px;border-radius:3px;margin-left:3px;letter-spacing:.5px;vertical-align:middle}
+.roi-badge.verified{color:#34d399;background:rgba(52,211,153,.1)}
+.roi-badge.limited{color:var(--mu);background:rgba(255,255,255,.06)}
 .tip-streak{font-size:9px;color:var(--orange);font-family:var(--font-mono);margin-top:2px}
 .elo-mini{font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:2px}
 .follow-tip-btn{padding:3px 10px;border:1px solid var(--bd);color:var(--mu2);background:transparent;border-radius:20px;font-size:9px;cursor:pointer;transition:all .2s;font-family:var(--font-mono)}
@@ -638,6 +642,25 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ab-summer-champion{border:3px solid transparent!important;background:linear-gradient(#1a1200,#1a1200) padding-box,conic-gradient(#FFD700,#FF6B35,#FFD700,#FFA500,#FFD700) border-box;animation:abSummerGlow 2s ease-in-out infinite;box-shadow:0 0 12px rgba(255,215,0,0.3)}
 @keyframes abSummerGlow{0%,100%{box-shadow:0 0 10px rgba(255,215,0,0.3)}50%{box-shadow:0 0 24px rgba(255,215,0,0.6)}}
 
+/* ══ REPUTATION PROGRESS CARD ══ */
+.rep-card{background:rgba(255,255,255,0.018);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px 20px}
+.rep-card-eyebrow{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--mu);text-transform:uppercase;margin-bottom:8px}
+.rep-card-row{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.rep-card-level{font-family:var(--font-display);font-size:20px;letter-spacing:2px;line-height:1}
+.rep-card-next-lbl{font-family:var(--font-mono);font-size:8px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px}
+.rep-card-next-tier{font-family:var(--font-display);font-size:14px;letter-spacing:1px;line-height:1}
+.rep-req{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.03);font-family:var(--font-mono);font-size:10px}
+.rep-req:last-of-type{border-bottom:none;padding-bottom:0}
+.rep-req-icon{width:14px;text-align:center;flex-shrink:0;font-size:10px}
+.rep-req-label{flex:1;color:var(--mu2)}
+.rep-req-val{font-family:var(--font-display);font-size:13px;min-width:60px;text-align:right}
+.rep-req.rep-done .rep-req-label{color:var(--gr);opacity:0.7}
+.rep-req.rep-done .rep-req-val{color:var(--gr)}
+.rep-bar-wrap{height:3px;background:rgba(255,255,255,0.05);border-radius:2px;margin-top:12px;overflow:hidden}
+.rep-bar-fill{height:100%;border-radius:2px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.rep-elite-row{display:flex;align-items:center;gap:14px;padding:4px 0}
+.rep-elite-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+
 /* ── BANNER PACK COSMETICS (bp-*) ── */
 .bp-midnight{background:linear-gradient(135deg,#0d0d2b 0%,#1a1040 50%,#0d0d2b 100%)!important}
 .bp-carbon{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 50%,#1a1a1a 100%)!important}
@@ -801,6 +824,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="missions-title">⚡ Daily Missions</div>
       <div id="dailyMissions"><div class="skel skel-text" style="width:60%;height:11px;margin-bottom:8px"></div><div class="skel skel-text" style="width:40%;height:9px"></div></div>
     </div>
+    <div id="repProgressCard" style="display:none"></div>
     <div id="seasonInfoCard" style="display:none">
       <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:.4px;padding:4px 0 2px;line-height:1.6">
         <span style="color:var(--mu2)" id="sidSeasonName">—</span><span style="color:var(--bd2)"> · </span><span id="sidSeasonDays">—</span>
@@ -1363,10 +1387,83 @@ async function loadData(){
     if(rankingsListRes&&rankingsListRes.ok){
       try{const rd=await rankingsListRes.json();rankingsTop5=Array.isArray(rd)?rd:(rd&&rd.tipsters?rd.tipsters:null);}catch(e){}
     }
-    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all,rankingsTop5);renderMarketHeat(all);
+    renderMyPicks(all);renderStats(all);renderProfileCard(all);renderRepCard(window._myRankingMeta);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all,rankingsTop5);renderMarketHeat(all);
     if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
     updateGreeting(all.filter(p=>p.userId===user.id));
   }catch(e){clearTimeout(abort);_renderDataError();}
+}
+function getReputation(settled,sharpScore,roi,wrPct){
+  if(settled>=200&&sharpScore>=75&&roi>10&&wrPct>=55)return{level:5,key:'elite',label:'ELITE',color:'#fbbf24'};
+  if(settled>=100&&sharpScore>=60&&roi>5&&wrPct>=52)return{level:4,key:'trusted',label:'TRUSTED',color:'#38bdf8'};
+  if(settled>=50&&sharpScore>=40&&roi>0)return{level:3,key:'proven',label:'PROVEN',color:'#34d399'};
+  if(settled>=20)return{level:2,key:'rookie',label:null};
+  return{level:1,key:'unrated',label:null};
+}
+function renderRepCard(rm){
+  const el=document.getElementById('repProgressCard');
+  if(!el||!rm){if(el)el.style.display='none';return;}
+  const settled=(rm.wins||0)+(rm.losses||0);
+  const sharpScore=rm.sharpScore||0;
+  const roi=rm.roi!=null?parseFloat(rm.roi):0;
+  const wrPct=rm.winRate!=null?rm.winRate*100:0;
+  const rep=getReputation(settled,sharpScore,roi,wrPct);
+  const NEXT_REQS={
+    1:{label:'ROOKIE',color:'rgba(240,237,255,0.55)',reqs:[
+      {key:'picks',label:'Settled picks',need:20,val:settled,done:settled>=20,fmt:v=>`${v} / 20`}
+    ]},
+    2:{label:'PROVEN',color:'#34d399',reqs:[
+      {key:'picks',label:'Settled picks',need:50,val:settled,done:settled>=50,fmt:v=>`${v} / 50`},
+      {key:'sharp',label:'Sharp Score',need:40,val:sharpScore,done:sharpScore>=40,fmt:v=>`${Math.round(v)} / 40`},
+      {key:'roi',label:'ROI',need:0,val:roi,done:roi>0,fmt:v=>`${v>=0?'+':''}${v.toFixed(1)}%`}
+    ]},
+    3:{label:'TRUSTED',color:'#38bdf8',reqs:[
+      {key:'picks',label:'Settled picks',need:100,val:settled,done:settled>=100,fmt:v=>`${v} / 100`},
+      {key:'sharp',label:'Sharp Score',need:60,val:sharpScore,done:sharpScore>=60,fmt:v=>`${Math.round(v)} / 60`},
+      {key:'roi',label:'ROI',need:5,val:roi,done:roi>5,fmt:v=>`${v>=0?'+':''}${v.toFixed(1)}% / 5%`},
+      {key:'wr',label:'Win Rate',need:52,val:wrPct,done:wrPct>=52,fmt:v=>`${v.toFixed(0)}% / 52%`}
+    ]},
+    4:{label:'ELITE',color:'#fbbf24',reqs:[
+      {key:'picks',label:'Settled picks',need:200,val:settled,done:settled>=200,fmt:v=>`${v} / 200`},
+      {key:'sharp',label:'Sharp Score',need:75,val:sharpScore,done:sharpScore>=75,fmt:v=>`${Math.round(v)} / 75`},
+      {key:'roi',label:'ROI',need:10,val:roi,done:roi>10,fmt:v=>`${v>=0?'+':''}${v.toFixed(1)}% / 10%`},
+      {key:'wr',label:'Win Rate',need:55,val:wrPct,done:wrPct>=55,fmt:v=>`${v.toFixed(0)}% / 55%`}
+    ]}
+  };
+  const CUR_LABELS={1:'UNRATED',2:'ROOKIE',3:'PROVEN',4:'TRUSTED',5:'ELITE'};
+  const CUR_COLORS={1:'var(--mu)',2:'rgba(240,237,255,0.55)',3:'#34d399',4:'#38bdf8',5:'#fbbf24'};
+  let inner='';
+  if(rep.level>=5){
+    inner=`<div class="rep-card-eyebrow">REPUTATION</div>
+      <div class="rep-card-row"><div class="rep-card-level" style="color:#fbbf24">◆ ELITE</div></div>
+      <div class="rep-elite-row">
+        <div style="font-size:24px">🏆</div>
+        <div><div style="font-family:var(--font-display);font-size:14px;letter-spacing:1px;color:var(--tx)">Highest reputation achieved</div>
+        <div class="rep-elite-sub">Among the best in the world</div></div>
+      </div>`;
+  } else {
+    const next=NEXT_REQS[rep.level];
+    const curLabel=CUR_LABELS[rep.level];
+    const curColor=CUR_COLORS[rep.level];
+    const picksReq=next.reqs.find(r=>r.key==='picks');
+    const barPct=picksReq?Math.min(100,Math.round((picksReq.val/picksReq.need)*100)):0;
+    const showDiamond=rep.level>=3;
+    inner=`<div class="rep-card-eyebrow">REPUTATION</div>
+      <div class="rep-card-row">
+        <div class="rep-card-level" style="color:${curColor}">${showDiamond?'◆ ':''}${curLabel}</div>
+        <div style="text-align:right">
+          <div class="rep-card-next-lbl">NEXT TIER</div>
+          <div class="rep-card-next-tier" style="color:${next.color}">${next.label}</div>
+        </div>
+      </div>
+      ${next.reqs.map(r=>`<div class="rep-req${r.done?' rep-done':''}">
+        <div class="rep-req-icon">${r.done?'✓':'○'}</div>
+        <div class="rep-req-label">${r.label}</div>
+        <div class="rep-req-val" style="color:${r.done?'var(--gr)':'var(--mu2)'}">${r.fmt(r.val)}</div>
+      </div>`).join('')}
+      <div class="rep-bar-wrap"><div class="rep-bar-fill" style="width:${barPct}%;background:${next.color}"></div></div>`;
+  }
+  el.innerHTML=`<div class="rep-card">${inner}</div>`;
+  el.style.display='block';
 }
 function applyAvatarAura(division){
   const av=document.getElementById('idAv');if(!av)return;
@@ -1431,7 +1528,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const rm=window._myRankingMeta;
   const rel=rm?Math.round(rm.reliabilityScore):getReliability(myPicks).score;
   const finalStreak=getCurrentStreak(myPicks);
-  const idROI=document.getElementById('idROI');if(idROI){idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');_animStatVal(idROI,(parseFloat(roi)>=0?'+':'')+roi+'%');}
+  const idROI=document.getElementById('idROI');if(idROI){const _ip=myPicks.length;if(_ip<10){idROI.className='id-stat-val';idROI.innerHTML='<span class="roi-building">'+_ip+'/10 pick</span>';}else{idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');idROI.innerHTML=(parseFloat(roi)>=0?'+':'')+roi+'%<span class="roi-badge '+(_ip>=20?'verified':'limited')+'">'+(_ip>=20?'Verified Record':'Small Sample')+'</span>';}}
   const finalRank=rm&&rm.rank?rm.rank:rank;
   const idRank=document.getElementById('idRank');if(idRank){idRank.className='id-stat-val ac';if(finalRank>0)_animStatVal(idRank,'#'+finalRank,true);else idRank.textContent='#—';}
   const idStreak=document.getElementById('idStreak');if(idStreak){idStreak.className='id-stat-val orange';_animStatVal(idStreak,finalStreak>0?finalStreak+'W 🔥':'0W',true);}
@@ -1590,7 +1687,7 @@ function renderStats(all){
   const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):'0';
   animateCounter('statTotal',my.length);
   const wrEl=document.getElementById('statWR');if(wrEl)wrEl.textContent=wr+'%';
-  const roiEl=document.getElementById('statROI');if(roiEl){roiEl.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';roiEl.className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');}
+  const roiEl=document.getElementById('statROI');if(roiEl){const _sp=my.length;if(_sp<10){roiEl.className='stat-val';roiEl.innerHTML='<span class="roi-building">'+_sp+'/10</span>';}else{roiEl.className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');roiEl.innerHTML=(parseFloat(roi)>=0?'+':'')+roi+'%<span class="roi-badge '+(_sp>=20?'verified':'limited')+'">'+(_sp>=20?'✓':'~')+'</span>';}}
   const pnlEl=document.getElementById('statPnL');if(pnlEl){pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');}
   if(window.LEDGR&&LEDGR.countUp){const _wrEl=document.getElementById('statWR');if(_wrEl)LEDGR.countUp(_wrEl,parseFloat(wr),{decimals:0,suffix:'%'});}
   const hsR=document.getElementById('hsROI');if(hsR)hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
@@ -2259,6 +2356,14 @@ function toggleReact(btn,key){
   localStorage.setItem('ledgr_reactions',JSON.stringify(stored));
 }
 
+function roiBadgeHTML(roi,picks){
+  var r=typeof roi==='number'?roi:parseFloat(roi)||0;
+  if(picks<10)return'<span class="roi-building">'+picks+'/10 pick</span>';
+  var pos=r>=0;
+  var badge=picks>=20?'<span class="roi-badge verified">Verified Record</span>':'<span class="roi-badge limited">Small Sample</span>';
+  return'<span style="color:'+(pos?'var(--gr)':'var(--rd)')+';">'+(pos?'+':'')+r.toFixed(1)+'%</span>'+badge;
+}
+
 function renderLeaderboard(all,rankingsTop5){
   const map={};
   all.forEach(p=>{if(!p.username)return;const u=p.username;if(!map[u])map[u]={username:u,picks:0,wins:0,losses:0,stake:0,pnl:0,allPicks:[]};map[u].picks++;map[u].stake+=p.stake;map[u].pnl+=p.pnl;map[u].allPicks.push(p);if(p.result==='win')map[u].wins++;if(p.result==='loss')map[u].losses++;});
@@ -2279,7 +2384,7 @@ function renderLeaderboard(all,rankingsTop5){
         <div class="tip-sub">${t.totalPicks||0} picks · ${wr}% WR</div>
       </div>
       <div class="tip-right">
-        <div class="tip-roi ${roiPos?'':'neg'}">${roiPos?'+':''}${roi.toFixed(1)}%</div>
+        <div class="tip-roi">${roiBadgeHTML(roi,t.totalPicks||0)}</div>
         ${streak>0?`<div class="tip-streak">🔥 W${streak}</div>`:''}
         <div class="elo-mini">ELO ${t.elo!=null?Math.max(0,t.elo-1000):'—'}</div>
       </div>
@@ -2303,7 +2408,7 @@ function renderLeaderboard(all,rankingsTop5){
         <div class="tip-bar"><div class="tip-bar-fill" style="width:${bw}%"></div></div>
       </div>
       <div class="tip-right">
-        <div class="tip-roi ${roiPos?'':'neg'}">${roiPos?'+':''}${roi}%</div>
+        <div class="tip-roi">${roiBadgeHTML(parseFloat(roi),t.picks)}</div>
         ${streak>0?`<div class="tip-streak">🔥 W${streak}</div>`:''}
         <div class="elo-mini">ELO ${getELO(t.allPicks)}</div>
       </div>

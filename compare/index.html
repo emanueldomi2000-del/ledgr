@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="/assets/logo/ledgr-icon.png">
+<meta property="og:type" content="website">
 <meta property="og:image" content="https://getledgr.bet/assets/logo/ledgr-logo.png">
+<meta property="og:title" content="LEDGR — Head to Head">
+<meta property="og:description" content="Compare verified tipster records — ROI, Sharp Score, ELO, CLV and more.">
+<meta property="og:url" content="https://getledgr.bet/compare/">
 <title>LEDGR — Head to Head</title>
 <meta name="description" content="Compare two LEDGR tipsters head-to-head — ROI, win rate, streaks, best picks, and full performance breakdown.">
 
@@ -157,6 +161,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 .skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s linear infinite;display:inline-block}
 
+/* ── SAMPLE SIZE WARNING ── */
+.sample-warn{display:flex;align-items:center;gap:10px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:12px;padding:12px 18px;margin-bottom:16px;font-family:var(--font-mono);font-size:11px;color:rgba(251,191,36,.85);letter-spacing:.3px;line-height:1.5}
+.sample-warn-icon{font-size:15px;flex-shrink:0}
+
 @media(max-width:800px){
   .arena{grid-template-columns:1fr;gap:12px}
   .vs-zone{flex-direction:row;justify-content:center;padding-top:0;gap:12px}
@@ -227,18 +235,22 @@ let allPicks = [], allTipsters = [];
 let selectedA = null, selectedB = null;
 
 
-function calcStats(picks) {
-  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
+function calcStats(picks, rankMeta) {
+  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss' || p.result === 'push');
   const wins = settled.filter(p => p.result === 'win').length;
-  const stake = picks.reduce((s, p) => s + (p.stake || 0), 0);
-  const pnl   = picks.reduce((s, p) => s + (p.pnl || 0), 0);
+  const stake = settled.reduce((s, p) => s + (p.stake || 0), 0);
+  const pnl   = settled.reduce((s, p) => s + (p.pnl || 0), 0);
   const roi   = stake > 0 ? (pnl / stake) * 100 : 0;
-  const wr    = settled.length > 0 ? (wins / settled.length) * 100 : 0;
+  const gradedCount = settled.filter(p => p.result !== 'push').length;
+  const wr    = gradedCount > 0 ? (wins / gradedCount) * 100 : 0;
   const avgOdds = picks.length > 0 ? picks.reduce((s, p) => s + (p.odds || 0), 0) / picks.length : 0;
   const sorted = [...settled].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   let streak = 0; for (const p of sorted) { if (p.result === 'win') streak++; else break; }
-  const relScore = Math.round(Math.min(40,Math.max(0,(roi/20)*40))+Math.min(30,Math.max(0,(wr/70)*30))+Math.min(20,Math.max(0,(picks.length/100)*20))+Math.min(10,picks.length));
-  return { wins, losses: settled.length - wins, roi, wr, pnl, picks: picks.length, avgOdds, streak, settled: settled.length, relScore };
+  const relScore   = rankMeta?.reliabilityScore != null ? Math.round(rankMeta.reliabilityScore) : null;
+  const sharpScore = rankMeta?.sharpScore       != null ? Math.round(rankMeta.sharpScore)       : null;
+  const elo        = rankMeta?.elo              != null ? Math.round(rankMeta.elo)              : null;
+  const clv        = rankMeta?.clvAvg           != null ? rankMeta.clvAvg                       : null;
+  return { wins, losses: settled.filter(p => p.result === 'loss').length, roi, wr, pnl, picks: picks.length, avgOdds, streak, settled: settled.length, relScore, sharpScore, elo, clv };
 }
 
 async function loadTipsters() {
@@ -260,6 +272,9 @@ async function loadTipsters() {
       ...calcStats(t.picks)
     })).sort((a, b) => b.roi - a.roi);
     renderGrid('A'); renderGrid('B');
+    const _p = new URLSearchParams(location.search);
+    const _l = _p.get('left'), _r = _p.get('right');
+    if (_l && _r && _l !== _r) { selectTipster('A', _l); selectTipster('B', _r); runComparison(); }
   } catch (e) {
     clearTimeout(_xt);
     document.getElementById('gridA').innerHTML = '<div style="color:var(--rd);font-family:var(--font-mono);font-size:11px;padding:12px">Could not load tipsters. Refresh to retry.</div>';
@@ -336,8 +351,8 @@ function spawnVerdictParticles(container, color) {
 }
 
 function drawROIChart(picksA, picksB, userA, userB) {
-  const sortA = [...picksA].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  const sortB = [...picksB].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const sortA = [...picksA].filter(p => p.result === 'win' || p.result === 'loss' || p.result === 'push').sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  const sortB = [...picksB].filter(p => p.result === 'win' || p.result === 'loss' || p.result === 'push').sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   let cA = 0, stA = 0, cB = 0, stB = 0;
   const ptA = [0, ...sortA.map(p => { cA += p.pnl || 0; stA += p.stake || 0; return stA > 0 ? (cA / stA) * 100 : 0; })];
   const ptB = [0, ...sortB.map(p => { cB += p.pnl || 0; stB += p.stake || 0; return stB > 0 ? (cB / stB) * 100 : 0; })];
@@ -413,30 +428,63 @@ function shareComparison(userA, userB, sA, sB, winner) {
 }
 
 function fmtVal(v, fmt) {
+  if (v === null || v === undefined) return '—';
   if (fmt === 'pct') return (v >= 0 ? '+' : '') + v.toFixed(1) + '%';
-  if (fmt === 'eur') return (v >= 0 ? '+' : '-') + '€' + Math.abs(v).toFixed(1);
+  if (fmt === 'eur') return (v >= 0 ? '+' : '-') + Math.abs(v).toFixed(1) + 'u';
   return typeof v === 'number' ? v.toFixed(v % 1 ? 2 : 0) : v;
 }
 
-function runComparison() {
+function copyCompareLink() {
+  const btn = document.getElementById('cmpCopyBtn');
+  const done = () => { if (btn) { btn.textContent = 'COPIED ✓'; setTimeout(() => { btn.textContent = 'COPY LINK'; }, 2000); } };
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = location.href; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta); done();
+  };
+  if (navigator.clipboard) { navigator.clipboard.writeText(location.href).then(done).catch(fallback); }
+  else fallback();
+}
+
+function shareCompareResult(userA, userB) {
+  if (navigator.share) {
+    navigator.share({
+      title: `@${userA} vs @${userB} | LEDGR Compare`,
+      text: `Compare @${userA} and @${userB} on LEDGR — verified picks, ROI, Sharp Score, ELO and CLV.`,
+      url: location.href
+    }).catch(() => {});
+  } else {
+    copyCompareLink();
+  }
+}
+
+async function runComparison() {
   if (!selectedA || !selectedB || selectedA === selectedB) return;
   const picksA = allPicks.filter(p => p.user?.username === selectedA);
   const picksB = allPicks.filter(p => p.user?.username === selectedB);
-  const sA = calcStats(picksA), sB = calcStats(picksB);
+  const [rankA, rankB] = await Promise.allSettled([
+    fetch(`${API}/rankings/${selectedA}`).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch(`${API}/rankings/${selectedB}`).then(r => r.ok ? r.json() : null).catch(() => null),
+  ]).then(results => results.map(r => r.status === 'fulfilled' ? r.value : null));
+  const sA = calcStats(picksA, rankA), sB = calcStats(picksB, rankB);
   const tA = allTipsters.find(t => t.username === selectedA);
   const tB = allTipsters.find(t => t.username === selectedB);
 
   const cats = [
-    { label: 'ROI',         a: sA.roi,      b: sB.roi,      fmt: 'pct' },
-    { label: 'WIN RATE',    a: sA.wr,       b: sB.wr,       fmt: 'pct' },
-    { label: 'P&L',         a: sA.pnl,      b: sB.pnl,      fmt: 'eur' },
-    { label: 'PICKS',       a: sA.picks,    b: sB.picks,    fmt: 'num' },
-    { label: 'AVG ODDS',    a: sA.avgOdds,  b: sB.avgOdds,  fmt: 'num' },
-    { label: 'RELIABILITY', a: sA.relScore, b: sB.relScore, fmt: 'num' },
-    { label: 'STREAK',      a: sA.streak,   b: sB.streak,   fmt: 'num' },
+    { label: 'ROI',         a: sA.roi,        b: sB.roi,        fmt: 'pct', scored: true },
+    { label: 'WIN RATE',    a: sA.wr,         b: sB.wr,         fmt: 'pct', scored: true },
+    { label: 'P&L',         a: sA.pnl,        b: sB.pnl,        fmt: 'eur' },
+    { label: 'PICKS',       a: sA.picks,      b: sB.picks,      fmt: 'num' },
+    { label: 'AVG ODDS',    a: sA.avgOdds,    b: sB.avgOdds,    fmt: 'num', scored: true },
+    { label: 'RELIABILITY', a: sA.relScore,   b: sB.relScore,   fmt: 'num', scored: true },
+    { label: 'SHARP SCORE', a: sA.sharpScore, b: sB.sharpScore, fmt: 'num', scored: true },
+    { label: 'ELO',         a: sA.elo,        b: sB.elo,        fmt: 'num', scored: true },
+    { label: 'CLV',         a: sA.clv,        b: sB.clv,        fmt: 'pct', scored: true },
+    { label: 'STREAK',      a: sA.streak,     b: sB.streak,     fmt: 'num', scored: true },
   ];
   let aWins = 0, bWins = 0;
-  cats.forEach(c => { if (c.a > c.b) aWins++; else if (c.b > c.a) bWins++; });
+  cats.forEach(c => { if (!c.scored || c.a == null || c.b == null) return; if (c.a > c.b) aWins++; else if (c.b > c.a) bWins++; });
+  const scoredCount = cats.filter(c => c.scored && c.a != null && c.b != null).length;
   const winner = aWins > bWins ? selectedA : bWins > aWins ? selectedB : 'TIE';
   const winnerSide = winner === selectedA ? 'a' : winner === selectedB ? 'b' : 'tie';
   const winnerStats = winner === selectedA ? sA : winner === selectedB ? sB : null;
@@ -448,8 +496,26 @@ function runComparison() {
   const verdictBgClass = { a: 'verdict-bg-a', b: 'verdict-bg-b', tie: 'verdict-bg-tie' };
   const verdictNameClass = { a: 'verdict-name-a', b: 'verdict-name-b', tie: '' };
 
+  // Update URL and social meta
+  const _u = new URL(location.href);
+  _u.searchParams.set('left', selectedA); _u.searchParams.set('right', selectedB);
+  history.replaceState({}, '', _u);
+  const _pageTitle = `@${selectedA} vs @${selectedB} | LEDGR Compare`;
+  document.title = _pageTitle;
+  const _ogT = document.querySelector('meta[property="og:title"]');
+  const _ogD = document.querySelector('meta[property="og:description"]');
+  const _ogU = document.querySelector('meta[property="og:url"]');
+  if (_ogT) _ogT.setAttribute('content', _pageTitle);
+  if (_ogD) _ogD.setAttribute('content', `Compare @${selectedA} vs @${selectedB} — verified records, ROI, Sharp Score, ELO and CLV on LEDGR.`);
+  if (_ogU) _ogU.setAttribute('content', _u.toString());
+
   const c = document.getElementById('compResult');
   c.innerHTML = `
+    ${(sA.settled < 20 || sB.settled < 20) ? `
+    <div class="sample-warn">
+      <span class="sample-warn-icon">⚠</span>
+      Limited statistical confidence — one or both tipsters have fewer than 20 verified picks.
+    </div>` : ''}
     <!-- VERDICT -->
     <div class="verdict-wrap ${verdictBgClass[winnerSide]}">
       <div class="verdict-particles" id="vdConf"></div>
@@ -457,20 +523,22 @@ function runComparison() {
         ? `<div class="verdict-label">WINNER BY ${Math.max(aWins, bWins)} CATEGORIES</div>
            <div class="verdict-crown">★</div>
            <div class="verdict-name ${verdictNameClass[winnerSide]}">@${winner}</div>
-           <div class="verdict-margin">Beats @${winner === selectedA ? selectedB : selectedA} in ${Math.max(aWins, bWins)} of ${cats.length} head-to-head stats</div>
+           <div class="verdict-margin">Beats @${winner === selectedA ? selectedB : selectedA} in ${Math.max(aWins, bWins)} of ${scoredCount} skill categories</div>
            <div class="verdict-stats">
              <div class="vd-st"><div class="vd-val" style="color:${winnerStats.roi>=0?'var(--gr)':'var(--rd)'}">${winnerStats.roi>=0?'+':''}${winnerStats.roi.toFixed(1)}%</div><div class="vd-lbl">ROI</div></div>
              <div class="vd-st"><div class="vd-val">${winnerStats.wr.toFixed(0)}%</div><div class="vd-lbl">Win Rate</div></div>
-             <div class="vd-st"><div class="vd-val" style="color:${winnerStats.pnl>=0?'var(--gr)':'var(--rd)'}">${winnerStats.pnl>=0?'+':'-'}€${Math.abs(winnerStats.pnl).toFixed(0)}</div><div class="vd-lbl">P&L</div></div>
+             <div class="vd-st"><div class="vd-val" style="color:${winnerStats.pnl>=0?'var(--gr)':'var(--rd)'}">${winnerStats.pnl>=0?'+':'-'}${Math.abs(winnerStats.pnl).toFixed(1)}u</div><div class="vd-lbl">P&L</div></div>
              <div class="vd-st"><div class="vd-val">${winnerStats.picks}</div><div class="vd-lbl">Picks</div></div>
              ${winnerStats.streak>=3?`<div class="vd-st"><div class="vd-val" style="color:var(--orange)">W${winnerStats.streak}</div><div class="vd-lbl">Streak</div></div>`:''}
            </div>`
         : `<div class="verdict-label">RESULT</div>
            <div class="verdict-name" style="color:var(--mu2)">IT'S A TIE!</div>
-           <div class="verdict-margin">Both tipsters tied across all ${cats.length} categories</div>`}
+           <div class="verdict-margin">Both tipsters tied across all ${scoredCount} skill categories</div>`}
       <div class="verdict-actions">
         ${winner !== 'TIE' ? `<a href="/tipster?u=${winner}" class="va-btn va-btn-primary">View @${winner}'s Profile →</a>` : ''}
         <button class="va-btn va-btn-secondary" onclick="shareComparison('${selectedA}','${selectedB}',${JSON.stringify(sA)},${JSON.stringify(sB)},'${winner}')">Share as Image</button>
+        <button class="va-btn va-btn-secondary" id="cmpCopyBtn" onclick="copyCompareLink()">COPY LINK</button>
+        <button class="va-btn va-btn-secondary" onclick="shareCompareResult('${selectedA}','${selectedB}')">SHARE ↗</button>
       </div>
     </div>
 
@@ -497,7 +565,7 @@ function runComparison() {
         const mx = Math.max(Math.abs(cat.a), Math.abs(cat.b), 0.01);
         const pa = Math.min(50, (Math.abs(cat.a) / mx) * 50);
         const pb = Math.min(50, (Math.abs(cat.b) / mx) * 50);
-        const aw = cat.a > cat.b, bw = cat.b > cat.a;
+        const aw = cat.scored && cat.a > cat.b, bw = cat.scored && cat.b > cat.a;
         return `<div class="stat-row">
           <div class="stat-row-inner">
             <div style="text-align:right">

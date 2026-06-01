@@ -451,6 +451,7 @@ body::before{content:'';position:fixed;inset:0;
     </div>
     <select class="sort-select" id="sortSelect" onchange="renderLeaderboard()">
       <option value="roi">SORT: ROI</option>
+      <option value="reputation">SORT: REPUTATION</option>
       <option value="sharp">SORT: SHARP SCORE</option>
       <option value="wr">SORT: WIN RATE</option>
       <option value="picks">SORT: PICKS</option>
@@ -1075,6 +1076,23 @@ async function filterBy(sport, btn) {
   renderLeaderboard();
 }
 
+// ── Reputation System V1 ─────────────────────────────────────────────────────
+function getReputation(settled, sharpScore, roi, wrPct) {
+  if (settled >= 200 && sharpScore >= 75 && roi > 10 && wrPct >= 55)
+    return { level:5, key:'elite',   label:'ELITE',   color:'#fbbf24', bg:'rgba(251,191,36,0.1)',  border:'rgba(251,191,36,0.3)'  };
+  if (settled >= 100 && sharpScore >= 60 && roi > 5  && wrPct >= 52)
+    return { level:4, key:'trusted', label:'TRUSTED', color:'#38bdf8', bg:'rgba(56,189,248,0.1)',  border:'rgba(56,189,248,0.25)' };
+  if (settled >= 50  && sharpScore >= 40 && roi > 0)
+    return { level:3, key:'proven',  label:'PROVEN',  color:'#34d399', bg:'rgba(52,211,153,0.1)',  border:'rgba(52,211,153,0.2)'  };
+  if (settled >= 20)
+    return { level:2, key:'rookie',  label:null };
+  return   { level:1, key:'unrated', label:null };
+}
+function repBadgeHTML(rep, large) {
+  if (!rep || !rep.label) return '';
+  return `<span style="display:inline-flex;align-items:center;background:${rep.bg};border:1px solid ${rep.border};color:${rep.color};font-family:var(--font-mono);font-size:${large?'9px':'8px'};letter-spacing:2px;padding:${large?'4px 11px':'3px 8px'};border-radius:20px;font-weight:700">${rep.label}</span>`;
+}
+
 function roiBadgeHTML(roi,picks){
   var r=typeof roi==='number'?roi:parseFloat(roi)||0;
   if(picks<20)return'<span class="roi-building">'+picks+'/20 picks</span>';
@@ -1095,6 +1113,12 @@ function renderLeaderboard() {
     const wrA  = a.winRate != null ? a.winRate*100 : ((a.wins+a.losses)>0?(a.wins/(a.wins+a.losses))*100:0);
     const wrB  = b.winRate != null ? b.winRate*100 : ((b.wins+b.losses)>0?(b.wins/(b.wins+b.losses))*100:0);
     if (sort==='roi')   return roiB-roiA;
+    if (sort==='reputation') {
+      const _rA = getReputation((a.wins||0)+(a.losses||0), a.sharpScore||0, a.roi||0, a.winRate!=null?a.winRate*100:0);
+      const _rB = getReputation((b.wins||0)+(b.losses||0), b.sharpScore||0, b.roi||0, b.winRate!=null?b.winRate*100:0);
+      if (_rB.level !== _rA.level) return _rB.level - _rA.level;
+      return (b.sharpScore||0) - (a.sharpScore||0);
+    }
     if (sort==='sharp') return (b.sharpScore||0)-(a.sharpScore||0);
     if (sort==='wr')    return wrB-wrA;
     if (sort==='picks') return b.picks-a.picks;
@@ -1399,8 +1423,10 @@ function renderLeaderboard() {
     const usernameColor = globalRank === 1 ? 'var(--gold)' : globalRank <= 10 ? 'var(--ac-light)' : '';
     const usernamePfx = globalRank === 1 ? '👑 ' : '';
     const sharpMark = ss > 70 ? `<span style="color:var(--gr);font-size:11px;margin-left:4px">✓ Sharp</span>` : '';
+    const rep = getReputation((t.wins||0)+(t.losses||0), ss, t.roi||0, t.winRate!=null?t.winRate*100:0);
+    const repBorder = rep.level >= 4 ? `border-left:3px solid ${rep.color};` : '';
 
-    return `<div class="lb-row" style="--ri:${idx}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
+    return `<div class="lb-row" style="--ri:${idx};${repBorder}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
       <div class="rank-cell">
         <div class="rank-num ${rankCls}">${globalRank}${roi > 20 ? `<span style="font-size:9px;color:#00E5A0;font-family:'DM Mono',monospace;margin-left:2px">▲</span>` : roi < 0 ? `<span style="font-size:9px;color:#FF3355;font-family:'DM Mono',monospace;margin-left:2px">▼</span>` : ''}</div>
         ${move}
@@ -1410,7 +1436,7 @@ function renderLeaderboard() {
         <div class="tip-info">
           <div class="tip-name" ${usernameColor?`style="color:${usernameColor}"`:''}>${usernamePfx}@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}${sharpMark}</div>
           <div class="tip-sub">${t.picks} picks${((t.wins||0)+(t.losses||0))<10?` · <span style="color:var(--mu);font-size:8px">unranked</span>`:''}</div>
-          <div class="tip-badges">${divPill}${flowHtml||archHtml}</div>
+          <div class="tip-badges">${divPill}${repBadgeHTML(rep,false)}${flowHtml||archHtml}</div>
         </div>
       </div>
       <div class="lb-stat">

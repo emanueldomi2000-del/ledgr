@@ -1297,6 +1297,24 @@ function toggleTrophy(head){
 
 async function wakeBackend(){try{await fetch(API+'/health',{signal:AbortSignal.timeout(3000)});}catch(e){}}
 
+// ── Reputation System V1 ─────────────────────────────────────────────────────
+// settled = wins + losses, sharpScore 0-100, roi %, wrPct %
+function getReputation(settled, sharpScore, roi, wrPct) {
+  if (settled >= 200 && sharpScore >= 75 && roi > 10 && wrPct >= 55)
+    return { level:5, key:'elite',   label:'ELITE',   color:'#fbbf24', bg:'rgba(251,191,36,0.1)',  border:'rgba(251,191,36,0.3)'  };
+  if (settled >= 100 && sharpScore >= 60 && roi > 5  && wrPct >= 52)
+    return { level:4, key:'trusted', label:'TRUSTED', color:'#38bdf8', bg:'rgba(56,189,248,0.1)',  border:'rgba(56,189,248,0.25)' };
+  if (settled >= 50  && sharpScore >= 40 && roi > 0)
+    return { level:3, key:'proven',  label:'PROVEN',  color:'#34d399', bg:'rgba(52,211,153,0.1)',  border:'rgba(52,211,153,0.2)'  };
+  if (settled >= 20)
+    return { level:2, key:'rookie',  label:null };
+  return   { level:1, key:'unrated', label:null };
+}
+function repBadgeHTML(rep, large) {
+  if (!rep || !rep.label) return '';
+  return `<span style="display:inline-flex;align-items:center;background:${rep.bg};border:1px solid ${rep.border};color:${rep.color};font-family:var(--font-mono);font-size:${large?'9px':'8px'};letter-spacing:2px;padding:${large?'4px 11px':'3px 8px'};border-radius:20px;font-weight:700">${rep.label}</span>`;
+}
+
 async function loadProfile(){
   if(!username){showNotFound();return;}
   await wakeBackend();
@@ -1427,6 +1445,7 @@ async function loadProfile(){
     const ssColor=finalSharpScore>=70?'var(--gr)':finalSharpScore>=40?'var(--gold)':'var(--rd)';
     const gaugeHTML=(window.sharpGaugeHTML&&finalSharpScore>0)?window.sharpGaugeHTML(finalSharpScore,{size:120}):'';
     const SHARP_TIP='Sharp Score measures ROI consistency, sample size, odds difficulty and streak stability — a true measure of skill, not luck.';
+    const rep=getReputation(wins+losses, finalSharpScore, parseFloat(roi), parseFloat(wr));
 
     // Archetype hero identity block + level system
     const _rpgPickCount=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
@@ -1534,11 +1553,12 @@ async function loadProfile(){
             <div class="profile-tags">
               <div class="verified-tag"><div class="vdot"></div> VERIFIED</div>
               ${divBadgeHTML}
+              ${repBadgeHTML(rep,true)}
               ${archetypeHtml?archetypeHtml:''}
               ${streak>=3?`<div class="streak-tag">🔥 ${streak} WIN STREAK</div>`:''}
               ${flowBadgeHTML}
               ${finalSharpScore>70?`<span style="background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.25);color:#00e5a0;font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;padding:4px 12px;border-radius:20px;animation:sharpPulse 3s ease-in-out infinite">✓ VERIFIED SHARP</span>`:''}
-              ${hofBadges.map(b=>`<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:var(--gold);font-family:var(--font-mono);font-size:8px;letter-spacing:2px;padding:4px 10px;border-radius:20px">${b.icon} ${b.label}</div>`).join('')}
+              ${rep.level>=4?hofBadges.map(b=>`<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:var(--gold);font-family:var(--font-mono);font-size:8px;letter-spacing:2px;padding:4px 10px;border-radius:20px">${b.icon} ${b.label}</div>`).join(''):''}
             </div>
             <div class="profile-username">@${username}</div>
             <div class="hero-stat-dominants">

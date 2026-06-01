@@ -330,12 +330,9 @@ body::before{content:'';position:fixed;inset:0;
       <div class="mon-head-text">ALL-TIME <span>RECORDS</span></div>
       <div class="mon-head-rule"></div>
     </div>
-    <div class="mon-head-sub">The greatest individual performances ever recorded on LEDGR</div>
+    <div class="mon-head-sub">ROI Leader · Win Streak King · Sharp Score Elite — minimum thresholds enforced</div>
   </div>
   <div class="rec-grid" id="recordsGrid">
-    <div class="skel" style="height:180px;border-radius:18px"></div>
-    <div class="skel" style="height:180px;border-radius:18px"></div>
-    <div class="skel" style="height:180px;border-radius:18px"></div>
     <div class="skel" style="height:180px;border-radius:18px"></div>
     <div class="skel" style="height:180px;border-radius:18px"></div>
     <div class="skel" style="height:180px;border-radius:18px"></div>
@@ -349,7 +346,7 @@ body::before{content:'';position:fixed;inset:0;
       <div class="mon-head-text">LEDGR <span>LEGENDS</span></div>
       <div class="mon-head-rule"></div>
     </div>
-    <div class="mon-head-sub">Tipsters who scaled the summit — Legendary division and beyond</div>
+    <div class="mon-head-sub">Ranked by verified ELO — the platform's most dominant all-time performers</div>
   </div>
   <div class="legend-grid" id="legendGrid">
     <div class="skel" style="height:280px;border-radius:22px"></div>
@@ -389,9 +386,20 @@ const AV_COLORS = [
   'linear-gradient(135deg,#0f766e,#14b8a6)',
 ];
 
-// ── Helpers ──────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
-// ── Floating gold particles in hero ─────────────────────────
+function getDivLabel(div) {
+  return ({
+    LEGENDARY: '◉ LEGENDARY', ELITE: '⊕ ELITE', DIAMOND: '✦ DIAMOND',
+    PLATINUM:  '⬡ PLATINUM',  GOLD:  '★ GOLD',  SILVER:  '◆ SILVER', BRONZE: '▲ BRONZE',
+  })[(div || '').toUpperCase()] || '▲ BRONZE';
+}
+
+function fmt(d)     { return new Date(d).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }); }
+function fmtFull(d) { return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
+function pos(n)     { return n >= 0 ? '+' : ''; }
+
+// ── Floating gold particles in hero ──────────────────────────────────────────
 (function spawnParticles() {
   const wrap = document.getElementById('heroParticles');
   for (let i = 0; i < 20; i++) {
@@ -404,186 +412,150 @@ const AV_COLORS = [
     const gold = Math.random() > 0.4;
     p.style.cssText = `left:${x}%;width:${size}px;height:${size}px;--d:${dur}s;--dl:${dl}s;
       background:${gold ? 'rgba(251,191,36,.7)' : 'rgba(184,159,255,.5)'};
-      box-shadow:0 0 ${size*2}px ${gold ? 'rgba(251,191,36,.5)' : 'rgba(184,159,255,.4)'}`;
+      box-shadow:0 0 ${size * 2}px ${gold ? 'rgba(251,191,36,.5)' : 'rgba(184,159,255,.4)'}`;
     wrap.appendChild(p);
   }
 })();
 
-// ── Stats calc ───────────────────────────────────────────────
-function calcStats(picks) {
-  const settled = picks.filter(p => p.result === 'win' || p.result === 'loss');
-  const wins    = settled.filter(p => p.result === 'win').length;
-  const stake   = picks.reduce((s, p) => s + (p.stake || 0), 0);
-  const pnl     = picks.reduce((s, p) => s + (p.pnl || 0), 0);
-  const roi     = stake > 0 ? (pnl / stake) * 100 : 0;
-  const wr      = settled.length > 0 ? (wins / settled.length) * 100 : 0;
-  const avgOdds = picks.length > 0 ? picks.reduce((s, p) => s + (p.odds || 0), 0) / picks.length : 0;
+// ── Hero ──────────────────────────────────────────────────────────────────────
+function renderHero(tipsters) {
+  const totalPicks = tipsters.reduce((s, t) => s + (t.totalPicks || 0), 0);
+  const roiLeader  = tipsters
+    .filter(t => _isTrusted(t) && t.totalPicks >= 50 && t.avgOdds != null && t.avgOdds >= 1.5)
+    .sort((a, b) => b.roi - a.roi)[0];
+  const streakLeader = [...tipsters].sort((a, b) => b.bestStreak - a.bestStreak)[0];
 
-  const byDate = [...settled].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  let maxStreak = 0, curS = 0;
-  byDate.forEach(p => { if (p.result === 'win') { curS++; maxStreak = Math.max(maxStreak, curS); } else curS = 0; });
-
-  const clvPicks = settled.filter(p => p.clv != null);
-  const avgCLV   = clvPicks.length > 0 ? clvPicks.reduce((s, p) => s + p.clv, 0) / clvPicks.length : 0;
-
-  const divScore = Math.round(
-    Math.min(40, Math.max(0, (roi / 20) * 40)) +
-    Math.min(30, Math.max(0, (wr  / 70) * 30)) +
-    Math.min(20, Math.max(0, (picks.length / 100) * 20)) +
-    Math.min(10, picks.length)
-  );
-
-  return { picks: picks.length, wins, losses: settled.length - wins, settled: settled.length,
-    roi, wr, pnl, stake, avgOdds, maxStreak, avgCLV, clvCount: clvPicks.length, divScore };
+  document.getElementById('hsTipsters').textContent = tipsters.length || '—';
+  document.getElementById('hsPicks').textContent    = totalPicks ? totalPicks.toLocaleString() : '—';
+  document.getElementById('hsBestROI').textContent  = roiLeader
+    ? pos(roiLeader.roi) + roiLeader.roi.toFixed(1) + '%' : '—';
+  document.getElementById('hsStreak').textContent   = (streakLeader?.bestStreak >= 7)
+    ? 'W' + streakLeader.bestStreak : '—';
 }
 
-function getDivTag(score) {
-  if (score >= 92) return '◉ LEGENDARY';
-  if (score >= 80) return '⊕ ELITE';
-  if (score >= 65) return '✦ DIAMOND';
-  if (score >= 50) return '⬡ PLATINUM';
-  if (score >= 35) return '★ GOLD';
-  if (score >= 20) return '◆ SILVER';
-  return '▲ BRONZE';
-}
+// ── Legendary Tipsters ────────────────────────────────────────────────────────
+function renderLegends(tipsters) {
+  const el = document.getElementById('legendGrid');
+  const legends = [...tipsters].sort((a, b) => b.elo - a.elo).slice(0, 6);
 
-function getBadges(s) {
-  const b = [];
-  if (s.maxStreak >= 5) b.push('STREAK');
-  if (s.roi >= 20 && s.picks >= 30) b.push('ROI+');
-  if (s.wr >= 60 && s.settled >= 20) b.push('SHARP');
-  if (s.picks >= 100) b.push('VETERAN');
-  if (s.avgCLV >= 3 && s.clvCount >= 10) b.push('CLV+');
-  return b;
-}
-
-function fmt(d) { return new Date(d).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' }); }
-function fmtDate(d) { return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); }
-function pos(n) { return n >= 0 ? '+' : ''; }
-
-// ── Main loader ──────────────────────────────────────────────
-async function loadHOF() {
-  const _ctrl=new AbortController();const _xt=setTimeout(()=>{_ctrl.abort();document.getElementById('recordsGrid').innerHTML='<div class="section-empty" style="grid-column:1/-1"><span class="icon">⚠️</span><h3>TIMEOUT</h3><p>Request timed out. Please refresh.</p></div>';},25000);
-  try {
-    const [picksRes, seasonsRes] = await Promise.all([
-      fetch(API + '/picks', { cache: 'no-store', signal: _ctrl.signal }),
-      fetch(API + '/seasons', { cache: 'no-store' }).catch(() => null)
-    ]);
-
-    clearTimeout(_xt);
-    const allPicks  = picksRes.ok ? await picksRes.json() : [];
-    const seasons   = (seasonsRes && seasonsRes.ok) ? await seasonsRes.json() : [];
-
-    // Build tipster map
-    const map = {};
-    allPicks.forEach(p => {
-      if (!p.user) return;
-      const u = p.user.username;
-      if (!map[u]) map[u] = { username: u, picks: [], color: AV_COLORS[Object.keys(map).length % AV_COLORS.length] };
-      map[u].picks.push(p);
-    });
-    const tipsters = Object.values(map)
-      .map(t => ({ ...t, ...calcStats(t.picks) }))
-      .filter(t => t.picks >= 1);
-
-    const byROI    = [...tipsters].sort((a, b) => b.roi - a.roi);
-    const byStreak = [...tipsters].sort((a, b) => b.maxStreak - a.maxStreak);
-    const byPnL    = [...tipsters].sort((a, b) => b.pnl - a.pnl);
-    const byPicks  = [...tipsters].sort((a, b) => b.picks - a.picks);
-    const byWR     = [...tipsters].filter(t => t.settled >= 10).sort((a, b) => b.wr - a.wr);
-    const byCLV    = [...tipsters].filter(t => t.clvCount >= 5).sort((a, b) => b.avgCLV - a.avgCLV);
-    const byScore  = [...tipsters].sort((a, b) => b.divScore - a.divScore);
-
-    // Hero stats
-    document.getElementById('hsTipsters').textContent = tipsters.length || '—';
-    document.getElementById('hsPicks').textContent = allPicks.length || '—';
-    document.getElementById('hsBestROI').textContent = byROI[0] ? pos(byROI[0].roi) + byROI[0].roi.toFixed(1) + '%' : '—';
-    document.getElementById('hsStreak').textContent  = byStreak[0] ? 'W' + byStreak[0].maxStreak : '—';
-
-    // ── Highest single winning pick odds ──
-    const winPicks = allPicks.filter(p => p.result === 'win' && p.odds > 0)
-      .sort((a, b) => b.odds - a.odds);
-    const bigOddsPick = winPicks[0];
-
-    // ── Biggest single day P&L ──
-    const dayMap = {};
-    allPicks.forEach(p => {
-      if (!p.user) return;
-      const day = new Date(p.createdAt).toISOString().split('T')[0];
-      if (!dayMap[day]) dayMap[day] = { pnl: 0, username: p.user.username, date: day };
-      dayMap[day].pnl += (p.pnl || 0);
-    });
-    const bigDay = Object.values(dayMap).sort((a, b) => b.pnl - a.pnl)[0];
-
-    // ── Season champions ─────────────────────────────────────
-    renderSeasons(seasons, allPicks, map);
-
-    // ── Records ─────────────────────────────────────────────
-    if (!tipsters.length) {
-      document.getElementById('recordsGrid').innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">📊</span><h3>NO DATA YET</h3><p>Records will appear as tipsters post and win picks.</p></div>`;
-    } else {
-      const records = [
-        { cls:'rc-gold',   icon:'👑', cat:'Highest ROI Ever',       val: byROI[0] ? pos(byROI[0].roi)+byROI[0].roi.toFixed(1)+'%' : '—',       holder:byROI[0]?.username,   detail:byROI[0] ? byROI[0].picks+' picks · '+byROI[0].wr.toFixed(0)+'% WR' : '',        glow:'rgba(251,191,36,.15)' },
-        { cls:'rc-fire',   icon:'🔥', cat:'Longest Win Streak',     val: byStreak[0] ? 'W'+byStreak[0].maxStreak : '—',                          holder:byStreak[0]?.username, detail:byStreak[0] ? byStreak[0].picks+' total picks' : '',                              glow:'rgba(251,146,60,.15)' },
-        { cls:'rc-purple', icon:'🎲', cat:'Highest Single Odds Won', val: bigOddsPick ? bigOddsPick.odds.toFixed(2) : '—',                        holder:bigOddsPick?.user?.username, detail:bigOddsPick ? bigOddsPick.event?.slice(0,40)||'—' : '',                    glow:'rgba(184,159,255,.15)' },
-        { cls:'rc-cyan',   icon:'📊', cat:'Most Picks Posted',       val: byPicks[0] ? byPicks[0].picks+'' : '—',                                 holder:byPicks[0]?.username,  detail:'verified picks all-time',                                                        glow:'rgba(56,189,248,.15)' },
-        { cls:'rc-green',  icon:'⚡', cat:'Best CLV Average',        val: byCLV[0] ? pos(byCLV[0].avgCLV)+byCLV[0].avgCLV.toFixed(1)+'%' : '—', holder:byCLV[0]?.username,    detail:byCLV[0] ? byCLV[0].clvCount+' picks with CLV data' : 'Need 5+ CLV picks',    glow:'rgba(52,211,153,.15)' },
-        { cls:'rc-red',    icon:'💰', cat:'Biggest Single Day P&L',  val: bigDay ? pos(bigDay.pnl)+bigDay.pnl.toFixed(1)+'u' : '—',              holder:bigDay?.username,      detail:bigDay ? fmtDate(bigDay.date) : '',                                               glow:'rgba(248,113,113,.12)' },
-      ];
-      document.getElementById('recordsGrid').innerHTML = records.map(r => `
-        <div class="rec-card ${r.cls}" onclick="${r.holder ? "window.location.href='/tipster?u="+r.holder+"'" : ''}">
-          <div class="rec-glow-corner" style="background:${r.glow}"></div>
-          <span class="rec-icon">${r.icon}</span>
-          <div class="rec-cat">${r.cat}</div>
-          <div class="rec-val">${r.val}</div>
-          <div class="rec-holder">@${r.holder || '—'}</div>
-          <div class="rec-detail">${r.detail}</div>
-        </div>`).join('');
-    }
-
-    // ── Legendary tipsters ────────────────────────────────────
-    const legends = byScore.slice(0, 6);
-    if (!legends.length) {
-      document.getElementById('legendGrid').innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">🐐</span><h3>NONE YET</h3><p>Reach Legendary division to be enshrined here forever.</p></div>`;
-    } else {
-      document.getElementById('legendGrid').innerHTML = legends.map((t, i) => `
-        <div class="legend-ring" onclick="window.location.href='/tipster?u=${t.username}'">
-          <div class="legend-card">
-            <div class="legend-rank">${['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ'][i]||i+1}</div>
-            <div class="legend-av" style="background:${t.color}">${t.username.slice(0,2).toUpperCase()}</div>
-            <div class="legend-name">@${t.username}</div>
-            <div class="legend-div-tag">${getDivTag(t.divScore)}</div>
-            <div class="legend-roi">${pos(t.roi)}${t.roi.toFixed(1)}%</div>
-            <div class="legend-stats-row">
-              <div class="ls-i"><div class="ls-val">${t.picks}</div><div class="ls-lbl">Picks</div></div>
-              <div class="ls-i"><div class="ls-val">${t.wr.toFixed(0)}%</div><div class="ls-lbl">Win Rate</div></div>
-              <div class="ls-i"><div class="ls-val">W${t.maxStreak}</div><div class="ls-lbl">Best Streak</div></div>
-              <div class="ls-i"><div class="ls-val">${t.divScore}</div><div class="ls-lbl">Score</div></div>
-            </div>
-            <div class="legend-badges-row">${getBadges(t).map(b => `<span class="legend-badge">${b}</span>`).join('')}</div>
-          </div>
-        </div>`).join('');
-    }
-
-    // ── Wall of Fame ──────────────────────────────────────────
-    renderWOF(allPicks, tipsters, seasons, byROI, byStreak, byCLV, bigOddsPick, bigDay);
-
-  } catch (err) {
-    clearTimeout(_xt);
-    console.error('HOF error', err);
-    document.getElementById('recordsGrid').innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">⚠️</span><h3>SYNC IN PROGRESS</h3><p>We're loading verified data. Refresh in a moment.</p></div>`;
-  }
-}
-
-// ── Season champions renderer ────────────────────────────────
-function renderSeasons(seasons, allPicks, tipsterMap) {
-  const grid = document.getElementById('seasonChampGrid');
-  if (!seasons.length) {
-    grid.innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">🏆</span><h3>FIRST SEASON COMING SOON</h3><p>Season champions will be enshrined here forever.</p></div>`;
+  if (!legends.length) {
+    el.innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">🐐</span><h3>NONE YET</h3><p>The greatest tipsters on LEDGR will be enshrined here.</p></div>`;
     return;
   }
 
-  grid.innerHTML = seasons.map(s => {
+  el.innerHTML = legends.map((t, i) => {
+    const wr         = t.winRate != null ? (t.winRate * 100).toFixed(0) : '—';
+    const eloDisplay = Math.max(0, (t.elo || 1000) - 1000);
+    const arch       = t.archetype;
+    const ssColor    = (t.sharpScore || 0) >= 70 ? 'var(--gr)' : (t.sharpScore || 0) >= 40 ? 'var(--gold)' : 'var(--rd)';
+    return `
+      <div class="legend-ring" onclick="window.location.href='/tipster?u=${t.username}'">
+        <div class="legend-card">
+          <div class="legend-rank">${['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ'][i] || i + 1}</div>
+          <div class="legend-av" style="background:${AV_COLORS[i % AV_COLORS.length]}">${t.username.slice(0, 2).toUpperCase()}</div>
+          <div class="legend-name">@${t.username}</div>
+          <div class="legend-div-tag">${getDivLabel(t.division)}</div>
+          ${arch
+            ? `<div style="font-family:var(--font-mono);font-size:9px;color:rgba(240,237,255,.4);margin-bottom:12px">${arch.icon} ${arch.name}</div>`
+            : '<div style="margin-bottom:12px"></div>'}
+          <div class="legend-roi">${pos(t.roi)}${t.roi.toFixed(1)}%</div>
+          <div class="legend-stats-row">
+            <div class="ls-i"><div class="ls-val" style="color:${ssColor}">${Math.round(t.sharpScore || 0)}</div><div class="ls-lbl">Sharp</div></div>
+            <div class="ls-i"><div class="ls-val">${wr}%</div><div class="ls-lbl">Win Rate</div></div>
+            <div class="ls-i"><div class="ls-val">W${t.bestStreak || 0}</div><div class="ls-lbl">Best Streak</div></div>
+            <div class="ls-i"><div class="ls-val">+${eloDisplay}</div><div class="ls-lbl">ELO</div></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Reputation gate for HoF record eligibility ───────────────────────────────
+// A tipster must be TRUSTED (level ≥ 4) to hold an all-time record.
+function _isTrusted(t) {
+  const settled = (t.wins || 0) + (t.losses || 0);
+  const wr = t.winRate != null ? t.winRate * 100 : 0;
+  return settled >= 100 && (t.sharpScore || 0) >= 60 && (t.roi || 0) > 5 && wr >= 52;
+}
+
+// ── All-Time Records ──────────────────────────────────────────────────────────
+function renderRecords(tipsters) {
+  const el = document.getElementById('recordsGrid');
+
+  if (!tipsters.length) {
+    el.innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">📊</span><h3>NO DATA YET</h3><p>Records will appear as tipsters post and win verified picks.</p></div>`;
+    return;
+  }
+
+  // ROI Leader: TRUSTED minimum + 50+ picks, avgOdds ≥ 1.5
+  const roiLeader = tipsters
+    .filter(t => _isTrusted(t) && t.totalPicks >= 50 && t.avgOdds != null && t.avgOdds >= 1.5)
+    .sort((a, b) => b.roi - a.roi)[0] || null;
+
+  // Win Streak King: TRUSTED minimum + bestStreak ≥ 7
+  const streakKing = tipsters
+    .filter(t => _isTrusted(t) && (t.bestStreak || 0) >= 7)
+    .sort((a, b) => b.bestStreak - a.bestStreak)[0] || null;
+
+  // Sharp Score Elite: TRUSTED minimum + 50+ picks
+  const sharpElite = tipsters
+    .filter(t => _isTrusted(t) && t.totalPicks >= 50)
+    .sort((a, b) => b.sharpScore - a.sharpScore)[0] || null;
+
+  const records = [
+    {
+      cls: 'rc-gold', icon: '👑', cat: 'ROI LEADER',
+      val:    roiLeader ? pos(roiLeader.roi) + roiLeader.roi.toFixed(1) + '%' : '—',
+      holder: roiLeader?.username || null,
+      detail: roiLeader
+        ? `${roiLeader.totalPicks} picks · Avg odds ${(roiLeader.avgOdds || 0).toFixed(2)}`
+        : 'Requires 50+ picks · Avg odds ≥ 1.5',
+      glow: 'rgba(251,191,36,.15)',
+    },
+    {
+      cls: 'rc-fire', icon: '🔥', cat: 'WIN STREAK KING',
+      val:    streakKing ? 'W' + streakKing.bestStreak : '—',
+      holder: streakKing?.username || null,
+      detail: streakKing
+        ? `${streakKing.totalPicks} verified picks`
+        : 'Requires a streak of 7 or more',
+      glow: 'rgba(251,146,60,.15)',
+    },
+    {
+      cls: 'rc-purple', icon: '📐', cat: 'SHARP SCORE ELITE',
+      val:    sharpElite ? Math.round(sharpElite.sharpScore).toString() : '—',
+      holder: sharpElite?.username || null,
+      detail: sharpElite
+        ? `${sharpElite.totalPicks} picks · ${pos(sharpElite.roi)}${sharpElite.roi.toFixed(1)}% ROI`
+        : 'Requires 50+ verified picks',
+      glow: 'rgba(184,159,255,.15)',
+    },
+  ];
+
+  el.innerHTML = records.map(r => `
+    <div class="rec-card ${r.cls}"${r.holder ? ` onclick="window.location.href='/tipster?u=${r.holder}'"` : ''}>
+      <div class="rec-glow-corner" style="background:${r.glow}"></div>
+      <span class="rec-icon">${r.icon}</span>
+      <div class="rec-cat">${r.cat}</div>
+      <div class="rec-val">${r.val}</div>
+      <div class="rec-holder">${r.holder ? '@' + r.holder : '—'}</div>
+      <div class="rec-detail">${r.detail}</div>
+    </div>`).join('');
+}
+
+// ── Season Champions ──────────────────────────────────────────────────────────
+function renderSeasons(seasons, tipsters) {
+  const el = document.getElementById('seasonChampGrid');
+
+  if (!Array.isArray(seasons) || !seasons.length) {
+    el.innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">🏆</span><h3>FIRST SEASON COMING SOON</h3><p>Season champions will be preserved here forever.</p></div>`;
+    return;
+  }
+
+  const rankMap = {};
+  tipsters.forEach(t => { rankMap[t.username] = t; });
+
+  el.innerHTML = seasons.map(s => {
     if (s.isActive) {
       const daysLeft = Math.max(0, Math.ceil((new Date(s.endDate) - Date.now()) / 86400000));
       return `<div class="sc-card active-season" onclick="window.location.href='/leaderboard'">
@@ -602,98 +574,85 @@ function renderSeasons(seasons, allPicks, tipsterMap) {
       return `<div class="sc-card">
         <div class="sc-season-label">${s.name}</div>
         <div class="sc-crown-wrap"><span class="sc-crown" style="opacity:.3;animation:none">🏆</span></div>
-        <div class="sc-nodata">No champion data recorded</div>
+        <div class="sc-nodata">No champion recorded</div>
         <div class="sc-dates">${fmt(s.startDate)} — ${fmt(s.endDate)}</div>
       </div>`;
     }
 
-    // Past champion — get their stats from picks
-    const champData = tipsterMap[s.champion];
-    const champStats = champData ? calcStats(champData.picks.filter(p => p.seasonId === s.id)) : null;
-    const allTimeStats = champData ? calcStats(champData.picks) : null;
+    const r = rankMap[s.champion];
+    const statsHtml = r
+      ? `<div class="sc-roi">${pos(r.roi)}${r.roi.toFixed(1)}%</div>
+         <div class="sc-stats">
+           <div class="scs-item"><div class="scs-val">${(r.winRate * 100).toFixed(0)}%</div><div class="scs-lbl">Win Rate</div></div>
+           <div class="scs-item"><div class="scs-val">${r.totalPicks}</div><div class="scs-lbl">Picks</div></div>
+           <div class="scs-item"><div class="scs-val">${Math.round(r.sharpScore || 0)}</div><div class="scs-lbl">Sharp</div></div>
+         </div>
+         <div style="font-family:var(--font-mono);font-size:8px;color:rgba(240,237,255,.18);margin-top:-4px;margin-bottom:8px">all-time record</div>`
+      : '<div class="sc-nodata">Profile unavailable</div>';
 
     return `<div class="sc-card" onclick="window.location.href='/tipster?u=${s.champion}'">
       <div class="sc-season-label">${s.name}</div>
       <div class="sc-crown-wrap"><span class="sc-crown">👑</span></div>
       <div class="sc-champion">@${s.champion}</div>
       <div class="sc-title-lbl">SEASON CHAMPION</div>
-      ${champStats && champStats.picks > 0
-        ? `<div class="sc-roi">${pos(champStats.roi)}${champStats.roi.toFixed(1)}%</div>
-           <div class="sc-stats">
-             <div class="scs-item"><div class="scs-val">${champStats.wr.toFixed(0)}%</div><div class="scs-lbl">Win Rate</div></div>
-             <div class="scs-item"><div class="scs-val">${champStats.picks}</div><div class="scs-lbl">Picks</div></div>
-             <div class="scs-item"><div class="scs-val">${pos(champStats.pnl)}${champStats.pnl.toFixed(1)}u</div><div class="scs-lbl">P&L</div></div>
-           </div>`
-        : `<div class="sc-roi" style="font-size:28px;color:var(--mu)">Stats N/A</div>`}
+      ${statsHtml}
       <div class="sc-dates">${fmt(s.startDate)} — ${fmt(s.endDate)}</div>
       <div class="sc-view">VIEW PROFILE →</div>
     </div>`;
   }).join('');
 }
 
-// ── Wall of Fame renderer ────────────────────────────────────
-function renderWOF(allPicks, tipsters, seasons, byROI, byStreak, byCLV, bigOddsPick, bigDay) {
-  const wrap  = document.getElementById('wofWrap');
-  const sorted = [...allPicks].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+// ── Wall of Fame ──────────────────────────────────────────────────────────────
+function renderWOF(allPicks, seasons) {
+  const wrap = document.getElementById('wofWrap');
+
+  if (!Array.isArray(allPicks) || !allPicks.length) {
+    wrap.innerHTML = '<div class="wof-spine"></div><div class="section-empty"><span class="icon">📜</span><h3>HISTORY IN THE MAKING</h3><p>Great moments will appear here as LEDGR grows.</p></div>';
+    return;
+  }
+
+  const sorted  = [...allPicks].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
   const moments = [];
 
-  // Platform milestones
-  if (sorted[0]) moments.push({
-    icon:'🚀', type:'gold', title:'First Pick Ever Posted on LEDGR',
-    sub:`@${sorted[0].user?.username || '?'} — ${(sorted[0].event || '').slice(0, 60)}`,
-    date: fmtDate(sorted[0].createdAt), val: ''
-  });
-
+  // First verified win
   const firstWin = sorted.find(p => p.result === 'win');
   if (firstWin) moments.push({
-    icon:'✅', type:'green', title:'First Verified Win',
-    sub:`@${firstWin.user?.username || '?'} @ odds ${firstWin.odds?.toFixed(2) || '?'}`,
-    date: fmtDate(firstWin.createdAt), val: pos(firstWin.pnl)+firstWin.pnl.toFixed(1)+'u'
+    icon: '✅', type: 'green',
+    title: 'First Verified Win',
+    sub:   `@${firstWin.user?.username || '?'} @ odds ${firstWin.odds != null ? parseFloat(firstWin.odds).toFixed(2) : '?'}`,
+    date:  fmtFull(firstWin.createdAt),
+    val:   firstWin.pnl != null ? pos(parseFloat(firstWin.pnl)) + Math.abs(parseFloat(firstWin.pnl)).toFixed(1) + 'u' : '',
   });
 
+  // Platform pick-count milestones
   [10, 50, 100, 250, 500].forEach(n => {
-    if (allPicks.length >= n && sorted[n - 1]) moments.push({
-      icon:'📊', type:'purple', title:`${n} Verified Picks — Platform Milestone`,
-      sub:`${n} picks posted across all LEDGR tipsters`,
-      date: fmtDate(sorted[n - 1].createdAt), val: `${n}`
+    if (sorted.length >= n) moments.push({
+      icon:  '📊', type: 'purple',
+      title: `${n.toLocaleString()} Verified Picks`,
+      sub:   `${n.toLocaleString()} picks posted across all LEDGR tipsters`,
+      date:  fmtFull(sorted[n - 1].createdAt),
+      val:   n.toLocaleString(),
     });
   });
 
-  if (tipsters.length >= 5) moments.push({
-    icon:'👥', type:'gold', title:'5 Active Tipsters', sub:'The LEDGR community is growing', date:'', val:'5+'
-  });
-
-  if (byROI[0] && byROI[0].roi >= 15) moments.push({
-    icon:'💎', type:'gold', title:`All-Time ROI Record — ${pos(byROI[0].roi)}${byROI[0].roi.toFixed(1)}%`,
-    sub:`Set by @${byROI[0].username} across ${byROI[0].picks} picks`,
-    date:'', val: pos(byROI[0].roi)+byROI[0].roi.toFixed(1)+'%'
-  });
-
-  if (byStreak[0] && byStreak[0].maxStreak >= 5) moments.push({
-    icon:'🔥', type:'gold', title:`Longest Win Streak — W${byStreak[0].maxStreak}`,
-    sub:`@${byStreak[0].username} won ${byStreak[0].maxStreak} in a row`,
-    date:'', val:`W${byStreak[0].maxStreak}`
-  });
-
-  if (bigOddsPick) moments.push({
-    icon:'🎲', type:'purple', title:`Biggest Odds Win — ${bigOddsPick.odds?.toFixed(2)}`,
-    sub:`@${bigOddsPick.user?.username || '?'} — ${(bigOddsPick.event || '').slice(0, 50)}`,
-    date: fmtDate(bigOddsPick.createdAt), val: bigOddsPick.odds?.toFixed(2)
-  });
-
-  seasons.filter(s => s.champion && !s.isActive).forEach(s => moments.push({
-    icon:'👑', type:'gold', title:`${s.name} Champion Crowned`,
-    sub:`@${s.champion} becomes the ${s.name} LEDGR Champion`,
-    date: fmt(s.endDate), val:'CHAMPION'
-  }));
+  // Season champion crownings
+  if (Array.isArray(seasons)) {
+    seasons.filter(s => s.champion && !s.isActive).forEach(s => moments.push({
+      icon:  '👑', type: 'gold',
+      title: `${s.name} Champion Crowned`,
+      sub:   `@${s.champion} becomes the ${s.name} LEDGR Champion`,
+      date:  fmt(s.endDate),
+      val:   'CHAMPION',
+    }));
+  }
 
   if (!moments.length) {
     wrap.innerHTML = '<div class="wof-spine"></div><div class="section-empty"><span class="icon">📜</span><h3>HISTORY IN THE MAKING</h3><p>Great moments will appear here as LEDGR grows.</p></div>';
     return;
   }
 
-  const typeMap = { gold:'', purple:'purple-entry', green:'green-entry' };
-  const nodeMap = { gold:'', purple:'purple', green:'green' };
+  const typeMap = { gold: '', purple: 'purple-entry', green: 'green-entry' };
+  const nodeMap = { gold: '', purple: 'purple',       green: 'green'       };
 
   wrap.innerHTML = '<div class="wof-spine"></div>' + moments.map((m, i) => `
     <div class="wof-item" style="animation-delay:${i * 0.06}s">
@@ -706,10 +665,53 @@ function renderWOF(allPicks, tipsters, seasons, byROI, byStreak, byCLV, bigOddsP
         </div>
         <div class="wof-right">
           ${m.date ? `<div class="wof-date">${m.date}</div>` : ''}
-          ${m.val ? `<div class="wof-val">${m.val}</div>` : ''}
+          ${m.val  ? `<div class="wof-val">${m.val}</div>`   : ''}
         </div>
       </div>
     </div>`).join('');
+}
+
+// ── Main Loader ───────────────────────────────────────────────────────────────
+async function loadHOF() {
+  const _ctrl = new AbortController();
+  const _xt   = setTimeout(() => {
+    _ctrl.abort();
+    ['recordsGrid', 'legendGrid', 'seasonChampGrid'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">⚠️</span><h3>TIMEOUT</h3><p>Request timed out — <a href="" onclick="location.reload()" style="color:var(--ac)">Retry</a></p></div>`;
+    });
+  }, 25000);
+
+  try {
+    const [rankingsRes, seasonsRes, picksRes] = await Promise.all([
+      fetch(API + '/rankings', { cache: 'no-store', signal: _ctrl.signal }),
+      fetch(API + '/seasons',  { cache: 'no-store' }).catch(() => null),
+      fetch(API + '/picks',    { cache: 'no-store' }).catch(() => null),
+    ]);
+
+    clearTimeout(_xt);
+
+    const rankingsData = rankingsRes.ok ? await rankingsRes.json() : null;
+    const seasons      = (seasonsRes && seasonsRes.ok) ? await seasonsRes.json() : [];
+    const allPicks     = (picksRes   && picksRes.ok)   ? await picksRes.json()   : [];
+
+    const tipsters = Array.isArray(rankingsData?.tipsters) ? rankingsData.tipsters : [];
+    const seaArr   = Array.isArray(seasons)  ? seasons  : [];
+    const pickArr  = Array.isArray(allPicks) ? allPicks : [];
+
+    renderHero(tipsters);
+    renderLegends(tipsters);
+    renderRecords(tipsters);
+    renderSeasons(seaArr, tipsters);
+    renderWOF(pickArr, seaArr);
+
+  } catch (err) {
+    clearTimeout(_xt);
+    if (err.name !== 'AbortError') {
+      console.error('HOF error', err);
+      document.getElementById('recordsGrid').innerHTML = `<div class="section-empty" style="grid-column:1/-1"><span class="icon">⚠️</span><h3>SYNC IN PROGRESS</h3><p>Could not load data. Refresh in a moment.</p></div>`;
+    }
+  }
 }
 
 loadHOF();

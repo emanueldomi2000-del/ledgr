@@ -146,6 +146,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 .skel{border-radius:6px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:800px 100%;animation:shimmer 1.6s linear infinite;display:inline-block}
 
+.sim-sample-warn{display:inline-flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;color:rgba(251,191,36,.8);background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:6px;padding:4px 9px;margin-bottom:10px}
+.sim-note{font-family:var(--font-mono);font-size:9px;color:rgba(240,237,255,.28);letter-spacing:.3px;line-height:1.6;margin-bottom:10px}
+.sim-disclaimer{font-family:var(--font-mono);font-size:9px;color:rgba(240,237,255,.18);letter-spacing:.3px;text-align:center;padding:20px 0 8px;border-top:1px solid rgba(255,255,255,.04);margin-top:4px}
+
 @media(max-width:700px){
   nav{padding:0 16px}
   .nav-link{display:none}
@@ -182,7 +186,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="slip-header-sub">Set parameters · Hit simulate · See the results</div>
     </div>
     <div class="slip-body">
-      <div class="slip-row">
+      <div class="slip-row slip-row-3">
         <div class="slip-field">
           <div class="slip-label">Starting Bankroll</div>
           <div class="slip-input-wrap">
@@ -198,6 +202,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div class="slip-label">Tipster (or all)</div>
           <select class="slip-select" id="tipsterFilter">
             <option value="all">⏳ Loading tipsters...</option>
+          </select>
+        </div>
+        <div class="slip-field">
+          <div class="slip-label">Time Range</div>
+          <select class="slip-select" id="timeRange">
+            <option value="all">All Time</option>
+            <option value="90d">Last 90 Days</option>
+            <option value="30d">Last 30 Days</option>
           </select>
         </div>
       </div>
@@ -311,9 +323,10 @@ async function loadPicks() {
 function simulateTipster(picks, bankroll, stakePercent, riskMode) {
   const settled = picks.filter(p => p.result === 'win' || p.result === 'loss')
     .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-  let cur = bankroll, totalProfit = 0, peak = bankroll, maxDD = 0;
+  let cur = bankroll, totalProfit = 0, totalStaked = 0, peak = bankroll, maxDD = 0;
   const history = [bankroll];
 
+  let rollingWins = 0, rollingTotal = 0;
   settled.forEach(p => {
     let stakeAmt;
     if (riskMode === 'safe') {
@@ -321,14 +334,17 @@ function simulateTipster(picks, bankroll, stakePercent, riskMode) {
     } else if (riskMode === 'moderate') {
       stakeAmt = cur * (stakePercent / 100);
     } else {
-      const winsCount = settled.filter(x => x.result === 'win').length;
-      const wr = settled.length > 0 ? winsCount / settled.length : 0.5;
+      // Rolling Kelly: only use outcomes from picks settled before this one
+      const wr = rollingTotal >= 10 ? rollingWins / rollingTotal : 0.5;
       const b = (p.odds || 2) - 1;
       const kelly = Math.max(0, (b * wr - (1 - wr)) / b);
       stakeAmt = cur * Math.min(kelly, stakePercent / 100);
     }
+    totalStaked += stakeAmt;
     if (p.result === 'win') { const profit = stakeAmt * ((p.odds || 2) - 1); cur += profit; totalProfit += profit; }
     else { cur -= stakeAmt; totalProfit -= stakeAmt; }
+    rollingTotal++;
+    if (p.result === 'win') rollingWins++;
     cur = Math.max(0, cur);
     if (cur > peak) peak = cur;
     const dd = peak > 0 ? ((peak - cur) / peak) * 100 : 0;
@@ -339,9 +355,11 @@ function simulateTipster(picks, bankroll, stakePercent, riskMode) {
   const wins = settled.filter(p => p.result === 'win').length;
   const losses = settled.length - wins;
   const wr = settled.length > 0 ? (wins / settled.length * 100) : 0;
-  const roi = bankroll > 0 ? (totalProfit / bankroll * 100) : 0;
+  const roi = totalStaked > 0 ? (totalProfit / totalStaked * 100) : 0;
+  const bankrollReturn = bankroll > 0 ? ((cur - bankroll) / bankroll * 100) : 0;
   const riskScore = maxDD > 40 ? 'high' : maxDD > 20 ? 'medium' : 'low';
-  return { totalProfit, finalBankroll: cur, wins, losses, wr, roi, settled: settled.length, history, maxDD, riskScore };
+  const missingOddsCount = settled.filter(p => !p.odds).length;
+  return { totalProfit, finalBankroll: cur, wins, losses, wr, roi, bankrollReturn, settled: settled.length, history, maxDD, riskScore, missingOddsCount };
 }
 
 function drawBankrollChart(tipsterResults, startBankroll) {
@@ -379,6 +397,7 @@ function runSimulator() {
   const stakePercent = parseFloat(document.getElementById('stakeRange').value) || 5;
   const tipsterFilter = document.getElementById('tipsterFilter').value;
   const currency    = document.getElementById('currency').value;
+  const timeRange   = document.getElementById('timeRange').value;
   const c = document.getElementById('resultsContainer');
 
   if (!allPicks.length) {
@@ -387,8 +406,13 @@ function runSimulator() {
     return;
   }
 
+  const cutoff = timeRange === '90d' ? new Date(Date.now() - 90 * 24 * 60 * 60 * 1000)
+               : timeRange === '30d' ? new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+               : null;
+  const filteredPicks = cutoff ? allPicks.filter(p => new Date(p.createdAt) >= cutoff) : allPicks;
+
   const tipsterMap = {};
-  allPicks.forEach(p => {
+  filteredPicks.forEach(p => {
     if (!p.user) return;
     const u = p.user.username;
     if (tipsterFilter !== 'all' && u !== tipsterFilter) return;
@@ -401,7 +425,7 @@ function runSimulator() {
     color: COLORS[t.idx % COLORS.length],
     chartColor: CHART_COLORS[t.idx % CHART_COLORS.length],
     ...simulateTipster(t.picks, bankroll, stakePercent, currentRisk)
-  })).sort((a, b) => b.totalProfit - a.totalProfit);
+  })).sort((a, b) => b.roi - a.roi);
 
   if (!results.length) {
     c.innerHTML = '<div class="empty-state"><span class="icon">📊</span><h3>NO DATA</h3><p>No settled picks found for this tipster.</p></div>';
@@ -412,11 +436,12 @@ function runSimulator() {
   const top3 = results.slice(0, 3);
   const splitBankroll = bankroll / Math.min(3, top3.length);
   const splitTotal = top3.reduce((sum, t) => sum + simulateTipster(
-    allPicks.filter(p => p.user?.username === t.username), splitBankroll, stakePercent, currentRisk
+    filteredPicks.filter(p => p.user?.username === t.username), splitBankroll, stakePercent, currentRisk
   ).finalBankroll, 0);
   const splitProfit = splitTotal - bankroll;
 
   const riskLabels = { safe: '🟢 Safe', moderate: '🟡 Moderate', aggressive: '🔴 Aggressive' };
+  const splitHasLowSample = top3.some(t => t.settled < 20);
 
   c.innerHTML = `
     <!-- TOP-3 SPLIT CARD -->
@@ -441,6 +466,7 @@ function runSimulator() {
           <div style="font-family:var(--font-mono);font-size:10px;color:${splitProfit>=0?'var(--gr)':'var(--rd)'}">${splitProfit>=0?'+':''}${(splitProfit/bankroll*100).toFixed(1)}% total return</div>
         </div>
       </div>
+      ${splitHasLowSample ? `<div class="sim-sample-warn" style="margin-top:12px">⚠ Limited statistical confidence — one or more included tipsters have fewer than 20 verified picks.</div>` : ''}
     </div>` : ''}
 
     <!-- BANKROLL CHART -->
@@ -452,13 +478,14 @@ function runSimulator() {
         </div>
       </div>
       <div class="chart-svg-wrap">${drawBankrollChart(results, bankroll)}</div>
-      <div class="chart-foot">Starting: ${currency}${bankroll.toLocaleString()} · Mode: ${riskLabels[currentRisk]} · ${stakePercent}% stake per pick</div>
+      <div class="chart-foot">Starting: ${currency}${bankroll.toLocaleString()} · Mode: ${riskLabels[currentRisk]} · ${stakePercent}% stake · ${timeRange === '30d' ? 'Last 30 Days' : timeRange === '90d' ? 'Last 90 Days' : 'All Time'}</div>
     </div>` : ''}
 
     <!-- TIPSTER CARDS -->
     <div style="font-family:var(--font-display);font-size:18px;letter-spacing:3px;color:var(--tx);margin-bottom:14px">
-      ${tipsterFilter === 'all' ? 'ALL TIPSTERS' : '@' + tipsterFilter.toUpperCase()} — ${currency}${bankroll.toLocaleString()} STARTING
+      ${tipsterFilter === 'all' ? 'ALL TIPSTERS' : '@' + tipsterFilter.toUpperCase()} — ${currency}${bankroll.toLocaleString()} · ${timeRange === '30d' ? 'LAST 30 DAYS' : timeRange === '90d' ? 'LAST 90 DAYS' : 'ALL TIME'}
     </div>
+    <div class="sim-note">ROI reflects your chosen staking strategy — may differ from a tipster's verified ROI if they used variable staking. Pushes and voids excluded (no bankroll impact).</div>
     ${results.map((r, idx) => {
       const pos = r.totalProfit >= 0;
       const isBest = idx === 0;
@@ -472,6 +499,8 @@ function runSimulator() {
             <div class="tc-picks">${r.settled} settled picks · ${r.wins}W ${r.losses}L</div>
           </div>
         </div>
+        ${r.settled < 20 ? `<div class="sim-sample-warn">⚠ Limited data — fewer than 20 verified picks</div>` : ''}
+        ${r.missingOddsCount > 0 ? `<div class="sim-note">ⓘ ${r.missingOddsCount} pick${r.missingOddsCount > 1 ? 's' : ''} used default odds of 2.0 — actual odds unavailable.</div>` : ''}
         <div class="tc-stats">
           <div><div class="tc-stat-val" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi.toFixed(1)}%</div><div class="tc-stat-lbl">ROI</div></div>
           <div><div class="tc-stat-val">${r.wr.toFixed(0)}%</div><div class="tc-stat-lbl">Win Rate</div></div>
@@ -483,12 +512,14 @@ function runSimulator() {
           <div class="profit-result">
             <div class="profit-lbl">You would have ${pos?'earned':'lost'}</div>
             <div class="profit-num" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':'-'}${currency}${Math.abs(r.totalProfit).toFixed(0)}</div>
-            <div class="profit-pct" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi.toFixed(1)}% return</div>
+            <div class="profit-pct" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.bankrollReturn.toFixed(1)}% bankroll return</div>
           </div>
         </div>
         <div class="risk-badge-sm risk-${r.riskScore}">${r.riskScore==='low'?'🟢 Low Risk':r.riskScore==='medium'?'🟡 Medium Risk':'🔴 High Risk'}</div>
       </div>`;
-    }).join('')}`;
+    }).join('')}
+    <div class="sim-disclaimer">Past performance does not guarantee future results. Simulations are based on historical verified picks only.</div>
+  `;
 
   // Animate profit bars
   setTimeout(() => {

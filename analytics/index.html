@@ -344,7 +344,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <script>
 const API='https://ledgr-backend-production-c132.up.railway.app';
 const SPORT_ICON={'Soccer':'⚽','Basketball':'🏀','Tennis':'🎾','Football':'🏈','Baseball':'⚾','MMA/Boxing':'🥊'};
-let user=null,allPicks=[],targetUser=null;
+let user=null,allPicks=[],targetUser=null,_backendSharpScore=0;
 const urlUser=new URLSearchParams(window.location.search).get('u');
 
 // Stored ROI points for hover
@@ -386,7 +386,7 @@ async function loadData(){
       // Viewing another user — resolve userId from rankings, then fetch their picks
       const rr=await fetch(API+'/rankings/'+urlUser,{cache:'no-store',signal:_ctrl.signal}).catch(()=>null);
       let tipsterUserId=null;
-      if(rr&&rr.ok){try{const rm=await rr.json();tipsterUserId=rm.userId||null;}catch(e){}}
+      if(rr&&rr.ok){try{const rm=await rr.json();tipsterUserId=rm.userId||null;_backendSharpScore=rm.sharpScore||0;}catch(e){}}
       if(!tipsterUserId){
         clearTimeout(_xt);
         document.getElementById('app').innerHTML='<div style="text-align:center;padding:60px;color:var(--mu);font-family:var(--font-mono)">Could not load analytics for @'+urlUser+'.</div>';
@@ -402,8 +402,12 @@ async function loadData(){
         return;
       }
       const hdrs=tk?{Authorization:'Bearer '+tk}:{};
-      const pr=await fetch(API+'/picks?userId='+user.id,{cache:'no-store',signal:_ctrl.signal,headers:hdrs});
+      const [pr,rrOwn]=await Promise.all([
+        fetch(API+'/picks?userId='+user.id,{cache:'no-store',signal:_ctrl.signal,headers:hdrs}),
+        fetch(API+'/rankings/'+(user.username||user.id),{cache:'no-store',signal:_ctrl.signal}).catch(()=>null)
+      ]);
       if(pr.ok){try{picksRaw=await pr.json();}catch(e){}}
+      if(rrOwn&&rrOwn.ok){try{const rm=await rrOwn.json();_backendSharpScore=rm.sharpScore||0;}catch(e){}}
     }
     clearTimeout(_xt);
     targetUser=urlUser||(user?user.username:null);
@@ -456,36 +460,15 @@ function svgGridY(mn,mx,steps,W,H,PL,PT,PB){
   return out.join('');
 }
 
-function computeSharpScore(picks){
-  const settled=picks.filter(p=>p.result!=='pending');
-  const wins=settled.filter(p=>p.result==='win').length;
-  const stake=picks.reduce((s,p)=>s+p.stake,0);
-  const pnl=picks.reduce((s,p)=>s+p.pnl,0);
-  const roi=stake>0?(pnl/stake)*100:0;
-  const wr=settled.length>0?(wins/settled.length)*100:0;
-  const avgOdds=picks.length>0?picks.reduce((s,p)=>s+p.odds,0)/picks.length:0;
-  const clvP=settled.filter(p=>p.clv!=null);
-  const avgCLV=clvP.length?clvP.reduce((s,p)=>s+p.clv,0)/clvP.length:0;
-  const srtd=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
-  let streak=0;for(const p of srtd){if(p.result==='win')streak++;else break;}
-
-  const roiF  =Math.min(40,Math.max(0,roi*2));
-  const sampF =Math.min(25,Math.sqrt(picks.length)*2.5);
-  const oddsF =Math.min(15,Math.max(0,(avgOdds-1.5)*7.5));
-  const clvF  =Math.min(10,Math.max(0,avgCLV*2));
-  const strF  =Math.min(10,streak*2);
-  const total =Math.round(roiF+sampF+oddsF+clvF+strF);
-  return{total,roiF:Math.round(roiF),sampF:Math.round(sampF),oddsF:Math.round(oddsF),clvF:Math.round(clvF),strF:Math.round(strF),maxTotal:100};
-}
 
 // ── 1. STATS ROW ─────────────────────────────────────────────────
 function renderStats(){
   const p=allPicks;
-  const settled=p.filter(x=>x.result!=='pending');
+  const settled=p.filter(x=>x.result==='win'||x.result==='loss'||x.result==='push');
   const wins=settled.filter(x=>x.result==='win').length;
   const losses=settled.filter(x=>x.result==='loss').length;
-  const stake=p.reduce((s,x)=>s+x.stake,0);
-  const pnl=p.reduce((s,x)=>s+x.pnl,0);
+  const stake=settled.reduce((s,x)=>s+x.stake,0);
+  const pnl=settled.reduce((s,x)=>s+x.pnl,0);
   const roi=stake>0?((pnl/stake)*100).toFixed(1):0;
   const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):0;
   const clvP=settled.filter(x=>x.clv!=null);
@@ -494,14 +477,13 @@ function renderStats(){
   const srtd=[...settled].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
   let streak=0,streakType='W';for(const x of srtd){if(x.result==='win')streak++;else break;}
   if(streak===0){let ls=0;for(const x of srtd){if(x.result==='loss')ls++;else break;}streak=ls;streakType='L';}
-  const ss=computeSharpScore(p);
   const roiPos=parseFloat(roi)>=0,pPos=pnl>=0,wrPos=parseFloat(wr)>=50,clvPos=avgCLV!=null&&parseFloat(avgCLV)>=0;
 
   document.getElementById('s0').textContent=p.length;
   const s1=document.getElementById('s1');s1.textContent=(roiPos?'+':'')+roi+'%';s1.className='sbox-val '+(roiPos?'pos':'neg');
   const s2=document.getElementById('s2');s2.textContent=wr+'%';s2.className='sbox-val '+(wrPos?'pos':'neg');
-  const s3=document.getElementById('s3');s3.textContent=(pPos?'+€':'-€')+Math.abs(pnl).toFixed(1);s3.className='sbox-val '+(pPos?'pos':'neg');
-  const s4=document.getElementById('s4');s4.textContent=ss.total+'/100';s4.className='sbox-val '+(ss.total>=70?'pos':ss.total>=40?'gold':'neg');
+  const s3=document.getElementById('s3');s3.textContent=(pPos?'+':'-')+Math.abs(pnl).toFixed(1)+'u';s3.className='sbox-val '+(pPos?'pos':'neg');
+  const s4=document.getElementById('s4');s4.textContent=_backendSharpScore+'/100';s4.className='sbox-val '+(_backendSharpScore>=70?'pos':_backendSharpScore>=40?'gold':'neg');
   document.getElementById('s5').textContent=avgOdds;
   const s6=document.getElementById('s6');
   if(avgCLV!=null){s6.textContent=(clvPos?'+':'')+avgCLV+'%';s6.className='sbox-val '+(clvPos?'pos':'neg');}else{s6.textContent='—';s6.className='sbox-val neu';}
@@ -511,14 +493,14 @@ function renderStats(){
   if(window.LEDGR&&LEDGR.countUp){
     LEDGR.countUp(document.getElementById('s0'),p.length);
     LEDGR.countUp(document.getElementById('s2'),parseFloat(wr),{decimals:0,suffix:'%'});
-    LEDGR.countUp(document.getElementById('s4'),ss.total,{decimals:0,suffix:'/100'});
+    LEDGR.countUp(document.getElementById('s4'),_backendSharpScore,{decimals:0,suffix:'/100'});
   }
 }
 
 // ── 2. ROI CURVE ─────────────────────────────────────────────────
 function renderROICurve(){
   const el=document.getElementById('roiCurveWrap');
-  const p=allPicks;
+  const p=allPicks.filter(x=>x.result==='win'||x.result==='loss'||x.result==='push');
   if(p.length<2){el.innerHTML='<div class="chart-empty">Post 2+ picks to see your ROI curve.</div>';return;}
   const W=900,H=220,PL=58,PR=16,PT=16,PB=36,CW=W-PL-PR,CH=H-PT-PB;
   let cumStake=0,cumPnl=0;
@@ -702,20 +684,20 @@ function renderMarkets(){
   const map={};
   allPicks.forEach(p=>{
     const m=p.market.split(' ').slice(0,3).join(' ');
-    if(!map[m])map[m]={picks:0,wins:0,losses:0,pnl:0,stake:0,odds:[]};
+    if(!map[m])map[m]={picks:0,wins:0,losses:0,pushes:0,pnl:0,stake:0,odds:[]};
     map[m].picks++;map[m].pnl+=p.pnl;map[m].stake+=p.stake;map[m].odds.push(p.odds);
-    if(p.result==='win')map[m].wins++;if(p.result==='loss')map[m].losses++;
+    if(p.result==='win')map[m].wins++;else if(p.result==='loss')map[m].losses++;else if(p.result==='push')map[m].pushes++;
   });
   const list=Object.entries(map).filter(([,d])=>d.picks>=2).map(([name,d])=>{
     const roi=d.stake>0?((d.pnl/d.stake)*100):0;
     const wr=(d.wins+d.losses)>0?((d.wins/(d.wins+d.losses))*100):0;
     const avgOdds=d.odds.reduce((s,v)=>s+v,0)/d.odds.length;
-    return{name,roi,wr,picks:d.picks,wins:d.wins,losses:d.losses,pnl:d.pnl,avgOdds};
+    return{name,roi,wr,picks:d.picks,wins:d.wins,losses:d.losses,pushes:d.pushes,pnl:d.pnl,avgOdds};
   }).sort((a,b)=>b.roi-a.roi).slice(0,12);
   if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No market data yet</div>';return;}
   const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
-  el.innerHTML=`<table class="mkt-table"><thead><tr><th>Market</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">W-L</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
-    list.map(d=>{const rPos=d.roi>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wins}–${d.losses}</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
+  el.innerHTML=`<table class="mkt-table"><thead><tr><th>Market</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">W-L-P</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
+    list.map(d=>{const rPos=d.roi>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wins}–${d.losses}${d.pushes>0?`–${d.pushes}P`:''}</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
   }</tbody></table>`;
 }
 
@@ -833,23 +815,13 @@ function renderCalendar(){
   document.getElementById('calMonthLabels').innerHTML=weekMonths.map(w=>{const leftPx=28+w.col*14;return`<div class="cal-month-lbl" style="margin-left:${leftPx}px;min-width:0">${w.mo}</div>`;}).join('');
 }
 
-// ── 11. SHARP SCORE BREAKDOWN ────────────────────────────────────
+// ── 11. SHARP SCORE ──────────────────────────────────────────────
 function renderSharpScore(){
-  const ss=computeSharpScore(allPicks);
-  const color=ss.total>=70?'var(--gr)':ss.total>=40?'var(--gold)':'var(--rd)';
-  document.getElementById('ssTotalNum').textContent=ss.total;
+  const ss=_backendSharpScore;
+  const color=ss>=70?'var(--gr)':ss>=40?'var(--gold)':'var(--rd)';
+  document.getElementById('ssTotalNum').textContent=ss;
   document.getElementById('ssTotalNum').style.color=color;
-  const components=[
-    {name:'ROI Factor',val:ss.roiF,max:40,desc:'Measures ROI quality (max at 20% ROI)',color:'#34d399'},
-    {name:'Sample Factor',val:ss.sampF,max:25,desc:'Rewards larger sample sizes (max at 100+ picks)',color:'#38bdf8'},
-    {name:'Odds Factor',val:ss.oddsF,max:15,desc:'Rewards betting at harder odds (avg 1.5–3.0+)',color:'#b89fff'},
-    {name:'CLV Factor',val:ss.clvF,max:10,desc:'Rewards positive Closing Line Value',color:'#fbbf24'},
-    {name:'Streak Factor',val:ss.strF,max:10,desc:'Current win streak bonus (max at 5+)',color:'#fb923c'},
-  ];
-  document.getElementById('ssComponents').innerHTML=components.map(c=>{
-    const pct=c.max>0?Math.round((c.val/c.max)*100):0;
-    return`<div class="ss-component"><div class="ss-header"><span class="ss-name">${c.name}</span><span class="ss-val" style="color:${c.color}">${c.val}<span style="color:var(--mu)">/${c.max}</span></span></div><div class="ss-track"><div class="ss-fill" style="width:${pct}%;background:${c.color}"></div></div><div style="font-family:var(--font-mono);font-size:8px;color:var(--mu);margin-top:2px">${c.desc}</div></div>`;
-  }).join('');
+  document.getElementById('ssComponents').innerHTML=`<div class="ss-component"><div class="ss-header"><span class="ss-name">Verified Score</span><span class="ss-val" style="color:${color}">${ss}<span style="color:var(--mu)">/100</span></span></div><div class="ss-track"><div class="ss-fill" style="width:${ss}%;background:${color}"></div></div><div style="font-family:var(--font-mono);font-size:8px;color:var(--mu);margin-top:2px">Computed server-side · ROI, sample size, average odds, active streak</div></div>`;
 }
 
 // ── NAV HELPERS ───────────────────────────────────────────────────
