@@ -44,8 +44,11 @@
 .at-podium-gauge{display:flex;flex-direction:column;align-items:center;margin-top:8px;gap:4px}
 .at-podium-lbl{font-family:'DM Mono',monospace;font-size:8px;color:rgba(240,237,255,0.3);letter-spacing:2px}
 
-/* Sharp score row in performance panel */
-.perf-row .at-badge{font-size:8px;padding:2px 8px}
+/* Archetype text label (replaces pill badge) */
+.arch-label{display:inline-flex;align-items:center;font-family:'DM Mono',monospace;font-size:10px;color:rgba(184,159,255,.85);letter-spacing:.3px;white-space:nowrap;cursor:default}
+.arch-label-sm{font-size:9px}
+.arch-dot{color:rgba(184,159,255,.28);margin:0 5px}
+.arch-sub{color:rgba(106,102,144,.75)}
 `;
     document.head.appendChild(s);
   }
@@ -56,50 +59,20 @@
     return score >= 70 ? '#34d399' : score >= 40 ? '#fbbf24' : '#f87171';
   }
 
-  // ── Sharp Score ──────────────────────────────────────────────────
-  // Mirrors the backend formula in autoVerify.js exactly.
-
-  window.getSharpScore = function (picks) {
-    const settled = (picks || []).filter(function (p) {
-      return p.result === 'win' || p.result === 'loss';
-    });
-    if (!settled.length) return 0;
-
-    var n          = settled.length;
-    var totalStake = settled.reduce(function (s, p) { return s + (p.stake || 0); }, 0);
-    var totalPnl   = settled.reduce(function (s, p) { return s + (p.pnl   || 0); }, 0);
-    var roi        = totalStake > 0 ? totalPnl / totalStake : 0;
-
-    var sampleFactor = Math.min(n / 30, 1);
-
-    var avgOdds   = settled.reduce(function (s, p) { return s + (p.odds || 1); }, 0) / n;
-    var oddsFactor = 1 + Math.log(Math.max(avgOdds, 1.01)) * 0.2;
-
-    var perPickROI = settled.map(function (p) {
-      return (p.stake || 0) > 0 ? (p.pnl || 0) / p.stake : 0;
-    });
-    var mean      = perPickROI.reduce(function (s, x) { return s + x; }, 0) / n;
-    var variance  = perPickROI.reduce(function (s, x) { return s + Math.pow(x - mean, 2); }, 0) / n;
-    var stdDev    = Math.sqrt(variance);
-    var streakFactor = 1 / (1 + stdDev * 0.5);
-
-    var raw = roi * 100 * sampleFactor * oddsFactor * streakFactor;
-    return Math.max(0, Math.min(100, Math.round(raw * 10) / 10));
-  };
-
   // ── Archetype ────────────────────────────────────────────────────
 
   window.getArchetype = function (picks) {
     if (!picks || !picks.length) return null;
 
     var settled = picks.filter(function (p) { return p.result === 'win' || p.result === 'loss'; });
+    if (settled.length < 5) return null;
     var wins    = picks.filter(function (p) { return p.result === 'win'; }).length;
     var losses  = picks.filter(function (p) { return p.result === 'loss'; }).length;
     var stake   = picks.reduce(function (s, p) { return s + (p.stake || 0); }, 0);
     var pnl     = picks.reduce(function (s, p) { return s + (p.pnl   || 0); }, 0);
     var roi     = stake > 0 ? (pnl / stake) * 100 : 0;
     var avgOdds = picks.length ? picks.reduce(function (s, p) { return s + (p.odds || 1); }, 0) / picks.length : 0;
-    var ss      = window.getSharpScore(picks);
+    var ss      = 0;
 
     var byDate = settled.slice().sort(function (a, b) {
       return new Date(b.createdAt) - new Date(a.createdAt);
@@ -112,22 +85,22 @@
 
     // Priority order — first match wins
     if (streak > 5)
-      return { key:'demon',    icon:'😈', name:'The Demon',           color:'#f87171',
+      return { key:'demon',    icon:'😈', name:'The Demon',           subtitle:'Momentum Specialist',     color:'#f87171',
                desc:'On a relentless hot streak — win after win.' };
-    if (picks.length < 30 && roi > 20)
-      return { key:'sniper',   icon:'🎯', name:'The Sniper',          color:'#34d399',
+    if (settled.length >= 10 && picks.length < 50 && roi > 20)
+      return { key:'sniper',   icon:'🎯', name:'The Sniper',          subtitle:'Precision Analyst',        color:'#34d399',
                desc:'Fewer picks, elite ROI — precision over volume.' };
     if (ss > 70)
-      return { key:'sharp',    icon:'📐', name:'The Sharp',           color:'#38bdf8',
+      return { key:'sharp',    icon:'📐', name:'The Sharp',           subtitle:'Consistent Edge Player',   color:'#38bdf8',
                desc:'Sharp Score over 70 — consistent skill, not luck.' };
     if (picks.length > 100 && roi > 0)
-      return { key:'grinder',  icon:'⚙️', name:'The Grinder',         color:'#b89fff',
+      return { key:'grinder',  icon:'⚙️', name:'The Grinder',         subtitle:'High-Volume Strategist',   color:'#b89fff',
                desc:'Volume player with a proven positive edge.' };
     if (avgOdds > 3.0 && roi > 0)
-      return { key:'underdog', icon:'🦁', name:'The Underdog Hunter', color:'#fbbf24',
+      return { key:'underdog', icon:'🦁', name:'The Underdog Hunter', subtitle:'Value Contrarian',         color:'#fbbf24',
                desc:'Profits by backing outsiders everyone else ignores.' };
     if (avgOdds >= 2.5 && avgOdds <= 3.5 && roi > 0)
-      return { key:'value',    icon:'💎', name:'The Value Hunter',    color:'#b89fff',
+      return { key:'value',    icon:'💎', name:'The Value Hunter',    subtitle:'Odds Value Analyst',       color:'#b89fff',
                desc:'Finds consistent value in mid-range odds.' };
 
     return null;
@@ -167,11 +140,10 @@
 
   window.archetypeBadgeHTML = function (arch, small) {
     if (!arch) return '';
-    var cls = small ? 'at-badge-sm' : 'at-badge';
-    var label = small ? arch.name.toUpperCase() : arch.name.toUpperCase();
-    return '<span class="' + cls + '" ' +
-      'style="color:' + arch.color + ';border-color:' + arch.color + '44;background:' + arch.color + '11" ' +
-      'title="' + arch.desc + '">' + arch.icon + ' ' + label + '</span>';
+    var sub = arch.subtitle || '';
+    var inner = arch.name;
+    if (sub) inner += '<span class="arch-dot">·</span><span class="arch-sub">' + sub + '</span>';
+    return '<span class="arch-label' + (small ? ' arch-label-sm' : '') + '" title="' + (arch.desc || '') + '">' + inner + '</span>';
   };
 
   // ── Animate all gauges in DOM ────────────────────────────────────

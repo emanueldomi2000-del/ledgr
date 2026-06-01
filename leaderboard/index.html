@@ -142,7 +142,11 @@ body::before{content:'';position:fixed;inset:0;
 .p1 .podium-name{color:var(--gold);text-shadow:0 0 20px rgba(251,191,36,.4)}
 .p2 .podium-name{color:var(--silver)}
 .p3 .podium-name{color:var(--bronze)}
-.podium-roi{font-family:var(--font-display);font-size:36px;color:var(--gr);line-height:1;margin-bottom:4px;text-shadow:0 0 20px rgba(52,211,153,.3)}
+.podium-roi{font-family:var(--font-display);font-size:36px;line-height:1;margin-bottom:4px;text-shadow:0 0 20px rgba(52,211,153,.3)}
+.roi-building{font-size:11px;color:var(--mu);font-family:var(--font-mono);letter-spacing:.3px;line-height:1.4}
+.roi-badge{display:inline-block;font-size:8px;font-family:var(--font-mono);padding:1px 5px;border-radius:3px;margin-left:3px;letter-spacing:.5px;vertical-align:middle}
+.roi-badge.verified{color:#34d399;background:rgba(52,211,153,.1)}
+.roi-badge.limited{color:var(--mu);background:rgba(255,255,255,.06)}
 .podium-picks-sub{font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-bottom:10px}
 .podium-stats{display:flex;justify-content:center;gap:14px;margin-bottom:10px}
 .ps-i{text-align:center}
@@ -447,6 +451,7 @@ body::before{content:'';position:fixed;inset:0;
     </div>
     <select class="sort-select" id="sortSelect" onchange="renderLeaderboard()">
       <option value="roi">SORT: ROI</option>
+      <option value="sharp">SORT: SHARP SCORE</option>
       <option value="wr">SORT: WIN RATE</option>
       <option value="picks">SORT: PICKS</option>
       <option value="pnl">SORT: P&L</option>
@@ -502,7 +507,7 @@ body::before{content:'';position:fixed;inset:0;
       <span style="text-align:center">PICKS</span>
       <span style="text-align:center">STREAK</span>
       <span style="text-align:center">SCORE</span>
-      <span style="text-align:center">ELO</span>
+      <span style="text-align:center">SHARP</span>
       <span></span>
     </div>
     <div id="lbContainer"></div>
@@ -967,9 +972,11 @@ function buildTipsters() {
     if (!p.username) return;
     const u = p.username;
     if (!map[u]) map[u] = {username:u, picks:0, wins:0, losses:0, stake:0, pnl:0, streak:0, userId:null, lastPickAt:0};
-    map[u].picks++;
-    map[u].stake += p.stake;
-    map[u].pnl += p.pnl;
+    if (p.result === 'win' || p.result === 'loss' || p.result === 'push') {
+      map[u].picks++;
+      map[u].stake += p.stake;
+      map[u].pnl   += p.pnl;
+    }
     if (!map[u].userId) map[u].userId = p.userId || null;
     if (p.result === 'win') map[u].wins++;
     if (p.result === 'loss') map[u].losses++;
@@ -986,7 +993,8 @@ function buildTipsters() {
     map[u].isLive = map[u].lastPickAt >= yesterday;
     map[u].elo = (window._eloMap && window._eloMap[u] != null) ? window._eloMap[u] : 0;
     const allTimePicks = allPicks.filter(p => p.username === u);
-    map[u].sharpScore = window.getSharpScore ? window.getSharpScore(allTimePicks) : 0;
+    const _rm = rankingsData && Array.isArray(rankingsData.tipsters) ? rankingsData.tipsters.find(r => r.username === u) : null;
+    map[u].sharpScore = _rm ? (_rm.sharpScore || 0) : 0;
     map[u].archetype  = window.getArchetype  ? window.getArchetype(allTimePicks)  : null;
     // Pre-compute roi/winRate for consistent rendering with rankings path
     map[u].roi     = map[u].stake > 0 ? (map[u].pnl / map[u].stake) * 100 : 0;
@@ -1067,6 +1075,13 @@ async function filterBy(sport, btn) {
   renderLeaderboard();
 }
 
+function roiBadgeHTML(roi,picks){
+  var r=typeof roi==='number'?roi:parseFloat(roi)||0;
+  if(picks<20)return'<span class="roi-building">'+picks+'/20 picks</span>';
+  var pos=r>=0;
+  return'<span style="color:'+(pos?'var(--gr)':'var(--rd)')+';">'+(pos?'+':'')+r.toFixed(1)+'%</span><span class="roi-badge verified">Verified Record</span>';
+}
+
 function renderLeaderboard() {
   const search   = document.getElementById('searchInput').value.toLowerCase().trim();
   const sort     = document.getElementById('sortSelect').value;
@@ -1080,6 +1095,7 @@ function renderLeaderboard() {
     const wrA  = a.winRate != null ? a.winRate*100 : ((a.wins+a.losses)>0?(a.wins/(a.wins+a.losses))*100:0);
     const wrB  = b.winRate != null ? b.winRate*100 : ((b.wins+b.losses)>0?(b.wins/(b.wins+b.losses))*100:0);
     if (sort==='roi')   return roiB-roiA;
+    if (sort==='sharp') return (b.sharpScore||0)-(a.sharpScore||0);
     if (sort==='wr')    return wrB-wrA;
     if (sort==='picks') return b.picks-a.picks;
     if (sort==='pnl')   return b.pnl-a.pnl;
@@ -1181,7 +1197,7 @@ function renderLeaderboard() {
         ` : `
           ${t.isLive ? '<div style="display:inline-flex;align-items:center;gap:4px;font-family:\'DM Mono\';font-size:8px;color:var(--gr);margin-bottom:4px"><div style="width:5px;height:5px;border-radius:50%;background:var(--gr);animation:live-pulse 1.5s ease-in-out infinite"></div>ACTIVE TODAY</div>' : ''}
           <div class="podium-name">@${t.username}</div>
-          <div class="podium-roi">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+          <div class="podium-roi">${roiBadgeHTML(roi,t.picks||0)}</div>
           <div class="podium-picks-sub">${t.picks} picks · ${wr.toFixed(0)}% WR</div>
           <div class="podium-stats">
             <div class="ps-i"><div class="ps-v">${t.picks}</div><div class="ps-l">Picks</div></div>
@@ -1200,7 +1216,6 @@ function renderLeaderboard() {
             ${i===1?(t.streak>0?`🔥 ${t.streak}W HOT`:'⚔️ CHASING'):(t.streak>0?`🔥 ${t.streak}W`:roi>0?'📈 CLIMBING':'⚔️ FIGHTING')}
           </div>
         `}
-        <div class="podium-elo">⚡ ELO <span data-elo="${eloDisplay}">${eloDisplay}</span></div>
         <div class="podium-base"><div class="podium-base-num">#${i+1}</div></div>
       </div>`;
     }).join('');
@@ -1394,12 +1409,12 @@ function renderLeaderboard() {
         ${avHTML}
         <div class="tip-info">
           <div class="tip-name" ${usernameColor?`style="color:${usernameColor}"`:''}>${usernamePfx}@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}${sharpMark}</div>
-          <div class="tip-sub">${t.picks} picks</div>
+          <div class="tip-sub">${t.picks} picks${((t.wins||0)+(t.losses||0))<10?` · <span style="color:var(--mu);font-size:8px">unranked</span>`:''}</div>
           <div class="tip-badges">${divPill}${flowHtml||archHtml}</div>
         </div>
       </div>
       <div class="lb-stat">
-        <div class="lsv ${roi>=0?'pos':'neg'}">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+        <div class="lsv">${roiBadgeHTML(roi,t.picks||0)}</div>
         <div class="lsl">ROI</div>
       </div>
       <div class="lb-stat">
@@ -1419,9 +1434,9 @@ function renderLeaderboard() {
           : '<span style="color:var(--mu);font-size:12px">—</span>'}
       </div>
       <div class="elo-cell">
-        ${ss > 0
-          ? `<div class="elo-val" style="color:${ssColor}" data-elo="${Math.round(ss)}">${Math.round(ss)}</div><div class="elo-lbl">SHARP</div>`
-          : `<div class="elo-badge ${eloClass}" data-elo="${_displayElo}">${_displayElo}</div><div class="elo-lbl">ELO</div>`}
+        ${ss > 0 && ((t.wins||0)+(t.losses||0)) >= 20
+          ? `<div class="elo-val" style="color:${ssColor}">${Math.round(ss)}</div><div class="elo-lbl">SHARP</div>`
+          : `<div style="color:var(--mu);font-family:var(--font-display);font-size:14px">—</div><div class="elo-lbl">SHARP</div>`}
       </div>
       <button class="follow-btn" data-user-id="${t.userId||''}" onclick="event.stopPropagation()">Follow</button>
     </div>`;
