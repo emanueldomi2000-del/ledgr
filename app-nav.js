@@ -253,6 +253,13 @@
       'letter-spacing:1px;padding:4px 0;',
     '}',
 
+    /* Explore dropdown */
+    '.an-explore-wrap{position:relative;display:inline-flex;align-items:center}',
+    '.an-explore-btn{cursor:pointer;background:none;border:none;line-height:normal}',
+    '.an-explore-btn.open{color:var(--ac,#b89fff);background:var(--acg,rgba(184,159,255,0.07))}',
+    '.an-explore-btn.open .an-user-caret{transform:rotate(180deg)}',
+    '.an-explore-dd{left:0!important;right:auto!important}',
+
     /* Responsive */
     '@media(max-width:700px){',
       '.an-links{display:none}',
@@ -354,9 +361,32 @@
       dd.classList.remove('open');
       btn.classList.remove('open');
     } else {
+      _closeExplore();
       dd.classList.add('open');
       btn.classList.add('open');
     }
+  }
+
+  function _toggleExplore(evt) {
+    if (evt) evt.stopPropagation();
+    var btn = document.getElementById('appNavExploreBtn');
+    var dd  = document.getElementById('appNavExploreDropdown');
+    if (!btn || !dd) return;
+    if (dd.classList.contains('open')) {
+      dd.classList.remove('open');
+      btn.classList.remove('open');
+    } else {
+      _closeDropdown();
+      dd.classList.add('open');
+      btn.classList.add('open');
+    }
+  }
+
+  function _closeExplore() {
+    var btn = document.getElementById('appNavExploreBtn');
+    var dd  = document.getElementById('appNavExploreDropdown');
+    if (btn) btn.classList.remove('open');
+    if (dd)  dd.classList.remove('open');
   }
 
   function _closeDropdown() {
@@ -400,6 +430,26 @@
           + _esc(l.desktopLabel || l.label)
           + '</a>';
       }).join('');
+
+    /* Explore dropdown */
+    var _exploreKeys = ['hall-of-fame','compare','simulator','analytics','archetypes'];
+    var _exploreActive = _exploreKeys.indexOf(active) !== -1;
+    var _exploreItems = [
+      { href:'/hall-of-fame', icon:'🏆', label:'Hall of Fame' },
+      { href:'/compare',      icon:'⚖️',  label:'Compare'      },
+      { href:'/simulator',    icon:'📊', label:'Simulator'    },
+      { href:'/analytics',    icon:'📈', label:'Analytics'    },
+      { href:'/archetypes',   icon:'🧬', label:'Archetypes'   }
+    ];
+    desktopLinks += '<div class="an-explore-wrap">'
+      + '<button class="an-link an-explore-btn' + (_exploreActive ? ' active' : '') + '" id="appNavExploreBtn" onclick="window.AppNav.toggleExplore(event)">'
+      + 'Explore <span class="an-user-caret">▾</span></button>'
+      + '<div class="an-dropdown an-explore-dd" id="appNavExploreDropdown">'
+      + _exploreItems.map(function(l){
+          return '<a class="an-dd-item" href="' + l.href + '" onclick="window.AppNav.closeExplore()">'
+            + '<span class="an-dd-icon">' + l.icon + '</span>' + _esc(l.label) + '</a>';
+        }).join('')
+      + '</div></div>';
 
     /* Right side: identity cluster + hamburger */
     var rightHtml = '';
@@ -537,13 +587,22 @@
       if (legacy) legacy.textContent = '@' + user.username;
     }
 
-    /* Close dropdown on outside click */
+    /* Close dropdowns on outside click */
     document.addEventListener('click', function (e) {
       var dd  = document.getElementById('appNavDropdown');
       var btn = document.getElementById('appNavUserBtn');
-      if (!dd || !dd.classList.contains('open')) return;
-      if (btn && btn.contains(e.target)) return;
-      if (!dd.contains(e.target)) _closeDropdown();
+      if (dd && dd.classList.contains('open')) {
+        if (!btn || !btn.contains(e.target)) {
+          if (!dd.contains(e.target)) _closeDropdown();
+        }
+      }
+      var edd  = document.getElementById('appNavExploreDropdown');
+      var ebtn = document.getElementById('appNavExploreBtn');
+      if (edd && edd.classList.contains('open')) {
+        if (!ebtn || !ebtn.contains(e.target)) {
+          if (!edd.contains(e.target)) _closeExplore();
+        }
+      }
     });
   }
 
@@ -556,7 +615,9 @@
     goToProfile:    _goToProfile,
     setNotifBadge:  _setNotifBadge,
     toggleDropdown: _toggleDropdown,
-    closeDropdown:  _closeDropdown
+    closeDropdown:  _closeDropdown,
+    toggleExplore:  _toggleExplore,
+    closeExplore:   _closeExplore
   };
 
 }());
