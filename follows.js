@@ -18,7 +18,10 @@
   }
 
   function headers() {
-    return { 'Content-Type': 'application/json' };
+    const tok = localStorage.getItem('ledgr_token') || localStorage.getItem('token');
+    const h = { 'Content-Type': 'application/json' };
+    if (tok) h['Authorization'] = 'Bearer ' + tok;
+    return h;
   }
 
   // ── Core API calls ───────────────────────────────────────────────

@@ -603,6 +603,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 @media(max-width:960px){.id-card-main{grid-template-columns:1fr}.id-left{border-right:none;padding-right:0;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.05)}.hero-cards-row{grid-template-columns:1fr}}
 @media(max-width:700px){.id-stats{grid-template-columns:repeat(2,1fr)!important}.id-stat:nth-child(2){border-left:1px solid rgba(255,255,255,.04)!important}.id-stat:nth-child(3){border-left:none!important}}
 
+/* ── NEW USER CTA IN IDENTITY CARD ── */
+.id-new-cta{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:18px 0;grid-column:1/-1;text-align:center}
+.id-new-cta-text{font-family:'DM Mono',monospace;font-size:10px;color:var(--mu);letter-spacing:1px;line-height:1.7}
+.id-new-cta-btn{display:inline-flex;align-items:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--ac);background:rgba(184,159,255,.08);border:1px solid rgba(184,159,255,.25);border-radius:8px;padding:9px 18px;transition:all .2s;text-decoration:none}
+.id-new-cta-btn:hover{background:rgba(184,159,255,.16);border-color:rgba(184,159,255,.4);transform:translateY(-1px)}
+
 /* ── AVATAR BORDER COSMETICS (ab-*) ── */
 .ab-clean{border:2px solid rgba(255,255,255,0.08)!important}
 .ab-blue{border:2px solid #4FC3F7!important}
@@ -1094,6 +1100,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <script src="/live.js"></script>
 <script src="/follows.js"></script>
 <script src="/push.js"></script>
+<script src="/rank-notifs.js"></script>
 <script src="/tooltips.js"></script>
 <script src="/mobile.js"></script>
 <script src="/social.js"></script>
@@ -1390,6 +1397,7 @@ async function loadData(){
     renderMyPicks(all);renderStats(all);renderProfileCard(all);renderRepCard(window._myRankingMeta);renderMatchup(all);renderTrendingPicks(all);renderFeed(all);renderLeaderboard(all,rankingsTop5);renderActivityTicker(all);checkNotifications(all);checkWeeklyRecap(all);renderBrainRow(all);renderSpotlight(all,rankingsTop5);renderMarketHeat(all);
     if(window.Insights)Insights.renderAlerts('smartAlerts',all.filter(p=>p.userId===user.id),window._myRankingMeta);
     updateGreeting(all.filter(p=>p.userId===user.id));
+    if(window.RankNotifs)RankNotifs.check(window._myRankingMeta,rankingsTop5);
   }catch(e){clearTimeout(abort);_renderDataError();}
 }
 function getReputation(settled,sharpScore,roi,wrPct){
@@ -1532,6 +1540,9 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const finalRank=rm&&rm.rank?rm.rank:rank;
   const idRank=document.getElementById('idRank');if(idRank){idRank.className='id-stat-val ac';if(finalRank>0)_animStatVal(idRank,'#'+finalRank,true);else idRank.textContent='#—';}
   const idStreak=document.getElementById('idStreak');if(idStreak){idStreak.className='id-stat-val orange';_animStatVal(idStreak,finalStreak>0?finalStreak+'W 🔥':'0W',true);}
+  // New-user CTA: replace stats grid with a single call-to-action
+  const _settledCount=(myPicks.filter(p=>p.result==='win'||p.result==='loss')).length;
+  if(_settledCount===0){const _statsEl=document.querySelector('.id-stats');if(_statsEl)_statsEl.innerHTML='<div class="id-new-cta"><div class="id-new-cta-text">Your verified record starts with pick #1</div><a href="/dashboard" class="id-new-cta-btn">POST FIRST PICK →</a></div>';}
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'0/100';
   const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
@@ -2286,9 +2297,9 @@ async function tailTP(id,event,market,odds,username,btn){
   else{tails[id]={event,market,odds,username,ts:Date.now()};saveTails(tails);btn.textContent='Tailed ✓';btn.classList.add('tailed');showToast('Tailing @'+username+' — '+market+' @ '+odds);}
   // Also hit backend
   try{
-    let uid=null;try{const u=localStorage.getItem('ledgr_user')||localStorage.getItem('user');if(u)uid=JSON.parse(u).id;}catch(e){}
+    let uid=null,_tailTok='';try{const u=localStorage.getItem('ledgr_user')||localStorage.getItem('user');if(u)uid=JSON.parse(u).id;_tailTok=localStorage.getItem('ledgr_token')||localStorage.getItem('token')||'';}catch(e){}
     if(uid){
-      const d=await fetch(API+'/picks/'+id+'/tail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:uid})}).then(r=>r.json());
+      const d=await fetch(API+'/picks/'+id+'/tail',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_tailTok},body:JSON.stringify({userId:uid})}).then(r=>r.json());
       const el=document.getElementById('ptc_'+id);
       if(el)el.textContent=d.count>0?d.count+' user'+(d.count===1?'':'s')+' tailed this pick':'';
     }
