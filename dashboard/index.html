@@ -530,7 +530,7 @@ select option{background:#15122a}
           <svg id="roiSvg" width="100%" height="28" viewBox="0 0 300 28" preserveAspectRatio="none"></svg>
         </div>
 
-        <div id="myPicks"><div class="empty">No picks yet.</div></div>
+        <div id="myPicks"><div class="empty">Your verified record starts here.<br>Post your first pick — it locks the moment it goes live.</div></div>
       </div>
     </div>
   </div>
@@ -1006,7 +1006,7 @@ function renderMyPicks(){
   _sharePicks=filtered;
   const c=document.getElementById('myPicks');
   if(!filtered.length){
-    c.innerHTML=`<div class="empty">${currentPickFilter==='all'?'No picks yet. Post your first pick!':'No '+currentPickFilter+' picks yet.'}</div>`;
+    c.innerHTML=`<div class="empty">${currentPickFilter==='all'?'Your verified record starts here. Post your first pick.':'No '+currentPickFilter+' picks yet.'}</div>`;
     return;
   }
   const confLabels={low:'🔴 Low',medium:'🟡 Med',high:'🟢 High',max:'⚡ Max'};

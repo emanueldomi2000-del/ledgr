@@ -1148,7 +1148,7 @@ function renderLeaderboard() {
     emptyEl.style.display = 'block';
     emptyEl.innerHTML = search
       ? `<div class="empty-lb"><span class="icon">🔍</span><h3>NO RESULTS</h3><p>No tipsters found for "@${search}".</p></div>`
-      : `<div class="empty-lb"><span class="icon">📊</span><h3>NO DATA YET</h3><p>No tipsters with picks in this time period.<br>Try "ALL TIME" or post your first pick.</p></div>`;
+      : `<div class="empty-lb"><span class="icon">🏆</span><h3>BE THE FIRST</h3><p>No verified tipsters yet on this leaderboard.<br>Post your first pick and claim the #1 spot.</p><br><a href="#" onclick="if(typeof openAuth==='function'){openAuth()}else{window.location.href='/'}" class="btn-primary" style="display:inline-block;margin-top:8px">Create Free Account →</a></div>`;
     return;
   }
 

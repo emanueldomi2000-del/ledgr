@@ -398,10 +398,7 @@ async function loadData() {
     );
     const top3 = qualified.slice(0, 3);
     if (!top3.length) {
-      grid.innerHTML = '<div class="tc-loading" style="line-height:1.8">' +
-        'Verified track records are being established.<br>' +
-        'The first qualified tipsters will appear here soon.' +
-        '</div>';
+      grid.innerHTML = '<div class="tc-loading" style="line-height:1.8">Verified track records are being established.<br>Be the first — your record starts the moment you post.<br><br><a href="#" onclick="openAuth();return false" class="btn-primary" style="display:inline-block;margin-top:12px">Claim Tipster #1 →</a></div>';
     } else {
     const placeholderCard =
       '<div class="tipster-card" style="border-style:dashed;opacity:0.45;pointer-events:none;cursor:default">' +
