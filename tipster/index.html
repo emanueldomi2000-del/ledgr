@@ -563,6 +563,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-prestige"></div>
 <div class="bg-vignette"></div>
 <div class="toast" id="toast"></div>
+<script src="/shared/escape.js"></script>
 <script src="/shared/avatar.js"></script>
 <script src="/shared/archetype-avatars.js"></script>
 <script src="/app-nav.js"></script>
@@ -871,7 +872,7 @@ function renderPicks(){
         ${confHtml}
         <span class="pick-verified">${(p.result==='win'||p.result==='loss'||p.result==='push'||p.result==='void')?'✓ LEDGR Verified':'⏳ Awaiting result'}</span>
       </div>
-      ${p.reasoning?`<div class="pick-reasoning">💭 "${p.reasoning}"</div>`:''}
+      ${p.reasoning?`<div class="pick-reasoning">💭 &ldquo;${escapeHtml(p.reasoning)}&rdquo;</div>`:''}
       ${p.result==='void'?`<div class="pick-void-note">🚫 Pick voided — event was cancelled, postponed, or declared invalid. Stake returned. Not counted in win/loss record.</div>`:''}
       <div class="react-bar" data-pick="${p.id}">
         <button class="react-btn" id="rf_${p.id}" onclick="tipsterReact('${p.id}','fire',this,event)" title="Fire">🔥 <span class="react-count"></span></button>
@@ -1514,10 +1515,10 @@ async function loadProfile(){
       :`<div class="division-badge ${divObj.cls}">${divObj.icon} ${divObj.name}</div>`;
 
     // Bio and social from profile config
-    const bio=profileCfg.bio?profileCfg.bio.replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';
+    const bio=profileCfg.bio?escapeHtml(profileCfg.bio):'';
     const social=profileCfg.social||{};
     const bioHtml=bio?`<div class="profile-bio-quote">${bio}</div>`:'';
-    const socialHtml=(social.twitter||social.instagram)?`<div class="profile-social">${social.twitter?`<a href="https://x.com/${social.twitter}" target="_blank" rel="noopener" class="social-link social-link-x">𝕏 @${social.twitter}</a>`:''} ${social.instagram?`<a href="https://instagram.com/${social.instagram}" target="_blank" rel="noopener" class="social-link social-link-ig">📸 @${social.instagram}</a>`:''}</div>`:'';
+    const socialHtml=(social.twitter||social.instagram)?`<div class="profile-social">${social.twitter?`<a href="https://x.com/${escapeHtml(social.twitter)}" target="_blank" rel="noopener" class="social-link social-link-x">𝕏 @${escapeHtml(social.twitter)}</a>`:''} ${social.instagram?`<a href="https://instagram.com/${escapeHtml(social.instagram)}" target="_blank" rel="noopener" class="social-link social-link-ig">📸 @${escapeHtml(social.instagram)}</a>`:''}</div>`:'';
 
     // Banner: custom image overrides gradient
     const bannerStyle=customBannerImg

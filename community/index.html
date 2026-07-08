@@ -130,6 +130,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-glow"></div>
 <div class="bg-room-l"></div>
 <div class="bg-room-r"></div>
+<script src="/shared/escape.js"></script>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
 <script src="/social.js"></script>
@@ -366,10 +367,7 @@ function timeStr(iso) {
          d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
-function escapeHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
+// escapeHtml loaded from /shared/escape.js
 
 function linkify(text) {
   // Bold @mentions and make them clickable
@@ -420,13 +418,13 @@ function msgHTML(msg) {
       window._commAvLogged = true;
     }
   } else {
-    avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${uname}'">${uname.slice(0,2).toUpperCase()}</div>`;
+    avInner = `<div class="msg-av" style="background:${avColor(uname)}" onclick="window.location.href='/tipster?u=${encodeURIComponent(uname)}'">${escapeHtml(uname).slice(0,2).toUpperCase()}</div>`;
   }
   return `<div class="msg-group" id="msg-${msg.id}">
     ${avInner}
     <div class="msg-body">
       <div class="msg-meta">
-        <span class="msg-user" onclick="window.location.href='/tipster?u=${uname}'">@${uname}</span>
+        <span class="msg-user" onclick="window.location.href='/tipster?u=${encodeURIComponent(uname)}'">@${escapeHtml(uname)}</span>
         <span class="msg-time">${timeStr(msg.createdAt)}</span>
       </div>
       <div class="msg-text">${linkify(msg.content)}</div>

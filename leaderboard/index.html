@@ -400,12 +400,15 @@ body::before{content:'';position:fixed;inset:0;
 .lb-hero::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(123,44,255,0.04),rgba(255,215,0,0.03),rgba(0,229,160,0.03),rgba(123,44,255,0.04));background-size:400% 400%;animation:heroGradientShift 18s ease-in-out infinite;pointer-events:none;z-index:0;border-radius:12px}
 .hero-streak{position:absolute;top:0;left:0;width:60px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,215,0,0.06),transparent);pointer-events:none;z-index:1;animation:heroLightStreak 22s ease-in-out 3s infinite}
 .lb-hero>*{position:relative;z-index:2}
+.lb-row-you{border-left:3px solid var(--gold)!important;background:rgba(251,191,36,.04)!important}
+.lb-you-chip{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--gold);background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:20px;padding:2px 8px;margin-left:5px;vertical-align:middle;display:inline-block}
 </style>
 </head>
 <body>
 <div class="bg-glow"></div>
 <div class="bg-spot-l"></div>
 <div class="bg-spot-r"></div>
+<script src="/shared/escape.js"></script>
 <script src="/shared/avatar.js"></script>
 <script src="/shared/archetype-avatars.js"></script>
 <script src="/app-nav.js"></script>
@@ -864,11 +867,11 @@ async function renderFrozenSeason(season) {
       results.map((r, i) => {
         const isChamp = r.user?.username === season.champion;
         const uname = r.user?.username || 'Unknown';
-        return `<div class="frozen-row ${isChamp?'champion-row':''}" data-sh-user="${uname}" onclick="window.location.href='/tipster?u=${uname}'">
+        return `<div class="frozen-row ${isChamp?'champion-row':''}" data-sh-user="${escapeHtml(uname)}" onclick="window.location.href='/tipster?u=${encodeURIComponent(uname)}'">
           <div class="fr-rank ${rankCls(i)}">${i<3?medals[i]:r.rank}</div>
           <div class="fr-tipster">
-            <div class="fr-av" style="background:${COLORS[i%COLORS.length]}">${uname.slice(0,2).toUpperCase()}</div>
-            <div><div class="fr-name">${isChamp?'👑 ':''}<span style="${isChamp?'color:var(--gold)':''}">@${uname}</span></div><div class="fr-div">${r.division}</div></div>
+            <div class="fr-av" style="background:${COLORS[i%COLORS.length]}">${escapeHtml(uname).slice(0,2).toUpperCase()}</div>
+            <div><div class="fr-name">${isChamp?'👑 ':''}<span style="${isChamp?'color:var(--gold)':''}">@${escapeHtml(uname)}</span></div><div class="fr-div">${r.division}</div></div>
           </div>
           <div class="fr-stat"><div class="fr-sv ${r.roi>=0?'pos':'neg'}">${r.roi>=0?'+':''}${r.roi.toFixed(1)}%</div><div class="fr-sl">ROI</div></div>
           <div class="fr-stat"><div class="fr-sv neu">${r.winRate.toFixed(0)}%</div><div class="fr-sl">WR</div></div>
@@ -1101,6 +1104,8 @@ function roiBadgeHTML(roi,picks){
 }
 
 function renderLeaderboard() {
+  let _myUsername = '';
+  try { const _u = JSON.parse(localStorage.getItem('ledgr_user') || localStorage.getItem('user') || 'null'); _myUsername = (_u && (_u.username || '')) || ''; } catch(e) {}
   const search   = document.getElementById('searchInput').value.toLowerCase().trim();
   const sort     = document.getElementById('sortSelect').value;
   const minPicks = parseInt(document.getElementById('minPicksSelect').value) || 1;
@@ -1182,7 +1187,7 @@ function renderLeaderboard() {
           : `<div style="width:${_avSz}px;height:${_avSz}px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`);
       const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
-      return `<div class="podium-card ${cls}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
+      return `<div class="podium-card ${cls}" data-sh-user="${escapeHtml(t.username)}" onclick="window.location.href='/tipster?u=${encodeURIComponent(t.username)}'">
         ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div><div class="p1-sweep"></div>' : ''}
         ${i===0 ? '<div class="pod-crown">👑</div>' : `<div class="side-card-label ${i===1?'silver':'bronze'}">${i===1?'⚔ CHASING THE THRONE':'🔥 FIGHTING FOR PODIUM'}</div><span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
         ${i===0?`<div class="av-ring-wrap" style="width:${_avSz}px;margin:0 auto 10px"><div class="av-ring"></div>${podAv}</div>`:`<div style="margin:0 auto 10px;width:${_avSz}px">${podAv}</div>`}
@@ -1426,7 +1431,7 @@ function renderLeaderboard() {
     const rep = getReputation((t.wins||0)+(t.losses||0), ss, t.roi||0, t.winRate!=null?t.winRate*100:0);
     const repBorder = rep.level >= 4 ? `border-left:3px solid ${rep.color};` : '';
 
-    return `<div class="lb-row" style="--ri:${idx};${repBorder}" data-sh-user="${t.username}" onclick="window.location.href='/tipster?u=${t.username}'">
+    return `<div class="lb-row${t.username === _myUsername ? ' lb-row-you' : ''}" style="--ri:${idx};${repBorder}" data-sh-user="${escapeHtml(t.username)}" onclick="window.location.href='/tipster?u=${encodeURIComponent(t.username)}'">
       <div class="rank-cell">
         <div class="rank-num ${rankCls}">${globalRank}${roi > 20 ? `<span style="font-size:9px;color:#00E5A0;font-family:'DM Mono',monospace;margin-left:2px">▲</span>` : roi < 0 ? `<span style="font-size:9px;color:#FF3355;font-family:'DM Mono',monospace;margin-left:2px">▼</span>` : ''}</div>
         ${move}
@@ -1434,7 +1439,7 @@ function renderLeaderboard() {
       <div class="tipster-col">
         ${avHTML}
         <div class="tip-info">
-          <div class="tip-name" ${usernameColor?`style="color:${usernameColor}"`:''}>${usernamePfx}@${t.username} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}${sharpMark}</div>
+          <div class="tip-name" ${usernameColor?`style="color:${usernameColor}"`:''}>${usernamePfx}@${escapeHtml(t.username)} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}${sharpMark}${t.username === _myUsername ? '<span class="lb-you-chip">YOU</span>' : ''}</div>
           <div class="tip-sub">${t.picks} picks${((t.wins||0)+(t.losses||0))<10?` · <span style="color:var(--mu);font-size:8px">unranked</span>`:''}</div>
           <div class="tip-badges">${divPill}${repBadgeHTML(rep,false)}${flowHtml||archHtml}</div>
         </div>

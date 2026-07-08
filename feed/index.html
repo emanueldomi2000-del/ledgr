@@ -216,6 +216,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="bg-market"></div>
 <div class="bg-scan"></div>
 <div class="toast" id="toast"></div>
+<script src="/shared/escape.js"></script>
 <script src="/app-nav.js"></script>
 <script src="/motion.js"></script>
 <script>AppNav.init({ active: 'feed' });</script>
@@ -333,7 +334,7 @@ let allEvents=[];let _actAll=[];let _actShowing=24;
 
 function avColor(n){let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h];}
 function getTimeAgo(ts){const d=Date.now()-ts,m=Math.floor(d/60000),h=Math.floor(d/3600000),dy=Math.floor(d/86400000);if(m<1)return'now';if(m<60)return m+'m';if(h<24)return h+'h';return dy+'d';}
-function esc(s){return(s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function esc(s){return escapeHtml(s);}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
 
 /* ── HERO STATS ── */
@@ -567,7 +568,7 @@ function buildActRow(ev,delay){
   const _rowCls=ev.type==='bigwin'?'act-bigwin':ev.type==='win'?'act-win':ev.type==='underdog'?'act-underdog':ev.type==='streak'?'act-streak':'';
   return`<div class="act-row ${_rowCls}" style="${delay?'animation-delay:'+delay+'ms':''}">
     ${_archAvHTML(ev.user||'',20,'square')||`<div class="act-av" style="background:${avColor(ev.user||'')}">${(ev.user||'??').slice(0,2).toUpperCase()}</div>`}
-    <a class="act-user" href="/tipster?u=${ev.user}" onclick="event.stopPropagation()">@${ev.user}</a>
+    <a class="act-user" href="/tipster?u=${encodeURIComponent(ev.user||'')}" onclick="event.stopPropagation()">@${escapeHtml(ev.user||'')}</a>
     <span class="act-action">${action}</span>
     ${badge}
     <span class="act-time">${getTimeAgo(ev.ts)}</span>
