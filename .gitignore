@@ -3,3 +3,6 @@
 *.env
 login/.env
 node_modules/
+
+# Archive — draft/unused files, never deploy to Vercel
+_archive/
