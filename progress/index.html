@@ -512,7 +512,7 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
   const currentStreak = rankingMeta ? Math.max(0, rankingMeta.currentStreak || 0) : 0;
   const divisionName = rankingMeta ? (rankingMeta.division || 'BRONZE') : 'BRONZE';
 
-  const actualElo = (rankingMeta && rankingMeta.elo != null) ? Math.max(0,rankingMeta.elo-1000) : computeEloFromDivScore(DIV_SCORE[divisionName] || 0);
+  const actualElo = computeEloFromDivScore(rankingMeta ? (rankingMeta.divisionScore ?? DIV_SCORE[divisionName] ?? 0) : (DIV_SCORE[divisionName] ?? 0));
   const tier = getEloTier(actualElo);
   const roman = getTierRoman(actualElo, tier);
   const eloInTier = actualElo - tier.min;
