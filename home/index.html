@@ -1867,7 +1867,7 @@ function renderSpotlight(all,rankings){
   }
   el.innerHTML=items.map(it=>`<div class="sl-item"><div class="sl-badge" style="color:${it.c}">${it.badge}</div><div class="sl-val" style="color:${it.c}">${it.val}</div><div class="sl-sub">${it.sub}</div></div>`).join('');
   if(_slTimer)clearInterval(_slTimer);_slIdx=0;
-  if(items.length>2){_slTimer=setInterval(()=>{const w=document.getElementById('spotlightItems');if(!w)return;_slIdx=(_slIdx+1)%items.length;w.style.transform=`translateX(-${_slIdx*236}px)`;},4000);}
+  if(items.length>2){_slTimer=setInterval(()=>{const w=document.getElementById('spotlightItems');if(!w)return;_slIdx=(_slIdx+1)%items.length;const step=(w.firstElementChild?w.firstElementChild.offsetWidth:220)+8;w.style.transform=`translateX(-${_slIdx*step}px)`;},4000);}
 }
 
 function renderProfileCard(all){
