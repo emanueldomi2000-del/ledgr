@@ -1146,9 +1146,13 @@ function renderLeaderboard() {
     podiumEl.style.display = 'none';
     tableWrap.style.display = 'none';
     emptyEl.style.display = 'block';
-    emptyEl.innerHTML = search
-      ? `<div class="empty-lb"><span class="icon">🔍</span><h3>NO RESULTS</h3><p>No tipsters found for "@${search}".</p></div>`
-      : `<div class="empty-lb"><span class="icon">🏆</span><h3>BE THE FIRST</h3><p>No verified tipsters yet on this leaderboard.<br>Post your first pick and claim the #1 spot.</p><br><a href="#" onclick="if(typeof openAuth==='function'){openAuth()}else{window.location.href='/'}" class="btn-primary" style="display:inline-block;margin-top:8px">Create Free Account →</a></div>`;
+    if (search) {
+      emptyEl.innerHTML = `<div class="empty-lb"><span class="icon">🔍</span><h3>NO RESULTS</h3><p>No tipsters found for "@${search}".</p></div>`;
+    } else if (allTipsters.length > 0) {
+      emptyEl.innerHTML = `<div class="empty-lb"><span class="icon">📊</span><h3>NO TIPSTERS QUALIFY</h3><p>No tipster has reached ${minPicks} pick${minPicks !== 1 ? 's' : ''} yet.<br>Try lowering the minimum picks filter.</p><br><button onclick="document.getElementById('minPicksSelect').value='1';renderLeaderboard()" class="btn-primary" style="display:inline-block;margin-top:8px">Show all tipsters →</button></div>`;
+    } else {
+      emptyEl.innerHTML = `<div class="empty-lb"><span class="icon">🏆</span><h3>BE THE FIRST</h3><p>No verified tipsters yet on this leaderboard.<br>Post your first pick and claim the #1 spot.</p><br><a href="#" onclick="if(typeof openAuth==='function'){openAuth()}else{window.location.href='/'}" class="btn-primary" style="display:inline-block;margin-top:8px">Create Free Account →</a></div>`;
+    }
     return;
   }
 
