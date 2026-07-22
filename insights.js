@@ -5,7 +5,7 @@
   var CSS = `
 /* ─── Insight Deck ─── */
 .ig-deck{position:relative;margin-bottom:20px}
-.ig-deck-inner{position:relative;min-height:100px;overflow:hidden}
+.ig-deck-inner{position:relative;min-height:60px;overflow:hidden}
 .ig-card{
   background:var(--s1,#0c0a1a);
   border:1px solid rgba(255,255,255,.06);
@@ -818,6 +818,7 @@
     var innerEl=document.getElementById(containerId+'_inner');
     var cards=innerEl.querySelectorAll('.ig-card');
     if(cards[0])cards[0].classList.add('ig-active');
+    if(innerEl)innerEl.style.minHeight='0';
 
     // Store state
     el._igCur=0;

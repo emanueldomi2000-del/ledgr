@@ -53,7 +53,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .intel-bar{background:rgba(184,159,255,.03);border:1px solid rgba(184,159,255,.07);border-radius:10px;padding:10px 16px;margin:12px 0 22px;display:flex;align-items:center;gap:12px}
 .intel-eye{font-family:var(--font-mono);font-size:8px;letter-spacing:3px;color:var(--mu);white-space:nowrap;flex-shrink:0;display:flex;align-items:center;gap:6px}
 .intel-eye::before{content:'';width:4px;height:4px;background:var(--ac);border-radius:50%;animation:liveBlink 2s infinite}
-.intel-window{flex:1;overflow:hidden;height:16px;position:relative}
+.intel-window{flex:1;overflow:hidden;height:16px;position:relative;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 32px,#000 calc(100% - 32px),transparent 100%)}
 .intel-track{display:flex;gap:40px;position:absolute;top:0;left:0;white-space:nowrap;animation:tickerSlide 32s linear infinite}
 .intel-track:hover{animation-play-state:paused}
 .intel-item{font-family:var(--font-mono);font-size:10px;color:var(--mu2);letter-spacing:.5px;display:flex;align-items:center;gap:6px;flex-shrink:0;line-height:16px}

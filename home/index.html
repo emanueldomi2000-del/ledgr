@@ -49,8 +49,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .ticker-inner-wrap{max-width:1120px;margin:0 auto;padding:6px 24px;display:flex;align-items:center;gap:12px;overflow:hidden}
 .live-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;flex-shrink:0;animation:blink 1.5s infinite}
 .online-count{font-family:var(--font-mono);font-size:9px;color:var(--gr);flex-shrink:0;letter-spacing:1px}
-.ticker-scroll{overflow:hidden;flex:1}
-.ticker-text{display:flex;gap:48px;white-space:nowrap;animation:atick 28s linear infinite;font-family:var(--font-mono);font-size:9px;color:rgba(84,79,110,0.8)}
+.ticker-scroll{overflow:hidden;flex:1;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 40px,#000 calc(100% - 40px),transparent 100%)}
+.ticker-text{display:flex;gap:48px;white-space:nowrap;animation:atick 28s linear infinite;font-family:var(--font-mono);font-size:9px;color:rgba(84,79,110,0.8);width:max-content}
 .ticker-text b{color:var(--mu2)}
 @keyframes atick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}

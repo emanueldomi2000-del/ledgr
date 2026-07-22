@@ -55,8 +55,8 @@ h1{font-family:'Rajdhani',sans-serif;font-size:clamp(36px,5.5vw,82px);font-weigh
 .hs-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--color-muted);letter-spacing:2px;text-transform:uppercase;margin-top:5px}
 
 /* TICKER */
-.ticker-wrap{border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);overflow:hidden;padding:10px 0;background:rgba(123,44,255,0.02);position:relative;z-index:1}
-.ticker{display:flex;white-space:nowrap;animation:tick 32s linear infinite}
+.ticker-wrap{border-top:1px solid var(--color-border);border-bottom:1px solid var(--color-border);overflow:hidden;padding:10px 0;background:rgba(123,44,255,0.02);position:relative;z-index:1;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 60px,#000 calc(100% - 60px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 60px,#000 calc(100% - 60px),transparent 100%)}
+.ticker{display:flex;white-space:nowrap;animation:tick 32s linear infinite;width:max-content}
 .ti{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--color-muted);letter-spacing:.8px;padding:0 32px}
 .ti b{color:var(--color-purple-light)}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
