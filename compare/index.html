@@ -245,7 +245,8 @@ function calcStats(picks, rankMeta) {
   const roi   = stake > 0 ? (pnl / stake) * 100 : 0;
   const gradedCount = settled.filter(p => p.result !== 'push').length;
   const wr    = gradedCount > 0 ? (wins / gradedCount) * 100 : 0;
-  const avgOdds = picks.length > 0 ? picks.reduce((s, p) => s + (p.odds || 0), 0) / picks.length : 0;
+  const validOddsP = picks.filter(p => p.odds >= 1.01 && p.odds <= 1000);
+  const avgOdds = validOddsP.length > 0 ? validOddsP.reduce((s, p) => s + p.odds, 0) / validOddsP.length : 0;
   const sorted = [...settled].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   let streak = 0; for (const p of sorted) { if (p.result === 'win') streak++; else break; }
   const relScore   = rankMeta?.reliabilityScore != null ? Math.round(rankMeta.reliabilityScore) : null;

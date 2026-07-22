@@ -2215,7 +2215,7 @@ function renderMarketHeat(all){
 function renderTrendingPicks(all){
   const localTails=getTails();
   const tpMap={};all.forEach(p=>{if(!p.username)return;if(!tpMap[p.username])tpMap[p.username]=[];tpMap[p.username].push(p);});
-  const validPicks=all.filter(p=>p.username&&p.event&&p.event!=='undefined'&&p.odds&&p.odds<100);
+  const validPicks=all.filter(p=>p.username&&p.event&&p.event!=='undefined'&&p.odds&&p.odds<1000);
   const hot=validPicks.filter(p=>p.result==='pending').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,4);
   const grid=document.getElementById('trendingPicksGrid');
   if(!hot.length){
