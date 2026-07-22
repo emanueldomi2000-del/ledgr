@@ -185,6 +185,12 @@ body::before{content:'';position:fixed;inset:0;
 .rec-detail{font-family:var(--font-mono);font-size:9px;color:var(--mu)}
 .rec-glow-corner{position:absolute;top:-20px;right:-20px;width:80px;height:80px;
   border-radius:50%;filter:blur(28px);opacity:.18;pointer-events:none}
+.hof-unclaimed-state{text-align:center;padding:48px 24px;grid-column:1/-1}
+.hof-unclaimed-icon{font-size:48px;margin-bottom:16px}
+.hof-unclaimed-title{font-family:var(--font-display);font-size:28px;letter-spacing:4px;color:var(--tx);margin-bottom:10px}
+.hof-unclaimed-sub{font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;line-height:2;text-transform:uppercase}
+.rec-card-you{box-shadow:0 0 0 2px rgba(251,191,36,.35),0 0 28px rgba(251,191,36,.1)!important}
+.rec-you-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:9px;color:var(--gold);background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:20px;padding:3px 9px;margin-top:10px;letter-spacing:1px}
 
 /* ── LEGENDARY TIPSTERS (rainbow border) ── */
 .legend-section{margin-bottom:8px}
@@ -376,7 +382,7 @@ body::before{content:'';position:fixed;inset:0;
 </div><!-- /main -->
 
 <script>
-const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const API = 'https://ledgr-backend-7hmh.onrender.com';
 const AV_COLORS = [
   'linear-gradient(135deg,#7c3aed,#a855f7)',
   'linear-gradient(135deg,#b45309,#f59e0b)',
@@ -502,6 +508,20 @@ function renderRecords(tipsters) {
     .filter(t => _isTrusted(t) && t.totalPicks >= 50)
     .sort((a, b) => b.sharpScore - a.sharpScore)[0] || null;
 
+  // Cinematic empty state when no one meets the trust gate
+  if (!roiLeader && !streakKing && !sharpElite) {
+    el.innerHTML = `<div class="hof-unclaimed-state">
+      <div class="hof-unclaimed-icon">🏆</div>
+      <div class="hof-unclaimed-title">RECORDS UNCLAIMED</div>
+      <div class="hof-unclaimed-sub">No tipster has yet earned the trust metrics<br>required to hold an all-time record.<br><br>Trusted status · 50+ picks · Verified edge</div>
+    </div>`;
+    return;
+  }
+
+  // Read user's own HoF badges from local state
+  let _myBadges = [];
+  try { const _st = JSON.parse(localStorage.getItem('ledgr_rank_state') || 'null'); _myBadges = (_st && _st.hofBadges) || []; } catch(e) {}
+
   const records = [
     {
       cls: 'rc-gold', icon: '👑', cat: 'ROI LEADER',
@@ -532,15 +552,19 @@ function renderRecords(tipsters) {
     },
   ];
 
-  el.innerHTML = records.map(r => `
-    <div class="rec-card ${r.cls}"${r.holder ? ` onclick="window.location.href='/tipster?u=${r.holder}'"` : ''}>
+  el.innerHTML = records.map(r => {
+    const isMine = _myBadges.includes(r.cat);
+    return `
+    <div class="rec-card ${r.cls}${isMine ? ' rec-card-you' : ''}"${r.holder ? ` onclick="window.location.href='/tipster?u=${r.holder}'"` : ''}>
       <div class="rec-glow-corner" style="background:${r.glow}"></div>
       <span class="rec-icon">${r.icon}</span>
       <div class="rec-cat">${r.cat}</div>
       <div class="rec-val">${r.val}</div>
       <div class="rec-holder">${r.holder ? '@' + r.holder : '—'}</div>
       <div class="rec-detail">${r.detail}</div>
-    </div>`).join('');
+      ${isMine ? '<div class="rec-you-chip">⭐ YOUR RECORD</div>' : ''}
+    </div>`;
+  }).join('');
 }
 
 // ── Season Champions ──────────────────────────────────────────────────────────

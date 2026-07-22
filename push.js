@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const API = 'https://ledgr-backend-production-c132.up.railway.app';
+  const API = 'https://ledgr-backend-7hmh.onrender.com';
 
   let _reg = null; // ServiceWorkerRegistration
 

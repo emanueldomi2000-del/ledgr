@@ -739,6 +739,129 @@
     return c;
   }
 
+  // ── 5. ACHIEVEMENT CARD ──────────────────────────────────────────
+  async function generateAchievementCard(type, label, username, state) {
+    await document.fonts.ready;
+    const W = 1080, H = 1080;
+    const c   = newCanvas(W, H);
+    const ctx = c.getContext('2d');
+    state = state || {};
+
+    const THEMES = {
+      reputation_proven:  { accent:'#34d399', emoji:'🛡️', line1:'PROVEN',      line2:'REPUTATION ACHIEVED'  },
+      reputation_trusted: { accent:'#38bdf8', emoji:'🔥', line1:'TRUSTED',     line2:'REPUTATION ACHIEVED'  },
+      reputation_elite:   { accent:'#fbbf24', emoji:'👑', line1:'ELITE',       line2:'REPUTATION ACHIEVED'  },
+      'hof_ROI LEADER':   { accent:'#fbbf24', emoji:'🏆', line1:'ROI LEADER',  line2:'HALL OF FAME UNLOCKED' },
+      'hof_STREAK KING':  { accent:'#fb923c', emoji:'🔥', line1:'STREAK KING', line2:'HALL OF FAME UNLOCKED' },
+      'hof_SHARP ELITE':  { accent:'#34d399', emoji:'📐', line1:'SHARP ELITE', line2:'HALL OF FAME UNLOCKED' },
+      sharp_40: { accent:'#34d399', emoji:'📈', line1:'SHARP 40', line2:'SHARP SCORE MILESTONE' },
+      sharp_60: { accent:'#34d399', emoji:'📈', line1:'SHARP 60', line2:'SHARP SCORE MILESTONE' },
+      sharp_70: { accent:'#b89fff', emoji:'📈', line1:'SHARP 70', line2:'SHARP SCORE MILESTONE' },
+      sharp_80: { accent:'#b89fff', emoji:'📈', line1:'SHARP 80', line2:'SHARP SCORE MILESTONE' },
+      sharp_90: { accent:'#fbbf24', emoji:'📈', line1:'SHARP 90', line2:'SHARP SCORE MILESTONE' },
+    };
+
+    const lbl = (label || '').toUpperCase();
+    let themeKey;
+    if (type === 'reputation_up')     themeKey = 'reputation_' + lbl.toLowerCase();
+    else if (type === 'hof_unlock')   themeKey = 'hof_' + lbl;
+    else if (type === 'sharp_milestone') themeKey = 'sharp_' + lbl;
+
+    const theme  = THEMES[themeKey] || { accent: C.ac, emoji: '🏆', line1: lbl || 'ACHIEVEMENT', line2: 'LEDGR' };
+    const accent = theme.accent;
+
+    // Background + themed radial glow
+    ctx.fillStyle = C.bg;
+    ctx.fillRect(0, 0, W, H);
+    const rg = ctx.createRadialGradient(W/2, H*0.43, 0, W/2, H*0.43, W*0.65);
+    rg.addColorStop(0,    hex2rgba(accent, 0.13));
+    rg.addColorStop(0.55, hex2rgba(accent, 0.04));
+    rg.addColorStop(1,    'transparent');
+    ctx.fillStyle = rg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Subtle grid
+    ctx.strokeStyle = 'rgba(184,159,255,0.025)';
+    ctx.lineWidth   = 1;
+    for (let x = 0; x <= W; x += 90) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+    for (let y = 0; y <= H; y += 90) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    drawAccentBar(ctx, W, [accent, C.tx, accent]);
+    drawLogo(ctx, 60, 88, 48);
+
+    // Achievement category label — top right
+    ctx.font         = `700 22px "DM Mono", monospace`;
+    ctx.fillStyle    = hex2rgba(accent, 0.75);
+    ctx.textAlign    = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(theme.line2, W - 60, 88);
+
+    hline(ctx, 130, W);
+
+    // Large emoji
+    ctx.font         = `400 96px serif`;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(theme.emoji, W/2, 258);
+
+    // Achievement title (adaptive size, glowing)
+    fitFont(ctx, theme.line1, '"Bebas Neue", sans-serif', '700', 180, W - 120, 48);
+    ctx.fillStyle    = accent;
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor  = accent;
+    ctx.shadowBlur   = 45;
+    ctx.fillText(theme.line1, W/2, 484);
+    ctx.shadowBlur   = 0;
+    ctx.shadowColor  = 'transparent';
+
+    hline(ctx, 580, W);
+
+    // Stats row: Sharp Score | ROI | Division
+    const ss      = state.sharpScore || 0;
+    const roi     = state.roi  != null ? parseFloat(state.roi)  : null;
+    const div     = (state.division || '').toUpperCase();
+    const divClr  = (DIV_META[div] || {}).color || C.mu2;
+
+    const statItems = [
+      { label:'SHARP',    val: ss > 0 ? String(ss) : '—',
+        color: ss >= 70 ? C.gr : ss >= 40 ? C.gold : C.mu2 },
+      { label:'ROI',      val: roi != null ? (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%' : '—',
+        color: roi > 0 ? C.gr : roi < 0 ? C.rd : C.mu2 },
+      { label:'DIVISION', val: div || '—', color: divClr },
+    ];
+    const sw = (W - 120) / 3;
+    statItems.forEach(function (it, i) {
+      const sx = 60 + i * sw + sw / 2;
+      ctx.font         = `700 60px "Bebas Neue", sans-serif`;
+      ctx.fillStyle    = it.color;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(it.val, sx, 688);
+
+      ctx.font      = `500 20px "DM Mono", monospace`;
+      ctx.fillStyle = C.mu;
+      ctx.fillText(it.label, sx, 740);
+
+      if (i < 2) {
+        ctx.strokeStyle = 'rgba(184,159,255,0.1)';
+        ctx.lineWidth   = 1;
+        ctx.beginPath();
+        ctx.moveTo(60 + (i+1)*sw, 628);
+        ctx.lineTo(60 + (i+1)*sw, 790);
+        ctx.stroke();
+      }
+    });
+
+    hline(ctx, 820, W);
+    drawUserRow(ctx, username || '?', div, W/2, 906, 56);
+    drawFooter(ctx, W, H);
+
+    const xText = `${theme.emoji} ${theme.line1} — ${theme.line2}\n@LEDGR — getledgr.bet`;
+    showModal(c, 'ledgr-achievement.png', xText);
+    return c;
+  }
+
   // ── Boot ─────────────────────────────────────────────────────────
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', injectCSS);
@@ -747,11 +870,12 @@
   }
 
   window.Share = {
-    winCard     : generateWinCard,
-    streakCard  : generateStreakCard,
-    recapCard   : generateRecapCard,
-    rankUpCard  : generateRankUpCard,
-    closeModal  : closeModal,
+    winCard        : generateWinCard,
+    streakCard     : generateStreakCard,
+    recapCard      : generateRecapCard,
+    rankUpCard     : generateRankUpCard,
+    achievementCard: generateAchievementCard,
+    closeModal     : closeModal,
   };
 
 })();

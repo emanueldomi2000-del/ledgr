@@ -307,7 +307,7 @@ Hardcoded highlight colour used in injected styles: `#b89fff` (soft purple, not 
 ### Hosting & Runtime
 - **Platform:** Railway
 - **Runtime:** Node.js + Express
-- **URL:** `https://ledgr-backend-production-c132.up.railway.app`
+- **URL:** `https://ledgr-backend-7hmh.onrender.com`
 - **WebSocket:** WSS on same URL
 
 ### Backend Modules (on Railway, not in frontend repo)
@@ -479,7 +479,7 @@ Inferred from API calls — exact schema unknown from frontend repo.
 ## 8. API ENDPOINTS
 
 ### Base URL
-`https://ledgr-backend-production-c132.up.railway.app`
+`https://ledgr-backend-7hmh.onrender.com`
 
 ### Auth
 | Endpoint | Method | Body/Query | Used By |
@@ -573,7 +573,7 @@ Inferred from API calls — exact schema unknown from frontend repo.
 | `/internal/rankings/recalculate-all` | POST | Full recalculation (expensive) |
 
 ### WebSocket
-`wss://ledgr-backend-production-c132.up.railway.app`
+`wss://ledgr-backend-7hmh.onrender.com`
 
 ---
 
@@ -976,7 +976,7 @@ There are **three separate notification mechanisms** that are NOT fully connecte
 
 ### LedgrWS Connection Details
 ```
-WSS URL: wss://ledgr-backend-production-c132.up.railway.app
+WSS URL: wss://ledgr-backend-7hmh.onrender.com
 Heartbeat: 25s normal, 60s low-power (tab hidden)
 Reconnect: [1000, 2000, 4000, 8000, 16000, 30000] ms backoff
 ```

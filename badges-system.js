@@ -537,7 +537,7 @@
       if (!raw || !tk) return;
       var rarityNum = { common: 2, rare: 2, epic: 3, legendary: 4 };
       badges.forEach(function(b) {
-        fetch('https://ledgr-backend-production-c132.up.railway.app/notifications/badge-unlock', {
+        fetch('https://ledgr-backend-7hmh.onrender.com/notifications/badge-unlock', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tk },
           body: JSON.stringify({ badgeId: b.id, badgeName: b.name, badgeRarity: rarityNum[b.rarity] || 2 })

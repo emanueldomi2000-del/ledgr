@@ -1,7 +1,7 @@
 # LEDGR — Claude Context
 
 **Production URL:** https://getledgr.bet  
-**Backend:** https://ledgr-backend-production-c132.up.railway.app  
+**Backend:** https://ledgr-backend-7hmh.onrender.com  
 **Hosting:** Vercel (static deploy, no build step)  
 **Stack:** Plain HTML + CSS + vanilla JS — no framework, no bundler, no TypeScript.
 
@@ -134,7 +134,7 @@ These are standalone IIFEs loaded via `<script>` tags in individual pages. They 
 
 ## Backend API
 
-Base URL: `https://ledgr-backend-production-c132.up.railway.app`
+Base URL: `https://ledgr-backend-7hmh.onrender.com`
 
 Known endpoints (from shared JS):
 - `POST /follow` — follow a tipster `{ followerId, followingId }`

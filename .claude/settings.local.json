@@ -25,7 +25,8 @@
       "Bash(git *)",
       "Bash(Select-Object Name)",
       "Bash(awk -F: '$2 > 1600 && $2 < 1620')",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Bash(curl *)"
     ]
   }
 }

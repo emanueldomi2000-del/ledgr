@@ -23,7 +23,7 @@
 (function () {
   'use strict';
 
-  var WSS              = 'wss://ledgr-backend-production-c132.up.railway.app';
+  var WSS              = 'wss://ledgr-backend-7hmh.onrender.com';
   var HB_NORMAL        = 25000;   // heartbeat interval: normal mode
   var HB_LOWPOWER      = 60000;   // heartbeat interval: low-power (hidden tab)
   var BACKOFF          = [1000, 2000, 4000, 8000, 16000, 30000];

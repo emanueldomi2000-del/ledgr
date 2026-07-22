@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  var API = 'https://ledgr-backend-production-c132.up.railway.app';
+  var API = 'https://ledgr-backend-7hmh.onrender.com';
 
   function getCustomization() {
     try { return JSON.parse(localStorage.getItem('ledgr_profile_customization') || '{}'); } catch (e) { return {}; }

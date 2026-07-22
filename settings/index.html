@@ -976,7 +976,7 @@ window.onerror = function(msg, src, line) {
   if (app) app.style.display = 'block';
 };
 
-const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const API = 'https://ledgr-backend-7hmh.onrender.com';
 
 /* ── DATA ── */
 const THEMES = [
@@ -1221,7 +1221,7 @@ function selectBannerPack(id) {
   }
   var token = localStorage.getItem('ledgr_token');
   if(!token) { showToast('✓ Saved locally'); return; }
-  fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
+  fetch('https://ledgr-backend-7hmh.onrender.com/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
     body: JSON.stringify({ bannerPack: id, banner: id })
@@ -1272,7 +1272,7 @@ function selectBorder(id) {
   }
   var token = localStorage.getItem('ledgr_token');
   if(!token) { showToast('✓ Saved locally'); return; }
-  fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
+  fetch('https://ledgr-backend-7hmh.onrender.com/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
     body: JSON.stringify({ avatarBorder: id, border: id })
@@ -1322,7 +1322,7 @@ function selectTheme(color) {
   showToast('✓ Theme saved');
   var token = localStorage.getItem('ledgr_token');
   if(!token) return;
-  fetch('https://ledgr-backend-production-c132.up.railway.app/profile', {
+  fetch('https://ledgr-backend-7hmh.onrender.com/profile', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
     body: JSON.stringify({ profileTheme: color })

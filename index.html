@@ -172,7 +172,7 @@ footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;a
   try{
     var ctrl=new AbortController();
     var t=setTimeout(function(){ctrl.abort();},5000);
-    var r=await fetch('https://ledgr-backend-production-c132.up.railway.app/profile',{headers:{Authorization:'Bearer '+tk},signal:ctrl.signal});
+    var r=await fetch('https://ledgr-backend-7hmh.onrender.com/profile',{headers:{Authorization:'Bearer '+tk},signal:ctrl.signal});
     clearTimeout(t);
     if(r.ok){window.location.replace('/home');}
     else{['ledgr_token','ledgr_user','token','user'].forEach(function(k){localStorage.removeItem(k);});}
@@ -351,7 +351,7 @@ footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;a
 <script src="/verify.js"></script>
 <script src="/brand-nav.js"></script>
 <script>
-const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const API = 'https://ledgr-backend-7hmh.onrender.com';
 const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
 const DIV_MAP = {
   LEGENDARY:{cls:'div-elite',icon:'🐐',label:'Legendary',color:'#f87171'},

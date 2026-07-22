@@ -45,7 +45,15 @@
 .nf-type-badge.streak{background:rgba(251,191,36,0.1);color:var(--gold)}
 .nf-type-badge.division{background:rgba(56,189,248,0.1);color:var(--cyan)}
 .nf-type-badge.pick_result{background:rgba(255,255,255,0.05);color:var(--mu2)}
+.nf-type-badge.division_up{background:rgba(52,211,153,0.1);color:var(--gr)}
+.nf-type-badge.division_down{background:rgba(248,113,113,0.1);color:var(--rd)}
+.nf-type-badge.reputation_up{background:rgba(56,189,248,0.1);color:#38bdf8}
+.nf-type-badge.hof_unlock{background:rgba(251,191,36,0.1);color:var(--gold)}
+.nf-type-badge.sharp_milestone{background:rgba(52,211,153,0.08);color:var(--gr)}
 .nf-unread-dot{width:7px;height:7px;background:var(--ac);border-radius:50%;flex-shrink:0;margin-top:6px}
+.notif-share-btn{display:inline-flex;align-items:center;margin-top:8px;background:rgba(184,159,255,0.07);border:1px solid rgba(184,159,255,0.18);border-radius:7px;padding:5px 12px;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:var(--ac);cursor:pointer;transition:all .2s}
+.notif-share-btn:hover{background:rgba(184,159,255,0.14);border-color:rgba(184,159,255,0.3);transform:translateY(-1px)}
+.notif-share-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .empty-state{text-align:center;padding:64px 24px}
 .empty-icon{font-size:48px;margin-bottom:16px}
 .empty-title{font-family:var(--font-display);font-size:24px;letter-spacing:2px;color:var(--mu);margin-bottom:8px}
@@ -93,6 +101,7 @@
     <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
     <button class="filter-btn" onclick="setFilter('new_pick',this)">📌 New Picks</button>
     <button class="filter-btn" onclick="setFilter('pick_result',this)">📊 My Picks</button>
+    <button class="filter-btn" onclick="setFilter('milestones',this)">🏅 Milestones</button>
     <button class="filter-btn" onclick="setFilter('streak',this)">🔥 Streaks</button>
     <button class="filter-btn" onclick="setFilter('division',this)">🏆 Divisions</button>
   </div>
@@ -121,9 +130,10 @@
 
 <script src="/ledgr-ws.js"></script>
 <script src="/push.js"></script>
+<script src="/share.js"></script>
 <script src="/social.js"></script>
 <script>
-const API='https://ledgr-backend-production-c132.up.railway.app';
+const API='https://ledgr-backend-7hmh.onrender.com';
 let user=null;let currentFilter='all';
 let eliteSet=new Set(); // usernames in ELITE or LEGENDARY division
 
@@ -169,7 +179,17 @@ function _beNotifToLocal(n){
   }else if(n.type==='streak_milestone'){
     icon='🔥';text=`<b>@${username}</b> is on a <b>${p.streak}-win streak</b>`;ref=username;type='streak';
   }else if(n.type==='division_up'){
-    icon='🏆';text=`<b>@${username}</b> reached <b>${p.toDivision}</b>`;ref=username;type='division';
+    icon='⬆️';text=`Promoted to <b>${p.toDivision||p.division||''}</b>`;ref=p.username||username;type='division_up';
+  }else if(n.type==='division_down'){
+    icon='⬇️';text=`Dropped to <b>${p.toDivision||p.division||''}</b>`;ref=p.username||username;type='division_down';
+  }else if(n.type==='reputation_up'){
+    const _rl=(p.level||'').toLowerCase();
+    const _ri={proven:'🛡️',trusted:'🔥',elite:'👑'};
+    icon=_ri[_rl]||'⬆️';text=`Reputation upgraded: <b>${(p.level||'').toUpperCase()}</b>`;ref=p.username||username;type='reputation_up';
+  }else if(n.type==='hof_unlock'){
+    icon='🏆';text=`Hall of Fame Record: <b>${p.badge||'UNLOCKED'}</b>`;ref='hall-of-fame';type='hof_unlock';
+  }else if(n.type==='sharp_milestone'){
+    icon='📈';text=`Sharp Score reached <b>${p.milestone||p.score||''}</b>`;ref=p.username||username;type='sharp_milestone';
   }else{
     text=`New activity from <b>@${username}</b>`;ref=username;
   }
@@ -303,7 +323,14 @@ function clearAll(){saveNotifs([]);renderNotifs();}
 function renderNotifs(){
   const list=document.getElementById('notifsList');
   let notifs=getNotifs();
-  if(currentFilter!=='all')notifs=notifs.filter(n=>n.type===currentFilter);
+  const MULTI_FILTERS={
+    division:   new Set(['division','division_up','division_down']),
+    milestones: new Set(['reputation_up','hof_unlock','sharp_milestone'])
+  };
+  if(currentFilter!=='all'){
+    if(MULTI_FILTERS[currentFilter])notifs=notifs.filter(n=>MULTI_FILTERS[currentFilter].has(n.type));
+    else notifs=notifs.filter(n=>n.type===currentFilter);
+  }
   if(!notifs.length){
     list.innerHTML=`<div class="empty-state"><div class="empty-icon">🔔</div><div class="empty-title">ALL CLEAR</div><div class="empty-sub">No notifications yet.<br>Follow tipsters on the leaderboard<br>to get alerts when they post picks.</div><a href="/leaderboard" class="follow-cta">Browse Tipsters →</a></div>`;
     return;
@@ -313,8 +340,8 @@ function renderNotifs(){
     const d=new Date(n.ts);const key=isToday(d)?'Today':isYesterday(d)?'Yesterday':d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
     if(!groups[key])groups[key]=[];groups[key].push(n);
   });
-  const TYPE_LABELS={new_pick:'NEW PICK',streak:'STREAK',division:'DIVISION',pick_result:'SETTLED'};
-  const SYSTEM_TYPES=new Set(['pick_result','pick_tailed']);
+  const TYPE_LABELS={new_pick:'NEW PICK',streak:'STREAK',division:'DIVISION',pick_result:'SETTLED',division_up:'PROMOTED',division_down:'DROPPED',reputation_up:'REP UP',hof_unlock:'HALL OF FAME',sharp_milestone:'MILESTONE'};
+  const SYSTEM_TYPES=new Set(['pick_result','pick_tailed','division_up','division_down','reputation_up','hof_unlock','sharp_milestone']);
   list.innerHTML=Object.entries(groups).map(([day,items])=>`
     <div class="notif-day-label">${day}</div>
     ${items.map(n=>{
@@ -322,11 +349,15 @@ function renderNotifs(){
       const isElite=!n.read&&!isSystem&&eliteSet.has(n.ref);
       const cardCls=n.read?'read':isSystem?'unread-system':isElite?'unread-elite':'unread';
       const eliteTag=isElite?`<span class="elite-pill">⚡ ELITE</span>`:'';
+      const _SHAREABLE=new Set(['reputation_up','hof_unlock','division_up','sharp_milestone']);
+      const _sLbl=(n.text.match(/<b>([^<]+)<\/b>/)||['',''])[1].replace(/"/g,'&quot;');
+      const _shareBtn=_SHAREABLE.has(n.type)?`<button class="notif-share-btn" data-type="${n.type}" data-label="${_sLbl}" onclick="event.stopPropagation();_notifShare(this)">↗ Share</button>`:'';
       return`<div class="notif-card ${cardCls}" onclick="handleClick('${n.type||''}','${n.ref||''}')">
         <span class="nf-icon">${n.icon||'🔔'}</span>
         <div class="nf-body">
           <div class="nf-text">${eliteTag}${n.text}${n.type&&TYPE_LABELS[n.type]?`<span class="nf-type-badge ${n.type}">${TYPE_LABELS[n.type]}</span>`:''}</div>
           <div class="nf-time">${getTimeAgo(new Date(n.ts))}</div>
+          ${_shareBtn}
         </div>
         ${!n.read?'<div class="nf-unread-dot"></div>':''}
       </div>`;
@@ -336,8 +367,30 @@ function renderNotifs(){
 
 function handleClick(type,ref){
   if(type==='pick_result'){window.location.href='/home';return;}
-  if((type==='new_pick'||type==='streak')&&ref)window.location.href='/tipster?u='+ref;
-  else if(type==='division')window.location.href='/leaderboard';
+  if(type==='hof_unlock'){window.location.href='/hall-of-fame';return;}
+  if(type==='sharp_milestone'&&ref){window.location.href='/analytics?u='+ref;return;}
+  if((type==='reputation_up'||type==='division_up'||type==='division_down')&&ref){window.location.href='/tipster?u='+ref;return;}
+  if((type==='new_pick'||type==='streak')&&ref){window.location.href='/tipster?u='+ref;return;}
+  if(type==='division'&&ref){window.location.href='/tipster?u='+ref;return;}
+  if(type==='division'){window.location.href='/leaderboard';return;}
+}
+
+async function _notifShare(btn){
+  if(!window.Share)return;
+  btn.disabled=true;
+  try{
+    const type=btn.getAttribute('data-type')||'';
+    const label=btn.getAttribute('data-label')||'';
+    let _u=null;try{_u=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');}catch(e){}
+    let state=null;try{state=JSON.parse(localStorage.getItem('ledgr_rank_state')||'null');}catch(e){}
+    const uname=_u?(_u.username||''):'';
+    if(type==='division_up'){
+      const _stats={roi:state?state.roi:null,wr:state?state.wrPct:null,picks:state?state.settled:null};
+      await Share.rankUpCard(label.toUpperCase(),uname,_stats);
+    }else{
+      await Share.achievementCard(type,label,uname,state);
+    }
+  }finally{btn.disabled=false;}
 }
 
 function isToday(d){const t=new Date();return d.getDate()===t.getDate()&&d.getMonth()===t.getMonth()&&d.getFullYear()===t.getFullYear();}

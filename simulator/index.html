@@ -97,6 +97,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .cl-dot{width:8px;height:8px;border-radius:50%}
 .chart-svg-wrap{width:100%;border-radius:8px;overflow:hidden}
 .chart-foot{font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:10px}
+.sim-celebrate-badge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);border-radius:20px;padding:5px 12px;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--gr);font-weight:700}
 
 /* ── REVEAL ANIMATION ── */
 @keyframes card-reveal{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
@@ -263,7 +264,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </div>
 
 <script>
-const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const API = 'https://ledgr-backend-7hmh.onrender.com';
 const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
 const CHART_COLORS = ['#b89fff','#34d399','#fbbf24','#38bdf8','#fb923c','#f87171'];
 
@@ -511,7 +512,8 @@ function runSimulator() {
           <div class="profit-bar-track"><div class="profit-bar-fill ${pos?'pos':'neg'}" data-w="${barPct}"></div></div>
           <div class="profit-result">
             <div class="profit-lbl">You would have ${pos?'earned':'lost'}</div>
-            <div class="profit-num" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':'-'}${currency}${Math.abs(r.totalProfit).toFixed(0)}</div>
+            <div class="profit-num" data-profit-val="${Math.abs(r.totalProfit).toFixed(0)}" data-profit-sign="${pos?'+':'-'}" data-profit-cur="${currency}" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':'-'}${currency}${Math.abs(r.totalProfit).toFixed(0)}</div>
+            ${r.bankrollReturn >= 50 ? `<div class="sim-celebrate-badge">🚀 STRONG RETURN · +${r.bankrollReturn.toFixed(1)}%</div>` : ''}
             <div class="profit-pct" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.bankrollReturn.toFixed(1)}% bankroll return</div>
           </div>
         </div>
@@ -521,10 +523,23 @@ function runSimulator() {
     <div class="sim-disclaimer">Past performance does not guarantee future results. Simulations are based on historical verified picks only.</div>
   `;
 
-  // Animate profit bars
+  // Animate profit bars + count-up profit numbers
   setTimeout(() => {
     document.querySelectorAll('.profit-bar-fill[data-w]').forEach((el, i) => {
       setTimeout(() => { el.style.width = el.dataset.w + '%'; }, i * 50);
+    });
+    document.querySelectorAll('.profit-num[data-profit-val]').forEach((el, i) => {
+      const target = parseFloat(el.dataset.profitVal) || 0;
+      const sign = el.dataset.profitSign || '';
+      const cur = el.dataset.profitCur || '';
+      const dur = 750, t0 = Date.now();
+      const tick = () => {
+        const p = Math.min((Date.now() - t0) / dur, 1);
+        const e = 1 - Math.pow(1 - p, 3);
+        el.textContent = sign + cur + Math.round(target * e);
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      setTimeout(() => requestAnimationFrame(tick), i * 70);
     });
   }, 80);
 }

@@ -29,6 +29,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   filter:drop-shadow(0 0 40px rgba(184,159,255,.3));margin-bottom:0}
 .cmp-hero-title .vs-word{color:var(--gold);-webkit-text-fill-color:var(--gold);filter:drop-shadow(0 0 30px rgba(251,191,36,.5));animation:vs-pulse 2s ease-in-out infinite}
 @keyframes vs-pulse{0%,100%{filter:drop-shadow(0 0 20px rgba(251,191,36,.5))}50%{filter:drop-shadow(0 0 50px rgba(251,191,36,.9))}}
+@keyframes cmpSlideIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.cmp-anim-in{opacity:0;animation:cmpSlideIn .45s ease both}
 .cmp-hero-sub{font-family:var(--font-mono);font-size:11px;color:var(--mu);letter-spacing:3px;text-transform:uppercase;margin-top:16px}
 
 /* ── SELECTOR ARENA ── */
@@ -228,7 +230,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </div>
 
 <script>
-const API = 'https://ledgr-backend-production-c132.up.railway.app';
+const API = 'https://ledgr-backend-7hmh.onrender.com';
 const COLORS = ['linear-gradient(135deg,#7c3aed,#a855f7)','linear-gradient(135deg,#059669,#10b981)','linear-gradient(135deg,#b45309,#f59e0b)','linear-gradient(135deg,#0369a1,#38bdf8)','linear-gradient(135deg,#0f766e,#14b8a6)','linear-gradient(135deg,#dc2626,#ef4444)'];
 
 let allPicks = [], allTipsters = [];
@@ -275,6 +277,7 @@ async function loadTipsters() {
     const _p = new URLSearchParams(location.search);
     const _l = _p.get('left'), _r = _p.get('right');
     if (_l && _r && _l !== _r) { selectTipster('A', _l); selectTipster('B', _r); runComparison(); }
+    else if (!_l && !_r && allTipsters.length >= 2) { selectTipster('A', allTipsters[0].username); selectTipster('B', allTipsters[1].username); }
   } catch (e) {
     clearTimeout(_xt);
     document.getElementById('gridA').innerHTML = '<div style="color:var(--rd);font-family:var(--font-mono);font-size:11px;padding:12px">Could not load tipsters. Refresh to retry.</div>';
@@ -611,6 +614,13 @@ async function runComparison() {
         </div>`).join('')}
       </div>
     </div>` : ''}`;
+
+  // Entrance animation on result sections
+  requestAnimationFrame(() => {
+    Array.from(c.children).forEach((el, i) => {
+      el.style.animation = `cmpSlideIn .45s ease ${(i * 0.09).toFixed(2)}s both`;
+    });
+  });
 
   // Animate bars
   setTimeout(() => {

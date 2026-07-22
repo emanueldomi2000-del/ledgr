@@ -12,7 +12,7 @@
 (function () {
   'use strict';
 
-  var API = 'https://ledgr-backend-production-c132.up.railway.app';
+  var API = 'https://ledgr-backend-7hmh.onrender.com';
   var IS_HOME = !!document.getElementById('tickerText');
   var IS_LB   = !!document.getElementById('lbContainer');
 
