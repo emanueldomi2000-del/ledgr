@@ -937,6 +937,22 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:8px">Price is set per your profile · new subscribers see this amount at checkout</div>
         </section>
 
+        <!-- 09 PAYOUTS -->
+        <section class="settings-section">
+          <div class="ilab-section-header">
+            <div class="ilab-section-num">09</div>
+            <div>
+              <div class="ilab-section-name">PAYOUTS</div>
+              <div class="ilab-section-desc">Connect your bank account to receive subscription earnings.</div>
+            </div>
+          </div>
+          <div id="payoutStatus" style="padding:14px 16px;border-radius:10px;background:var(--s2);border:1px solid var(--bd);margin-bottom:14px">
+            <div style="font-family:var(--font-mono);font-size:11px;color:var(--mu2)">Checking payout status…</div>
+          </div>
+          <button id="payoutConnectBtn" class="price-save-btn" onclick="connectPayouts()" style="display:none">Connect Payout Account →</button>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:10px">Handled securely by Stripe · LEDGR never sees your bank details</div>
+        </section>
+
       </div>
     </div><!-- /settings-main -->
 
@@ -1783,6 +1799,48 @@ function saveSubPrice(){
   showToast('Price saved — €'+price+'/mo');
   loadMySubscribers();
 }
+
+/* ── PAYOUTS ── */
+async function loadPayoutStatus(){
+  const statusEl=document.getElementById('payoutStatus');
+  const btnEl=document.getElementById('payoutConnectBtn');
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token){statusEl.innerHTML='<div style="font-family:var(--font-mono);font-size:11px;color:var(--mu2)">Log in to set up payouts.</div>';return;}
+  try{
+    const r=await fetch(API+'/stripe/connect/status',{headers:{Authorization:'Bearer '+token}});
+    const d=await r.json();
+    if(!d.connected){
+      statusEl.innerHTML='<div style="font-family:var(--font-mono);font-size:11px;color:var(--mu2)">Not connected yet — connect your bank account to start receiving payouts.</div>';
+      btnEl.style.display='block';
+      btnEl.textContent='Connect Payout Account →';
+    }else if(!d.onboardingComplete){
+      statusEl.innerHTML='<div style="font-family:var(--font-mono);font-size:11px;color:var(--gold)">⚠ Setup started but not finished — payouts are not active yet.</div>';
+      btnEl.style.display='block';
+      btnEl.textContent='Finish Setup →';
+    }else{
+      statusEl.innerHTML='<div style="font-family:var(--font-mono);font-size:11px;color:var(--gr)">✓ Connected — you can receive payouts.</div>';
+      btnEl.style.display='none';
+    }
+  }catch(e){
+    statusEl.innerHTML='<div style="font-family:var(--font-mono);font-size:11px;color:var(--mu2)">Could not check payout status right now.</div>';
+  }
+}
+async function connectPayouts(){
+  const btnEl=document.getElementById('payoutConnectBtn');
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token){showToast('Log in first',true);return;}
+  btnEl.disabled=true;btnEl.textContent='Loading…';
+  try{
+    const r=await fetch(API+'/stripe/connect/onboard',{method:'POST',headers:{Authorization:'Bearer '+token}});
+    const d=await r.json();
+    if(d.url){window.location.href=d.url;}
+    else{showToast(d.error||'Could not start setup',true);btnEl.disabled=false;btnEl.textContent='Connect Payout Account →';}
+  }catch(e){
+    showToast('Network error — try again',true);
+    btnEl.disabled=false;btnEl.textContent='Connect Payout Account →';
+  }
+}
+loadPayoutStatus();
 
 /* ── ACCOUNT ── */
 function confirmDeleteAccount(){
