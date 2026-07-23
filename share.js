@@ -3,7 +3,9 @@
 
   // ── CSS ──────────────────────────────────────────────────────────
   function injectCSS() {
-    if (document.getElementById('sh-css')) return;
+    console.log('[SHARE-DEBUG] injectCSS() called');
+    if (document.getElementById('sh-css')) { console.log('[SHARE-DEBUG] sh-css already exists, returning early'); return; }
+    try {
     const s = document.createElement('style');
     s.id = 'sh-css';
     s.textContent = `
@@ -80,6 +82,7 @@
         </div>
       </div>`;
     document.body.appendChild(m);
+    console.log('[SHARE-DEBUG] modal appended, sh-modal now exists:', !!document.getElementById('sh-modal'));
 
     m.addEventListener('click', function (e) {
       if (e.target === m) closeModal();
@@ -87,6 +90,9 @@
     document.getElementById('sh-cls-btn').addEventListener('click', closeModal);
     document.getElementById('sh-dl-btn').addEventListener('click', downloadCard);
     document.getElementById('sh-x-btn').addEventListener('click', shareToX);
+    } catch (err) {
+      console.error('[SHARE-DEBUG] injectCSS() threw an error:', err);
+    }
   }
 
   // ── Modal state ───────────────────────────────────────────────────
