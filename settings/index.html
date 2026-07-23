@@ -1793,11 +1793,25 @@ async function loadMySubscribers(){
   }catch(e){clearTimeout(_t2);el.innerHTML='<div class="sub-empty">Could not load subscribers.</div>';}
 }
 
-function saveSubPrice(){
-  const price=parseInt(document.getElementById('subPrice').value)||10;
-  localStorage.setItem('ledgr_my_sub_price',price);
-  showToast('Price saved — €'+price+'/mo');
-  loadMySubscribers();
+async function saveSubPrice(){
+  const eurValue=parseInt(document.getElementById('subPrice').value)||10;
+  const priceCents=eurValue*100;
+  const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+  if(!token){showToast('Log in first',true);return;}
+  try{
+    const r=await fetch(API+'/profile/subscription-price',{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+      body:JSON.stringify({priceCents})
+    });
+    const d=await r.json();
+    if(!r.ok){showToast(d.error||'Could not save price',true);return;}
+    localStorage.setItem('ledgr_my_sub_price',eurValue); // cache locale per UI, non più fonte di verità
+    showToast('Price saved — €'+eurValue+'/mo');
+    loadMySubscribers();
+  }catch(e){
+    showToast('Network error — try again',true);
+  }
 }
 
 /* ── PAYOUTS ── */
