@@ -510,7 +510,16 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
   const reliabilityScore = rankingMeta ? (rankingMeta.reliabilityScore || 0) : 0;
   const clvAvg = rankingMeta ? (rankingMeta.clvAvg || 0) : 0;
   const currentStreak = rankingMeta ? Math.max(0, rankingMeta.currentStreak || 0) : 0;
-  window._sharpBreakdown = { roi, totalPicks: picks.length, avgOdds, currentStreak, sharpScore, reliabilityScore, winRate, bestStreak: rankingMeta ? (rankingMeta.bestStreak||0) : 0 };
+  // Use the SAME inputs the backend used to compute sharpScore (rankingMeta.*), not the
+  // locally-recomputed roi/avgOdds from picks[] above — those can include pending/test
+  // picks the backend excludes, which broke the factor math (see fix log).
+  window._sharpBreakdown = {
+    roi:           rankingMeta ? (rankingMeta.roi || 0) : 0,
+    totalPicks:    rankingMeta ? (rankingMeta.totalPicks || 0) : 0,
+    avgOdds:       rankingMeta ? (rankingMeta.avgOdds || 0) : 0,
+    currentStreak, sharpScore, reliabilityScore, winRate,
+    bestStreak: rankingMeta ? (rankingMeta.bestStreak||0) : 0
+  };
   const divisionName = rankingMeta ? (rankingMeta.division || 'BRONZE') : 'BRONZE';
 
   const actualElo = computeEloFromDivScore(rankingMeta ? (rankingMeta.divisionScore ?? DIV_SCORE[divisionName] ?? 0) : (DIV_SCORE[divisionName] ?? 0));
