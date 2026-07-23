@@ -137,9 +137,7 @@
 `;
 
   // ── Inject styles (once) ────────────────────────────────────────────────────
-  console.log('[SOCIAL-DEBUG] social.js reached its sh-css check, already exists:', !!document.getElementById('sh-css'));
   if(!document.getElementById('sh-css')){
-    console.log('[SOCIAL-DEBUG] social.js is creating sh-css itself');
     var s=document.createElement('style');
     s.id='sh-css';s.textContent=CSS;
     document.head.appendChild(s);
