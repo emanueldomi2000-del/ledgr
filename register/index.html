@@ -21,32 +21,50 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:var(--font-body);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
-.orb{position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(124,95,230,0.07),transparent 70%);pointer-events:none;z-index:0}
-.box{background:var(--s1);border:1px solid var(--bd);border-radius:20px;padding:40px;width:100%;max-width:400px;position:relative;z-index:1}
-.logo{display:block;text-align:center;margin-bottom:8px;text-decoration:none;line-height:0}
-.hero-tag{text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;margin-bottom:28px}
+.ledger-lines{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:repeating-linear-gradient(to bottom,rgba(184,159,255,0.05) 0,rgba(184,159,255,0.05) 1px,transparent 1px,transparent 34px);mask-image:radial-gradient(ellipse 600px 500px at 50% 40%,#000 40%,transparent 80%)}
+
+.box{background:var(--s1);border:1px solid var(--bd);border-radius:0 0 14px 14px;padding:36px 40px 40px;width:100%;max-width:400px;position:relative;z-index:1;box-shadow:0 24px 60px rgba(0,0,0,0.4);opacity:0;transform:translateY(10px);animation:ticketIn .5s cubic-bezier(.2,.8,.2,1) .1s forwards}
+@keyframes ticketIn{to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.box{animation:none;opacity:1;transform:none}}
+.box::before{content:'';position:absolute;top:-1px;left:0;right:0;height:14px;background-image:radial-gradient(circle 5px at 14px 0,transparent 5px,var(--bg) 5.5px);background-size:28px 14px;background-repeat:repeat-x;background-position:center top}
+.box::after{content:'';position:absolute;top:12px;left:0;right:0;border-top:1px dashed var(--bd2)}
+
+.ticket-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding-top:6px}
+.logo{display:block;text-decoration:none;line-height:0}
+.ticket-time{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;color:var(--mu);text-align:right}
+.ticket-time b{color:var(--gold);font-weight:600}
+.hero-tag{text-align:center;font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;margin-bottom:24px}
+
 .form-label{display:block;font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;margin-top:14px}
-.form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;padding:12px 14px;outline:none;font-family:var(--font-body);transition:border-color .2s}
-.form-input:focus{border-color:var(--bd2)}
+.form-input{width:100%;background:var(--s2);border:1px solid var(--bd);border-bottom:2px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;padding:12px 14px;outline:none;font-family:var(--font-body);transition:border-color .2s}
+.form-input:focus{border-color:var(--bd2);border-bottom-color:var(--ac-vivid);box-shadow:0 0 0 3px rgba(123,44,255,0.15)}
 .form-input::placeholder{color:var(--mu)}
-.submit-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:all .2s;margin-top:20px}
+.submit-btn{width:100%;background:var(--ac);color:#07060d;border:none;border-radius:8px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font-body);transition:all .15s;margin-top:20px}
 .submit-btn:hover{background:#cdb8ff}
+.submit-btn:active:not(:disabled){transform:scale(.98)}
 .submit-btn:disabled{opacity:.6;cursor:not-allowed}
+.submit-btn:focus-visible,.form-input:focus-visible,.login-link a:focus-visible,.back:focus-visible{outline:2px solid var(--ac-vivid);outline-offset:2px}
 .msg{margin-top:12px;text-align:center;font-size:12px;font-family:var(--font-mono);min-height:16px}
 .login-link{display:block;text-align:center;margin-top:16px;font-size:11px;color:var(--mu);font-family:var(--font-mono)}
 .login-link a{color:var(--ac);text-decoration:none}
-.back{display:block;text-align:center;margin-top:12px;font-size:11px;color:var(--mu);font-family:var(--font-mono);text-decoration:none}
+.foot-rule{border-top:1px dashed var(--bd);margin-top:22px;padding-top:14px;text-align:center}
+.foot-stamp{font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;color:var(--mu);text-transform:uppercase}
+.foot-stamp b{color:var(--gr)}
+.back{display:block;text-align:center;margin-top:10px;font-size:11px;color:var(--mu);font-family:var(--font-mono);text-decoration:none}
 .back:hover{color:var(--ac)}
 .wake-bar{background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.15);border-radius:8px;padding:10px 14px;margin-bottom:16px;display:none}
-.wake-bar-text{font-size:11px;color:#f59e0b;font-family:var(--font-mono);text-align:center}
+.wake-bar-text{font-size:11px;color:var(--gold);font-family:var(--font-mono);text-align:center}
 .wake-progress{height:2px;background:rgba(251,191,36,0.15);border-radius:1px;margin-top:6px;overflow:hidden}
-.wake-fill{height:100%;background:#f59e0b;border-radius:1px;width:0%;transition:width .3s}
+.wake-fill{height:100%;background:var(--gold);border-radius:1px;width:0%;transition:width .3s}
 </style>
 </head>
 <body>
-<div class="orb"></div>
+<div class="ledger-lines"></div>
 <div class="box">
-  <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:56px;width:auto;display:inline-block;"></a>
+  <div class="ticket-header">
+    <a href="/" class="logo"><img src="/assets/logo/ledgr-logo.png" alt="LEDGR" style="height:44px;width:auto;display:inline-block;"></a>
+    <div class="ticket-time" id="ticketTime">TIMESTAMPED<br><b id="ticketClock">--:--:--</b></div>
+  </div>
   <div class="hero-tag">CREATE YOUR ACCOUNT</div>
   <div class="wake-bar" id="wakeBar">
     <div class="wake-bar-text">Waking up server — this takes ~10 seconds on first load</div>
@@ -61,7 +79,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <button class="submit-btn" id="registerBtn" onclick="handleRegister()">Create Account →</button>
   <div class="msg" id="authMsg"></div>
   <div class="login-link">Already have an account? <a href="/login">Log in →</a></div>
-  <a href="/" class="back">← Back to homepage</a>
+  <div class="foot-rule">
+    <div class="foot-stamp"><b>✓</b> IMMUTABLE ON ENTRY · NO EDITS · NO DELETIONS</div>
+    <a href="/" class="back">← Back to homepage</a>
+  </div>
 </div>
 <script src="/verify.js"></script>
 <script>
@@ -83,6 +104,18 @@ const TIMEOUT=25000;
 })();
 
 function setMsg(msg,color){const el=document.getElementById('authMsg');el.textContent=msg;el.style.color=color||'var(--mu)';}
+
+function tickClock(){
+  const el=document.getElementById('ticketClock');
+  if(!el)return;
+  const now=new Date();
+  const hh=String(now.getUTCHours()).padStart(2,'0');
+  const mm=String(now.getUTCMinutes()).padStart(2,'0');
+  const ss=String(now.getUTCSeconds()).padStart(2,'0');
+  el.textContent=`${hh}:${mm}:${ss} UTC`;
+}
+tickClock();
+setInterval(tickClock,1000);
 
 function showWakeBar(){
   const bar=document.getElementById('wakeBar');
