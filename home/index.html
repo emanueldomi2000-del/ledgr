@@ -1441,7 +1441,7 @@ function renderRepCard(rm){
   const CUR_COLORS={1:'var(--mu)',2:'rgba(240,237,255,0.55)',3:'#34d399',4:'#38bdf8',5:'#fbbf24'};
   let inner='';
   if(rep.level>=5){
-    inner=`<div class="rep-card-eyebrow">REPUTATION</div>
+    inner=`<div class="rep-card-eyebrow">VERIFICATION LEVEL</div>
       <div class="rep-card-row"><div class="rep-card-level" style="color:#fbbf24">◆ ELITE</div></div>
       <div class="rep-elite-row">
         <div style="font-size:24px">🏆</div>
@@ -1455,11 +1455,12 @@ function renderRepCard(rm){
     const picksReq=next.reqs.find(r=>r.key==='picks');
     const barPct=picksReq?Math.min(100,Math.round((picksReq.val/picksReq.need)*100)):0;
     const showDiamond=rep.level>=3;
-    inner=`<div class="rep-card-eyebrow">REPUTATION</div>
+    inner=`<div class="rep-card-eyebrow">VERIFICATION LEVEL</div>
+      <div style="font-size:9px;color:var(--mu2);margin-top:-4px;margin-bottom:8px">Based on picks verified — separate from your Division</div>
       <div class="rep-card-row">
         <div class="rep-card-level" style="color:${curColor}">${showDiamond?'◆ ':''}${curLabel}</div>
         <div style="text-align:right">
-          <div class="rep-card-next-lbl">NEXT TIER</div>
+          <div class="rep-card-next-lbl">NEXT LEVEL</div>
           <div class="rep-card-next-tier" style="color:${next.color}">${next.label}</div>
         </div>
       </div>
