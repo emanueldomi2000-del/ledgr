@@ -321,32 +321,7 @@ footer{border-top:1px solid var(--color-border);padding:32px 40px;display:flex;a
   </div>
 </footer>
 
-<!-- AUTH MODAL -->
-<div class="modal" id="authModal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeAuth()">✕</button>
-    <div class="wake-bar" id="wakeBar">
-      <div class="wake-bar-text">⏳ Waking up server — first load takes ~10s</div>
-      <div class="wake-progress"><div class="wake-fill" id="wakeFill"></div></div>
-    </div>
-    <div class="modal-tabs">
-      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Log In</button>
-      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Sign Up</button>
-    </div>
-    <div id="loginForm">
-      <input type="email" id="loginEmail" class="modal-input" placeholder="Email">
-      <input type="password" id="loginPassword" class="modal-input" placeholder="Password">
-      <button class="modal-btn" id="loginBtn" onclick="handleLogin()">Log In</button>
-    </div>
-    <div id="registerForm" style="display:none">
-      <input type="email" id="regEmail" class="modal-input" placeholder="Email">
-      <input type="text" id="regUsername" class="modal-input" placeholder="Username">
-      <input type="password" id="regPassword" class="modal-input" placeholder="Password (min 6 chars)">
-      <button class="modal-btn" id="registerBtn" onclick="handleRegister()">Create Account</button>
-    </div>
-    <div class="modal-msg" id="authMsg"></div>
-  </div>
-</div>
+<!-- Auth modal removed — openAuth() now redirects to the dedicated /login page -->
 
 <script src="/verify.js"></script>
 <script src="/brand-nav.js"></script>
@@ -483,9 +458,9 @@ async function loadData() {
 }
 loadData();
 
-function openAuth() { document.getElementById('authModal').classList.add('open'); }
-function closeAuth() { document.getElementById('authModal').classList.remove('open'); }
-document.getElementById('authModal').addEventListener('click', function(e) { if (e.target === this) closeAuth(); });
+function openAuth() { window.location.href = '/login'; }
+// closeAuth() and the authModal click listener were removed along with the old modal —
+// openAuth() now navigates to /login directly, nothing left to close.
 
 function switchTab(t) {
   document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
@@ -551,11 +526,8 @@ async function handleRegister() {
   } catch(e) { hideWakeBar(); clearInterval(wv); setMsg('Connection error — try again', '#f87171'); btn.disabled = false; btn.textContent = 'Create Account'; }
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key !== 'Enter' || !document.getElementById('authModal').classList.contains('open')) return;
-  const loginVisible = document.getElementById('loginForm').style.display !== 'none';
-  if (loginVisible) handleLogin(); else handleRegister();
-});
+// Enter-key submit listener for the old modal removed along with it —
+// the /login page (shared/verify.js or its own script) handles its own Enter-key submission.
 </script>
 </body>
 </html>
