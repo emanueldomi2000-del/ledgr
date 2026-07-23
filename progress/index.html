@@ -510,6 +510,7 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
   const reliabilityScore = rankingMeta ? (rankingMeta.reliabilityScore || 0) : 0;
   const clvAvg = rankingMeta ? (rankingMeta.clvAvg || 0) : 0;
   const currentStreak = rankingMeta ? Math.max(0, rankingMeta.currentStreak || 0) : 0;
+  window._sharpBreakdown = { roi, totalPicks: picks.length, avgOdds, currentStreak, sharpScore, reliabilityScore, winRate, bestStreak: rankingMeta ? (rankingMeta.bestStreak||0) : 0 };
   const divisionName = rankingMeta ? (rankingMeta.division || 'BRONZE') : 'BRONZE';
 
   const actualElo = computeEloFromDivScore(rankingMeta ? (rankingMeta.divisionScore ?? DIV_SCORE[divisionName] ?? 0) : (DIV_SCORE[divisionName] ?? 0));
@@ -872,7 +873,7 @@ function buildHTML(d) {
         <div class="hero-pills">
           ${streak >= 3 ? `<span class="hero-pill pill-streak">${streak}W Streak 🔥</span>` : ''}
           ${rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
-          <span class="hero-pill ${sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}">Sharp: ${sharpScore.toFixed(0)}</span>
+          <span class="hero-pill ${sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}" style="cursor:pointer" onclick="showSharpExplainer()" title="Click to see why">Sharp: ${sharpScore.toFixed(0)} ⓘ</span>
           ${tier.name !== 'LEGENDARY' ? `
           <div class="current-target-card">
             <div class="ct-eyebrow">Current Target</div>
@@ -1567,6 +1568,61 @@ function buildSeasonSection(activeSeason, pastSeasons, myRank, divisionName, ran
 }
 
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
+
+// ── "Why this Sharp Score?" — mirrors the real backend formula (rankings-engine.js calcSharpScore),
+// never fabricates additive point bonuses. The formula is multiplicative; we show it that way.
+function showSharpExplainer(){
+  const d = window._sharpBreakdown;
+  if(!d) return;
+
+  const sampleFactor = Math.min(1, d.totalPicks / 50);
+  const oddsFactor    = Math.min(1.5, (d.avgOdds || 1.5) / 1.5);
+  const streakFactor  = d.currentStreak > 0 ? Math.min(1.3, 1 + d.currentStreak * 0.05) : 1;
+
+  // Which factor is the biggest drag right now — that becomes the one clear next step.
+  const factors = [
+    { key:'sample', val: sampleFactor, label:`Sample size — ${d.totalPicks} of 50 picks tracked`,
+      note: sampleFactor < 1 ? `Your score is scaled down until you reach 50 picks. This protects against small-sample luck — it's not a penalty, it's how the score stays honest.` : `Full sample reached — no longer limiting your score.` },
+    { key:'odds', val: oddsFactor, label:`Average odds — ${d.avgOdds ? d.avgOdds.toFixed(2) : '—'} vs 1.50 baseline`,
+      note: oddsFactor >= 1 ? `Your average odds are pushing your score up.` : `Lower average odds than the 1.50 baseline are holding your score back slightly.` },
+    { key:'streak', val: streakFactor, label: d.currentStreak > 0 ? `Current streak — ${d.currentStreak}W` : 'Current streak — none active',
+      note: d.currentStreak > 0 ? `Your active win streak is giving a small boost.` : `No active streak right now — this isn't hurting you, it just isn't adding a bonus.` }
+  ];
+  const weakest = factors.reduce((a,b)=> a.val < b.val ? a : b);
+
+  const html = `
+    <div id="sharpExplainerOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:999;display:flex;align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)closeSharpExplainer()">
+      <div style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;max-width:440px;width:100%;padding:26px;position:relative;max-height:85vh;overflow-y:auto">
+        <button onclick="closeSharpExplainer()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;line-height:1">×</button>
+        <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:4px">Why this Sharp Score</div>
+        <div style="font-family:var(--font-display);font-size:40px;color:var(--tx);margin-bottom:2px">${d.sharpScore.toFixed(0)}<span style="font-size:18px;color:var(--mu)">/100</span></div>
+        <div style="font-size:11px;color:var(--mu2);margin-bottom:20px">Raw ROI: ${d.roi>=0?'+':''}${d.roi.toFixed(1)}%, adjusted by three factors below</div>
+
+        ${factors.map(f=>`
+          <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bd)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <div style="font-size:12px;color:var(--tx);font-weight:600">${f.label}</div>
+              <div style="font-family:var(--font-mono);font-size:12px;color:${f.val>=1?'var(--gr)':'var(--mu2)'}">×${f.val.toFixed(2)}</div>
+            </div>
+            <div style="font-size:11px;color:var(--mu2);line-height:1.5">${f.note}</div>
+          </div>
+        `).join('')}
+
+        <div style="background:var(--acg);border:1px solid var(--bd2);border-radius:10px;padding:14px;margin-top:6px">
+          <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:1.5px;color:var(--ac);text-transform:uppercase;margin-bottom:6px">Biggest lever right now</div>
+          <div style="font-size:12px;color:var(--tx);line-height:1.5">${weakest.note}</div>
+        </div>
+      </div>
+    </div>`;
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.addEventListener('keydown', escCloseSharpExplainer);
+}
+function escCloseSharpExplainer(e){ if(e.key==='Escape') closeSharpExplainer(); }
+function closeSharpExplainer(){
+  const el = document.getElementById('sharpExplainerOverlay');
+  if(el) el.remove();
+  document.removeEventListener('keydown', escCloseSharpExplainer);
+}
 
 loadProgress();
 </script>
