@@ -209,6 +209,20 @@ async function handleLogin(){
       localStorage.setItem('user',JSON.stringify(d.user));
       setMsg('Welcome back! Redirecting...','var(--gr)');
       setTimeout(()=>window.location.href='/home',600);
+    }else if(d.error==='verify_email'&&d.email){
+      btn.disabled=false;btn.textContent='Log In →';
+      fetch(API+'/auth/resend-verification',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:d.email})}).catch(()=>{});
+      window.VerifyEmail.show({
+        email:d.email,
+        box:document.querySelector('.box'),
+        onSuccess(data){
+          localStorage.setItem('ledgr_token',data.token);
+          localStorage.setItem('ledgr_user',JSON.stringify(data.user));
+          localStorage.setItem('token',data.token);
+          localStorage.setItem('user',JSON.stringify(data.user));
+          window.location.href='/home';
+        }
+      });
     }else{
       setMsg(d.error||'Invalid email or password','var(--rd)');
       btn.disabled=false;btn.textContent='Log In →';
