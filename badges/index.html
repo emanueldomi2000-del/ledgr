@@ -290,7 +290,7 @@ const BADGES = [
   { id:'elite-blood',    cat:'prestige',  icon:'🔴', name:'Elite Blood',    rarity:'legendary', desc:'Reach Elite division.',                      req:'Elite division', reward:'Elite blood ring',      check: d => ['elite','legendary'].includes(d.division),           progress: d => ({cur:d.divIndex,max:5}) },
   { id:'the-legendary',  cat:'prestige',  icon:'👑', name:'The Legendary',  rarity:'mythic',    desc:'Reach Legendary division — the pinnacle.',   req:'Legendary div',  reward:'Full Legendary effects', check: d => d.division==='legendary',          progress: d => ({cur:d.divIndex,max:6}) },
   { id:'verified-elite', cat:'prestige',  icon:'✅', name:'Verified Elite', rarity:'legendary', desc:'Top 1% of all tipsters on LEDGR.',            req:'Top 1% rank',    reward:'Verified Elite tag',    check: d => d.isTop1,                           progress: d => ({cur:d.isTop1?1:0,max:1}) },
-  { id:'hall-of-fame',   cat:'prestige',  icon:'🏆', name:'Hall of Fame',   rarity:'mythic',    desc:'Inducted into the LEDGR Hall of Fame.',      req:'HOF induction',  reward:'HOF crown + eternal ring',check: d => false,                            progress: d => ({cur:0,max:1}) },
+  { id:'hall-of-fame',   cat:'prestige',  icon:'🏆', name:'Hall of Fame',   rarity:'mythic',    desc:'Inducted into the LEDGR Hall of Fame.',      req:'HOF induction',  reward:'HOF crown + eternal ring',check: d => d.isHoF,                          progress: d => ({cur:d.isHoF?1:0,max:1}) },
   // SEASONAL
   { id:'season-champ',   cat:'seasonal',  icon:'🎖️', name:'Season Champion',rarity:'legendary', desc:'Win any season on LEDGR.',                   req:'Win a season',   reward:'Champion crown',        check: d => d.isSeasonChamp,                    progress: d => ({cur:d.isSeasonChamp?1:0,max:1}) },
   { id:'summer-champ',   cat:'seasonal',  icon:'☀️', name:'Summer Champion',rarity:'epic',      desc:'Win the summer season.',                     req:'Win summer',     reward:'Summer glow',           check: d => false,                              progress: d => ({cur:0,max:1}) },
@@ -369,16 +369,18 @@ function buildParticles(color) {
 async function loadBadges() {
   const _bCtrl=new AbortController();const _bXt=setTimeout(()=>{_bCtrl.abort();document.getElementById('badgePage').innerHTML='<div class="loading-wrap">Request timed out. <a href="" style="color:var(--ac)">Retry</a></div>';},25000);
   try {
-    const [picksRes, rankingRes, seasonsRes] = await Promise.all([
+    const [picksRes, rankingRes, seasonsRes, hofRes] = await Promise.all([
       fetch(API + '/picks?username=' + encodeURIComponent(ME_USERNAME), { headers: authHdr(), signal: _bCtrl.signal }),
       fetch(API + '/rankings/' + encodeURIComponent(ME_USERNAME), { headers: authHdr(), signal: _bCtrl.signal }),
       fetch(API + '/seasons', { signal: _bCtrl.signal }).catch(() => null),
+      fetch(API + '/hall-of-fame/record-holders', { signal: _bCtrl.signal }).catch(() => null),
     ]);
     clearTimeout(_bXt);
 
     let picks = [];
     let rm = null;
     let seasons = [];
+    let hofData = null;
 
     if (picksRes.ok) { try { picks = await picksRes.json(); } catch(e){} }
     if (Array.isArray(picks) && picks.data) picks = picks.data;
@@ -387,9 +389,10 @@ async function loadBadges() {
     if (rankingRes.ok) { try { rm = await rankingRes.json(); } catch(e){} }
     if (seasonsRes && seasonsRes.ok) { try { seasons = await seasonsRes.json(); } catch(e){} }
     if (!Array.isArray(seasons)) seasons = [];
+    if (hofRes && hofRes.ok) { try { hofData = await hofRes.json(); } catch(e){} }
 
     // Compute data
-    const d = computeBadgeData(picks, rm, seasons);
+    const d = computeBadgeData(picks, rm, seasons, hofData);
     computedData = d;
 
     // Division theme
@@ -445,7 +448,7 @@ async function loadBadges() {
   }
 }
 
-function computeBadgeData(picks, rm, seasons) {
+function computeBadgeData(picks, rm, seasons, hofData) {
   const settled = picks.filter(p=>p.result&&p.result!=='pending'&&p.result!=='void');
   const wins = settled.filter(p=>p.result==='win');
   const losses = settled.filter(p=>p.result==='loss');
@@ -516,6 +519,7 @@ function computeBadgeData(picks, rm, seasons) {
     clvTop5: clvAvg>0&&picks.length>=10, // simplified
     clvTop1: clvAvg>2&&picks.length>=50,
     isTop1: rank<=Math.max(1,Math.round(totalTipsters*0.01)),
+    isHoF: hofData ? [hofData.roiLeader, hofData.streakKing, hofData.sharpElite].includes(ME_USERNAME) : false,
     isSeasonChamp: Array.isArray(seasons) && seasons.some(s => !s.isActive && s.champion === ME_USERNAME),
     seasonTop10: rm&&rm.seasonResults?rm.seasonResults.some(sr=>sr.rank<=10):false,
     foundingSeason: rm&&rm.seasonResults?rm.seasonResults.some(sr=>sr.season&&sr.season.number===1):false,
