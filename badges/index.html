@@ -369,23 +369,27 @@ function buildParticles(color) {
 async function loadBadges() {
   const _bCtrl=new AbortController();const _bXt=setTimeout(()=>{_bCtrl.abort();document.getElementById('badgePage').innerHTML='<div class="loading-wrap">Request timed out. <a href="" style="color:var(--ac)">Retry</a></div>';},25000);
   try {
-    const [picksRes, rankingRes] = await Promise.all([
+    const [picksRes, rankingRes, seasonsRes] = await Promise.all([
       fetch(API + '/picks?username=' + encodeURIComponent(ME_USERNAME), { headers: authHdr(), signal: _bCtrl.signal }),
       fetch(API + '/rankings/' + encodeURIComponent(ME_USERNAME), { headers: authHdr(), signal: _bCtrl.signal }),
+      fetch(API + '/seasons', { signal: _bCtrl.signal }).catch(() => null),
     ]);
     clearTimeout(_bXt);
 
     let picks = [];
     let rm = null;
+    let seasons = [];
 
     if (picksRes.ok) { try { picks = await picksRes.json(); } catch(e){} }
     if (Array.isArray(picks) && picks.data) picks = picks.data;
     if (!Array.isArray(picks)) picks = [];
 
     if (rankingRes.ok) { try { rm = await rankingRes.json(); } catch(e){} }
+    if (seasonsRes && seasonsRes.ok) { try { seasons = await seasonsRes.json(); } catch(e){} }
+    if (!Array.isArray(seasons)) seasons = [];
 
     // Compute data
-    const d = computeBadgeData(picks, rm);
+    const d = computeBadgeData(picks, rm, seasons);
     computedData = d;
 
     // Division theme
@@ -441,7 +445,7 @@ async function loadBadges() {
   }
 }
 
-function computeBadgeData(picks, rm) {
+function computeBadgeData(picks, rm, seasons) {
   const settled = picks.filter(p=>p.result&&p.result!=='pending'&&p.result!=='void');
   const wins = settled.filter(p=>p.result==='win');
   const losses = settled.filter(p=>p.result==='loss');
@@ -512,7 +516,7 @@ function computeBadgeData(picks, rm) {
     clvTop5: clvAvg>0&&picks.length>=10, // simplified
     clvTop1: clvAvg>2&&picks.length>=50,
     isTop1: rank<=Math.max(1,Math.round(totalTipsters*0.01)),
-    isSeasonChamp: false,
+    isSeasonChamp: Array.isArray(seasons) && seasons.some(s => !s.isActive && s.champion === ME_USERNAME),
     seasonTop10: false,
     foundingSeason: false,
     lossStreak8: maxLoss>=8,
