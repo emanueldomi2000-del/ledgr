@@ -1100,7 +1100,7 @@ async function handleSubscribe(){
     const r=await fetch(API+'/create-checkout',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({tipsterId,tipsterUsername,priceAmount:parseInt(localStorage.getItem('ledgr_sub_price_'+tipsterUsername)||'1000')})
+      body:JSON.stringify({tipsterId,tipsterUsername})
     });
     const d=await r.json();
     if(d.url)window.location.href=d.url;
@@ -1384,10 +1384,13 @@ async function loadProfile(){
     const {badges,streak}=getBadges(allPicks);
     const autoArchetype=window.getArchetype?window.getArchetype(allPicks):null;
 
+    let tipsterSubPriceCents=null;
+
     // Merge backend profile (takes priority over localStorage cache)
     if(profileRes&&profileRes.ok){
       try{
         const bp=await profileRes.json();
+        tipsterSubPriceCents=bp.subscriptionPriceCents||null;
         if(bp.archetype!=null)profileCfg.archetype=bp.archetype;
         if(bp.bannerPack||bp.banner)profileCfg.banner=bp.bannerPack||bp.banner;
         if(bp.avatarBorder||bp.border)profileCfg.border=bp.avatarBorder||bp.border;
@@ -1595,7 +1598,7 @@ async function loadProfile(){
               <a class="share-btn" href="/analytics?u=${username}" id="analyticsBtn">📊 Analytics</a>
               <button class="share-btn" onclick="shareProfile()">📤 Share Profile</button>
               <button class="follow-btn" id="followBtn" data-user-id="${tipsterUserId||''}">Follow</button>
-              <button class="sub-btn" id="subBtn" data-tipster-id="${tipsterUserId||''}" data-tipster-username="${username}" onclick="handleSubscribe()">Subscribe €10/mo</button>
+              <button class="sub-btn" id="subBtn" data-tipster-id="${tipsterUserId||''}" data-tipster-username="${username}" onclick="handleSubscribe()"${tipsterSubPriceCents?'':' disabled style="opacity:.45;cursor:not-allowed"'}>${tipsterSubPriceCents?'Subscribe €'+(tipsterSubPriceCents/100)+'/mo':'Subscriptions not available'}</button>
             </div>
           </div>
           ${rank>0?`<div class="rank-block anim-identity"><div class="rank-lbl">GLOBAL RANK</div><div class="rank-num">#${rank}</div></div>`:''}

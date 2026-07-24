@@ -931,8 +931,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
           <div class="price-row" style="margin-top:20px">
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--mu2)">Monthly price:</span>
             <span style="font-family:var(--font-display);font-size:18px;color:var(--mu)">€</span>
-            <input type="number" class="price-input" id="subPrice" min="1" max="500" value="10">
-            <button class="price-save-btn" onclick="saveSubPrice()">Save Price</button>
+            <input type="number" class="price-input" id="subPrice" min="1" max="500" placeholder="—">
           </div>
           <div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);margin-top:8px">Price is set per your profile · new subscribers see this amount at checkout</div>
         </section>
@@ -1550,6 +1549,7 @@ async function fetchOwnProfile(){
     const key=user.id||user.username;
     if(data.avatar_b64){currentAvatarB64=data.avatar_b64;localStorage.setItem('ledgr_avatar_'+key,data.avatar_b64);}
     if(data.banner_b64){currentBannerB64=data.banner_b64;localStorage.setItem('ledgr_banner_img_'+key,data.banner_b64);}
+    if(data.subscriptionPriceCents!=null){const priceEl=document.getElementById('subPrice');if(priceEl)priceEl.value=data.subscriptionPriceCents/100;}
     renderThemes();renderBanners();renderBorders();renderSports();loadIdentitySettings();applyPreview();renderArchetypePicker();
   }catch(e){}
 }
@@ -1778,8 +1778,8 @@ async function loadMySubscribers(){
     clearTimeout(_t2);
     const d=await r.json();
     if(!d.count){el.innerHTML='<div class="sub-empty">No subscribers yet.<br>Share your profile to grow your following.</div>';return;}
-    const price=parseInt(localStorage.getItem('ledgr_my_sub_price')||'10');
-    earningsEl.textContent='€'+(d.count*price);
+    const price=parseInt(document.getElementById('subPrice')?.value)||0;
+    earningsEl.textContent=price?'€'+(d.count*price):'€? (set price to estimate)';
     cardEl.style.display='flex';
     el.innerHTML=d.subscribers.map(s=>{
       const uname=s.username||'Unknown';
@@ -1806,7 +1806,6 @@ async function saveSubPrice(){
     });
     const d=await r.json();
     if(!r.ok){showToast(d.error||'Could not save price',true);return;}
-    localStorage.setItem('ledgr_my_sub_price',eurValue); // cache locale per UI, non più fonte di verità
     showToast('Price saved — €'+eurValue+'/mo');
     loadMySubscribers();
   }catch(e){
@@ -1881,15 +1880,30 @@ async function saveProfile(){
     twitter:document.getElementById('twitterInput').value.trim().replace(/^@/,''),
     instagram:document.getElementById('instagramInput').value.trim().replace(/^@/,''),
   };
-  // Persist immediately — localStorage wins over in-flight backend response
   localStorage.setItem('ledgr_profile_customization', JSON.stringify(window.profileCustomization));
   const btn=document.querySelector('.save-btn');
   btn.textContent='SAVING…';btn.disabled=true;
-  const ok=await postProfile();
+  const profileOk=await postProfile();
+
+  let priceOk=true;
+  const priceEur=parseInt(document.getElementById('subPrice').value);
+  if(Number.isInteger(priceEur)&&priceEur>=1&&priceEur<=500){
+    const token=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
+    try{
+      const r=await fetch(API+'/profile/subscription-price',{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json',Authorization:'Bearer '+token},
+        body:JSON.stringify({priceCents:priceEur*100})
+      });
+      if(!r.ok){const d=await r.json();showToast(d.error||'Could not save subscription price',true);priceOk=false;}
+    }catch(e){showToast('Network error saving subscription price',true);priceOk=false;}
+  }
+
   btn.disabled=false;
   showSaveSuccess(btn);
   window.dispatchEvent(new CustomEvent('profileCustomizationUpdated',{detail:Object.assign({},window.profileCustomization)}));
-  showToast(ok?'✓ Profile updated':'SAVED LOCALLY — backend offline');
+  if(!profileOk){showToast('SAVED LOCALLY — backend offline');}
+  else if(priceOk){showToast('✓ Profile updated');}
 }
 
 /* ── ARCHETYPE PICKER ── */
@@ -2031,9 +2045,7 @@ window.onload=()=>{
   document.documentElement.style.setProperty('--profile-accent',_savedTheme);
   document.documentElement.style.setProperty('--profile-glow',_savedTheme+'59');
 
-  // Load saved sub price
-  const savedPrice=localStorage.getItem('ledgr_my_sub_price');
-  if(savedPrice)document.getElementById('subPrice').value=savedPrice;
+  // subPrice pre-populated from backend in fetchOwnProfile() via subscriptionPriceCents
 
   loadPrefs();
   renderThemes();
