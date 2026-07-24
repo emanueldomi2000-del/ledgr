@@ -499,7 +499,7 @@ function computeBadgeData(picks, rm, seasons) {
   });
 
   const rank = rm&&rm.rank?rm.rank:999999;
-  const totalTipsters = 1000; // estimate; would come from /rankings list
+  const totalTipsters = rm&&rm.totalTipsters?rm.totalTipsters:1000;
 
   return {
     picks: picks.length,
@@ -517,8 +517,8 @@ function computeBadgeData(picks, rm, seasons) {
     clvTop1: clvAvg>2&&picks.length>=50,
     isTop1: rank<=Math.max(1,Math.round(totalTipsters*0.01)),
     isSeasonChamp: Array.isArray(seasons) && seasons.some(s => !s.isActive && s.champion === ME_USERNAME),
-    seasonTop10: false,
-    foundingSeason: false,
+    seasonTop10: rm&&rm.seasonResults?rm.seasonResults.some(sr=>sr.rank<=10):false,
+    foundingSeason: rm&&rm.seasonResults?rm.seasonResults.some(sr=>sr.season&&sr.season.number===1):false,
     lossStreak8: maxLoss>=8,
     comebackKing: false,
     nightOwl: nightPicks.length>=5,
