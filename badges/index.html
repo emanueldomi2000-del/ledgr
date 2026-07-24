@@ -298,7 +298,7 @@ const BADGES = [
   { id:'founding-season',cat:'seasonal',  icon:'🌱', name:'Founding Season',rarity:'epic',      desc:'Participated in Season 1.',                  req:'Season 1 member',reward:'Founding badge',        check: d => d.foundingSeason,                   progress: d => ({cur:d.foundingSeason?1:0,max:1}) },
   // SECRET
   { id:'ice-cold',       cat:'secret',    icon:'🥶', name:'Ice Cold',       rarity:'epic',      desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.lossStreak8,                      progress: d => ({cur:0,max:1}), secret:true },
-  { id:'comeback-king',  cat:'secret',    icon:'👊', name:'Comeback King',  rarity:'legendary', desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.comebackKing,                     progress: d => ({cur:0,max:1}), secret:true },
+  { id:'comeback-king',  cat:'secret',    icon:'👊', name:'Comeback King',  rarity:'legendary', desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.comebackKing,                     progress: d => ({cur:d.comebackKing?1:Math.min(d.comebackSettled||0,30),max:30}), secret:true },
   { id:'night-owl',      cat:'secret',    icon:'🦉', name:'Night Owl',      rarity:'rare',      desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.nightOwl,                         progress: d => ({cur:0,max:1}), secret:true },
   { id:'against-the-world',cat:'secret', icon:'🌍', name:'Against The World',rarity:'epic',    desc:'???',                                        req:'???',            reward:'Hidden',                check: d => d.tenConsecUnderdog,                progress: d => ({cur:0,max:1}), secret:true },
   { id:'the-oracle',     cat:'secret',    icon:'🔯', name:'The Oracle',     rarity:'legendary', desc:'???',                                        req:'???',            reward:'Hidden',                check: d => false,                              progress: d => ({cur:0,max:1}), secret:true },
@@ -475,6 +475,27 @@ function computeBadgeData(picks, rm, seasons, hofData) {
   let maxLoss=0, curL=0;
   settled.forEach(p=>{ if(p.result==='loss'){curL++;maxLoss=Math.max(maxLoss,curL);}else curL=0; });
 
+  // Comeback King — cumulative P&L trajectory (units only)
+  const COMEBACK_DRAWDOWN    = -20;
+  const COMEBACK_RECOVERY    = 5;
+  const COMEBACK_MIN_SETTLED = 30;
+  // NOTA: ordinamento per createdAt perché manca settledAt nel modello Pick — approssimazione accettabile
+  const unitSettled = settled
+    .filter(p => p.stakeType !== 'dollar')
+    .sort((a, b) => new Date(a.createdAt || a.date) - new Date(b.createdAt || b.date));
+  let cumPnl = 0, minCumPnl = 0;
+  for (const p of unitSettled) {
+    const v = p.pnl != null ? parseFloat(p.pnl)
+      : p.result === 'win'  ? parseFloat(p.odds - 1) * parseFloat(p.stake || 1)
+      : p.result === 'push' ? 0
+      : -parseFloat(p.stake || 1);
+    cumPnl += v;
+    if (cumPnl < minCumPnl) minCumPnl = cumPnl;
+  }
+  const comebackKing = unitSettled.length >= COMEBACK_MIN_SETTLED
+    && minCumPnl <= COMEBACK_DRAWDOWN
+    && cumPnl > COMEBACK_RECOVERY;
+
   // Profitable days streak (approximate)
   const byDay={};
   settled.forEach(p=>{
@@ -524,7 +545,8 @@ function computeBadgeData(picks, rm, seasons, hofData) {
     seasonTop10: rm&&rm.seasonResults?rm.seasonResults.some(sr=>sr.rank<=10):false,
     foundingSeason: rm&&rm.seasonResults?rm.seasonResults.some(sr=>sr.season&&sr.season.number===1):false,
     lossStreak8: maxLoss>=8,
-    comebackKing: false,
+    comebackKing,
+    comebackSettled: unitSettled.length,
     nightOwl: nightPicks.length>=5,
     tenConsecUnderdog: maxConsecUnder>=10,
     ghostMode: false,
