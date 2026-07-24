@@ -40,7 +40,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .pm-live-dot{width:5px;height:5px;background:var(--gr);border-radius:50%;animation:liveBlink 1.5s infinite}
 
 /* ── HERO STAT STRIP ── */
-.hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:0}
+.hero-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:0}
 .hero-stat{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;position:relative;overflow:hidden;transition:border-color .2s}
 .hero-stat::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(184,159,255,.12),transparent)}
 .hero-stat:hover{border-color:var(--bd2)}
@@ -247,11 +247,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div class="hs-meta">verified posts</div>
   </div>
   <div class="hero-stat">
-    <div class="hs-label">Hottest Market</div>
-    <div class="hs-value ac" id="hsHotMarket" style="font-size:18px;letter-spacing:.5px;padding-top:6px">—</div>
-    <div class="hs-meta" id="hsHotMeta">trending picks</div>
-  </div>
-  <div class="hero-stat">
     <div class="hs-label">Biggest Win Today</div>
     <div class="hs-value g" id="hsBigWin">—</div>
     <div class="hs-meta" id="hsBigWinMeta">—</div>
@@ -280,11 +275,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div id="trendingPicks"><div class="tp-empty">Loading picks...</div></div>
     </div>
 
-    <!-- MARKET MOVES -->
-    <div class="pulse-section">
-      <div class="ps-head">MARKET MOVES <span class="ps-sub">ODDS SHIFTS</span></div>
-      <div id="marketMoves"></div>
-    </div>
 
   </div>
 
@@ -356,21 +346,6 @@ function renderHeroStats(all,events){
     if(bwMeta)bwMeta.textContent='no wins yet today';
   }
 
-  // Hottest market — most pending picks in last 48h
-  const cut48=Date.now()-48*3600000;
-  const mktMap={};
-  all.filter(p=>p.result==='pending'&&new Date(p.createdAt).getTime()>cut48).forEach(p=>{
-    const k=(p.market||'—');
-    mktMap[k]=(mktMap[k]||0)+1;
-  });
-  const hotMkt=Object.entries(mktMap).sort((a,b)=>b[1]-a[1])[0];
-  const hmEl=document.getElementById('hsHotMarket');
-  const hmMeta=document.getElementById('hsHotMeta');
-  if(hotMkt&&hmEl){
-    const label=hotMkt[0].length>14?hotMkt[0].slice(0,13)+'…':hotMkt[0];
-    hmEl.textContent=label;
-    if(hmMeta)hmMeta.textContent=hotMkt[1]+' active picks';
-  }
 }
 
 /* ── INTEL TICKER ── */
@@ -458,40 +433,6 @@ function renderTrendingPicks(all){
       </div>
     </a>`;
   }).join('');
-}
-
-/* ── MARKET MOVES (mock + intensity bar) ── */
-const MOCK_MOVES=[
-  {sport:'PL',market:'Arsenal to Win',old:'2.20',new_:'1.95',pct:'-11.4',dir:'short',vol:'HIGH'},
-  {sport:'NBA',market:'Lakers -3.5',old:'1.88',new_:'2.10',pct:'+11.7',dir:'drift',vol:''},
-  {sport:'ATP',market:'Djokovic to Win Match',old:'1.55',new_:'1.45',pct:'-6.5',dir:'short',vol:''},
-  {sport:'CL',market:'Bayern Over 2.5',old:'1.72',new_:'1.68',pct:'-2.3',dir:'short',vol:''}
-];
-
-function renderMarketMoves(){
-  const el=document.getElementById('marketMoves');
-  if(!el)return;
-  const rows=MOCK_MOVES.map(m=>{
-    const isShort=m.dir==='short';
-    const pctAbs=Math.abs(parseFloat(m.pct));
-    const barW=Math.min(100,Math.round(pctAbs*7))+'%';
-    return`<div class="mm-row ${isShort?'short':'drift'}">
-      <div class="mm-label">
-        <div class="mm-sport">${m.sport}</div>
-        <div class="mm-market">${m.market}</div>
-      </div>
-      <div class="mm-right">
-        <div class="mm-odds">
-          <span class="mm-old">${m.old}</span>
-          <span class="mm-arr">${isShort?'↘':'↗'}</span>
-          <span class="mm-new ${isShort?'short':'drift'}">${m.new_}</span>
-        </div>
-        <div class="mm-bar-wrap"><div class="mm-bar ${isShort?'short':'drift'}" style="--w:${barW}"></div></div>
-        <div class="mm-pct ${isShort?'neg':'pos'}">${m.pct}%${m.vol?` · <span style="color:var(--gold);font-size:6px">${m.vol}</span>`:''}</div>
-      </div>
-    </div>`;
-  }).join('');
-  el.innerHTML=`<div class="mm-list">${rows}<div class="mm-coming">Odds movement API integration in progress<br><span style="color:var(--bd2)">Real-time line movement coming soon</span></div></div>`;
 }
 
 /* ── HOT TIPSTERS ── */
@@ -723,7 +664,6 @@ async function loadFeed(){
     document.getElementById('trendingPicks').innerHTML='<div style="opacity:.4">'+['88px','104px','70px'].map(_=>`<div class="tp-card" style="pointer-events:none"><span class="skel" style="width:24px;height:24px;border-radius:5px;flex-shrink:0;display:inline-block"></span><div style="flex:1;padding-left:8px"><span class="skel" style="width:${_};height:11px;display:block;margin-bottom:4px"></span><span class="skel" style="width:56px;height:8px;display:block"></span></div><span class="skel" style="width:32px;height:22px;border-radius:4px;display:inline-block"></span></div>`).join('')+'</div>';
     document.getElementById('hotTipsters').innerHTML='<div style="opacity:.4">'+['80px','96px','72px'].map(_=>`<div class="ht-row" style="pointer-events:none"><span class="skel" style="width:24px;height:24px;border-radius:5px;flex-shrink:0;display:inline-block"></span><div style="flex:1;padding-left:8px"><span class="skel" style="width:${_};height:11px;display:block;margin-bottom:4px"></span><span class="skel" style="width:52px;height:8px;display:block"></span></div><span class="skel" style="width:28px;height:18px;border-radius:4px;display:inline-block"></span></div>`).join('')+'</div>';
   }
-  renderMarketMoves();
   renderIntelFeed();
 }
 
