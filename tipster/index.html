@@ -1095,6 +1095,7 @@ async function handleSubscribe(){
     window.location.href='/settings';return;
   }
 
+  const prevText=btn?btn.textContent:'Subscribe';
   btn&&(btn.disabled=true,btn.textContent='Opening Stripe…');
   try{
     const r=await fetch(API+'/create-checkout',{
@@ -1103,11 +1104,15 @@ async function handleSubscribe(){
       body:JSON.stringify({tipsterId,tipsterUsername})
     });
     const d=await r.json();
+    if(r.status===409||d.error==='already_subscribed'){
+      if(btn){btn.textContent='Subscribed ✓';btn.classList.add('subscribed');btn.disabled=false;}
+      return;
+    }
     if(d.url)window.location.href=d.url;
-    else{showToast(d.error||'Could not open checkout');btn&&(btn.disabled=false,btn.textContent='Subscribe €10/mo');}
+    else{showToast(d.error||'Could not open checkout');btn&&(btn.disabled=false,btn.textContent=prevText);}
   }catch(e){
     showToast('Connection error — try again');
-    btn&&(btn.disabled=false,btn.textContent='Subscribe €10/mo');
+    btn&&(btn.disabled=false,btn.textContent=prevText);
   }
 }
 
@@ -1391,6 +1396,7 @@ async function loadProfile(){
       try{
         const bp=await profileRes.json();
         tipsterSubPriceCents=bp.subscriptionPriceCents||null;
+        if(bp.isSubscribed){const b=document.getElementById('subBtn');if(b){b.textContent='Subscribed ✓';b.classList.add('subscribed');}}
         if(bp.archetype!=null)profileCfg.archetype=bp.archetype;
         if(bp.bannerPack||bp.banner)profileCfg.banner=bp.bannerPack||bp.banner;
         if(bp.avatarBorder||bp.border)profileCfg.border=bp.avatarBorder||bp.border;
