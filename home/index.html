@@ -1547,7 +1547,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const idRel=document.getElementById('idRel');if(idRel)idRel.textContent=rel>0?rel+'/100':'0/100';
   const divObj=rm&&rm.division?(()=>{const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};return D[rm.division]||getDivision(myPicks);})():getDivision(myPicks);
   const div=divObj;const idDiv=document.getElementById('idDiv');
-  if(idDiv){idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}
+  if(idDiv){const _idSettled=rm&&rm.totalPicks!=null?rm.totalPicks:myPicks.filter(p=>p.result!=='pending').length;if(_idSettled<20){idDiv.className='id-division';idDiv.textContent='◌ PROVISIONAL';}else{idDiv.className='id-division '+div.cls;idDiv.textContent=div.icon+' '+div.name;}}
   applyAvatarAura(div.name);
   const rankPct=rank>0&&totalTipsters>0?Math.max(5,Math.round((1-(rank/totalTipsters))*100)):5;
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
@@ -1888,7 +1888,7 @@ function renderProfileCard(all){
   const db=document.getElementById('divisionBadge');
   if(db){
     try{
-      if(window.Divisions){db.className='division-badge';db.innerHTML=window.Divisions.pillHTML(div,'md');}
+      if(window.Divisions){db.className='division-badge';const _hSettled=rmPc&&rmPc.totalPicks!=null?rmPc.totalPicks:my.filter(p=>p.result!=='pending').length;const _hScore=window.Divisions.calcScore(rmPc?rmPc.roi||0:0,rmPc?(rmPc.winRate||0)*100:0,_hSettled);db.innerHTML=window.Divisions.pillHTML(window.Divisions.getDisplay(_hSettled,_hScore),'md');}
       else{db.className='division-badge '+div.cls;db.textContent=div.icon+' '+div.name;}
     }catch(e){}
   }

@@ -1181,7 +1181,9 @@ function renderLeaderboard() {
       const icons= getBadgeIcons(t).slice(0, 3);
       const cls  = ['p1','p2','p3'][i];
       const eloDisplay = Math.max(0, (t.elo || 1000) - 1000);
-      const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
+      const _lbSettled=(t.wins||0)+(t.losses||0)+(t.pushes||0);
+      const _lbScore=window.Divisions?window.Divisions.calcScore(t.roi||0,(t.winRate||0)*100,_lbSettled):0;
+      const divPill=window.Divisions?window.Divisions.pillHTML(window.Divisions.getDisplay(_lbSettled,_lbScore),'sm'):`<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
       const _avSz = i === 0 ? 80 : 64;
       const _podPhoto = window.LedgrAvatar ? window.LedgrAvatar.get(t.userId || t.username) : null;
       const podAv = _podPhoto
@@ -1421,7 +1423,9 @@ function renderLeaderboard() {
           ? `<div style="position:relative">${window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(),COLORS[idx%COLORS.length],div,{width:38,height:38,borderRadius:10,noParticles:true})}${t.isLive?'<div class="live-dot"></div>':''}</div>`
           : `<div class="av" style="background:${COLORS[idx%COLORS.length]}">${t.isLive?'<div class="live-dot"></div>':''}${t.username.slice(0,2).toUpperCase()}</div>`);
 
-    const divPill = window.Divisions ? window.Divisions.pillHTML(div,'sm') : `<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
+    const _lbSettled=(t.wins||0)+(t.losses||0)+(t.pushes||0);
+    const _lbScore=window.Divisions?window.Divisions.calcScore(t.roi||0,(t.winRate||0)*100,_lbSettled):0;
+    const divPill=window.Divisions?window.Divisions.pillHTML(window.Divisions.getDisplay(_lbSettled,_lbScore),'sm'):`<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
     const archHtml = _archKey && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(_archKey, true) : '';
     const flowHtml = t.flowState && window.Flow ? window.Flow.chipHTML(t.flowState) : '';
     const ss = t.sharpScore || 0;
@@ -1444,7 +1448,7 @@ function renderLeaderboard() {
         ${avHTML}
         <div class="tip-info">
           <div class="tip-name" ${usernameColor?`style="color:${usernameColor}"`:''}>${usernamePfx}@${escapeHtml(t.username)} ${icons.map(ic=>`<span style="font-size:11px">${ic}</span>`).join('')}${sharpMark}${t.username === _myUsername ? '<span class="lb-you-chip">YOU</span>' : ''}</div>
-          <div class="tip-sub">${t.picks} picks${((t.wins||0)+(t.losses||0))<10?` · <span style="color:var(--mu);font-size:8px">unranked</span>`:''}</div>
+          <div class="tip-sub">${t.picks} picks</div>
           <div class="tip-badges">${divPill}${repBadgeHTML(rep,false)}${flowHtml||archHtml}</div>
         </div>
       </div>

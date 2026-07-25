@@ -111,6 +111,7 @@
 .dv-pill-diamond {background:rgba(184,159,255,.12);border:1px solid rgba(184,159,255,.38);color:#b89fff;text-shadow:0 0 10px rgba(184,159,255,.35);animation:dv-pulse 3s ease-in-out infinite}
 .dv-pill-elite   {background:rgba(232,121,160,.1);border:1px solid rgba(232,121,160,.35);color:#e879a0;text-shadow:0 0 12px rgba(232,121,160,.5);animation:dv-badge-elite 3s ease-in-out infinite}
 .dv-pill-legendary{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(184,159,255,.12),rgba(232,121,160,.1));border:1px solid rgba(251,191,36,.35);color:#fbbf24;text-shadow:0 0 14px rgba(251,191,36,.6);animation:dv-badge-legend 3s ease-in-out infinite}
+.dv-pill-provisional{background:rgba(148,163,184,.07);border:1px dashed rgba(148,163,184,.28);color:var(--mu,#64748b);letter-spacing:.8px;font-style:italic}
 
 @keyframes dv-badge-elite  {0%,100%{box-shadow:none}50%{box-shadow:0 0 14px rgba(232,121,160,.4)}}
 @keyframes dv-badge-legend {0%,100%{box-shadow:none}50%{box-shadow:0 0 20px rgba(251,191,36,.45)}}
@@ -211,10 +212,22 @@
     return '<span class="dv-pyr dv-pyr-' + size + ' dv-pyr-' + nameLow + '" aria-label="' + divDef.name + '"></span>';
   }
 
+  // Returns a divDef augmented with provisional:true if settled < 20
+  function getDisplay(settled, score) {
+    var d = divFromScore(score);
+    if (settled < 20) {
+      return Object.assign({}, d, { provisional: true, settled: settled });
+    }
+    return Object.assign({}, d, { score: score, provisional: false });
+  }
+
   // Division badge pill HTML — includes pyramid icon
   // size: 'sm' | 'md' | 'lg'
   function pillHTML(divDef, size) {
     size = size || 'md';
+    if (divDef && divDef.provisional) {
+      return '<span class="dv-pill dv-pill-' + size + ' dv-pill-provisional">◌ PROVISIONAL · ' + (divDef.settled||0) + '/20</span>';
+    }
     var pyrSize = size === 'lg' ? 'md' : 'sm';
     return '<span class="dv-pill dv-pill-' + size + ' ' + divDef.pillCls + '">' +
              pyramidHTML(divDef, pyrSize) + ' ' + divDef.name +
@@ -294,6 +307,7 @@
   window.Divisions = {
     get          : get,
     getFromStats : getFromStats,
+    getDisplay   : getDisplay,
     calcScore    : calcScore,
     avHTML       : avHTML,
     pillHTML     : pillHTML,

@@ -1519,8 +1519,10 @@ async function loadProfile(){
         </div>`
       : '';
 
+    const _tSettled=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.filter(p=>p.result!=='pending').length;
+    const _tScore=window.Divisions?window.Divisions.calcScore(rankingMeta?rankingMeta.roi||0:0,rankingMeta?(rankingMeta.winRate||0)*100:0,_tSettled):0;
     const divBadgeHTML=window.Divisions
-      ?window.Divisions.pillHTML(divObj,'md')
+      ?window.Divisions.pillHTML(window.Divisions.getDisplay(_tSettled,_tScore),'md')
       :`<div class="division-badge ${divObj.cls}">${divObj.icon} ${divObj.name}</div>`;
 
     // Bio and social from profile config
