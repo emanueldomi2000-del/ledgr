@@ -817,11 +817,16 @@ function renderCalendar(){
 
 // ── 11. SHARP SCORE ──────────────────────────────────────────────
 function renderSharpScore(){
+  const _settled=allPicks.filter(p=>p.result!=='pending'&&p.result!=='void').length;
   const ss=_backendSharpScore;
-  const color=ss>=70?'var(--gr)':ss>=40?'var(--gold)':'var(--rd)';
+  const color=_settled>=20?(ss>=70?'var(--gr)':ss>=40?'var(--gold)':'var(--rd)'):'var(--mu)';
   document.getElementById('ssTotalNum').textContent=ss;
   document.getElementById('ssTotalNum').style.color=color;
-  document.getElementById('ssComponents').innerHTML=`<div class="ss-component"><div class="ss-header"><span class="ss-name">Verified Score</span><span class="ss-val" style="color:${color}">${ss}<span style="color:var(--mu)">/100</span></span></div><div class="ss-track"><div class="ss-fill" style="width:${ss}%;background:${color}"></div></div><div style="font-family:var(--font-mono);font-size:8px;color:var(--mu);margin-top:2px">Computed server-side · ROI, sample size, average odds, active streak</div></div>`;
+  if(_settled<20){
+    document.getElementById('ssComponents').innerHTML=`<div class="ss-component"><div class="ss-header"><span class="ss-name">Verified Score</span><span class="ss-val" style="color:var(--mu)">${ss}<span style="color:var(--mu)">/100</span> <span class="roi-badge limited">· ${_settled}/20</span></span></div><div class="ss-track"><div class="ss-fill" style="width:${ss}%;background:var(--mu);opacity:.4"></div></div><div style="font-family:var(--font-mono);font-size:8px;color:var(--mu);margin-top:2px">Limited data — score not yet statistically reliable</div></div>`;
+  } else {
+    document.getElementById('ssComponents').innerHTML=`<div class="ss-component"><div class="ss-header"><span class="ss-name">Verified Score</span><span class="ss-val" style="color:${color}">${ss}<span style="color:var(--mu)">/100</span></span></div><div class="ss-track"><div class="ss-fill" style="width:${ss}%;background:${color}"></div></div><div style="font-family:var(--font-mono);font-size:8px;color:var(--mu);margin-top:2px">Computed server-side · ROI, sample size, average odds, active streak</div></div>`;
+  }
 }
 
 // ── NAV HELPERS ───────────────────────────────────────────────────

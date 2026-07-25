@@ -1553,7 +1553,9 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   setTimeout(()=>{const fill=document.getElementById('idRankFill');if(fill)fill.style.width=rankPct+'%';},400);
   const idRankNum=document.getElementById('idRankNum');if(idRankNum)idRankNum.textContent=rank>0?'#'+rank:'#—';
   const sharp=rm&&rm.sharpScore!=null?Math.round(rm.sharpScore):0;
-  const idSS=document.getElementById('idSharpScore');if(idSS){idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');_animStatVal(idSS,sharp+'/100',true);}
+  const _ssSettled=rm&&rm.totalPicks!=null?rm.totalPicks:myPicks.filter(p=>p.result!=='pending'&&p.result!=='void').length;
+  const idSS=document.getElementById('idSharpScore');
+  if(idSS){if(_ssSettled<20){idSS.className='id-stat-val';idSS.innerHTML='<span style="color:var(--mu)">'+sharp+'/100</span><span class="roi-badge limited"> · '+_ssSettled+'/20</span>';}else{idSS.className='id-stat-val '+(sharp>=70?'pos':sharp>=40?'ac':'');_animStatVal(idSS,sharp+'/100',true);}}
   const idBanner=document.getElementById('idDivBanner');
   if(idBanner){
     const _savedBannerPack=localStorage.getItem('ledgr_banner_pack')||((profileCfg&&profileCfg.banner)?profileCfg.banner:null);

@@ -877,7 +877,7 @@ async function renderFrozenSeason(season) {
           <div class="fr-stat"><div class="fr-sv neu">${r.winRate.toFixed(0)}%</div><div class="fr-sl">WR</div></div>
           <div class="fr-stat"><div class="fr-sv neu">${r.totalPicks}</div><div class="fr-sl">PICKS</div></div>
           <div class="fr-stat"><div class="fr-sv ${r.totalPnL>=0?'pos':'neg'}">${r.totalPnL>=0?'+':''}${Math.abs(r.totalPnL).toFixed(1)}u</div><div class="fr-sl">P&L</div></div>
-          <div class="fr-stat"><div class="fr-sv" style="color:${r.sharpScore>=70?'var(--gr)':r.sharpScore>=40?'var(--gold)':'var(--rd)'}">${r.sharpScore.toFixed(0)}</div><div class="fr-sl">SHARP</div></div>
+          <div class="fr-stat"><div class="fr-sv" style="color:${(()=>{const _frS=r.wins!=null?(r.wins||0)+(r.losses||0)+(r.pushes||0):(r.totalPicks||0);return _frS>=20?(r.sharpScore>=70?'var(--gr)':r.sharpScore>=40?'var(--gold)':'var(--rd)'):'var(--mu)';})()}">${(()=>{const _frS=r.wins!=null?(r.wins||0)+(r.losses||0)+(r.pushes||0):(r.totalPicks||0);return _frS>=20?r.sharpScore.toFixed(0):'—';})()}</div><div class="fr-sl">SHARP</div></div>
         </div>`;
       }).join('');
   } catch (e) {
@@ -951,7 +951,12 @@ async function loadLeaderboard() {
     if (_lbSubtitle && _champUser) {
       const _champObj = allTipsters[0];
       const _champRoiVal = _champObj?.roi != null ? _champObj.roi : 0;
-      _lbSubtitle.innerHTML = `Current throne: <span style="color:var(--ac);font-weight:600;">@${_champUser}</span> &nbsp;·&nbsp; <span style="color:#FFD700;">+${_champRoiVal.toFixed(1)}% ROI leader</span><span class="hero-live"><span class="hero-live-dot"></span>LIVE</span> <span style="color:var(--mu);font-size:11px;font-family:'DM Mono',monospace;">${allTipsters.length} competing</span>`;
+      const _champSettled=(allTipsters[0].wins||0)+(allTipsters[0].losses||0)+(allTipsters[0].pushes||0);
+      if(_champSettled<20){
+        _lbSubtitle.innerHTML=`Season 3 · <span style="color:var(--ac)">@${_champUser}</span> · records still forming <span class="hero-live"><span class="hero-live-dot"></span>LIVE</span> <span style="color:var(--mu);font-size:11px;font-family:'DM Mono',monospace;">${allTipsters.length} competing</span>`;
+      } else {
+        _lbSubtitle.innerHTML=`Current throne: <span style="color:var(--ac);font-weight:600;">@${_champUser}</span> &nbsp;·&nbsp; <span style="color:#FFD700;">+${_champRoiVal.toFixed(1)}% ROI leader</span><span class="hero-live"><span class="hero-live-dot"></span>LIVE</span> <span style="color:var(--mu);font-size:11px;font-family:'DM Mono',monospace;">${allTipsters.length} competing</span>`;
+      }
     }
     const _lbEyebrow = document.querySelector('.lb-eyebrow');
     if (_lbEyebrow) {
@@ -1192,7 +1197,7 @@ function renderLeaderboard() {
         : (window.Divisions
           ? window.Divisions.avHTML(t.username.slice(0,2).toUpperCase(), COLORS[i], div, {width:_avSz,height:_avSz,borderRadius:'50%',classes:'podium-av-inner'})
           : `<div style="width:${_avSz}px;height:${_avSz}px;border-radius:50%;background:${COLORS[i]};display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:24px;color:#fff;margin:0 auto">${t.username.slice(0,2).toUpperCase()}</div>`);
-      const archHtml = t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
+      const archHtml = _lbSettled>=20 && t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
       return `<div class="podium-card ${cls}" data-sh-user="${escapeHtml(t.username)}" onclick="window.location.href='/tipster?u=${encodeURIComponent(t.username)}'">
         ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div><div class="p1-sweep"></div>' : ''}
@@ -1202,13 +1207,13 @@ function renderLeaderboard() {
           <div style="text-align:center;padding:0 6px;">
             <div style="font-size:9px;letter-spacing:0.2em;color:#FFD700;font-family:'DM Mono';margin-bottom:6px;">👑 CURRENT CHAMPION</div>
             <div style="font-family:'Bebas Neue';font-size:20px;color:var(--tx);margin:4px 0 2px;">@${t.username}</div>
-            <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:4px;">${getStr(t.archetype)||'The Sharp'} · ${div.name}</div>
+            <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:4px;">${_lbSettled<20?'— · PROVISIONAL':`${getStr(t.archetype)||'The Sharp'} · ${div.name}`}</div>
             <div class="champ-status">
               ${t.streak>0?`<span class="champ-status-chip" style="color:#FF6B35;border-color:rgba(255,107,53,0.2)">🔥 ${t.streak}W streak</span>`:''}
-              <span class="champ-status-chip" style="color:#FFD700;border-color:rgba(255,215,0,0.15)">⚔ ${top3[1]?`+${Math.abs((t.roi||0)-(top3[1].roi||0)).toFixed(0)}% lead`:'Uncontested'}</span>
-              ${(t.sharpScore||0)>70?`<span class="champ-status-chip" style="color:#00E5A0;border-color:rgba(0,229,160,0.15)">📈 Sharp</span>`:''}
+              ${_lbSettled>=20?`<span class="champ-status-chip" style="color:#FFD700;border-color:rgba(255,215,0,0.15)">⚔ ${top3[1]?`+${Math.abs((t.roi||0)-(top3[1].roi||0)).toFixed(0)}% lead`:'Uncontested'}</span>`:''}
+              ${_lbSettled>=20&&(t.sharpScore||0)>70?`<span class="champ-status-chip" style="color:#00E5A0;border-color:rgba(0,229,160,0.15)">📈 Sharp</span>`:''}
             </div>
-            <div style="font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;margin:4px 0 8px;padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;">"${getEgoLine(t, top3[1])}"</div>
+            ${_lbSettled>=20?`<div style="font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;margin:4px 0 8px;padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;">"${getEgoLine(t, top3[1])}"</div>`:''}
             <div style="display:flex;justify-content:center;gap:0;margin:8px 0 4px;align-items:flex-end">
               <div style="text-align:center;padding:0 14px;border-right:1px solid rgba(255,255,255,0.07)">
                 <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#7B2CFF;line-height:1;" data-countup-rel="${rel}">${rel}</div>
@@ -1221,11 +1226,11 @@ function renderLeaderboard() {
             </div>
             <div style="display:flex;justify-content:center;gap:16px;margin:6px 0 10px;">
               <div style="text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--tx);line-height:1;">${wr.toFixed(0)}%</div><div style="font-size:8px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono',monospace;">WIN RATE</div></div>
-              <div style="text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${(t.sharpScore||0)>70?'#00E5A0':(t.sharpScore||0)>40?'#FFD700':'#FF3355'};line-height:1;">${Math.round(t.sharpScore||0)}</div><div style="font-size:8px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono',monospace;">SHARP</div></div>
+              <div style="text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${_lbSettled<20?'var(--mu)':(t.sharpScore||0)>70?'#00E5A0':(t.sharpScore||0)>40?'#FFD700':'#FF3355'};line-height:1;">${_lbSettled<20?'—':Math.round(t.sharpScore||0)}</div><div style="font-size:8px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono',monospace;">SHARP</div></div>
               <div style="text-align:center;"><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--tx);line-height:1;">${t.picks||0}</div><div style="font-size:8px;color:var(--mu);letter-spacing:0.15em;font-family:'DM Mono',monospace;">PICKS</div></div>
             </div>
             <div class="skill-bars">
-              ${(()=>{const ss=Math.min(100,t.sharpScore||0);const rel=Math.min(100,t.reliabilityScore!=null?t.reliabilityScore:getReliability(t).score);const clv=Math.min(100,Math.max(0,((t.clvAvg||0)+5)*10));const vol=Math.min(100,((t.picks||0)/150)*100);return [{label:'RELIABILITY',val:rel,color:'#7B2CFF'},{label:'SHARPNESS',val:ss,color:'#00E5A0'},{label:'CLV',val:clv,color:'#FFD700'},{label:'VOLUME',val:vol,color:'#FF6B35'}].map(b=>`<div class="skill-bar-row"><div class="skill-bar-label">${b.label}</div><div class="skill-bar-track"><div class="skill-bar-fill" data-bar="${b.val}" style="background:${b.color}"></div></div><div class="skill-bar-val">${Math.round(b.val)}</div></div>`).join('');})()}
+              ${(()=>{const ss=_lbSettled>=20?Math.min(100,t.sharpScore||0):0;const ssColor=_lbSettled>=20?'#00E5A0':'var(--mu)';const ssLbl=_lbSettled>=20?Math.round(ss):'—';const rel=Math.min(100,t.reliabilityScore!=null?t.reliabilityScore:getReliability(t).score);const clv=Math.min(100,Math.max(0,((t.clvAvg||0)+5)*10));const vol=Math.min(100,((t.picks||0)/150)*100);return [{label:'RELIABILITY',val:rel,color:'#7B2CFF',lbl:Math.round(rel)},{label:'SHARPNESS',val:ss,color:ssColor,lbl:ssLbl},{label:'CLV',val:clv,color:'#FFD700',lbl:Math.round(clv)},{label:'VOLUME',val:vol,color:'#FF6B35',lbl:Math.round(vol)}].map(b=>`<div class="skill-bar-row"><div class="skill-bar-label">${b.label}</div><div class="skill-bar-track"><div class="skill-bar-fill" data-bar="${b.val}" style="background:${b.color}"></div></div><div class="skill-bar-val">${b.lbl}</div></div>`).join('');})()}
             </div>
             ${t.streak>0?`<div style="font-size:11px;color:#FF6B35;font-family:'DM Mono';margin-bottom:6px;">🔥 ${t.streak}W streak active</div>`:''}
             <div class="champ-extras" id="champExtras"></div>
@@ -1377,10 +1382,11 @@ function renderLeaderboard() {
     if (_extrasEl) {
       const champWins = allPicks.filter(p=>p.username===_champ.username && p.result==='win').sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
       const lastWin = champWins[0];
+      const _champStorySettled=(_champ.wins||0)+(_champ.losses||0)+(_champ.pushes||0);
       const storyItems = [];
       if (_champ.streak > 0) storyItems.push(`🔥 ${_champ.streak}W streak active`);
       if (lastWin) storyItems.push(`⚡ Last win: ${lastWin.event||'Verified pick'} +${(lastWin.pnl||0).toFixed(0)}u`);
-      if (_rank2 && _champ) {
+      if (_rank2 && _champ && _champStorySettled>=20) {
         const gap = Math.abs((_champ.roi||0)-(_rank2.roi||0)).toFixed(0);
         storyItems.push(parseFloat(gap) > 200 ? `👑 Dominating the field` : `⚔️ +${gap}% gap`);
       }
@@ -1427,7 +1433,7 @@ function renderLeaderboard() {
     const _lbSettled=(t.wins||0)+(t.losses||0)+(t.pushes||0);
     const _lbScore=window.Divisions?window.Divisions.calcScore(t.roi||0,(t.winRate||0)*100,_lbSettled):0;
     const divPill=window.Divisions?window.Divisions.pillHTML(window.Divisions.getDisplay(_lbSettled,_lbScore),'sm'):`<span class="dv-pill ${div.cls}">${div.icon} ${div.name}</span>`;
-    const archHtml = _archKey && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(_archKey, true) : '';
+    const archHtml = _lbSettled>=20 && _archKey && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(_archKey, true) : '';
     const flowHtml = t.flowState && window.Flow ? window.Flow.chipHTML(t.flowState) : '';
     const ss = t.sharpScore || 0;
     const ssColor = ss >= 70 ? 'var(--gr)' : ss >= 40 ? 'var(--gold)' : 'var(--rd)';
