@@ -247,11 +247,11 @@ function logout() { ['ledgr_token','ledgr_user','token','user','username'].forEa
 const BADGES = [
   // CAREER
   { id:'first-blood',    cat:'career',    icon:'🩸', name:'First Blood',    rarity:'common',    desc:'Your first verified win pick.',              req:'1 win',          reward:'Profile badge',         check: d => d.wins>=1,                          progress: d => ({cur:d.wins,max:1}) },
-  { id:'apprentice',     cat:'career',    icon:'📋', name:'Apprentice',     rarity:'common',    desc:'10 picks posted.',                           req:'10 picks',       reward:'Starter tag',           check: d => d.picks>=10,                        progress: d => ({cur:d.picks,max:10}) },
-  { id:'veteran',        cat:'career',    icon:'🎖️', name:'Veteran',        rarity:'rare',      desc:'100 picks posted.',                          req:'100 picks',      reward:'Veteran border',        check: d => d.picks>=100,                       progress: d => ({cur:d.picks,max:100}) },
-  { id:'grinder',        cat:'career',    icon:'⚙️', name:'Grinder',        rarity:'rare',      desc:'500 picks posted.',                          req:'500 picks',      reward:'Grinder aura',          check: d => d.picks>=500,                       progress: d => ({cur:d.picks,max:500}) },
-  { id:'machine',        cat:'career',    icon:'🤖', name:'Machine',        rarity:'epic',      desc:'1000 picks posted.',                         req:'1000 picks',     reward:'Machine name effect',   check: d => d.picks>=1000,                      progress: d => ({cur:d.picks,max:1000}) },
-  { id:'immortal',       cat:'career',    icon:'♾️', name:'Immortal',       rarity:'legendary', desc:'5000 picks posted.',                         req:'5000 picks',     reward:'Immortal ring + aura',  check: d => d.picks>=5000,                      progress: d => ({cur:d.picks,max:5000}) },
+  { id:'apprentice',     cat:'career',    icon:'📋', name:'Apprentice',     rarity:'common',    desc:'A verified history of 10 picks.',            req:'10 settled picks',             reward:'Starter tag',           check: d => d.settledCount>=10,                                                          progress: d => ({cur:d.settledCount,max:10}) },
+  { id:'veteran',        cat:'career',    icon:'🎖️', name:'Veteran',        rarity:'rare',      desc:'100 verified picks on record.',              req:'100 settled picks',            reward:'Veteran border',        check: d => d.settledCount>=100,                                                         progress: d => ({cur:d.settledCount,max:100}) },
+  { id:'grinder',        cat:'career',    icon:'⚙️', name:'Grinder',        rarity:'epic',      desc:'500 verified picks, profitable.',            req:'500 settled · ROI ≥ 0',        reward:'Grinder aura',          check: d => d.settledCount>=500&&d.roi>=0,                                               progress: d => ({cur:Math.min(d.settledCount,500),max:500,secondary:d.roi>=0?'ROI ✓':'Need ROI ≥ 0'}) },
+  { id:'machine',        cat:'career',    icon:'🤖', name:'Machine',        rarity:'epic',      desc:'1000 verified picks, positive ROI.',         req:'1000 settled · ROI > 0',       reward:'Machine name effect',   check: d => d.settledCount>=1000&&d.roi>0,                                               progress: d => ({cur:Math.min(d.settledCount,1000),max:1000,secondary:d.roi>0?'ROI ✓':'Need ROI > 0'}) },
+  { id:'immortal',       cat:'career',    icon:'♾️', name:'Immortal',       rarity:'mythic',    desc:'Thousands of verified picks, years of proven edge.',req:'2000 settled · ROI > 0 · 365d account',reward:'Immortal ring + aura',check: d => d.settledCount>=2000&&d.roi>0&&d.accountAgeDays!=null&&d.accountAgeDays>=365, progress: d => ({cur:Math.min(d.settledCount,2000),max:2000,secondary:d.roi>0?(d.accountAgeDays!=null?d.accountAgeDays+'d / 365d':'Need 365d account'):'Need ROI > 0'}) },
   // STREAKS
   { id:'heat-check',     cat:'streak',    icon:'🌡️', name:'Heat Check',     rarity:'common',    desc:'3 consecutive wins.',                        req:'3 win streak',   reward:'Streak tag',            check: d => d.bestStreak>=3,                    progress: d => ({cur:Math.min(d.bestStreak,3),max:3}) },
   { id:'on-fire',        cat:'streak',    icon:'🔥', name:'On Fire',        rarity:'common',    desc:'5 consecutive wins.',                        req:'5 win streak',   reward:'Fire emoji border',     check: d => d.bestStreak>=5,                    progress: d => ({cur:Math.min(d.bestStreak,5),max:5}) },
@@ -525,8 +525,17 @@ function computeBadgeData(picks, rm, seasons, hofData) {
   const rank = rm&&rm.rank?rm.rank:999999;
   const totalTipsters = rm&&rm.totalTipsters?rm.totalTipsters:1000;
 
+  // Account age: prefer rm.accountCreatedAt, fallback to first pick date
+  const _acDate = (rm&&rm.accountCreatedAt)
+    ? new Date(rm.accountCreatedAt)
+    : picks.length
+      ? new Date([...picks].sort((a,b)=>new Date(a.createdAt||a.date)-new Date(b.createdAt||b.date))[0].createdAt||0)
+      : null;
+  const accountAgeDays = _acDate ? Math.floor((Date.now()-_acDate.getTime())/86400000) : null;
+
   return {
     picks: picks.length,
+    settledCount: settled.length,
     wins: wins.length,
     losses: losses.length,
     pnl,
@@ -537,6 +546,7 @@ function computeBadgeData(picks, rm, seasons, hofData) {
     bestStreak,
     underdogWins,
     profDays,
+    accountAgeDays,
     isTop1: rank<=Math.max(1,Math.round(totalTipsters*0.01)),
     isHoF: hofData ? [hofData.roiLeader, hofData.streakKing, hofData.sharpElite].includes(ME_USERNAME) : false,
     isSeasonChamp: Array.isArray(seasons) && seasons.some(s => !s.isActive && s.champion === ME_USERNAME),
