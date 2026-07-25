@@ -664,11 +664,12 @@ const RESULT_UI={
 };
 function rui(r){return RESULT_UI[r]||RESULT_UI.pending;}
 
-function roiBadgeHTML(roi,picks){
+function roiBadgeHTML(roi,settled){
   var r=typeof roi==='number'?roi:parseFloat(roi)||0;
-  if(picks<20)return'<span class="roi-building">'+picks+'/20 picks</span>';
   var pos=r>=0;
-  return'<span style="color:'+(pos?'var(--gr)':'var(--rd)')+';">'+(pos?'+':'')+r.toFixed(1)+'%</span><span class="roi-badge verified">Verified Record</span>';
+  var roiSpan='<span style="color:'+(pos?'var(--gr)':'var(--rd)')+';">'+(pos?'+':'')+r.toFixed(1)+'%</span>';
+  if(settled<20)return roiSpan+'<span class="roi-badge limited">· '+settled+'/20</span>';
+  return roiSpan+'<span class="roi-badge verified">Verified Record</span>';
 }
 
 // Returns pick filter tab HTML. Push/Void tabs only appear when picks with those states exist.
@@ -1585,7 +1586,7 @@ async function loadProfile(){
               </div>
               <div class="hsd-sep"></div>
               <div class="hsd-item">
-                <div class="hsd-val" id="heroWR" style="color:var(--tx)">${wr}%</div>
+                <div class="hsd-val" id="heroWR" style="color:${_tSettled<20?'var(--mu)':'var(--tx)'}">${wr}%</div>
                 <div class="hsd-lbl">Win Rate</div>
               </div>
               <div class="hsd-sep"></div>
@@ -1644,8 +1645,8 @@ async function loadProfile(){
 
       <div class="stats-grid-6 reveal">${(()=>{const clvDisp=(rankingMeta&&rankingMeta.clvAvg!=null)?((rankingMeta.clvAvg>=0?'+':'')+rankingMeta.clvAvg.toFixed(1)+'%'):'—';const clvColor=(rankingMeta&&rankingMeta.clvAvg!=null)?(rankingMeta.clvAvg>=0?'var(--gr)':'var(--rd)'):'var(--mu)';const pnlDisp=rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl;const pnlPos=pnlDisp>=0;const _tp=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;return`
         <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu" id="svPicks">${_tp}</div><div class="stat-lbl">Picks <span class="tip-trigger" data-tip="Total number of picks posted. 30+ picks is the minimum for statistical significance. 100+ gives high confidence in the numbers.">?</span></div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val" id="svROI">${roiBadgeHTML(parseFloat(roi),_tp)}</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val neu" id="svWR">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val" id="svROI">${roiBadgeHTML(parseFloat(roi),_tSettled)}</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val" id="svWR" style="color:${_tSettled<20?'var(--mu)':'inherit'}">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pnlPos?'pos':'neg'}" id="svPnL">${pnlPos?'+':'−'}${Math.abs(pnlDisp).toFixed(2)}u</div><div class="stat-lbl">P&amp;L <span class="tip-trigger" data-tip="Total Profit & Loss in units across all settled picks. Positive means profit, negative means loss. 1u = 1 unit of bankroll.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.36s"><div class="stat-val neu">${avg}</div><div class="stat-lbl">Avg Odds <span class="tip-trigger" data-tip="Average decimal odds across all picks. Higher avg odds = higher risk bets. A profitable tipster at 2.5+ avg odds has real edge.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${clvColor}">${clvDisp}</div><div class="stat-lbl">CLV Avg <span class="tip-trigger" data-tip="Closing Line Value — whether you consistently beat the closing market odds. The closing line is the sharpest price. Positive CLV means you are a sharp bettor.">?</span></div></div>
@@ -1665,10 +1666,10 @@ async function loadProfile(){
           ${communityCardHTML}
           <div class="panel" style="margin-bottom:16px">
             <div class="panel-title">PERFORMANCE</div>
-            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div class="gauge-pulse-wrap">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">RELIABILITY</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${score>=70?'Trusted source · Verified edge':score>=40?'Building trust · Solid track record':'Early stage · More picks needed'}</div><div class="perf-gauge-secondary"><div class="pgs-item"><div class="pgs-val" style="color:${ssColor}">${finalSharpScore>0?Math.round(finalSharpScore):'—'}</div><div class="pgs-label">SHARP</div></div><div class="pgs-item"><div class="pgs-val">${roiBadgeHTML(parseFloat(roi),wins+losses+pushes)}</div><div class="pgs-label">ROI</div></div><div class="pgs-item"><div class="pgs-val" style="color:var(--tx)">${wr}%</div><div class="pgs-label">WIN RATE</div></div></div></div>`:''}
+            ${gaugeHTML?`<div style="text-align:center;padding:16px 0 8px;border-bottom:1px solid var(--bd);margin-bottom:4px"><div class="gauge-pulse-wrap">${gaugeHTML}</div><div style="font-family:var(--font-mono);font-size:9px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;margin-top:6px">RELIABILITY</div><div style="font-size:11px;color:var(--mu);font-family:var(--font-body);margin-top:3px">${score>=70?'Trusted source · Verified edge':score>=40?'Building trust · Solid track record':'Early stage · More picks needed'}</div><div class="perf-gauge-secondary"><div class="pgs-item"><div class="pgs-val" style="color:${ssColor}">${finalSharpScore>0?Math.round(finalSharpScore):'—'}</div><div class="pgs-label">SHARP</div></div><div class="pgs-item"><div class="pgs-val">${roiBadgeHTML(parseFloat(roi),wins+losses+pushes)}</div><div class="pgs-label">ROI</div></div><div class="pgs-item"><div class="pgs-val" style="color:${_tSettled<20?'var(--mu)':'var(--tx)'}">${wr}%</div><div class="pgs-label">WIN RATE</div></div></div></div>`:''}
             <div class="perf-row"><span class="perf-key">Record</span><span class="perf-val">${recordBarHTML(wins,losses,pending,pushes)}</span></div>
             <div class="perf-row"><span class="perf-key">ROI <span class="tip-trigger" data-tip="Return on Investment. Shows your profit as a percentage of total stake. +10% ROI means for every €100 bet you made €10 profit on average.">?</span></span><span class="perf-val">${roiBadgeHTML(parseFloat(roi),wins+losses+pushes)}</span></div>
-            <div class="perf-row"><span class="perf-key">Win Rate <span class="tip-trigger" data-tip="Percentage of picks that won. 60% means 6 out of every 10 picks were winners. High win rate alone does not mean profitability — odds matter too.">?</span></span><span class="perf-val">${wr}%</span></div>
+            <div class="perf-row"><span class="perf-key">Win Rate <span class="tip-trigger" data-tip="Percentage of picks that won. 60% means 6 out of every 10 picks were winners. High win rate alone does not mean profitability — odds matter too.">?</span></span><span class="perf-val" style="color:${_tSettled<20?'var(--mu)':'inherit'}">${wr}%</span></div>
             <div class="perf-row"><span class="perf-key">P&amp;L <span class="tip-trigger" data-tip="Profit and Loss in units. Total amount won or lost across all your picks combined.">?</span></span><span class="perf-val ${pPos?'pos':'neg'}">${pPos?'+':'-'}${Math.abs(pnl).toFixed(2)}u</span></div>
             <div class="perf-row"><span class="perf-key">Avg Odds</span><span class="perf-val">${avg}</span></div>
             <div class="perf-row"><span class="perf-key">Best Win</span><span class="perf-val pos">+${best.toFixed(2)}u</span></div>
@@ -1755,7 +1756,7 @@ async function loadProfile(){
       // FIX 7 — Count-up on stat cards
       const _picksNum=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;
       countUp(document.getElementById('svPicks'),_picksNum);
-      if(_picksNum>=20)countUp(document.getElementById('svROI'),Math.abs(parseFloat(roi)),parseFloat(roi)>=0?'+':'−','%');
+      if(_tSettled>=20)countUp(document.getElementById('svROI'),Math.abs(parseFloat(roi)),parseFloat(roi)>=0?'+':'−','%');
       countUp(document.getElementById('svWR'),parseFloat(wr),'','%');
       countUp(document.getElementById('heroPicks'),_picksNum);
       countUp(document.getElementById('heroWR'),parseFloat(wr),'','%');

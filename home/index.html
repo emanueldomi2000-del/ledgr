@@ -1537,7 +1537,7 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   const rm=window._myRankingMeta;
   const rel=rm?Math.round(rm.reliabilityScore):getReliability(myPicks).score;
   const finalStreak=getCurrentStreak(myPicks);
-  const idROI=document.getElementById('idROI');if(idROI){const _ip=myPicks.length;if(_ip<10){idROI.className='id-stat-val';idROI.innerHTML='<span class="roi-building">'+_ip+'/10 pick</span>';}else{idROI.className='id-stat-val '+(parseFloat(roi)>=0?'pos':'neg');idROI.innerHTML=(parseFloat(roi)>=0?'+':'')+roi+'%<span class="roi-badge '+(_ip>=20?'verified':'limited')+'">'+(_ip>=20?'Verified Record':'Small Sample')+'</span>';}}
+  const idROI=document.getElementById('idROI');if(idROI){const _iSettled=rm&&rm.totalPicks!=null?rm.totalPicks:myPicks.filter(p=>p.result!=='pending'&&p.result!=='void').length;const _iPos=parseFloat(roi)>=0;idROI.className='id-stat-val '+(_iPos?'pos':'neg');idROI.innerHTML=(_iPos?'+':'')+roi+'%<span class="roi-badge '+(_iSettled>=20?'verified':'limited')+'">'+(_iSettled>=20?'Verified Record':'· '+_iSettled+'/20')+'</span>';}
   const finalRank=rm&&rm.rank?rm.rank:rank;
   const idRank=document.getElementById('idRank');if(idRank){idRank.className='id-stat-val ac';if(finalRank>0)_animStatVal(idRank,'#'+finalRank,true);else idRank.textContent='#—';}
   const idStreak=document.getElementById('idStreak');if(idStreak){idStreak.className='id-stat-val orange';_animStatVal(idStreak,finalStreak>0?finalStreak+'W 🔥':'0W',true);}
@@ -1698,8 +1698,8 @@ function renderStats(all){
   const stake=my.reduce((s,p)=>s+p.stake,0);const pnl=my.reduce((s,p)=>s+p.pnl,0);
   const roi=stake>0?((pnl/stake)*100).toFixed(1):'0';const wr=(wins+losses)>0?((wins/(wins+losses))*100).toFixed(0):'0';
   animateCounter('statTotal',my.length);
-  const wrEl=document.getElementById('statWR');if(wrEl)wrEl.textContent=wr+'%';
-  const roiEl=document.getElementById('statROI');if(roiEl){const _sp=my.length;if(_sp<10){roiEl.className='stat-val';roiEl.innerHTML='<span class="roi-building">'+_sp+'/10</span>';}else{roiEl.className='stat-val '+(parseFloat(roi)>=0?'pos':'neg');roiEl.innerHTML=(parseFloat(roi)>=0?'+':'')+roi+'%<span class="roi-badge '+(_sp>=20?'verified':'limited')+'">'+(_sp>=20?'✓':'~')+'</span>';}}
+  const wrEl=document.getElementById('statWR');if(wrEl){wrEl.textContent=wr+'%';wrEl.style.color=wins+losses<20?'var(--mu)':'';}
+  const roiEl=document.getElementById('statROI');if(roiEl){const _sp=wins+losses;roiEl.className='stat-val';roiEl.innerHTML=roiBadgeHTML(parseFloat(roi),_sp);}
   const pnlEl=document.getElementById('statPnL');if(pnlEl){pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');}
   if(window.LEDGR&&LEDGR.countUp){const _wrEl=document.getElementById('statWR');if(_wrEl)LEDGR.countUp(_wrEl,parseFloat(wr),{decimals:0,suffix:'%'});}
   const hsR=document.getElementById('hsROI');if(hsR)hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
@@ -2369,12 +2369,12 @@ function toggleReact(btn,key){
   localStorage.setItem('ledgr_reactions',JSON.stringify(stored));
 }
 
-function roiBadgeHTML(roi,picks){
+function roiBadgeHTML(roi,settled){
   var r=typeof roi==='number'?roi:parseFloat(roi)||0;
-  if(picks<10)return'<span class="roi-building">'+picks+'/10 pick</span>';
   var pos=r>=0;
-  var badge=picks>=20?'<span class="roi-badge verified">Verified Record</span>':'<span class="roi-badge limited">Small Sample</span>';
-  return'<span style="color:'+(pos?'var(--gr)':'var(--rd)')+';">'+(pos?'+':'')+r.toFixed(1)+'%</span>'+badge;
+  var roiSpan='<span style="color:'+(pos?'var(--gr)':'var(--rd)')+';">'+(pos?'+':'')+r.toFixed(1)+'%</span>';
+  if(settled<20)return roiSpan+'<span class="roi-badge limited">· '+settled+'/20</span>';
+  return roiSpan+'<span class="roi-badge verified">Verified Record</span>';
 }
 
 function renderLeaderboard(all,rankingsTop5){
@@ -2421,7 +2421,7 @@ function renderLeaderboard(all,rankingsTop5){
         <div class="tip-bar"><div class="tip-bar-fill" style="width:${bw}%"></div></div>
       </div>
       <div class="tip-right">
-        <div class="tip-roi">${roiBadgeHTML(parseFloat(roi),t.picks)}</div>
+        <div class="tip-roi">${roiBadgeHTML(parseFloat(roi),t.wins+t.losses)}</div>
         ${streak>0?`<div class="tip-streak">🔥 W${streak}</div>`:''}
         <div class="elo-mini">ELO ${getELO(t.allPicks)}</div>
       </div>
