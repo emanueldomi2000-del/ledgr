@@ -479,18 +479,26 @@ function renderStats(){
   if(streak===0){let ls=0;for(const x of srtd){if(x.result==='loss')ls++;else break;}streak=ls;streakType='L';}
   const roiPos=parseFloat(roi)>=0,pPos=pnl>=0,wrPos=parseFloat(wr)>=50,clvPos=avgCLV!=null&&parseFloat(avgCLV)>=0;
 
+  const _prov=settled.length<20;const _sc=settled.length;
+  const _chip=n=>`<span style="font-family:var(--font-mono);font-size:0.5em;color:var(--mu);opacity:.65;margin-left:4px">· ${n}/20</span>`;
   document.getElementById('s0').textContent=p.length;
-  const s1=document.getElementById('s1');s1.textContent=(roiPos?'+':'')+roi+'%';s1.className='sbox-val '+(roiPos?'pos':'neg');
-  const s2=document.getElementById('s2');s2.textContent=wr+'%';s2.className='sbox-val '+(wrPos?'pos':'neg');
-  const s3=document.getElementById('s3');s3.textContent=(pPos?'+':'-')+Math.abs(pnl).toFixed(1)+'u';s3.className='sbox-val '+(pPos?'pos':'neg');
-  const s4=document.getElementById('s4');s4.textContent=_backendSharpScore+'/100';s4.className='sbox-val '+(_backendSharpScore>=70?'pos':_backendSharpScore>=40?'gold':'neg');
-  document.getElementById('s5').textContent=avgOdds;
+  const s1=document.getElementById('s1');
+  if(_prov){s1.innerHTML='<span style="color:var(--mu)">'+(roiPos?'+':'')+roi+'%</span>'+_chip(_sc);s1.className='sbox-val';}
+  else{s1.textContent=(roiPos?'+':'')+roi+'%';s1.className='sbox-val '+(roiPos?'pos':'neg');}
+  const s2=document.getElementById('s2');
+  if(_prov){s2.innerHTML='<span style="color:var(--mu)">'+wr+'%</span>'+_chip(_sc);s2.className='sbox-val';}
+  else{s2.textContent=wr+'%';s2.className='sbox-val '+(wrPos?'pos':'neg');}
+  const s3=document.getElementById('s3');s3.textContent=(pPos?'+':'-')+Math.abs(pnl).toFixed(1)+'u';
+  if(_prov){s3.className='sbox-val';s3.style.color='var(--mu)';}else{s3.style.color='';s3.className='sbox-val '+(pPos?'pos':'neg');}
+  const s4=document.getElementById('s4');
+  if(_prov){s4.innerHTML='<span style="color:var(--mu)">'+_backendSharpScore+'/100</span>'+_chip(_sc);s4.className='sbox-val';}
+  else{s4.textContent=_backendSharpScore+'/100';s4.className='sbox-val '+(_backendSharpScore>=70?'pos':_backendSharpScore>=40?'gold':'neg');}
+  const _s5=document.getElementById('s5');_s5.textContent=avgOdds;if(_prov)_s5.style.color='var(--mu)';else _s5.style.color='';
   const s6=document.getElementById('s6');
   if(avgCLV!=null){s6.textContent=(clvPos?'+':'')+avgCLV+'%';s6.className='sbox-val '+(clvPos?'pos':'neg');}else{s6.textContent='—';s6.className='sbox-val neu';}
-  const s7=document.getElementById('s7');
-  s7.textContent=streak>0?streak+streakType:'—';
-  s7.className='sbox-val '+(streakType==='W'?'gold':'neg');
-  if(window.LEDGR&&LEDGR.countUp){
+  const s7=document.getElementById('s7');s7.textContent=streak>0?streak+streakType:'—';
+  if(_prov){s7.className='sbox-val';s7.style.color='var(--mu)';}else{s7.style.color='';s7.className='sbox-val '+(streakType==='W'?'gold':'neg');}
+  if(!_prov&&window.LEDGR&&LEDGR.countUp){
     LEDGR.countUp(document.getElementById('s0'),p.length);
     LEDGR.countUp(document.getElementById('s2'),parseFloat(wr),{decimals:0,suffix:'%'});
     LEDGR.countUp(document.getElementById('s4'),_backendSharpScore,{decimals:0,suffix:'/100'});

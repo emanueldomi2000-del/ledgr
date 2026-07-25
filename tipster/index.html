@@ -1449,7 +1449,7 @@ async function loadProfile(){
     const borderRingCls=profileCfg.border==='pulse'?'ring-pulse':profileCfg.border==='gold'?'ring-gold':profileCfg.border==='fire'?'ring-fire':profileCfg.border==='diamond'?'ring-diamond':profileCfg.border==='legend'?'ring-legend':'';
     const favSports=profileCfg.favSports&&profileCfg.favSports.length?profileCfg.favSports:[];
     const favSportsHtml=favSports.length?`<div class="dna-tags" style="margin-top:8px">${favSports.map(s=>`<span class="dna-tag grinder">${SPORT_ICONS_MINI[s]||'🎯'} ${s}</span>`).join('')}</div>`:'';
-    const displayArch=arch||autoArchetype;
+    const displayArch=arch||((wins+losses+pushes>=20)?autoArchetype:null);
     const dnaSummaryTxt=getDNASummary(computeDNA(allPicks),displayArch);
     const archetypeHtml=displayArch?(window.archetypeBadgeHTML?window.archetypeBadgeHTML(displayArch,false):`<span class="arch-label" title="${displayArch.desc||''}">${displayArch.name}</span>`):'';
     const finalSharpScore=(rankingMeta&&(wins+losses)>=20)?(rankingMeta.sharpScore||0):0;
@@ -1469,7 +1469,7 @@ async function loadProfile(){
 
     // Community card (single, non-duplicating)
     const _bestWin=allPicks.filter(p=>p.result==='win'&&p.pnl>0).sort((a,b)=>b.pnl-a.pnl)[0];
-    const communityCardHTML=`<div class="community-card"><div class="cc-title">COMMUNITY</div><div class="cc-stats"><div class="cc-stat"><div class="cc-val" id="ccFollowers">—</div><div class="cc-lbl">FOLLOWERS</div></div><div class="cc-stat"><div class="cc-val" id="ccSubscribers">—</div><div class="cc-lbl">SUBSCRIBERS</div></div><div class="cc-stat"><div class="cc-val" style="color:var(--tx)">${wr}%</div><div class="cc-lbl">WIN RATE</div></div></div>${_bestWin?`<div class="cc-best"><div class="cc-best-label">BEST WIN</div><div class="cc-best-pick"><div style="font-size:12px;color:var(--tx);font-weight:600;margin-bottom:3px">${(_bestWin.event&&_bestWin.event!=='undefined'?_bestWin.event:'—')}</div><div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">${_bestWin.market||'—'}</span>${_bestWin.odds>0&&_bestWin.odds<1000?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold)">${_bestWin.odds}</span>`:''}<span style="font-family:var(--font-mono);font-size:10px;color:var(--gr);margin-left:auto">+${_bestWin.pnl.toFixed(2)}u</span></div></div></div>`:''}</div>`;
+    const communityCardHTML=`<div class="community-card"><div class="cc-title">COMMUNITY</div><div class="cc-stats"><div class="cc-stat"><div class="cc-val" id="ccFollowers">—</div><div class="cc-lbl">FOLLOWERS</div></div><div class="cc-stat"><div class="cc-val" id="ccSubscribers">—</div><div class="cc-lbl">SUBSCRIBERS</div></div><div class="cc-stat"><div class="cc-val" style="color:${(wins+losses+pushes)<20?'var(--mu)':'var(--tx)'}">${wr}%${(wins+losses+pushes)<20?`<span style="font-family:var(--font-mono);font-size:0.55em;color:var(--mu);opacity:.65;margin-left:3px">· ${wins+losses+pushes}/20</span>`:''}</div><div class="cc-lbl">WIN RATE</div></div></div>${_bestWin?`<div class="cc-best"><div class="cc-best-label">BEST WIN</div><div class="cc-best-pick"><div style="font-size:12px;color:var(--tx);font-weight:600;margin-bottom:3px">${(_bestWin.event&&_bestWin.event!=='undefined'?_bestWin.event:'—')}</div><div style="display:flex;gap:8px;align-items:center"><span style="font-family:var(--font-mono);font-size:10px;color:var(--mu)">${_bestWin.market||'—'}</span>${_bestWin.odds>0&&_bestWin.odds<1000?`<span style="font-family:var(--font-mono);font-size:10px;color:var(--gold)">${_bestWin.odds}</span>`:''}<span style="font-family:var(--font-mono);font-size:10px;color:var(--gr);margin-left:auto">+${_bestWin.pnl.toFixed(2)}u</span></div></div></div>`:''}</div>`;
 
     const divObj=rankingMeta&&rankingMeta.division
       ? (() => {
@@ -1576,7 +1576,7 @@ async function loadProfile(){
             <div class="profile-username">@${username}</div>
             <div class="hero-stat-dominants">
               <div class="hsd-item">
-                <div class="hsd-val" id="heroROI">${roiBadgeHTML(parseFloat(roi),_rpgPickCount)}</div>
+                <div class="hsd-val" id="heroROI">${roiBadgeHTML(parseFloat(roi),_tSettled)}</div>
                 <div class="hsd-lbl">Verified ROI</div>
               </div>
               <div class="hsd-sep"></div>
@@ -1586,7 +1586,7 @@ async function loadProfile(){
               </div>
               <div class="hsd-sep"></div>
               <div class="hsd-item">
-                <div class="hsd-val" id="heroWR" style="color:${_tSettled<20?'var(--mu)':'var(--tx)'}">${wr}%</div>
+                <div class="hsd-val" id="heroWR" style="color:${_tSettled<20?'var(--mu)':'var(--tx)'}">${wr}%${_tSettled<20?`<span style="font-family:var(--font-mono);font-size:0.38em;color:var(--mu);opacity:.65;margin-left:4px;vertical-align:middle">· ${_tSettled}/20</span>`:''}</div>
                 <div class="hsd-lbl">Win Rate</div>
               </div>
               <div class="hsd-sep"></div>
@@ -1646,7 +1646,7 @@ async function loadProfile(){
       <div class="stats-grid-6 reveal">${(()=>{const clvDisp=(rankingMeta&&rankingMeta.clvAvg!=null)?((rankingMeta.clvAvg>=0?'+':'')+rankingMeta.clvAvg.toFixed(1)+'%'):'—';const clvColor=(rankingMeta&&rankingMeta.clvAvg!=null)?(rankingMeta.clvAvg>=0?'var(--gr)':'var(--rd)'):'var(--mu)';const pnlDisp=rankingMeta&&rankingMeta.totalPnl!=null?rankingMeta.totalPnl:pnl;const pnlPos=pnlDisp>=0;const _tp=rankingMeta&&rankingMeta.totalPicks!=null?rankingMeta.totalPicks:allPicks.length;return`
         <div class="stat-card anim-stat" style="animation-delay:.2s"><div class="stat-val neu" id="svPicks">${_tp}</div><div class="stat-lbl">Picks <span class="tip-trigger" data-tip="Total number of picks posted. 30+ picks is the minimum for statistical significance. 100+ gives high confidence in the numbers.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.24s"><div class="stat-val" id="svROI">${roiBadgeHTML(parseFloat(roi),_tSettled)}</div><div class="stat-lbl">ROI <span class="tip-trigger" data-tip="Return on Investment — profit as a percentage of total stake. 10% ROI means for every 100u staked you made 10u profit. Anything above 5% long-term is elite.">?</span></div></div>
-        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val" id="svWR" style="color:${_tSettled<20?'var(--mu)':'inherit'}">${wr}%</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
+        <div class="stat-card anim-stat" style="animation-delay:.28s"><div class="stat-val" id="svWR" style="color:${_tSettled<20?'var(--mu)':'inherit'}">${wr}%${_tSettled<20?`<span style="font-family:var(--font-mono);font-size:0.5em;color:var(--mu);opacity:.65;margin-left:3px">· ${_tSettled}/20</span>`:''}</div><div class="stat-lbl">Win Rate <span class="tip-trigger" data-tip="Percentage of settled picks that won. Must be read alongside odds — a 45% win rate at odds 2.5 can be very profitable.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.32s"><div class="stat-val ${pnlPos?'pos':'neg'}" id="svPnL">${pnlPos?'+':'−'}${Math.abs(pnlDisp).toFixed(2)}u</div><div class="stat-lbl">P&amp;L <span class="tip-trigger" data-tip="Total Profit & Loss in units across all settled picks. Positive means profit, negative means loss. 1u = 1 unit of bankroll.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.36s"><div class="stat-val neu">${avg}</div><div class="stat-lbl">Avg Odds <span class="tip-trigger" data-tip="Average decimal odds across all picks. Higher avg odds = higher risk bets. A profitable tipster at 2.5+ avg odds has real edge.">?</span></div></div>
         <div class="stat-card anim-stat" style="animation-delay:.4s"><div class="stat-val" style="color:${clvColor}">${clvDisp}</div><div class="stat-lbl">CLV Avg <span class="tip-trigger" data-tip="Closing Line Value — whether you consistently beat the closing market odds. The closing line is the sharpest price. Positive CLV means you are a sharp bettor.">?</span></div></div>

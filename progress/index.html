@@ -609,9 +609,11 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
 
   requestAnimationFrame(() => {
     setTimeout(() => {
+      const _prAuto = wins+losses+pushes < 20;
       const fill = document.getElementById('heroBarFill');
       if (fill) {
         fill.style.width = '0%';
+        if (_prAuto) fill.style.background = 'var(--mu)';
         setTimeout(() => {
           fill.style.transition = 'width 1.2s cubic-bezier(0.4,0,0.2,1)';
           fill.style.width = eloPercent + '%';
@@ -661,19 +663,24 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
       }
 
       // Season identity card — detect archetype from actual picks data
-      const _detected = detectArchetype(picks) || 'The Sharp';
-      const _ad = archetypeData[_detected];
+      const _detected = _prAuto ? null : (detectArchetype(picks) || 'The Sharp');
+      const _ad = _detected ? archetypeData[_detected] : null;
       const _siIcon = document.getElementById('siIcon');
       const _siName = document.getElementById('siName');
       const _siTraits = document.getElementById('siTraits');
-      if (_ad && _siIcon) _siIcon.textContent = _ad.icon;
-      if (_ad && _siName) _siName.textContent = _detected.toUpperCase();
-      if (_ad && _siTraits) _siTraits.innerHTML = `
-        <div style="color:var(--mu);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:12px">${_ad.traits.join(' · ')}</div>
-        <div style="display:flex;gap:16px;justify-content:center">
-          <div>${_ad.plus.map(t=>`<div style="font-size:11px;color:var(--gr);font-family:'Syne',sans-serif">+ ${t}</div>`).join('')}</div>
-          <div>${_ad.minus.map(t=>`<div style="font-size:11px;color:var(--rd);font-family:'Syne',sans-serif">- ${t}</div>`).join('')}</div>
-        </div>`;
+      if (_prAuto) {
+        if (_siName) { _siName.textContent = 'BUILDING'; _siName.style.color = 'var(--mu)'; }
+        if (_siTraits) _siTraits.innerHTML = `<div style="color:var(--mu);font-size:12px;font-family:'Syne',sans-serif">Post ${20-(wins+losses+pushes)} more settled picks to reveal your competitive identity</div>`;
+      } else {
+        if (_ad && _siIcon) _siIcon.textContent = _ad.icon;
+        if (_ad && _siName) _siName.textContent = _detected.toUpperCase();
+        if (_ad && _siTraits) _siTraits.innerHTML = `
+          <div style="color:var(--mu);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:12px">${_ad.traits.join(' · ')}</div>
+          <div style="display:flex;gap:16px;justify-content:center">
+            <div>${_ad.plus.map(t=>`<div style="font-size:11px;color:var(--gr);font-family:'Syne',sans-serif">+ ${t}</div>`).join('')}</div>
+            <div>${_ad.minus.map(t=>`<div style="font-size:11px;color:var(--rd);font-family:'Syne',sans-serif">- ${t}</div>`).join('')}</div>
+          </div>`;
+      }
 
       const spineFill = document.querySelector('.tl-spine-fill');
       if (spineFill) spineFill.style.height = '100%';
@@ -756,7 +763,7 @@ function renderAll(picks, rankingMeta, myRank, totalTipsters, activeSeason, past
         const _riskPct = Math.min(100, Math.round(Math.min(100, Math.max(0, (1 - roiVar / 100) * 100))));
         const _consPct = Math.min(100, Math.round(roiVar));
         const _valPct  = Math.min(100, Math.round(Math.min(100, Math.max(0, ((clvAvg + 10) / 20) * 100))));
-        const _sharpPct= Math.min(100, Math.round(Math.min(100, sharpScore)));
+        const _sharpPct= _prAuto ? 0 : Math.min(100, Math.round(Math.min(100, sharpScore)));
         setTimeout(() => {
           [['dnaAgg',_aggPct],['dnaRisk',_riskPct],['dnaCons',_consPct],['dnaVal',_valPct],['dnaSharp',_sharpPct]].forEach(([id,val]) => {
             const _fill = document.getElementById(id);
@@ -834,6 +841,8 @@ function buildHTML(d) {
   const divColor = tier.color;
   const initials = USERNAME.slice(0,2).toUpperCase();
   const isEmpty = picks.length === 0;
+  const _settled = wins+losses+pushes;
+  const _prov = _settled < 20;
 
   const _HERO_REWARDS = {BRONZE:'Basic Badge',SILVER:'Profile Border',GOLD:'Gold Name Color',PLATINUM:'Animated Ring',DIAMOND:'Particle FX',ELITE:'Elite Aura',LEGENDARY:'Hall of Fame Entry'};
   const _nextReward = _HERO_REWARDS[nextTier.name] || 'Division Badge';
@@ -858,8 +867,8 @@ function buildHTML(d) {
           </div>
         </div>
         <div class="hero-center">
-          <div class="hero-div-name" style="color:${divColor}">${tier.name} ${roman}</div>
-          <div class="hero-elo-nums">${actualElo.toLocaleString()} / ${tier.max.toLocaleString()} RP</div>
+          <div class="hero-div-name" style="color:${_prov?'var(--mu)':divColor}">${_prov?`PROVISIONAL <span style="font-family:var(--font-mono);font-size:0.42em;color:var(--mu);opacity:.7;letter-spacing:0.5px;vertical-align:middle">· ${_settled}/20 · ${20-_settled} picks to unlock</span>`:`${tier.name} ${roman}`}</div>
+          <div class="hero-elo-nums" style="${_prov?'color:var(--mu);opacity:.45':''}">${actualElo.toLocaleString()} / ${tier.max.toLocaleString()} RP</div>
           <div class="hero-bar-track">
             <div class="hero-bar-fill" id="heroBarFill" style="width:0%;background:linear-gradient(90deg,${divColor}aa,${divColor})"></div>
           </div>
@@ -867,8 +876,8 @@ function buildHTML(d) {
             ? `<div style="font-family:var(--font-display);font-size:clamp(22px,3vw,30px);letter-spacing:4px;color:${divColor};margin:6px 0 4px;line-height:1;text-shadow:0 0 24px ${divColor}66">START YOUR JOURNEY</div>
                <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);letter-spacing:1px;margin-bottom:12px">Every legend begins with pick #1</div>
                <a href="/dashboard" style="display:inline-flex;align-items:center;gap:8px;background:var(--ac);color:#07060d;padding:9px 22px;border-radius:9px;font-family:var(--font-display);font-size:14px;letter-spacing:2px;text-decoration:none;box-shadow:0 4px 20px rgba(184,159,255,.3)">POST FIRST PICK →</a>`
-            : `<div class="hero-bar-sub">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
-               ${picks.length >= 5 ? (myRank > 0 && myRank <= 10
+            : `<div class="hero-bar-sub" style="${_prov?'color:var(--mu);opacity:.5':''}">${eloToNext.toLocaleString()} RP until ${nextTier.name}</div>
+               ${!_prov && picks.length >= 5 ? (myRank > 0 && myRank <= 10
                  ? `<div class="hero-bar-week" style="color:var(--gr)">↑ #${myRank} globally</div>`
                  : myRank > 0
                  ? `<div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:2px">Season rank: #${myRank}${rankPct!=null?' · Top '+(100-rankPct)+'%':''}</div>`
@@ -881,7 +890,7 @@ function buildHTML(d) {
         ${isEmpty ? '' : `
         <div class="hero-pills">
           ${streak >= 3 ? `<span class="hero-pill pill-streak">${streak}W Streak 🔥</span>` : ''}
-          ${rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
+          ${!_prov && rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
           ${(()=>{const _ps=wins+losses+pushes;const _pprov=_ps<20;return `<span class="hero-pill ${_pprov?'':sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}" style="cursor:pointer${_pprov?';color:var(--mu);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)':''}" onclick="showSharpExplainer()" title="Click to see why">Sharp: ${sharpScore.toFixed(0)}${_pprov?` · ${_ps}/20`:''} ⓘ</span>`;})()}
           ${tier.name !== 'LEGENDARY' ? `
           <div class="current-target-card">
@@ -939,9 +948,9 @@ function buildHTML(d) {
       <svg class="momentum-bg-chart" viewBox="0 0 300 120" preserveAspectRatio="none">${bgChart}</svg>
       <div class="momentum-header" style="color:${flowColor}">Momentum: ${flowLabel}</div>
       <div class="momentum-stats">
-        <div class="mom-stat"><div class="mom-stat-val" style="color:${roiColor}">${roi14>=0?'+':''}${roi14.toFixed(1)}%</div><div class="mom-stat-lbl">14d ROI</div></div>
-        <div class="mom-stat"><div class="mom-stat-val">${wr14}%</div><div class="mom-stat-lbl">Win Rate</div></div>
-        <div class="mom-stat"><div class="mom-stat-val" style="color:${pnlColor}">${pnl14>=0?'+':''}${pnl14.toFixed(1)}u</div><div class="mom-stat-lbl">14d P&L</div></div>
+        <div class="mom-stat"><div class="mom-stat-val" style="color:${_prov?'var(--mu)':roiColor}">${roi14>=0?'+':''}${roi14.toFixed(1)}%</div><div class="mom-stat-lbl">14d ROI</div></div>
+        <div class="mom-stat"><div class="mom-stat-val" style="${_prov?'color:var(--mu)':''}">${wr14}%</div><div class="mom-stat-lbl">Win Rate</div></div>
+        <div class="mom-stat"><div class="mom-stat-val" style="color:${_prov?'var(--mu)':pnlColor}">${pnl14>=0?'+':''}${pnl14.toFixed(1)}u</div><div class="mom-stat-lbl">14d P&L</div></div>
         <div class="mom-stat"><div class="mom-stat-val">${recent14.length}</div><div class="mom-stat-lbl">Picks</div></div>
       </div>
       <div class="trend-row" style="color:${trendColor}">${trendIcon} ${trend.charAt(0).toUpperCase()+trend.slice(1)} vs previous 7 days</div>
@@ -963,6 +972,11 @@ function buildHTML(d) {
       <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:10px;text-align:center;letter-spacing:1px">Radar unlocks after 5 picks</div>
     </div>
   ` : (() => {
+    if(_prov) return `<div class="radar-card">
+      <div class="sec-title" style="align-self:flex-start;width:100%">Skill Profile</div>
+      ${buildRadar(flatRadarAxes, 'var(--mu)')}
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--mu);margin-top:10px;text-align:center;letter-spacing:1px;opacity:.7">Skill profile unlocks at 20 settled picks · ${_settled}/20 — ${20-_settled} to go</div>
+    </div>`;
     const _axes={Consistency:radarAxes[0].value,Sharpness:radarAxes[1].value,CLV:radarAxes[2].value,Volume:radarAxes[3].value,Reliability:radarAxes[4].value,Safety:radarAxes[5].value};
     const _primary=Object.entries(_axes).sort((a,b)=>b[1]-a[1])[0];
     const _desc={Consistency:'Your picks are predictable and steady.',Sharpness:'Your strongest edge is beating market movement.',Safety:'You manage risk better than most tipsters.',Reliability:'Followers can trust your track record.',CLV:'You consistently find value before the market closes.',Volume:'Your sample size gives your stats real credibility.'};
@@ -1313,21 +1327,22 @@ function buildUnlocks(picks, wins, losses, totalPnl, sharpScore, clvAvg, myRank,
 
   if (!shown.length) return '<div style="color:var(--mu);font-family:var(--font-body);font-size:13px">Keep posting picks to unlock achievements.</div>';
 
+  const _prUnlock = picks.filter(p=>p.result==='win'||p.result==='loss'||p.result==='push').length < 20;
   return shown.map(u => {
     const pct = Math.min(100, Math.round((u.current / u.target) * 100));
-    const near = pct >= 80;
+    const near = pct >= 80 && !_prUnlock;
     const rewardText = REWARDS[u.label] || (u.label.includes('Division') ? u.label.split(' ')[0]+' division badge' : 'Achievement badge');
     return `
-      <div class="unlock-item">
+      <div class="unlock-item"${_prUnlock?' style="opacity:.5"':''}>
         <div class="unlock-top">
           <span class="unlock-icon">${pct>=100?'✓':'🔒'}</span>
           <span class="unlock-name">${u.label}</span>
-          <span class="unlock-progress">${u.text}</span>
+          <span class="unlock-progress" style="${_prUnlock?'color:var(--mu)':''}">${u.text}</span>
         </div>
         <div class="unlock-bar-track">
-          <div class="unlock-bar-fill${near?' fill-near':''}" style="width:0%" data-unlock-target="${pct}"></div>
+          <div class="unlock-bar-fill${near?' fill-near':''}" style="width:0%;${_prUnlock?'background:var(--mu)':''}" data-unlock-target="${pct}"></div>
         </div>
-        <div class="unlock-reward">Reward: ${rewardText}</div>
+        <div class="unlock-reward" style="${_prUnlock?'color:var(--mu)':''}">${_prUnlock?'Unlocks as your record grows':rewardText}</div>
       </div>
     `;
   }).join('');
