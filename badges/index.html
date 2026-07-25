@@ -281,10 +281,10 @@ const BADGES = [
   { id:'predator',       cat:'underdog',  icon:'🦅', name:'Predator',       rarity:'epic',      desc:'100 wins at odds 2.5+.',                     req:'100 underdog wins',reward:'Predator aura',      check: d => d.underdogWins>=100,                progress: d => ({cur:Math.min(d.underdogWins,100),max:100}) },
   { id:'monster',        cat:'underdog',  icon:'👹', name:'Monster',        rarity:'legendary', desc:'250 wins at odds 2.5+.',                     req:'250 underdog wins',reward:'Monster ring + glow', check: d => d.underdogWins>=250,               progress: d => ({cur:Math.min(d.underdogWins,250),max:250}) },
   // CLV
-  { id:'line-reader',    cat:'clv',       icon:'📖', name:'Line Reader',    rarity:'rare',      desc:'Positive CLV average (min 10 picks).',       req:'+CLV 10+ picks', reward:'CLV tag',              check: d => d.clvAvg>0&&d.picks>=10,            progress: d => ({cur:d.picks,max:10}) },
-  { id:'market-reader',  cat:'clv',       icon:'📊', name:'Market Reader',  rarity:'epic',      desc:'Positive CLV maintained over 30 picks.',     req:'+CLV 30+ picks', reward:'Market Reader border',  check: d => d.clvAvg>0&&d.picks>=30,           progress: d => ({cur:d.picks,max:30}) },
-  { id:'clv-master',     cat:'clv',       icon:'🔮', name:'CLV Master',     rarity:'epic',      desc:'Top 5% CLV across the entire platform.',     req:'Top 5% CLV',     reward:'CLV Master aura',       check: d => d.clvTop5,                          progress: d => ({cur:d.clvTop5?5:0,max:5}) },
-  { id:'vegas-nightmare',cat:'clv',       icon:'🃏', name:'Vegas Nightmare', rarity:'legendary', desc:'Top 1% CLV across the entire platform.',    req:'Top 1% CLV',     reward:'Vegas title + gold ring', check: d => d.clvTop1,                        progress: d => ({cur:d.clvTop1?1:0,max:1}) },
+  { id:'line-reader',    cat:'clv',       icon:'📖', name:'Line Reader',    rarity:'rare',      desc:'Positive CLV over 10+ picks.',               req:'clvAvg > 0 · 10+ picks',  reward:'CLV tag',              check: d => d.clvAvg>0&&d.picks>=10,            progress: d => ({cur:d.picks,max:10}) },
+  { id:'market-reader',  cat:'clv',       icon:'📊', name:'Market Reader',  rarity:'epic',      desc:'Positive CLV sustained over 30+ picks.',     req:'clvAvg > 0 · 30+ picks',  reward:'Market Reader border',  check: d => d.clvAvg>0&&d.picks>=30,           progress: d => ({cur:d.picks,max:30}) },
+  { id:'clv-master',     cat:'clv',       icon:'🔮', name:'CLV Master',     rarity:'epic',      desc:'Strong CLV average above 2 over 30+ picks.', req:'clvAvg > 2 · 30+ picks',  reward:'CLV Master aura',       check: d => d.clvAvg>2&&d.picks>=30,            progress: d => ({cur:Math.max(0,Math.min(d.clvAvg,2)),max:2,secondary:d.picks+'/30'}) },
+  { id:'vegas-nightmare',cat:'clv',       icon:'🃏', name:'Vegas Nightmare', rarity:'legendary', desc:'Elite CLV average above 3 over 50+ picks.', req:'clvAvg > 3 · 50+ picks',  reward:'Vegas title + gold ring', check: d => d.clvAvg>3&&d.picks>=50,          progress: d => ({cur:Math.max(0,Math.min(d.clvAvg,3)),max:3,secondary:d.picks+'/50'}) },
   // PRESTIGE
   { id:'diamond-soul',   cat:'prestige',  icon:'💎', name:'Diamond Soul',   rarity:'epic',      desc:'Reach Diamond division.',                    req:'Diamond division',reward:'Diamond ring',         check: d => ['diamond','elite','legendary'].includes(d.division), progress: d => ({cur:d.divIndex,max:4}) },
   { id:'elite-blood',    cat:'prestige',  icon:'🔴', name:'Elite Blood',    rarity:'legendary', desc:'Reach Elite division.',                      req:'Elite division', reward:'Elite blood ring',      check: d => ['elite','legendary'].includes(d.division),           progress: d => ({cur:d.divIndex,max:5}) },
@@ -537,8 +537,6 @@ function computeBadgeData(picks, rm, seasons, hofData) {
     bestStreak,
     underdogWins,
     profDays,
-    clvTop5: clvAvg>0&&picks.length>=10, // simplified
-    clvTop1: clvAvg>2&&picks.length>=50,
     isTop1: rank<=Math.max(1,Math.round(totalTipsters*0.01)),
     isHoF: hofData ? [hofData.roiLeader, hofData.streakKing, hofData.sharpElite].includes(ME_USERNAME) : false,
     isSeasonChamp: Array.isArray(seasons) && seasons.some(s => !s.isActive && s.champion === ME_USERNAME),
