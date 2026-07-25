@@ -450,26 +450,28 @@ function renderLegends(tipsters) {
   }
 
   el.innerHTML = legends.map((t, i) => {
+    const _lgS    = (t.wins||0)+(t.losses||0)+(t.pushes||0);
+    const _lgProv = _lgS < 20;
     const wr         = t.winRate != null ? (t.winRate * 100).toFixed(0) : '—';
     const eloDisplay = Math.max(0, (t.elo || 1000) - 1000);
-    const arch       = t.archetype;
-    const ssColor    = (t.sharpScore || 0) >= 70 ? 'var(--gr)' : (t.sharpScore || 0) >= 40 ? 'var(--gold)' : 'var(--rd)';
+    const arch       = _lgProv ? null : t.archetype;
+    const ssColor    = _lgProv ? 'var(--mu)' : ((t.sharpScore || 0) >= 70 ? 'var(--gr)' : (t.sharpScore || 0) >= 40 ? 'var(--gold)' : 'var(--rd)');
     return `
       <div class="legend-ring" onclick="window.location.href='/tipster?u=${t.username}'">
         <div class="legend-card">
           <div class="legend-rank">${['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ'][i] || i + 1}</div>
           <div class="legend-av" style="background:${AV_COLORS[i % AV_COLORS.length]}">${t.username.slice(0, 2).toUpperCase()}</div>
           <div class="legend-name">@${t.username}</div>
-          <div class="legend-div-tag">${getDivLabel(t.division)}</div>
+          <div class="legend-div-tag" ${_lgProv?'style="color:var(--mu);opacity:.6"':''}>${_lgProv?'◌ PROVISIONAL':getDivLabel(t.division)}</div>
           ${arch
             ? `<div style="font-family:var(--font-mono);font-size:9px;color:rgba(240,237,255,.4);margin-bottom:12px">${arch.icon} ${arch.name}</div>`
             : '<div style="margin-bottom:12px"></div>'}
-          <div class="legend-roi">${pos(t.roi)}${t.roi.toFixed(1)}%</div>
+          <div class="legend-roi" ${_lgProv?'style="color:var(--mu)"':''}>${pos(t.roi)}${t.roi.toFixed(1)}%${_lgProv?` <span style="font-size:8px;font-family:var(--font-mono);opacity:.7">· ${_lgS}/20</span>`:''}</div>
           <div class="legend-stats-row">
-            <div class="ls-i"><div class="ls-val" style="color:${ssColor}">${Math.round(t.sharpScore || 0)}</div><div class="ls-lbl">Sharp</div></div>
-            <div class="ls-i"><div class="ls-val">${wr}%</div><div class="ls-lbl">Win Rate</div></div>
+            <div class="ls-i"><div class="ls-val" style="color:${ssColor}">${_lgProv?'—':Math.round(t.sharpScore || 0)}</div><div class="ls-lbl">Sharp</div></div>
+            <div class="ls-i"><div class="ls-val" ${_lgProv?'style="color:var(--mu)"':''}>${wr}%</div><div class="ls-lbl">Win Rate</div></div>
             <div class="ls-i"><div class="ls-val">W${t.bestStreak || 0}</div><div class="ls-lbl">Best Streak</div></div>
-            <div class="ls-i"><div class="ls-val">+${eloDisplay}</div><div class="ls-lbl">ELO</div></div>
+            <div class="ls-i"><div class="ls-val" ${_lgProv?'style="color:var(--mu)"':''}>${_lgProv?'—':'+'+eloDisplay}</div><div class="ls-lbl">ELO</div></div>
           </div>
         </div>
       </div>`;

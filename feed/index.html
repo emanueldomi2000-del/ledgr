@@ -444,10 +444,12 @@ function renderHotTipsters(all){
   all.forEach(p=>{
     if(!p.username)return;
     const u=p.username;
-    if(!umap[u])umap[u]={pnl:0,stake:0,picks:0,totalPnl:0,wins:0,streak:0};
+    if(!umap[u])umap[u]={pnl:0,stake:0,picks:0,totalPnl:0,wins:0,losses:0,pushes:0,streak:0};
     umap[u].picks++;
     umap[u].totalPnl+=parseFloat(p.pnl)||0;
     if(p.result==='win')umap[u].wins++;
+    else if(p.result==='loss')umap[u].losses++;
+    else if(p.result==='push')umap[u].pushes++;
     const ts=new Date(p.createdAt).getTime();
     if(ts>=cut7){umap[u].pnl+=parseFloat(p.pnl)||0;umap[u].stake+=parseFloat(p.stake)||0;}
   });
@@ -458,7 +460,7 @@ function renderHotTipsters(all){
     let s=0;for(const p of settled){if(p.result==='win')s++;else break;}
     if(umap[u])umap[u].streak=s;
   });
-  const ranked=Object.entries(umap).filter(([,d])=>d.picks>=5&&d.stake>0).map(([u,d])=>({u,roi:((d.pnl/d.stake)*100),pnl:d.pnl,totalPnl:d.totalPnl,picks:d.picks,streak:d.streak})).sort((a,b)=>b.roi-a.roi).slice(0,5);
+  const ranked=Object.entries(umap).filter(([,d])=>d.picks>=5&&d.stake>0).map(([u,d])=>({u,roi:((d.pnl/d.stake)*100),pnl:d.pnl,totalPnl:d.totalPnl,picks:d.picks,streak:d.streak,settled:d.wins+d.losses+d.pushes})).sort((a,b)=>b.roi-a.roi).slice(0,5);
   if(!ranked.length){el.innerHTML='<div class="ht-empty">Not enough data yet.</div>';return;}
   el.innerHTML=ranked.map((t,i)=>{
     const ranks=['r1','r2','r3','',''];
@@ -470,7 +472,7 @@ function renderHotTipsters(all){
         <div class="ht-meta"><b>${t.picks}</b> picks · 7d window</div>
       </div>
       <div class="ht-right">
-        <div class="ht-roi ${t.roi<0?'neg':''}">${t.roi>=0?'+':''}${t.roi.toFixed(1)}%</div>
+        <div class="ht-roi" style="color:${t.settled<20?'var(--mu)':t.roi<0?'var(--rd)':'var(--gr)'}">${t.roi>=0?'+':''}${t.roi.toFixed(1)}%${t.settled<20?` <span style="font-size:8px;font-family:var(--font-mono)">· ${t.settled}/20</span>`:''}</div>
         <div class="ht-badges">
           ${t.streak>=2?`<span class="ht-chip ht-chip-str">W${t.streak}</span>`:''}
           ${t.pnl>0?`<span class="ht-chip ht-chip-pnl">+${t.pnl.toFixed(1)}u</span>`:''}

@@ -882,7 +882,7 @@ function buildHTML(d) {
         <div class="hero-pills">
           ${streak >= 3 ? `<span class="hero-pill pill-streak">${streak}W Streak 🔥</span>` : ''}
           ${rankPct != null ? `<span class="hero-pill pill-rank">Top ${100-rankPct}%</span>` : ''}
-          <span class="hero-pill ${sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}" style="cursor:pointer" onclick="showSharpExplainer()" title="Click to see why">Sharp: ${sharpScore.toFixed(0)} ⓘ</span>
+          ${(()=>{const _ps=wins+losses+pushes;const _pprov=_ps<20;return `<span class="hero-pill ${_pprov?'':sharpScore>=70?'pill-sharp-green':sharpScore>=40?'pill-sharp-amber':'pill-sharp-red'}" style="cursor:pointer${_pprov?';color:var(--mu);background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.08)':''}" onclick="showSharpExplainer()" title="Click to see why">Sharp: ${sharpScore.toFixed(0)}${_pprov?` · ${_ps}/20`:''} ⓘ</span>`;})()}
           ${tier.name !== 'LEGENDARY' ? `
           <div class="current-target-card">
             <div class="ct-eyebrow">Current Target</div>
@@ -1604,7 +1604,7 @@ function showSharpExplainer(){
       <div style="background:var(--s1);border:1px solid var(--bd);border-radius:16px;max-width:440px;width:100%;padding:26px;position:relative;max-height:85vh;overflow-y:auto">
         <button onclick="closeSharpExplainer()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--mu);font-size:20px;cursor:pointer;line-height:1">×</button>
         <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:4px">Why this Sharp Score</div>
-        <div style="font-family:var(--font-display);font-size:40px;color:var(--tx);margin-bottom:2px">${d.sharpScore.toFixed(0)}<span style="font-size:18px;color:var(--mu)">/100</span></div>
+        <div style="font-family:var(--font-display);font-size:40px;color:${d.totalPicks<20?'var(--mu)':'var(--tx)'};margin-bottom:2px">${d.sharpScore.toFixed(0)}<span style="font-size:18px;color:var(--mu)">/100</span>${d.totalPicks<20?`<span style="font-size:10px;font-family:var(--font-mono);color:var(--mu);margin-left:6px">· ${d.totalPicks}/20</span>`:''}</div>
         <div style="font-size:11px;color:var(--mu2);margin-bottom:20px">Raw ROI: ${d.roi>=0?'+':''}${d.roi.toFixed(1)}%, adjusted by three factors below</div>
 
         ${factors.map(f=>`

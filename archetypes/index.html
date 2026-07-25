@@ -814,8 +814,8 @@ function renderCurrentCard(sorted) {
       <div class="arch-class">${heroConfig.label}</div>
       <div class="arch-desc">${p.desc}</div>
       <div class="arch-stats-row">
-        <div class="as-item"><div class="as-val">${userStats.winRate}%</div><div class="as-lbl">WIN RATE</div></div>
-        <div class="as-item"><div class="as-val" style="color:${userStats.roi>=0?'#00E5A0':'#FF3355'}">${userStats.roi>=0?'+':''}${userStats.roi.toFixed(1)}%</div><div class="as-lbl">ROI</div></div>
+        <div class="as-item"><div class="as-val" style="${settled<20?'color:var(--mu)':''}">${userStats.winRate}%${settled<20?` <span style="font-size:8px;font-family:var(--font-mono)">· ${settled}/20</span>`:''}</div><div class="as-lbl">WIN RATE</div></div>
+        <div class="as-item"><div class="as-val" style="color:${settled<20?'var(--mu)':userStats.roi>=0?'#00E5A0':'#FF3355'}">${userStats.roi>=0?'+':''}${userStats.roi.toFixed(1)}%${settled<20?` <span style="font-size:8px;font-family:var(--font-mono)">· ${settled}/20</span>`:''}</div><div class="as-lbl">ROI</div></div>
         <div class="as-item"><div class="as-val">${userStats.picks}</div><div class="as-lbl">PICKS</div></div>
         <div class="as-item"><div class="as-val" style="color:${heroConfig.color}">${confidence}%</div><div class="as-lbl">MATCH</div></div>
       </div>

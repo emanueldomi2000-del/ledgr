@@ -755,7 +755,7 @@ function renderMovers(tipsters) {
 // Scrolling ticker bar
 function buildLbTicker(tipsters, picks) {
   const topStreak = [...tipsters].filter(t=>t.streak>0).sort((a,b)=>b.streak-a.streak)[0];
-  const topRoi = [...tipsters].filter(t=>t.picks>=5).sort((a,b)=>{
+  const topRoi = [...tipsters].filter(t=>{const _s=(t.wins||0)+(t.losses||0)+(t.pushes||0);return _s>=20&&t.picks>=5;}).sort((a,b)=>{
     const rA = a.roi!=null?a.roi:(a.stake>0?(a.pnl/a.stake)*100:0);
     const rB = b.roi!=null?b.roi:(b.stake>0?(b.pnl/b.stake)*100:0);
     return rB-rA;
@@ -764,12 +764,14 @@ function buildLbTicker(tipsters, picks) {
   const todayPicks = (picks||[]).filter(p=>new Date(p.createdAt).toDateString()===today).length;
   const roiVal = topRoi ? (topRoi.roi!=null?topRoi.roi:(topRoi.stake>0?(topRoi.pnl/topRoi.stake)*100:0)) : 0;
   const champ = tipsters[0];
+  const _champTickerSettled = champ ? (champ.wins||0)+(champ.losses||0)+(champ.pushes||0) : 0;
   const rank2 = tipsters[1];
   const champRoi = champ ? (champ.roi!=null?champ.roi:(champ.stake>0?(champ.pnl/champ.stake)*100:0)) : 0;
   const tickerMsgs = [
-    champ ? {text:`👑 THRONE: @${champ.username} +${champRoi.toFixed(1)}% ROI`,highlight:true} : null,
+    champ && _champTickerSettled>=20 ? {text:`👑 THRONE: @${champ.username} +${champRoi.toFixed(1)}% ROI`,highlight:true} : null,
+    champ && _champTickerSettled<20 ? {text:`📊 Season 3 underway — records still forming`,highlight:false} : null,
     topStreak ? {text:`🔥 HOT: @${topStreak.username} ${topStreak.streak}W streak`,highlight:false} : null,
-    champ && rank2 ? {text:`⚔️ GAP: ${Math.abs(champRoi-(rank2.roi||0)).toFixed(1)}% ROI difference`,highlight:false} : null,
+    champ && rank2 && _champTickerSettled>=20 ? {text:`⚔️ GAP: ${Math.abs(champRoi-(rank2.roi||0)).toFixed(1)}% ROI difference`,highlight:false} : null,
     {text:`📈 ACTIVE: ${tipsters.length||0} verified tipsters`,highlight:false},
     {text:`🔒 Zero fake records. Ever.`,highlight:false}
   ].filter(Boolean);
@@ -1200,12 +1202,12 @@ function renderLeaderboard() {
       const archHtml = _lbSettled>=20 && t.archetype && window.archetypeBadgeHTML ? window.archetypeBadgeHTML(t.archetype, false) : '';
 
       return `<div class="podium-card ${cls}" data-sh-user="${escapeHtml(t.username)}" onclick="window.location.href='/tipster?u=${encodeURIComponent(t.username)}'">
-        ${i===0 ? '<div class="conf-wrap" id="confWrap1"></div><div class="p1-sweep"></div>' : ''}
-        ${i===0 ? '<div class="pod-crown">👑</div>' : `<div class="side-card-label ${i===1?'silver':'bronze'}">${i===1?'⚔ CHASING THE THRONE':'🔥 FIGHTING FOR PODIUM'}</div><span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
-        ${i===0?`<div class="av-ring-wrap" style="width:${_avSz}px;margin:0 auto 10px"><div class="av-ring"></div>${podAv}</div>`:`<div style="margin:0 auto 10px;width:${_avSz}px">${podAv}</div>`}
+        ${i===0 && _lbSettled>=20 ? '<div class="conf-wrap" id="confWrap1"></div><div class="p1-sweep"></div>' : (i===0?'<div class="conf-wrap" id="confWrap1"></div>':'')}
+        ${i===0 ? (_lbSettled<20?'<div class="pod-crown" style="opacity:0.35;filter:grayscale(1)">◌</div>':'<div class="pod-crown">👑</div>') : `<div class="side-card-label ${i===1?'silver':'bronze'}">${i===1?'⚔ CHASING THE THRONE':'🔥 FIGHTING FOR PODIUM'}</div><span class="podium-medal-emoji">${['🥇','🥈','🥉'][i]}</span>`}
+        ${i===0?(_lbSettled>=20?`<div class="av-ring-wrap" style="width:${_avSz}px;margin:0 auto 10px"><div class="av-ring"></div>${podAv}</div>`:`<div style="width:${_avSz}px;margin:0 auto 10px">${podAv}</div>`):`<div style="margin:0 auto 10px;width:${_avSz}px">${podAv}</div>`}
         ${i===0 ? `
           <div style="text-align:center;padding:0 6px;">
-            <div style="font-size:9px;letter-spacing:0.2em;color:#FFD700;font-family:'DM Mono';margin-bottom:6px;">👑 CURRENT CHAMPION</div>
+            <div style="font-size:9px;letter-spacing:0.2em;color:${_lbSettled<20?'var(--mu)':'#FFD700'};font-family:'DM Mono';margin-bottom:6px;">${_lbSettled<20?'◌ EARLY LEADER · PROVISIONAL':'👑 CURRENT CHAMPION'}</div>
             <div style="font-family:'Bebas Neue';font-size:20px;color:var(--tx);margin:4px 0 2px;">@${t.username}</div>
             <div style="font-size:11px;color:var(--ac);font-family:'Syne';margin-bottom:4px;">${_lbSettled<20?'— · PROVISIONAL':`${getStr(t.archetype)||'The Sharp'} · ${div.name}`}</div>
             <div class="champ-status">
@@ -1216,11 +1218,13 @@ function renderLeaderboard() {
             ${_lbSettled>=20?`<div style="font-size:11px;color:var(--mu);font-family:'Syne',sans-serif;font-style:italic;margin:4px 0 8px;padding:5px 8px;background:rgba(255,255,255,0.03);border-radius:6px;">"${getEgoLine(t, top3[1])}"</div>`:''}
             <div style="display:flex;justify-content:center;gap:0;margin:8px 0 4px;align-items:flex-end">
               <div style="text-align:center;padding:0 14px;border-right:1px solid rgba(255,255,255,0.07)">
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#7B2CFF;line-height:1;" data-countup-rel="${rel}">${rel}</div>
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:${_lbSettled<20?'var(--mu)':'#7B2CFF'};line-height:1;" ${_lbSettled>=20?`data-countup-rel="${rel}"`:''}>${_lbSettled<20?'—':rel}</div>
                 <div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:0.15em;margin-top:2px;">RELIABILITY</div>
               </div>
               <div style="text-align:center;padding:0 14px">
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#00E5A0;line-height:1;" data-countup="${roi.toFixed(1)}" data-countup-prefix="${roi>=0?'+':''}" data-countup-suffix="%">${roi>=0?'+':''}${roi.toFixed(1)}%</div>
+                ${_lbSettled<20
+                  ? `<div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#00E5A0;line-height:1;">${roi>=0?'+':''}${roi.toFixed(1)}%</div><div style="font-size:9px;color:var(--mu);font-family:'DM Mono',monospace;margin-top:2px;">· ${_lbSettled}/20 picks</div>`
+                  : `<div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:#00E5A0;line-height:1;" data-countup="${roi.toFixed(1)}" data-countup-prefix="${roi>=0?'+':''}" data-countup-suffix="%">${roi>=0?'+':''}${roi.toFixed(1)}%</div>`}
                 <div style="font-size:8px;color:var(--mu);font-family:'DM Mono',monospace;letter-spacing:0.15em;margin-top:2px;">ROI</div>
               </div>
             </div>

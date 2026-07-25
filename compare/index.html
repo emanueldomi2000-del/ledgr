@@ -300,8 +300,8 @@ function renderGrid(side, query = '') {
     return `<div class="tc ${cls}${isOther?' style_grayed':''}" onclick="selectTipster('${side}','${t.username}')" title="@${t.username} · ${t.roi >= 0 ? '+' : ''}${t.roi.toFixed(1)}% ROI">
       <div class="tc-av" style="background:${t.color}">${t.username.slice(0,2).toUpperCase()}</div>
       <div class="tc-name">@${t.username}</div>
-      <div class="tc-roi" style="color:${t.roi>=0?'var(--gr)':'var(--rd)'}">${t.roi>=0?'+':''}${t.roi.toFixed(1)}%</div>
-      <div class="tc-sub">${t.picks} picks · ${t.wr.toFixed(0)}% WR</div>
+      <div class="tc-roi" style="color:${t.settled<20?'var(--mu)':t.roi>=0?'var(--gr)':'var(--rd)'}">${t.roi>=0?'+':''}${t.roi.toFixed(1)}%${t.settled<20?` <span style="font-size:8px;font-family:var(--font-mono)">· ${t.settled}/20</span>`:''}</div>
+      <div class="tc-sub">${t.picks} picks · <span style="${t.settled<20?'color:var(--mu)':''}">${t.wr.toFixed(0)}%</span> WR</div>
     </div>`;
   }).join('');
 }
@@ -474,17 +474,18 @@ async function runComparison() {
   const tA = allTipsters.find(t => t.username === selectedA);
   const tB = allTipsters.find(t => t.username === selectedB);
 
+  const _aP = sA.settled < 20, _bP = sB.settled < 20;
   const cats = [
-    { label: 'ROI',         a: sA.roi,        b: sB.roi,        fmt: 'pct', scored: true },
-    { label: 'WIN RATE',    a: sA.wr,         b: sB.wr,         fmt: 'pct', scored: true },
-    { label: 'P&L',         a: sA.pnl,        b: sB.pnl,        fmt: 'eur' },
-    { label: 'PICKS',       a: sA.picks,      b: sB.picks,      fmt: 'num' },
-    { label: 'AVG ODDS',    a: sA.avgOdds,    b: sB.avgOdds,    fmt: 'num', scored: true },
-    { label: 'RELIABILITY', a: sA.relScore,   b: sB.relScore,   fmt: 'num', scored: true },
-    { label: 'SHARP SCORE', a: sA.sharpScore, b: sB.sharpScore, fmt: 'num', scored: true },
-    { label: 'ELO',         a: sA.elo,        b: sB.elo,        fmt: 'num', scored: true },
-    { label: 'CLV',         a: sA.clv,        b: sB.clv,        fmt: 'pct', scored: true },
-    { label: 'STREAK',      a: sA.streak,     b: sB.streak,     fmt: 'num', scored: true },
+    { label: 'ROI',         a: sA.roi,                  b: sB.roi,                  fmt: 'pct', scored: true, pA:_aP, pB:_bP },
+    { label: 'WIN RATE',    a: sA.wr,                   b: sB.wr,                   fmt: 'pct', scored: true, pA:_aP, pB:_bP },
+    { label: 'P&L',         a: sA.pnl,                  b: sB.pnl,                  fmt: 'eur' },
+    { label: 'PICKS',       a: sA.picks,                b: sB.picks,                fmt: 'num' },
+    { label: 'AVG ODDS',    a: sA.avgOdds,              b: sB.avgOdds,              fmt: 'num', scored: true },
+    { label: 'RELIABILITY', a: _aP?null:sA.relScore,    b: _bP?null:sB.relScore,    fmt: 'num', scored: true },
+    { label: 'SHARP SCORE', a: _aP?null:sA.sharpScore,  b: _bP?null:sB.sharpScore,  fmt: 'num', scored: true },
+    { label: 'ELO',         a: _aP?null:sA.elo,         b: _bP?null:sB.elo,         fmt: 'num', scored: true },
+    { label: 'CLV',         a: sA.clv,                  b: sB.clv,                  fmt: 'pct', scored: true },
+    { label: 'STREAK',      a: sA.streak,               b: sB.streak,               fmt: 'num', scored: true },
   ];
   let aWins = 0, bWins = 0;
   cats.forEach(c => { if (!c.scored || c.a == null || c.b == null) return; if (c.a > c.b) aWins++; else if (c.b > c.a) bWins++; });
@@ -529,8 +530,8 @@ async function runComparison() {
            <div class="verdict-name ${verdictNameClass[winnerSide]}">@${winner}</div>
            <div class="verdict-margin">Beats @${winner === selectedA ? selectedB : selectedA} in ${Math.max(aWins, bWins)} of ${scoredCount} skill categories</div>
            <div class="verdict-stats">
-             <div class="vd-st"><div class="vd-val" style="color:${winnerStats.roi>=0?'var(--gr)':'var(--rd)'}">${winnerStats.roi>=0?'+':''}${winnerStats.roi.toFixed(1)}%</div><div class="vd-lbl">ROI</div></div>
-             <div class="vd-st"><div class="vd-val">${winnerStats.wr.toFixed(0)}%</div><div class="vd-lbl">Win Rate</div></div>
+             <div class="vd-st"><div class="vd-val" style="color:${winnerStats.settled<20?'var(--mu)':winnerStats.roi>=0?'var(--gr)':'var(--rd)'}">${winnerStats.roi>=0?'+':''}${winnerStats.roi.toFixed(1)}%${winnerStats.settled<20?` <span style="font-size:8px">· ${winnerStats.settled}/20</span>`:''}</div><div class="vd-lbl">ROI</div></div>
+             <div class="vd-st"><div class="vd-val" style="${winnerStats.settled<20?'color:var(--mu)':''}">${winnerStats.wr.toFixed(0)}%</div><div class="vd-lbl">Win Rate</div></div>
              <div class="vd-st"><div class="vd-val" style="color:${winnerStats.pnl>=0?'var(--gr)':'var(--rd)'}">${winnerStats.pnl>=0?'+':'-'}${Math.abs(winnerStats.pnl).toFixed(1)}u</div><div class="vd-lbl">P&L</div></div>
              <div class="vd-st"><div class="vd-val">${winnerStats.picks}</div><div class="vd-lbl">Picks</div></div>
              ${winnerStats.streak>=3?`<div class="vd-st"><div class="vd-val" style="color:var(--orange)">W${winnerStats.streak}</div><div class="vd-lbl">Streak</div></div>`:''}
@@ -573,7 +574,7 @@ async function runComparison() {
         return `<div class="stat-row">
           <div class="stat-row-inner">
             <div style="text-align:right">
-              <div class="stat-val stat-val-a ${aw?'winner-val':''}">${fmtVal(cat.a, cat.fmt)}</div>
+              <div class="stat-val stat-val-a ${aw?'winner-val':''}" ${cat.pA&&cat.a!=null?'style="color:var(--mu)"':''}>${fmtVal(cat.a, cat.fmt)}</div>
               ${aw ? '<div class="stat-win-badge stat-win-a">▲ WIN</div>' : ''}
             </div>
             <div class="stat-bar-zone">
@@ -584,7 +585,7 @@ async function runComparison() {
               </div>
             </div>
             <div style="text-align:left">
-              <div class="stat-val stat-val-b ${bw?'winner-val':''}">${fmtVal(cat.b, cat.fmt)}</div>
+              <div class="stat-val stat-val-b ${bw?'winner-val':''}" ${cat.pB&&cat.b!=null?'style="color:var(--mu)"':''}>${fmtVal(cat.b, cat.fmt)}</div>
               ${bw ? '<div class="stat-win-badge stat-win-b">▲ WIN</div>' : ''}
             </div>
           </div>
