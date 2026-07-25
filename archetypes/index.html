@@ -826,6 +826,7 @@ function renderCurrentCard(sorted) {
     </div>
   </div>`;
 
+  const _trProv = settled < 20;
   const _traitDefs = [
     {label:'Kill Accuracy',  icon:'🎯', val: Math.min(100, (userStats.winRate||0)*1.2)},
     {label:'Ice Control',    icon:'❄️', val: Math.min(100, 100-(userStats.highVariance?65:20))},
@@ -837,7 +838,10 @@ function renderCurrentCard(sorted) {
     _traitDefs.forEach(t => {
       const row = document.createElement('div');
       row.style.cssText = 'margin-bottom:8px';
-      row.innerHTML = `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:12px">${t.icon}</span><span style="font-size:10px;color:var(--mu);font-family:'Syne'">${t.label}</span><span style="font-size:10px;color:var(--ac);font-family:'DM Mono';margin-left:auto">${Math.round(t.val)}%</span></div><div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:linear-gradient(90deg,var(--ac),#00E5A0);width:0%;transition:width 1s ease" data-val="${t.val}"></div></div>`;
+      const _valColor = _trProv ? 'var(--mu)' : 'var(--ac)';
+      const _barBg = _trProv ? 'var(--mu)' : 'linear-gradient(90deg,var(--ac),#00E5A0)';
+      const _barVal = _trProv ? 0 : t.val;
+      row.innerHTML = `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:12px">${t.icon}</span><span style="font-size:10px;color:var(--mu);font-family:'Syne'">${t.label}</span><span style="font-size:10px;color:${_valColor};font-family:'DM Mono';margin-left:auto">${Math.round(t.val)}%</span></div><div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden"><div style="height:100%;border-radius:2px;background:${_barBg};width:0%;transition:width 1s ease" data-val="${_barVal}"></div></div>`;
       _barsEl.appendChild(row);
     });
     setTimeout(() => {

@@ -689,6 +689,8 @@ function renderCLV(){
 // ── 6. BEST MARKETS ───────────────────────────────────────────────
 function renderMarkets(){
   const el=document.getElementById('marketsWrap');
+  const _mktSett=allPicks.filter(p=>p.result==='win'||p.result==='loss'||p.result==='push').length;
+  const _mktProv=_mktSett<20;
   const map={};
   allPicks.forEach(p=>{
     const m=p.market.split(' ').slice(0,3).join(' ');
@@ -705,13 +707,15 @@ function renderMarkets(){
   if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No market data yet</div>';return;}
   const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
   el.innerHTML=`<table class="mkt-table"><thead><tr><th>Market</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">W-L-P</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
-    list.map(d=>{const rPos=d.roi>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wins}–${d.losses}${d.pushes>0?`–${d.pushes}P`:''}</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
+    list.map(d=>{const rPos=d.roi>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);const _rc=_mktProv?'var(--mu)':(rPos?'var(--gr)':'var(--rd)');return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${_rc}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${_rc}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:${_mktProv?'var(--mu)':'var(--mu2)'}">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wins}–${d.losses}${d.pushes>0?`–${d.pushes}P`:''}</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
   }</tbody></table>`;
 }
 
 // ── 7. BEST LEAGUES ───────────────────────────────────────────────
 function renderLeagues(){
   const el=document.getElementById('leaguesWrap');
+  const _lgSett=allPicks.filter(p=>p.result==='win'||p.result==='loss'||p.result==='push').length;
+  const _lgProv=_lgSett<20;
   const map={};
   allPicks.forEach(p=>{
     const key=(SPORT_ICON[p.sport]||'🎯')+' '+p.sport;
@@ -727,7 +731,7 @@ function renderLeagues(){
   if(!list.length){el.innerHTML='<div class="chart-empty" style="padding:24px">No league data yet</div>';return;}
   const maxROI=Math.max(...list.map(d=>Math.abs(d.roi)))||1;
   el.innerHTML=`<table class="mkt-table"><thead><tr><th>Sport</th><th style="text-align:right">ROI</th><th style="text-align:right">WR</th><th style="text-align:right">P&amp;L</th><th style="text-align:right">Picks</th></tr></thead><tbody>${
-    list.map(d=>{const rPos=d.roi>=0;const pPos=d.pnl>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${rPos?'var(--gr)':'var(--rd)'}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${rPos?'var(--gr)':'var(--rd)'}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu2)">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
+    list.map(d=>{const rPos=d.roi>=0;const pPos=d.pnl>=0;const barW=Math.min(100,(Math.abs(d.roi)/maxROI)*100).toFixed(0);const _lrc=_lgProv?'var(--mu)':(rPos?'var(--gr)':'var(--rd)');return`<tr><td><div class="mkt-name">${d.name}</div><div class="mkt-roi-bar"><div class="mkt-roi-fill" style="width:${barW}%;background:${_lrc}"></div></div></td><td style="text-align:right;font-family:var(--font-mono);color:${_lrc}">${rPos?'+':''}${d.roi.toFixed(1)}%</td><td style="text-align:right;font-family:var(--font-mono);color:${_lgProv?'var(--mu)':'var(--mu2)'}">${d.wr.toFixed(0)}%</td><td style="text-align:right;font-family:var(--font-mono);color:${pPos?'var(--gr)':'var(--rd)'}">${pPos?'+':''}${d.pnl.toFixed(1)}u</td><td style="text-align:right;font-family:var(--font-mono);color:var(--mu)">${d.picks}</td></tr>`;}).join('')
   }</tbody></table>`;
 }
 

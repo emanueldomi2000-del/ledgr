@@ -1576,8 +1576,8 @@ function renderIdentityPanel(myPicks,rank,totalTipsters){
   if(user&&user.id){fetch(API+'/subscribers/'+user.id).then(r=>r.json()).then(d=>{if(d.count>0){const el=document.getElementById('idSubscriberCount');if(el){el.textContent=d.count+(d.count===1?' subscriber':' subscribers');el.style.display='block';}}}).catch(()=>{});}
   // Status strip
   {const _stk=myPicks.reduce((s,p)=>s+p.stake,0),_pnl=myPicks.reduce((s,p)=>s+p.pnl,0);const _roi=_stk>0?(_pnl/_stk)*100:0;renderStatusStrip(myPicks,finalRank,finalStreak,_roi);}
-  // Season percentile
-  if(finalRank>0&&totalTipsters>0){const _behind=Math.max(0,totalTipsters-finalRank);const _pct=Math.round((_behind/totalTipsters)*100);const _pctEl=document.getElementById('seasonPercentile');if(_pctEl)_pctEl.textContent='Top '+(100-_pct)+'% · '+_behind+' player'+(_behind!==1?'s':'')+' behind you';}
+  // Season percentile — requires ≥20 settled picks AND ≥20 real tipsters to be meaningful
+  {const _ipS=rm&&rm.totalPicks!=null?rm.totalPicks:myPicks.filter(p=>p.result!=='pending').length;if(finalRank>0&&totalTipsters>=20&&_ipS>=20){const _behind=Math.max(0,totalTipsters-finalRank);const _pct=Math.round((_behind/totalTipsters)*100);const _pctEl=document.getElementById('seasonPercentile');if(_pctEl)_pctEl.textContent='Top '+(100-_pct)+'% · '+_behind+' player'+(_behind!==1?'s':'')+' behind you';}}
   // Show season info in sidebar card
   loadSeasonInfo(rank);
 }
@@ -1702,12 +1702,13 @@ function renderStats(all){
   animateCounter('statTotal',my.length);
   const wrEl=document.getElementById('statWR');if(wrEl){wrEl.textContent=wr+'%';wrEl.style.color=wins+losses<20?'var(--mu)':'';}
   const roiEl=document.getElementById('statROI');if(roiEl){const _sp=wins+losses;roiEl.className='stat-val';roiEl.innerHTML=roiBadgeHTML(parseFloat(roi),_sp);}
-  const pnlEl=document.getElementById('statPnL');if(pnlEl){pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');}
+  const _sSett=wins+losses;
+  const pnlEl=document.getElementById('statPnL');if(pnlEl){pnlEl.textContent=(pnl>=0?'+€':'-€')+Math.abs(pnl).toFixed(2);if(_sSett<20){pnlEl.className='stat-val';pnlEl.style.color='var(--mu)';}else{pnlEl.className='stat-val '+(pnl>=0?'pos':'neg');pnlEl.style.color='';}}
   if(window.LEDGR&&LEDGR.countUp){const _wrEl=document.getElementById('statWR');if(_wrEl)LEDGR.countUp(_wrEl,parseFloat(wr),{decimals:0,suffix:'%'});}
-  const hsR=document.getElementById('hsROI');if(hsR)hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';
+  const hsR=document.getElementById('hsROI');if(hsR){hsR.textContent=(parseFloat(roi)>=0?'+':'')+roi+'%';hsR.style.color=_sSett<20?'var(--mu)':'';}
   const settled=[...my].filter(p=>p.result!=='pending').reverse();let st=0;for(const p of settled){if(p.result==='win')st++;else break;}
-  const hsS=document.getElementById('hsStreak');if(hsS)hsS.textContent=st>0?st+'W':'—';
-  if(st>=3){const spEl=document.getElementById('streakPill');if(spEl){spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);if(window.Moments)window.Moments.applyStreak(spEl,st);}const stEl=document.getElementById('streakText');if(stEl)stEl.textContent=st+' WIN STREAK';}
+  const hsS=document.getElementById('hsStreak');if(hsS){hsS.textContent=st>0?st+'W':'—';hsS.style.color=_sSett<20?'var(--mu)':'';}
+  if(st>=3&&_sSett>=20){const spEl=document.getElementById('streakPill');if(spEl){spEl.style.display='inline-flex';spEl.classList.toggle('fire-5',st>=5);spEl.classList.toggle('fire-3',st>=3&&st<5);if(window.Moments)window.Moments.applyStreak(spEl,st);}const stEl=document.getElementById('streakText');if(stEl)stEl.textContent=st+' WIN STREAK';}
   // Stat deltas
   {
     const _td=new Date().toDateString();const _todayCt=my.filter(p=>new Date(p.createdAt).toDateString()===_td).length;
@@ -1884,7 +1885,7 @@ function renderProfileCard(all){
   const hsRank=document.getElementById('hsRank');if(hsRank)hsRank.textContent=rank>0?'#'+rank:'#—';
   const rawRel=getReliability(my).score;
   const {score}={score:rmPc?Math.round(rmPc.reliabilityScore):rawRel};
-  const hsRel=document.getElementById('hsRel');if(hsRel)hsRel.textContent=score>0?score+'%':'0%';
+  const hsRel=document.getElementById('hsRel');if(hsRel){const _pcS=rmPc&&rmPc.totalPicks!=null?rmPc.totalPicks:my.filter(p=>p.result!=='pending').length;hsRel.textContent=score>0?score+'%':'0%';hsRel.style.color=_pcS<20?'var(--mu)':'';}
   const D={LEGENDARY:{name:'LEGENDARY',cls:'div-legend',icon:'◉'},ELITE:{name:'ELITE',cls:'div-elite',icon:'⊕'},DIAMOND:{name:'DIAMOND',cls:'div-diamond',icon:'✦'},PLATINUM:{name:'PLATINUM',cls:'div-platinum',icon:'⬡'},GOLD:{name:'GOLD',cls:'div-gold',icon:'★'},SILVER:{name:'SILVER',cls:'div-silver',icon:'◆'},BRONZE:{name:'BRONZE',cls:'div-bronze',icon:'▲'}};
   const div=rmPc&&rmPc.division&&D[rmPc.division]?D[rmPc.division]:getDivision(my);
   const db=document.getElementById('divisionBadge');

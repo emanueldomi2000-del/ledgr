@@ -503,8 +503,8 @@ function runSimulator() {
         ${r.settled < 20 ? `<div class="sim-sample-warn">⚠ Limited data — fewer than 20 verified picks</div>` : ''}
         ${r.missingOddsCount > 0 ? `<div class="sim-note">ⓘ ${r.missingOddsCount} pick${r.missingOddsCount > 1 ? 's' : ''} used default odds of 2.0 — actual odds unavailable.</div>` : ''}
         <div class="tc-stats">
-          <div><div class="tc-stat-val" style="color:${pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi.toFixed(1)}%</div><div class="tc-stat-lbl">ROI</div></div>
-          <div><div class="tc-stat-val">${r.wr.toFixed(0)}%</div><div class="tc-stat-lbl">Win Rate</div></div>
+          <div><div class="tc-stat-val" style="color:${r.settled<20?'var(--mu)':pos?'var(--gr)':'var(--rd)'}">${pos?'+':''}${r.roi.toFixed(1)}%</div><div class="tc-stat-lbl">ROI</div></div>
+          <div><div class="tc-stat-val" style="${r.settled<20?'color:var(--mu)':''}">${r.wr.toFixed(0)}%</div><div class="tc-stat-lbl">Win Rate</div></div>
           <div><div class="tc-stat-val">${currency}${r.finalBankroll.toFixed(0)}</div><div class="tc-stat-lbl">Final</div></div>
           <div><div class="tc-stat-val">${r.maxDD.toFixed(0)}%</div><div class="tc-stat-lbl">Max DD</div></div>
         </div>
