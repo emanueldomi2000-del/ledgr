@@ -111,6 +111,54 @@
       what: 'Mean decimal odds across all picks posted by this tipster.',
       why: 'Context for profitability — a 55% win rate at 1.5 odds is very different from 45% at 2.8. Higher avg odds means higher variance and harder to sustain edge.',
       how: 'Sum of all pick odds ÷ total number of picks'
+    },
+    discipline: {
+      label: 'Discipline',
+      what: 'How consistent your stake sizing is across picks.',
+      why: 'Erratic staking is a classic sign of chasing losses. High discipline means you bet with a plan, not on emotion.',
+      how: 'Keep stakes proportional and steady. Avoid sudden large bets after a loss.'
+    },
+    risk: {
+      label: 'Risk',
+      what: 'The average riskiness of your picks, based on the odds you take.',
+      why: 'Higher odds = higher variance. This shows whether you play safe favorites or chase long shots.',
+      how: 'Neither high nor low is "better" — it reflects your style. What matters is profitability at your chosen risk level.'
+    },
+    consistency: {
+      label: 'Consistency',
+      what: 'How stable your results are over time.',
+      why: 'Steady performance is more trustworthy than a few lucky spikes. Consistency separates skill from variance.',
+      how: 'Post regularly and let a longer track record smooth out the noise.'
+    },
+    clutch: {
+      label: 'Clutch',
+      what: 'How you perform on higher-stakes or high-pressure picks.',
+      why: 'Some tipsters fold when it matters. A high clutch score means you deliver when the stakes are up.',
+      how: 'Built from your results on your biggest-stake picks over time.'
+    },
+    aggression: {
+      label: 'Aggression',
+      what: 'How often and how boldly you bet.',
+      why: 'Shows your betting tempo — measured and selective, or frequent and bold. Context for your other stats.',
+      how: 'Reflects volume and stake size. Not good or bad on its own — it defines your profile.'
+    },
+    bestStreak: {
+      label: 'Best Streak Ever',
+      what: 'Your longest run of consecutive wins, all-time.',
+      why: 'A career-high highlight. Long streaks are rare and show sustained form.',
+      how: 'Keep winning — this updates automatically when you beat your record.'
+    },
+    bestWin: {
+      label: 'Best Win',
+      what: 'Your single most profitable settled pick.',
+      why: 'Your peak result — the biggest units won on one pick.',
+      how: 'Recorded automatically from your verified picks.'
+    },
+    globalRank: {
+      label: 'Global Rank',
+      what: 'Your position among all ranked tipsters on LEDGR.',
+      why: 'Where you stand platform-wide. Earned only with a verified record (20+ settled picks).',
+      how: 'Climb by improving your division score: profitability, consistency, and volume over time.'
     }
   };
 
@@ -296,9 +344,17 @@
     { re: /division/i,             key: 'division'    },
     { re: /\bclv\b/i,              key: 'clv'         },
     { re: /\bpicks?\b/i,           key: 'picks'       },
+    { re: /best\s*streak/i,        key: 'bestStreak'  },
     { re: /\bstreak\b/i,           key: 'streak'      },
     { re: /\bscore\b/i,            key: 'score'       },
     { re: /avg\s*odds|average\s*odds/i, key: 'avgOdds' },
+    { re: /\bdiscipline\b/i,       key: 'discipline'  },
+    { re: /\brisk\b/i,             key: 'risk'        },
+    { re: /\bconsisten/i,          key: 'consistency' },
+    { re: /\bclutch\b/i,           key: 'clutch'      },
+    { re: /\baggression\b/i,       key: 'aggression'  },
+    { re: /best\s*win/i,           key: 'bestWin'     },
+    { re: /global\s*rank/i,        key: 'globalRank'  },
   ];
 
   const SELS = [
@@ -346,11 +402,13 @@
       const txt = el.textContent.trim();
       for (var i = 0; i < PATTERNS.length; i++) {
         if (PATTERNS[i].re.test(txt)) {
+          var key = PATTERNS[i].key;
+          if (!TIPS[key]) continue;
           el.setAttribute('data-tt-done', '1');
           el.style.display = el.style.display || 'inline-flex';
           el.style.alignItems = 'center';
           el.style.gap = '3px';
-          el.appendChild(mkBtn(PATTERNS[i].key));
+          el.appendChild(mkBtn(key));
           break;
         }
       }
