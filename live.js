@@ -40,8 +40,6 @@
       '.lv-msgs{display:flex;gap:48px;white-space:nowrap;animation:lv-tick 20s linear infinite;font-family:\'DM Mono\',monospace;font-size:9px;color:rgba(106,102,144,.85)}',
       '.lv-msgs b{color:#9590b8}',
       '@keyframes lv-tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}',
-      '.lv-online-lbl{font-family:\'DM Mono\',monospace;font-size:9px;color:#34d399;flex-shrink:0;letter-spacing:1px}',
-
       // Shared pulsing dot
       '.lv-dot{width:5px;height:5px;background:#34d399;border-radius:50%;flex-shrink:0;display:inline-block;animation:lv-blink 1.5s infinite}',
       '@keyframes lv-blink{0%,100%{opacity:1}50%{opacity:.35}}',
@@ -216,19 +214,6 @@
     _tickerMsgs.unshift(msg);
     if (_tickerMsgs.length > MAX_TICKER) _tickerMsgs.length = MAX_TICKER;
     _refreshTicker();
-  }
-
-  // ── Online count ─────────────────────────────────────────────────────────────
-  var _lastOnlineUpdate = 0;
-  function _setOnline(n) {
-    var now = Date.now();
-    if (now - _lastOnlineUpdate < 45000) return;
-    _lastOnlineUpdate = now;
-    var label = n + ' online';
-    var homeEl = document.getElementById('onlineCount');
-    if (homeEl) homeEl.textContent = label;
-    var lbEl = document.getElementById('lv-online');
-    if (lbEl) lbEl.textContent = label;
   }
 
   // ── Sidebar ──────────────────────────────────────────────────────────────────
@@ -458,10 +443,6 @@
     var SIDEBAR_TYPES = ['pick_win', 'big_win', 'underdog_hit', 'streak_milestone', 'division_up', 'rank_up', 'milestone_pick'];
     var TICKER_MIN_RARITY = 2;
 
-    window.LedgrWS.on('online_count', function (ev) {
-      _setOnline(ev.n != null ? ev.n : (ev.payload && ev.payload.n));
-    });
-
     SIDEBAR_TYPES.forEach(function (type) {
       window.LedgrWS.on(type, function (ev) {
         if (!window.LedgrWS.isVisible()) return;  // tab hidden — suppress UI, keep processing
@@ -537,7 +518,6 @@
     wrap.innerHTML =
       '<div class="lv-ticker-inner">' +
         '<span class="lv-dot"></span>' +
-        '<span class="lv-online-lbl" id="lv-online">— online</span>' +
         '<div class="lv-scroll"><div class="lv-msgs" id="lv-msgs"><span>Loading…</span><span>Loading…</span></div></div>' +
       '</div>';
     main.parentNode.insertBefore(wrap, main);
@@ -560,16 +540,6 @@
       _refreshTicker();
       _observeTicker('lv-msgs');
       _observeTicker('tickerText');
-
-      // Online count: server will push real count, show reasonable placeholder from picks
-      // Active in last 7 days (not faked with multiplier)
-      var now = Date.now();
-      var active = {};
-      picks.forEach(function (p) {
-        if (now - new Date(p.createdAt).getTime() < 604800000 && p.user && p.user.username)
-          active[p.user.username] = 1;
-      });
-      _setOnline(Object.keys(active).length);
 
       // Sidebar: populate history queue with recent wins (fallback for idle periods)
       setTimeout(function () {

@@ -287,7 +287,6 @@
     { href: '/simulator',    label: 'Simulator',      icon: '📊',  key: 'simulator',     desktopVisible: false, section: 'explore' },
     { href: '/analytics',    label: 'Analytics',      icon: '📈',  key: 'analytics',     desktopVisible: false, section: 'explore' },
     { href: '/badges',       label: 'Badges',         icon: '🎖️', key: 'badges',        desktopVisible: false, section: 'explore' },
-    { href: '/news',         label: 'Sports Intel',   icon: '📰',  key: 'news',          desktopVisible: false, section: 'explore' },
     { href: '/archetypes',     label: 'Archetypes',     icon: '🧬',  key: 'archetypes',     desktopVisible: false, section: 'explore' },
     { href: '/settings',     label: 'Settings',       icon: '⚙️',  key: 'settings',       desktopVisible: false, section: 'account' },
     { href: '/notifications', label: 'Notifications', icon: '🔔',  key: 'notifications', desktopVisible: false, section: 'account' }

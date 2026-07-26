@@ -16,18 +16,8 @@
 .at-gauge-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:help}
 .at-gauge-lbl{font-family:'DM Mono',monospace;font-size:9px;color:rgba(240,237,255,0.35);letter-spacing:3px;text-transform:uppercase}
 
-/* Tooltip wrapper — pure CSS */
+/* Tooltip wrapper layout (events handled by tooltips.js) */
 .at-tip{position:relative;display:inline-flex;flex-direction:column;align-items:center}
-.at-tip::after{
-  content:attr(data-tip);
-  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
-  background:#0d0b18;border:1px solid rgba(184,159,255,0.2);color:#9590b8;
-  font-family:'DM Mono',monospace;font-size:10px;line-height:1.6;padding:10px 14px;
-  border-radius:10px;width:240px;white-space:normal;text-align:center;
-  box-shadow:0 8px 32px rgba(0,0,0,0.6);pointer-events:none;
-  opacity:0;transition:opacity .2s;z-index:900
-}
-.at-tip:hover::after{opacity:1}
 
 /* Archetype badge — profile & leaderboard (standard) */
 .at-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:'DM Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;border:1px solid;cursor:default;transition:opacity .2s}

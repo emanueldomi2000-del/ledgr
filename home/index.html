@@ -854,7 +854,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="ticker-wrap">
   <div class="ticker-inner-wrap">
     <div class="live-dot"></div>
-    <span class="online-count" id="onlineCount">— online</span>
     <div class="ticker-scroll">
       <div class="ticker-text" id="tickerText">
         <span><b>LEDGR</b> — picks verified in real time</span>
@@ -2667,11 +2666,6 @@ function showPersonalLoss(payload) {
 /* ── WS INTEGRATION ─────────────────────────────────────────── */
 function subscribeWS(){
   if(!window.LedgrWS)return;
-
-  window.LedgrWS.on('online_count',function(ev){
-    const n=ev.n!=null?ev.n:(ev.payload&&ev.payload.n!=null?ev.payload.n:null);
-    if(n!=null){const oc=document.getElementById('onlineCount');if(oc)oc.textContent=n+' online';}
-  });
 
   // Personal: my pick was graded
   window.LedgrWS.on('pick_result',function(ev){

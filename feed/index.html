@@ -237,11 +237,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <!-- ══ HERO STAT STRIP ══ -->
 <div class="hero-grid reveal" id="heroGrid">
   <div class="hero-stat">
-    <div class="hs-label">Online Now</div>
-    <div class="hs-value ac" id="hsOnline">—</div>
-    <div class="hs-meta">users active</div>
-  </div>
-  <div class="hero-stat">
     <div class="hs-label">Picks Today</div>
     <div class="hs-value" id="hsPicksToday">—</div>
     <div class="hs-meta">verified posts</div>
@@ -293,11 +288,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div id="hotTipsters"><div class="ht-empty">Loading tipsters...</div></div>
     </div>
 
-    <!-- INTEL FEED -->
-    <div class="pulse-section">
-      <div class="ps-head">INTEL <span class="ps-sub">INJURIES + NEWS</span></div>
-      <div id="intelFeed"></div>
-    </div>
 
   </div>
 </div>
@@ -601,10 +591,6 @@ function _wsEventToFeedEvent(wsEv){
 
 function subscribeWS(){
   if(!window.LedgrWS)return;
-  window.LedgrWS.on('online_count',function(ev){
-    const n=ev.n!=null?ev.n:(ev.payload&&ev.payload.n!=null?ev.payload.n:null);
-    if(n!=null){const el=document.getElementById('hsOnline');if(el)el.textContent=n;}
-  });
   const WS_TYPES=['pick_win','big_win','underdog_hit','streak_milestone','division_up','milestone_pick'];
   WS_TYPES.forEach(function(type){
     window.LedgrWS.on(type,function(ev){

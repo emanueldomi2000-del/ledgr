@@ -36,7 +36,6 @@ function brandNavInit() {
           ['Badges',          '/badges'],
           ['Progress',        '/progress'],
           ['Hall of Fame',    '/hall-of-fame'],
-          ['News',            '/news'],
           ['Settings',        '/settings'],
           ['Notifications',   '/notifications'],
         ].map(([label, href]) => '<a href="' + href + '" class="brand-snl">' + label + '</a>').join('');

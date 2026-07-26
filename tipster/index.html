@@ -382,7 +382,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <style>
 .tip-trigger{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:var(--s2);border:1px solid var(--ac-vivid);border-radius:50%;font-size:10px;color:var(--ac-light);cursor:pointer;margin-left:4px;flex-shrink:0;vertical-align:middle;transition:background .15s,border-color .15s;position:relative;line-height:1}
 .tip-trigger:hover{background:rgba(123,44,255,0.2);border-color:var(--ac-light)}
-.tip-popup{display:none;position:fixed;z-index:99999;background:var(--s2);border:1px solid var(--ac-vivid);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--tx);max-width:260px;line-height:1.5;box-shadow:0 0 20px var(--glow-vivid);pointer-events:none}
 </style>
 <link rel="stylesheet" href="/app-tokens.css">
 <link rel="stylesheet" href="/app-components.css">
@@ -1621,7 +1620,6 @@ async function loadProfile(){
           <div class="panel-title" id="picksTitle">VERIFIED PICKS <span class="panel-count">${wins+losses+pushes}</span></div>
           <div class="activity-tabs-bar">
             <button class="atab active" onclick="switchActivity('picks',this)">PICKS</button>
-            <button class="atab" onclick="switchActivity('posts',this)">POSTS</button>
             ${(()=>{const _lu=JSON.parse(localStorage.getItem('ledgr_user')||localStorage.getItem('user')||'null');return _lu&&_lu.id===tipsterUserId?'<button class="atab" onclick="switchActivity(\'notes\',this)">NOTES</button>':''})()}
           </div>
           <div id="activityPicks">
@@ -1719,7 +1717,6 @@ async function loadProfile(){
       }
       if(tipsterUserId)initSubscriptionUI(tipsterUserId);
       if(window.initTooltips)window.initTooltips();
-      initTipTriggers();
       if(window.LEDGR&&LEDGR.observeReveal)LEDGR.observeReveal();
 
       // Re-apply cosmetics after full DOM is ready (catches avatar from Divisions)
@@ -1847,44 +1844,6 @@ async function tipsterTail(pickId,btn,ev){
 loadProfile();
 
 function logout(){['ledgr_token','ledgr_user','token','user','username'].forEach(k=>localStorage.removeItem(k));window.location.href='/';}
-function initTipTriggers(){
-  let popup=document.getElementById('globalTipPopup');
-  if(!popup){
-    popup=document.createElement('div');
-    popup.id='globalTipPopup';
-    popup.className='tip-popup';
-    document.body.appendChild(popup);
-    // keep popup alive when mouse enters it
-    popup.addEventListener('mouseenter',function(){clearTimeout(popup._hideTimer);});
-    popup.addEventListener('mouseleave',function(){popup.style.display='none';});
-  }
-  document.querySelectorAll('.tip-trigger').forEach(function(el){
-    if(el._tipInited)return;
-    el._tipInited=true;
-    el.addEventListener('mouseenter',function(e){
-      clearTimeout(popup._hideTimer);
-      popup.textContent=el.getAttribute('data-tip')||'';
-      popup.style.display='block';
-      var r=el.getBoundingClientRect();
-      var pw=260,ph=popup.offsetHeight||80;
-      var left=r.left+r.width/2-pw/2;
-      left=Math.max(8,Math.min(left,window.innerWidth-pw-8));
-      var top=r.top-ph-10;
-      if(top<8)top=r.bottom+10;
-      popup.style.left=left+'px';
-      popup.style.top=top+'px';
-    });
-    el.addEventListener('mouseleave',function(){
-      popup._hideTimer=setTimeout(function(){popup.style.display='none';},150);
-    });
-    el.addEventListener('click',function(e){
-      e.stopPropagation();
-      if(popup.style.display==='block'){popup.style.display='none';}
-      else{el.dispatchEvent(new MouseEvent('mouseenter'));}
-    });
-  });
-  document.addEventListener('click',function(){popup.style.display='none';},{passive:true});
-}
 </script>
 <script src="/shared/identity.js"></script>
 <img src="/assets/logo/ledgr-icon.png" alt="" style="position:fixed;bottom:80px;right:20px;height:100px;opacity:0.03;pointer-events:none;z-index:0;">

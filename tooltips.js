@@ -93,6 +93,18 @@
       what: 'Total number of picks posted by this tipster.',
       why: 'Higher volume makes results more statistically significant and harder to attribute to luck.',
       how: 'Count of all picks. 30+ is the minimum for statistical meaning; 100+ for confidence.'
+    },
+    streak: {
+      label: 'Current Streak',
+      what: 'Consecutive wins (or losses) without interruption from the most recent settled pick.',
+      why: 'A long win streak at odds above 1.5 signals genuine edge, not just a lucky run.',
+      how: 'Count of consecutive identical results (W or L) working backwards from the latest pick.'
+    },
+    score: {
+      label: 'Division Score',
+      what: 'A composite performance score that determines your division tier (Bronze → Legendary).',
+      why: 'Combines multiple signals into one number for fair cross-tipster comparison.',
+      how: 'ROI (max 40) + Win Rate (max 30) + Volume factor (max 20) + Activity (max 10)'
     }
   };
 
@@ -197,6 +209,76 @@
     if (activeBtn) { activeBtn.classList.remove('tt-open'); activeBtn = null; }
   }
 
+  // ── Raw text show (for [data-tip] elements) ───────────────────
+  function showRaw(el, text) {
+    if (isMobile && activeBtn === el && getBox().classList.contains('tt-show')) {
+      hide();
+      return;
+    }
+    clearTimeout(hideTimer);
+    activeBtn = el;
+    document.querySelectorAll('.tt-q.tt-open').forEach(function (b) { b.classList.remove('tt-open'); });
+
+    var b = getBox();
+    b.innerHTML = '<div class="tt-what">' + text + '</div><div class="tt-arrow"></div>';
+    b.classList.remove('tt-show', 'tt-below');
+
+    requestAnimationFrame(function () {
+      var bw = b.offsetWidth  || 260;
+      var bh = b.offsetHeight || 80;
+      var br = el.getBoundingClientRect();
+      var below = br.top < bh + 20;
+
+      var left = br.left + br.width / 2 - bw / 2;
+      left = Math.max(8, Math.min(left, window.innerWidth - bw - 8));
+
+      var top = below
+        ? br.bottom + window.scrollY + 12
+        : br.top   + window.scrollY - bh - 12;
+
+      b.style.left = left + 'px';
+      b.style.top  = top  + 'px';
+
+      var arrowLeft = br.left + br.width / 2 - left - 5;
+      var arrow = b.querySelector('.tt-arrow');
+      if (arrow) arrow.style.left = Math.max(10, Math.min(arrowLeft, bw - 20)) + 'px';
+
+      if (below) b.classList.add('tt-below');
+      b.classList.add('tt-show');
+    });
+  }
+
+  // ── Bind [data-tip] elements directly ────────────────────────
+  function bindDataTips() {
+    document.querySelectorAll('[data-tip]:not([data-tt-bound])').forEach(function (el) {
+      el.setAttribute('data-tt-bound', '1');
+      var text = el.getAttribute('data-tip');
+
+      el.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        showRaw(el, text);
+      }, { passive: false });
+
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!isMobile) showRaw(el, text);
+      });
+
+      el.addEventListener('mouseenter', function () {
+        if (!isMobile) { clearTimeout(hideTimer); showRaw(el, text); }
+      });
+
+      el.addEventListener('mouseleave', function () {
+        if (!isMobile) {
+          hideTimer = setTimeout(function () {
+            if (box && !box.matches(':hover') && activeBtn === el) hide();
+          }, 150);
+        }
+      });
+    });
+  }
+
   // ── Injection ────────────────────────────────────────────────────
   const PATTERNS = [
     { re: /\broi\b/i,              key: 'roi'         },
@@ -210,12 +292,14 @@
     { re: /division/i,             key: 'division'    },
     { re: /\bclv\b/i,              key: 'clv'         },
     { re: /\bpicks?\b/i,           key: 'picks'       },
+    { re: /\bstreak\b/i,           key: 'streak'      },
+    { re: /\bscore\b/i,            key: 'score'       },
   ];
 
   const SELS = [
     '.stat-lbl', '.stat-label', '.lsl', '.sb-lbl',
     '.perf-key', '.id-stat-lbl', '.at-ss-lbl', '.at-gauge-lbl',
-    '.rel-label', '.lb-head span', '.panel-title'
+    '.rel-label', '.lb-head span', '.panel-title', '.mom-stat-lbl'
   ].join(',');
 
   function mkBtn(key) {
@@ -255,7 +339,7 @@
 
   function injectTooltips() {
     document.querySelectorAll(SELS).forEach(function (el) {
-      if (el.querySelector('.tt-q') || el.querySelector('.tip-trigger') || el.getAttribute('data-tt-done')) return;
+      if (el.querySelector('.tt-q') || el.getAttribute('data-tt-done')) return;
       const txt = el.textContent.trim();
       for (var i = 0; i < PATTERNS.length; i++) {
         if (PATTERNS[i].re.test(txt)) {
@@ -274,11 +358,12 @@
   let debTimer;
   const obs = new MutationObserver(function () {
     clearTimeout(debTimer);
-    debTimer = setTimeout(injectTooltips, 280);
+    debTimer = setTimeout(function () { injectTooltips(); bindDataTips(); }, 280);
   });
 
   function boot() {
     injectTooltips();
+    bindDataTips();
     obs.observe(document.body, { childList: true, subtree: true });
   }
 
@@ -288,6 +373,6 @@
     setTimeout(boot, 100);
   }
 
-  window.initTooltips = injectTooltips;
+  window.initTooltips = function () { injectTooltips(); bindDataTips(); };
 
 })();
