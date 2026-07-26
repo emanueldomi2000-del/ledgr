@@ -105,6 +105,12 @@
       what: 'A composite performance score that determines your division tier (Bronze → Legendary).',
       why: 'Combines multiple signals into one number for fair cross-tipster comparison.',
       how: 'ROI (max 40) + Win Rate (max 30) + Volume factor (max 20) + Activity (max 10)'
+    },
+    avgOdds: {
+      label: 'Average Odds',
+      what: 'Mean decimal odds across all picks posted by this tipster.',
+      why: 'Context for profitability — a 55% win rate at 1.5 odds is very different from 45% at 2.8. Higher avg odds means higher variance and harder to sustain edge.',
+      how: 'Sum of all pick odds ÷ total number of picks'
     }
   };
 
@@ -292,6 +298,7 @@
     { re: /\bpicks?\b/i,           key: 'picks'       },
     { re: /\bstreak\b/i,           key: 'streak'      },
     { re: /\bscore\b/i,            key: 'score'       },
+    { re: /avg\s*odds|average\s*odds/i, key: 'avgOdds' },
   ];
 
   const SELS = [
