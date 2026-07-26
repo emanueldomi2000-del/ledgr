@@ -722,6 +722,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .brain-card .bc-title{font-size:14px!important}
 .post-cta h2{font-size:20px!important}
 .post-cta-btn{font-size:14px!important;padding:10px 20px!important}
+@keyframes skel-shine{0%{background-position:-200px 0}100%{background-position:200px 0}}
+.skel,.skel-inline{background:linear-gradient(90deg,var(--s2) 25%,rgba(255,255,255,.06) 50%,var(--s2) 75%)!important;background-size:400px 100%!important;animation:skel-shine 1.4s ease-in-out infinite!important;}
+@keyframes wake-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+#wakeStatus{font-size:11px!important;letter-spacing:2px!important;color:var(--mu)!important}
+#wakeStatus .wake-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ac);margin-right:7px;vertical-align:middle;animation:wake-pulse 1s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -1336,16 +1341,15 @@ function _renderDataError(){
 
 async function wakeBackend(){
   const wakeEl=document.getElementById('wakeStatus');
-  if(wakeEl){wakeEl.textContent='Connecting to server...';wakeEl.style.display='block';}
+  if(wakeEl){wakeEl.innerHTML='<span class="wake-dot"></span>CONNECTING…';wakeEl.style.display='block';}
   try{await fetch(API+'/health',{signal:AbortSignal.timeout(8000)});}catch(e){}
   if(wakeEl)wakeEl.style.display='none';
 }
 
 async function loadData(){
   await wakeBackend();
-  await new Promise(r=>setTimeout(r,2000));
   const ctrl=new AbortController();
-  const abort=setTimeout(()=>ctrl.abort(),20000);
+  const abort=setTimeout(()=>ctrl.abort(),25000);
   // Fetch rankings independently so TOP TIPSTERS renders even if picks fail
   {const _rkCtrl=new AbortController();
   const _rkTok=localStorage.getItem('ledgr_token')||localStorage.getItem('token');
