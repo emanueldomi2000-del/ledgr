@@ -360,7 +360,8 @@
   const SELS = [
     '.stat-lbl', '.stat-label', '.lsl', '.sb-lbl',
     '.perf-key', '.id-stat-lbl', '.at-ss-lbl', '.at-gauge-lbl',
-    '.rel-label', '.lb-head span', '.panel-title', '.mom-stat-lbl'
+    '.rel-label', '.lb-head span', '.panel-title', '.mom-stat-lbl',
+    '.dna-bar-name'
   ].join(',');
 
   function mkBtn(key) {
