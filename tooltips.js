@@ -266,15 +266,13 @@
       });
 
       el.addEventListener('mouseenter', function () {
-        if (!isMobile) { clearTimeout(hideTimer); showRaw(el, text); }
+        clearTimeout(hideTimer); showRaw(el, text);
       });
 
       el.addEventListener('mouseleave', function () {
-        if (!isMobile) {
-          hideTimer = setTimeout(function () {
-            if (box && !box.matches(':hover') && activeBtn === el) hide();
-          }, 150);
-        }
+        hideTimer = setTimeout(function () {
+          if (box && !box.matches(':hover') && activeBtn === el) hide();
+        }, 150);
       });
     });
   }
@@ -322,16 +320,14 @@
       if (!isMobile) show(btn, key);
     });
 
-    // Desktop: hover with 120ms grace period
+    // Desktop: hover (no isMobile gate — mouseenter never fires on real touch)
     btn.addEventListener('mouseenter', function () {
-      if (!isMobile) { clearTimeout(hideTimer); show(btn, key); }
+      clearTimeout(hideTimer); show(btn, key);
     });
     btn.addEventListener('mouseleave', function () {
-      if (!isMobile) {
-        hideTimer = setTimeout(function () {
-          if (box && !box.matches(':hover') && activeBtn === btn) hide();
-        }, 150);
-      }
+      hideTimer = setTimeout(function () {
+        if (box && !box.matches(':hover') && activeBtn === btn) hide();
+      }, 150);
     });
 
     return btn;
