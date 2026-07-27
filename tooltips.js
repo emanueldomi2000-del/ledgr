@@ -242,8 +242,8 @@
       left = Math.max(8, Math.min(left, window.innerWidth - bw - 8));
 
       const top = below
-        ? br.bottom + window.scrollY + 12
-        : br.top   + window.scrollY - bh - 12;
+        ? br.bottom + 12
+        : br.top   - bh - 12;
 
       b.style.left = left + 'px';
       b.style.top  = top  + 'px';
@@ -287,8 +287,8 @@
       left = Math.max(8, Math.min(left, window.innerWidth - bw - 8));
 
       var top = below
-        ? br.bottom + window.scrollY + 12
-        : br.top   + window.scrollY - bh - 12;
+        ? br.bottom + 12
+        : br.top   - bh - 12;
 
       b.style.left = left + 'px';
       b.style.top  = top  + 'px';
